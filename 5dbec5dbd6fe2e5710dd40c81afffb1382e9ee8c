@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "418c40ba_a1277343",
+        "filename": "devices/arris_cmts.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 1016163
+      },
+      "writtenOn": "2019-08-06T08:30:48Z",
+      "side": 1,
+      "message": "def show_cable_modems(self):\n        \u0027\u0027\u0027\n        Shows all the cable modems on this cmts.\n        This function is used by the unit test.\n        Input : None\n        Output : show cable modem output\n        Author : anon\n        \u0027\u0027\u0027\n        self.sendline(\"show cable modem\")\n        self.expect(self.prompt)\n\n        return self.before\n\nif __name__ \u003d\u003d \u0027__main__\u0027:\n    # Quick  unit test that attempts to run all the functions in this module\n    # Pre condition: cmts MUST have at least 1 cm (in any state)\n    # To run checkout all the needed repos/overlays, then try the following:\n    #    cd ./boardfarm-docsis\n    #    BFT_DEBUG\u003dy PYTHONPATH\u003d\"./:../boardfarm:../boardfarm/devices/:../boardfarm/tests/\" python ./devices/arris_cmts.py\n    #\n\n    # this could be improved (i.e. the conn_cmd, user, passwd are passed on the cli)\n    kwargs \u003d {\"name\": \"cmts\", \"conn_cmd\": \"telnet 10.64.37.200 6000\",\"username\": \"boardfarm\",\"password\":\"boardfarm\"}\n\n    arriscmts \u003d None\n    try:\n        arriscmts \u003d ArrisCMTS(None, **kwargs)\n    except Exception as e:\n        print(e)\n        pass\n\n    if arriscmts is None:\n        assert 0,\"Failed to create ArrisCMTS object\"\n\n    print(\"ArrisCMTS obj created: %r\"%arriscmts)\n    from lib.regexlib import CmtsMacFormat\n    cm_list \u003d re.findall(CmtsMacFormat, arriscmts.show_cable_modems())\n\n    print(cm_list)\n\n\n######################################################################################3\n\nAppend the code you see above (as is) to this file, then run it. This could be a small unit test that can check (where possible) every function in this class, for both failure and success (for legacy and new functionality)\nThe part after the \"if __name__ \u003d\u003d \u0027__main__\u0027:\" could be wrapped in a function named \"cmts_unittest\" and maybe placed in the base class (have not tried that yet) and thus making it usable by all the cmts types",
+      "revId": "5dbec5dbd6fe2e5710dd40c81afffb1382e9ee8c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
