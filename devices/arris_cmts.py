@@ -94,7 +94,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
     def check_online(self, cmmac):
         """
         Function checks the encrytion mode and returns True if online
-        Args: cmmac 
+        Args: cm mac
         Return: True if the CM is operational
                 The actual status otherwise
         """
@@ -109,7 +109,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
     def clear_offline(self, cmmac):
         """
         Reset a modem
-        Args: cmmac
+        Args: cm mac
         """
         self.sendline('exit')
         self.expect(self.prompt)
@@ -122,7 +122,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
     def clear_cm_reset(self, cmmac):
         """
         Reset a modem
-        Args: cmmac
+        Args: cm mac
         """
         self.sendline('exit')
         self.expect(self.prompt)
@@ -136,7 +136,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
     def get_mtaip(self, cmmac, mtamac):
         """
         Gets the mta ip address
-        Args: cmmac, mtamac(not used)
+        Args: cm mac, mtamac(not used)
         Return: mta ip or None if not found
         """
         self.sendline('show cable modem %s detail | include MTA' % (cmmac))
@@ -171,7 +171,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
     def get_cmip(self, cmmac):
         """
         Returns the CM mgmt ipv4 address
-        Args: cmmac
+        Args: cm mac
         Return: ip addr (ipv4) or None if not found
         """
         return self.get_ip_from_regexp(cmmac, ValidIpv4AddressRegex)
@@ -179,7 +179,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
     def get_cmipv6(self, cmmac):
         """
         Returns the CM mgmt ipv6 address
-        Args: cmmac
+        Args: cm mac
         Return: ip addr (ipv4) or None if not found
         """
         return self.get_ip_from_regexp(cmmac, AllValidIpv6AddressesRegex)
@@ -244,3 +244,42 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         self.sendline('config')
         self.expect(self.prompt)
+
+    def get_qam_module(self):
+        '''
+        This function is to return the qam (DCAM) modules on cmts.
+        Input : None
+        Output : Returns the qam (DCAM) modules on cmts.
+        Author : Rajan
+        '''
+        self.sendline('show linecard status | include DMM/DMM')
+        self.expect(self.prompt)
+        return  self.before.split("\n",1)[1]
+
+    def get_ups_module(self):
+        '''
+        This function is to return the upc (UCAM) modules on cmts.
+        Input : None
+        Output : Returns the upc (UCAM) modules on cmts.
+        Author : Rajan
+        '''
+        self.sendline('show linecard status | include CAM/CAM')
+        self.expect(self.prompt)
+        return self.before.split("\n",1)[1]
+
+if __name__ == '__main__':
+    # Quick  unit test that attempts to run all the functions in this module
+    # Pre condition: cmts MUST have at least 1 cm (in any state)        # To run checkout all the needed repos/overlays, then try the following:
+    #    cd ./boardfarm-docsis
+    #    BFT_DEBUG=y PYTHONPATH="./:../boardfarm:../boardfarm/devices/:../boardfarm/tests/" python ./devices/arris_cmts.py
+    #
+    # this could be improved (i.e. the conn_cmd, user, passwd are passed on the cli)
+    #passing the cmts details from cmd
+    kwargs = {"name": "cmts", "conn_cmd": sys.argv[1],"username": sys.argv[2],"password":sys.argv[3]}
+    arriscmts = None
+    try:
+        arriscmts = ArrisCMTS(None, **kwargs)
+        #calling the unit test method in the base_cmts
+        arriscmts.unit_test()
+    except Exception as e:
+        print(e)
