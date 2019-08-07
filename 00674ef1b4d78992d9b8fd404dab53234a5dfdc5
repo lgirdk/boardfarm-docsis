@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5f6d35f7_7a8a0b7e",
+        "filename": "devices/base_cmts.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1016147
+      },
+      "writtenOn": "2019-08-07T14:00:03Z",
+      "side": 1,
+      "message": "is this duplicated from casa_cmts.py? Can we not keep two copies of the code?",
+      "revId": "00674ef1b4d78992d9b8fd404dab53234a5dfdc5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e54186c3_e31485cd",
+        "filename": "devices/base_cmts.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1016147
+      },
+      "writtenOn": "2019-08-07T14:00:03Z",
+      "side": 1,
+      "message": "Can you look at calling this in a selftest.py? I know it\u0027s a bit tricky because we require real hardware...",
+      "revId": "00674ef1b4d78992d9b8fd404dab53234a5dfdc5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
