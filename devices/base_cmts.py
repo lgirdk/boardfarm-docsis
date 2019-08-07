@@ -1,5 +1,5 @@
 import base
-
+import re
 
 class BaseCmts(base.BaseDevice):
     '''
@@ -56,3 +56,32 @@ class BaseCmts(base.BaseDevice):
         tmp = mac.replace(':', '')
         mac_cmts_format = tmp[:4]+"."+tmp[4:8]+"."+tmp[8:]
         return mac_cmts_format.lower()
+
+    def show_cable_modems(self):
+        """
+        Shows all the cable modems on this cmts.
+        This function is used by the unit test.
+        Input : None
+        Output : show cable modem output
+        Author : Rajan
+        """
+        self.sendline('show cable modem')
+        self.expect(self.prompt)
+        return self.before
+
+    def unit_test(self):
+        """
+        This function is designed to do the unit test on the functions in the cmts
+        Input : None (will be called by cmts object)
+        Output : None (will validate the cmts funcions based on the call)
+        Author : Rajan
+        """
+        #calling the cmts modules for unit test
+        self.save_running_to_startup_config()
+        self.save_running_config_to_local('samplefile.txt')
+        qam_list = self.get_qam_module()
+        #print for verification purpose in unit test
+        print qam_list
+        ups_list = self.get_ups_module()
+        #print for verification purpose in unit test
+        print ups_list
