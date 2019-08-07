@@ -552,65 +552,36 @@ class CasaCMTS(base_cmts.BaseCmts):
 
         return str(int(self.before.split(' ')[-1]))
 
+    def show_cable_modems(self):
+        '''
+        Shows all the cable modems on this cmts.
+        This function is used by the unit test.
+        Input : None
+        Output : show cable modem output
+        Author : anon
+        '''
+        self.sendline("show cable modem")
+        self.expect(self.prompt)
+        return self.before
 
 if __name__ == '__main__':
-    import time
-
-    connection_type = "local_cmd"
-    cmts = CasaCMTS(conn_cmd=sys.argv[1], connection_type=connection_type)
-
-    if len(sys.argv) > 2 and sys.argv[2] == "setup_ipv6":
-        print("Setting up IPv6 address, bundles, routes, etc")
-        cmts.set_iface_ipv6addr('gige 0', '2001:dead:beef:1::cafe/64')
-        cmts.add_route6('::/0', '2001:dead:beef:1::1')
-        # TODO: casa 3200 cmts only supports one ip bundle for ipv6....
-        # so we use a ipv6 address 2001:dead:beef:4::cafe/62 for that which means we can bump
-        # these up too
-        cmts.add_ipv6_bundle_addrs(1, "2001:dead:beef:1::1", "2001:dead:beef:4::cafe/64",
-                                   secondary_ips=["2001:dead:beef:5::cafe/64", "2001:dead:beef:6::cafe/64"])
-        sys.exit(0)
-
-    # TODO: example for now, need to parse args
-    if False:
-        cmts.mirror_traffic()
-        cmts.run_tcpdump(15, opts="-w dump.pcap")
-        # TODO: extract pcap from CMTS
-        cmts.del_file("dump.pcap")
-        cmts.unmirror_traffic()
-        sys.exit(0)
-
-    cmts.save_running_to_startup_config()
-    cmts.save_running_config_to_local("saved-casa-config-" + time.strftime("%Y%m%d-%H%M%S") + ".cfg")
-    cmts.reset()
-    cmts.wait_for_ready()
-
-    cmts.set_iface_ipaddr('eth 0', '172.19.17.136 255.255.255.192')
-    cmts.set_iface_ipaddr('gige 0', '192.168.3.222 255.255.255.0')
-    # TODO: add third network for open
-    cmts.add_ip_bundle(1, "192.168.3.1", "192.168.200.1", secondary_ips=["192.168.201.1", "192.168.202.1"])
-
-    cmts.add_route("0.0.0.0", "0", "192.168.3.1")
-
-    qam_idx = cmts.get_qam_module()
-    ups_idx = cmts.get_ups_module()
-
-    cmts.set_iface_qam(qam_idx, 0, 'A', 12, 550)
-    cmts.set_iface_qam_freq(qam_idx, 0, 0, 235000000)
-    cmts.set_iface_qam_freq(qam_idx, 0, 1, 243000000)
-    cmts.set_iface_qam_freq(qam_idx, 0, 2, 251000000)
-    cmts.set_iface_qam_freq(qam_idx, 0, 3, 259000000)
-
-    cmts.add_service_class(1, 'UNLIMITED_down', 100000, 10000, downstream=True)
-    cmts.add_service_class(2, 'UNLIMITED_up', 100000, 16320)
-
-    cmts.add_service_group(1, qam_idx, 0, range(4), ups_idx, [0.0, 1.0])
-
-    cmts.add_iface_docsis_mac(1, 1, qam_idx, 0, range(4), ups_idx, [0.0, 1.0])
-
-    cmts.set_iface_upstream(ups_idx, 0.0, 47000000, 6400000, 6)
-
-    print()
-    print("Press Control-] to exit interact mode")
-    print("=====================================")
-    cmts.interact()
-    print()
+    # Quick  unit test that attempts to run all the functions in this module
+    # Pre condition: cmts MUST have at least 1 cm (in any state)
+    # To run checkout all the needed repos/overlays, then try the following:
+    #    cd ./boardfarm-docsis
+    #    BFT_DEBUG=y PYTHONPATH="./:../boardfarm:../boardfarm/devices/:../boardfarm/tests/" python ./devices/arris_cmts.py
+    #
+    # this could be improved (i.e. the conn_cmd, user, passwd are passed on the cli)
+    kwargs = {"name": "cmts", "conn_cmd": "telnet 172.30.202.100","username": "boardfarm","password":"BF_prod_ams"}
+    casacmts = None
+    try:
+        casacmts = CasaCMTS(None, **kwargs)
+    except Exception as e:
+        print(e)
+        pass
+    if casacmts is None:
+        assert 0,"Failed to create ArrisCMTS object"
+    print("ArrisCMTS obj created: %r"%casacmts)
+    from lib.regexlib import CmtsMacFormat
+    cm_list = re.findall(CmtsMacFormat, casacmts.show_cable_modems())
+    print(cm_list)
