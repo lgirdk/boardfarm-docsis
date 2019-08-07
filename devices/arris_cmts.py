@@ -94,7 +94,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
     def check_online(self, cmmac):
         """
         Function checks the encrytion mode and returns True if online
-        Args: cmmac 
+        Args: cmmac
         Return: True if the CM is operational
                 The actual status otherwise
         """
@@ -213,3 +213,73 @@ class ArrisCMTS(base_cmts.BaseCmts):
         index = self.expect(["(24x8)"], timeout=3)
         self.expect(self.prompt)
         return 0 == index
+
+    def save_running_config_to_local(self, filename):
+        '''
+        This function is to save the running config file of the CMTS to the local directory.
+        Input : filename to save the config
+        Output : writing the CMTS config to the file with specified name
+        Author : Rajan
+        '''
+        self.sendline('no pagination')
+        self.expect(self.prompt)
+        #show running-config will display the current running config file of CMTS
+        self.sendline('show running-config')
+        self.expect('arrisc4\(config\)\#')
+        f = open(filename, "w")
+        f.write(self.before)
+        f.write(self.after)
+        f.close()
+
+    def save_running_to_startup_config(self):
+        '''
+        This function is to over write the startup config file of the CMTS with the current running config file.
+        Input : None
+        Output : Overwritten startup-config file with running-config file on CMTS
+        Author : Rajan
+        '''
+        self.sendline('exit')
+        self.expect(self.prompt)
+        self.sendline('copy running-config startup-config')
+        self.expect(self.prompt)
+        self.sendline('config')
+        self.expect(self.prompt)
+
+    def get_qam_module(self):
+        '''
+        This function is to return the qam (DCAM) modules on cmts.
+        Input : None
+        Output : Returns the qam (DCAM) modules on cmts.
+        Author : Rajan
+        '''
+        self.sendline('show linecard status | include DMM/DMM')
+        self.expect(self.prompt)
+        return  self.before.split("\n",1)[1]
+
+    def get_ups_module(self):
+        '''
+        This function is to return the upc (UCAM) modules on cmts.
+        Input : None
+        Output : Returns the upc (UCAM) modules on cmts.
+        Author : Rajan
+        '''
+        self.sendline('show linecard status | include CAM/CAM')
+        self.expect(self.prompt)
+        return self.before.split("\n",1)[1]
+
+if __name__ == '__main__':
+    # Quick  unit test that attempts to run all the functions in this module
+    # Pre condition: cmts MUST have at least 1 cm (in any state)        # To run checkout all the needed repos/overlays, then try the following:
+    #    cd ./boardfarm-docsis
+    #    BFT_DEBUG=y PYTHONPATH="./:../boardfarm:../boardfarm/devices/:../boardfarm/tests/" python ./devices/arris_cmts.py
+    #
+    # this could be improved (i.e. the conn_cmd, user, passwd are passed on the cli)
+    #passing the cmts details from cmd
+    kwargs = {"name": "cmts", "conn_cmd": sys.argv[1],"username": sys.argv[2],"password":sys.argv[3]}
+    arriscmts = None
+    try:
+        arriscmts = ArrisCMTS(None, **kwargs)
+        #calling the unit test method in the base_cmts
+        arriscmts.unit_test()
+    except Exception as e:
+        print(e)
