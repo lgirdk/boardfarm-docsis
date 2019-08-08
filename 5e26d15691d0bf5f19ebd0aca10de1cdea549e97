@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "103c1725_aceda30a",
+        "filename": "devices/base_cmts.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1016357
+      },
+      "writtenOn": "2019-08-08T15:32:55Z",
+      "side": 1,
+      "message": "This cannot be hard-coded inside the unit test of a base class.\nPlease add these interface and subnet values as an arg to the unit_test method.\nAlso use the default IPv6 values used in BFT.\nIPv6 subnet can be referred from debian_isc file in devices.",
+      "revId": "5e26d15691d0bf5f19ebd0aca10de1cdea549e97",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "54c645ca_dd1a954e",
+        "filename": "devices/base_cmts.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1016357
+      },
+      "writtenOn": "2019-08-08T15:32:55Z",
+      "side": 1,
+      "message": "Is this file available beforehand in the CMTS?\nIf not, it\u0027s better to remove this call from self_test.\nWe should not create files in CMTS",
+      "revId": "5e26d15691d0bf5f19ebd0aca10de1cdea549e97",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d44c8278_cb0fe858",
+        "filename": "devices/base_cmts.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1016357
+      },
+      "writtenOn": "2019-08-08T15:32:55Z",
+      "side": 1,
+      "message": "Pass MAC domain as a parameter.\nThese values for self_test must be fetched from JSON in their respective sites.",
+      "revId": "5e26d15691d0bf5f19ebd0aca10de1cdea549e97",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
