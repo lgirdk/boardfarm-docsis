@@ -56,6 +56,18 @@ class BaseCmts(base.BaseDevice):
     def get_ups_module(self):
         raise Exception("Not implemented!")
 
+    def set_iface_ipaddr(self, iface, ipaddr):
+        raise Exception("Not implemented!")
+
+    def set_iface_ipv6addr(self, iface, ipaddr):
+        raise Exception("Not implemented!")
+
+    def del_file(self, f):
+        raise Exception("Not implemented!")
+
+    def check_docsis_mac_ip_provisioning_mode(self, index):
+        raise Exception("Not implemented!")
+
     def get_cm_mac_cmts_format(self, mac):
         """
         Function:   get_cm_mac_cmts_format(mac)
@@ -88,12 +100,10 @@ class BaseCmts(base.BaseDevice):
         Output : None (will validate the cmts funcions based on the call)
         Author : Rajan
         """
-        #calling the cmts modules for unit test
-        self.save_running_to_startup_config()
-        self.save_running_config_to_local('samplefile.txt')
-        qam_list = self.get_qam_module()
-        #print for verification purpose in unit test
-        print qam_list
-        ups_list = self.get_ups_module()
-        #print for verification purpose in unit test
-        print ups_list
+        #calling the cmts modules for unit test arris
+        self.set_iface_ipaddr("gigabitEthernet 17/3","10.64.42.10 255.255.254.0")
+        self.set_iface_ipv6addr("gigabitEthernet 17/3","2001:730:1f:60d::cbfe:0/64")
+        self.del_file("test.txt")
+        ip_provisioning_mode=self.check_docsis_mac_ip_provisioning_mode(2)
+        #printing to verify the return value
+        print ip_provisioning_mode
