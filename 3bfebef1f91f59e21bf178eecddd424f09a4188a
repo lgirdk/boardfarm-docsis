@@ -2,6 +2,40 @@
   "comments": [
     {
       "key": {
+        "uuid": "03139dfd_33b0d8ed",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1016147
+      },
+      "writtenOn": "2019-08-08T14:04:59Z",
+      "side": 1,
+      "message": "Usually better to say something besides modified on the subject line of the commit. I know you are modifying things and the files from the git commit.\n\nThe subject line should be a good one-liner that says what you are doing.",
+      "revId": "3bfebef1f91f59e21bf178eecddd424f09a4188a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d254c7a3_2d42c658",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1016147
+      },
+      "writtenOn": "2019-08-08T14:04:59Z",
+      "side": 1,
+      "message": "Please keep the lines in a commit message under 80 chars, and formatted properly.",
+      "revId": "3bfebef1f91f59e21bf178eecddd424f09a4188a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "cb2d8e98_5e146c51",
         "filename": "devices/arris_cmts.py",
         "patchSetId": 1
