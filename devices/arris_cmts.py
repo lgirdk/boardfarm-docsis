@@ -267,6 +267,62 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         return self.before.split("\n",1)[1]
 
+    def set_iface_ipaddr(self, iface, ipaddr):
+        '''
+        This function is to set an ip address to an interface on cmts.
+        Input : arg1: interface name , arg2: ip address followed by subnet as one string.
+        Output : None 9 (sets the ip address to an interface specified).
+        Author : Rajan.
+        '''
+        self.sendline('interface %s' % iface)
+        self.expect(self.prompt)
+        self.sendline('ip address %s' % ipaddr)
+        self.expect(self.prompt)
+        self.sendline('no shutdown')
+        self.expect(self.prompt)
+        self.sendline('exit')
+        self.expect(self.prompt)
+
+    def set_iface_ipv6addr(self, iface, ipaddr):
+        '''
+        This function is to set an ipv6 address to an interface on cmts.
+        Input : arg1: interface name , arg2: ipv6 address / prefix as one string.
+        Output : None 9 (sets the ipv6 address to an interface specified).
+        Author : Rajan.
+        '''
+        self.sendline('interface %s' % iface)
+        self.expect(self.prompt)
+        self.sendline('ipv6 address %s' % ipaddr)
+        self.expect(self.prompt)
+        self.sendline('no shutdown')
+        self.expect(self.prompt)
+        self.sendline('exit')
+        self.expect(self.prompt)
+
+    def del_file(self, f):
+        '''
+        This function is to delete a file on cmts.
+        Input : arg: file name to be deleted if in current directory relative file name to be deleted from /system if in different directory.
+        Output : None (specifie file will be deleted on cmts.
+        Author : Rajan.
+        '''
+        self.sendline('exit')
+        self.expect(self.prompt)
+        self.sendline('delete %s' % f)
+        self.expect(self.prompt)
+
+    def check_docsis_mac_ip_provisioning_mode(self, index):
+        '''
+        This function is to return the ip provisioning mode of a mac domain.
+        Input : arg: integer value of the mac domain for which we need the mode supported.
+        Output : Return the mode supports in the form of string (Ex: ipv4only)
+        Author : Rajan.
+        '''
+        self.sendline('show running-config interface cable-mac %s | include cm-ip-prov-mode' % index)
+        self.expect(self.prompt)
+        result = self.before.split("\n")[1].split(" ")[-1]
+        return result
+
 if __name__ == '__main__':
     # Quick  unit test that attempts to run all the functions in this module
     # Pre condition: cmts MUST have at least 1 cm (in any state)        # To run checkout all the needed repos/overlays, then try the following:
