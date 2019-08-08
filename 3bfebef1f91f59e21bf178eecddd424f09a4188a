@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cb2d8e98_5e146c51",
+        "filename": "devices/arris_cmts.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 1016163
+      },
+      "writtenOn": "2019-08-08T10:56:47Z",
+      "side": 1,
+      "message": "do the exit apply for the arris cmts?",
+      "range": {
+        "startLine": 283,
+        "startChar": 0,
+        "endLine": 283,
+        "endChar": 29
+      },
+      "revId": "3bfebef1f91f59e21bf178eecddd424f09a4188a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
