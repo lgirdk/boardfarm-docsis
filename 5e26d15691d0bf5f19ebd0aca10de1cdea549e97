@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ebef305d_a0f926e6",
+        "filename": "devices/base_cmts.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1016854
+      },
+      "writtenOn": "2019-08-09T13:10:02Z",
+      "side": 1,
+      "message": "As discussed as now holding the unit test methods for setting parameters on CMTS as they might have an impact on others test.\nMoved the getting parameters unit tests to docsisunittest.py in docsis tests, change id I8767a9b666d81075b8e58aec32fb8810161498f1.",
+      "parentUuid": "103c1725_aceda30a",
+      "revId": "5e26d15691d0bf5f19ebd0aca10de1cdea549e97",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "54c645ca_dd1a954e",
         "filename": "devices/base_cmts.py",
         "patchSetId": 2
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "88510e51_ed1fb30a",
+        "filename": "devices/base_cmts.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1016854
+      },
+      "writtenOn": "2019-08-09T13:10:02Z",
+      "side": 1,
+      "message": "As discussed as now holding the unit test methods for setting parameters on CMTS as they might have an impact on others test.\nMoved the getting parameters unit tests to docsisunittest.py in docsis tests, change id I8767a9b666d81075b8e58aec32fb8810161498f1.",
+      "parentUuid": "54c645ca_dd1a954e",
+      "revId": "5e26d15691d0bf5f19ebd0aca10de1cdea549e97",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d44c8278_cb0fe858",
         "filename": "devices/base_cmts.py",
         "patchSetId": 2
@@ -47,6 +83,24 @@
       "writtenOn": "2019-08-08T15:32:55Z",
       "side": 1,
       "message": "Pass MAC domain as a parameter.\nThese values for self_test must be fetched from JSON in their respective sites.",
+      "revId": "5e26d15691d0bf5f19ebd0aca10de1cdea549e97",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7b054090_41f7314f",
+        "filename": "devices/base_cmts.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1016854
+      },
+      "writtenOn": "2019-08-09T13:10:02Z",
+      "side": 1,
+      "message": "Moved the getting unit test to docsisunittest.py in docsis tests, change id I8767a9b666d81075b8e58aec32fb8810161498f1.",
+      "parentUuid": "d44c8278_cb0fe858",
       "revId": "5e26d15691d0bf5f19ebd0aca10de1cdea549e97",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": true
