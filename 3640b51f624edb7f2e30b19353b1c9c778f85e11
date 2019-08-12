@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "943b98e3_bb2c9903",
+        "filename": "devices/casa_cmts.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1016147
+      },
+      "writtenOn": "2019-08-12T19:30:51Z",
+      "side": 1,
+      "message": "if this function needs something, like an IP or a device it should be passed in.. we should not be importing devices here.\n\n(or in the functions in tests/lib)",
+      "revId": "3640b51f624edb7f2e30b19353b1c9c778f85e11",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
