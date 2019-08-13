@@ -68,6 +68,27 @@ class BaseCmts(base.BaseDevice):
     def check_docsis_mac_ip_provisioning_mode(self, index):
         raise Exception("Not implemented!")
 
+    def wait_for_ready(self):
+        raise Exception("Not implemented!")
+
+    def modify_docsis_mac_ip_provisioning_mode(self, index, ip_pvmode='dual-stack'):
+        raise Exception("Not implemented!")
+
+    def is_cm_bridged(self, mac):
+        raise Exception("Not implemented!")
+
+    def get_ertr_ipv4(self, mac):
+        raise Exception("Not implemented!")
+
+    def get_ertr_ipv6(self, mac):
+        raise Exception("Not implemented!")
+
+    def check_PartialService(self, cmmac):
+        raise Exception("Not implemented!")
+
+    def DUT_chnl_lock(self, cm_mac):
+        raise Exception("Not implemented!")
+
     def get_cm_mac_cmts_format(self, mac):
         """
         Function:   get_cm_mac_cmts_format(mac)
@@ -93,17 +114,3 @@ class BaseCmts(base.BaseDevice):
         self.expect(self.prompt)
         return self.before
 
-    def unit_test(self):
-        """
-        This function is designed to do the unit test on the functions in the cmts
-        Input : None (will be called by cmts object)
-        Output : None (will validate the cmts funcions based on the call)
-        Author : Rajan
-        """
-        #calling the cmts modules for unit test arris
-        self.set_iface_ipaddr("gigabitEthernet 17/3","10.64.42.10 255.255.254.0")
-        self.set_iface_ipv6addr("gigabitEthernet 17/3","2001:730:1f:60d::cbfe:0/64")
-        self.del_file("test.txt")
-        ip_provisioning_mode=self.check_docsis_mac_ip_provisioning_mode(2)
-        #printing to verify the return value
-        print ip_provisioning_mode
