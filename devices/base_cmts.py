@@ -56,6 +56,39 @@ class BaseCmts(base.BaseDevice):
     def get_ups_module(self):
         raise Exception("Not implemented!")
 
+    def set_iface_ipaddr(self, iface, ipaddr):
+        raise Exception("Not implemented!")
+
+    def set_iface_ipv6addr(self, iface, ipaddr):
+        raise Exception("Not implemented!")
+
+    def del_file(self, f):
+        raise Exception("Not implemented!")
+
+    def check_docsis_mac_ip_provisioning_mode(self, index):
+        raise Exception("Not implemented!")
+
+    def wait_for_ready(self):
+        raise Exception("Not implemented!")
+
+    def modify_docsis_mac_ip_provisioning_mode(self, index, ip_pvmode='dual-stack'):
+        raise Exception("Not implemented!")
+
+    def is_cm_bridged(self, mac):
+        raise Exception("Not implemented!")
+
+    def get_ertr_ipv4(self, mac):
+        raise Exception("Not implemented!")
+
+    def get_ertr_ipv6(self, mac):
+        raise Exception("Not implemented!")
+
+    def check_PartialService(self, cmmac):
+        raise Exception("Not implemented!")
+
+    def DUT_chnl_lock(self, cm_mac):
+        raise Exception("Not implemented!")
+
     def get_cm_mac_cmts_format(self, mac):
         """
         Function:   get_cm_mac_cmts_format(mac)
