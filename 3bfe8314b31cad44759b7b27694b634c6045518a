@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d5ffb6e5_496dee5c",
+        "filename": "devices/arris_cmts.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 302,
+      "author": {
+        "id": 1016147
+      },
+      "writtenOn": "2019-08-13T21:36:49Z",
+      "side": 1,
+      "message": "Is there a better way to unset? Maybe pass None as iface arg?",
+      "revId": "3bfe8314b31cad44759b7b27694b634c6045518a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "92d755bd_950857e1",
+        "filename": "devices/arris_cmts.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 369,
+      "author": {
+        "id": 1016147
+      },
+      "writtenOn": "2019-08-13T21:36:49Z",
+      "side": 1,
+      "message": "We won\u0027t need an author line on each function. It\u0027s all store in the git history.",
+      "revId": "3bfe8314b31cad44759b7b27694b634c6045518a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
