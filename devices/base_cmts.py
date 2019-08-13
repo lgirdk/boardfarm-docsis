@@ -55,6 +55,50 @@ class BaseCmts(base.BaseDevice):
 
     def get_ups_module(self):
         raise Exception("Not implemented!")
+    def set_iface_ipaddr(self, iface, ipaddr):
+        raise Exception("Not implemented!")
+
+    def set_iface_ipv6addr(self, iface, ipaddr):
+        raise Exception("Not implemented!")
+
+    def del_file(self, f):
+        raise Exception("Not implemented!")
+
+    def check_docsis_mac_ip_provisioning_mode(self, index):
+        raise Exception("Not implemented!")
+
+    def wait_for_ready(self):
+        raise Exception("Not implemented!")
+
+    def modify_docsis_mac_ip_provisioning_mode(self, index, ip_pvmode='dual-stack'):
+        raise Exception("Not implemented!")
+
+    def is_cm_bridged(self, mac):
+        raise Exception("Not implemented!")
+
+    def get_ertr_ipv4(self, mac):
+        raise Exception("Not implemented!")
+
+    def get_ertr_ipv6(self, mac):
+        raise Exception("Not implemented!")
+
+    def check_PartialService(self, cmmac):
+        raise Exception("Not implemented!")
+
+    def DUT_chnl_lock(self, cm_mac):
+        raise Exception("Not implemented!")
+
+    def set_iface_ipaddr(self, iface, ipaddr):
+        raise Exception("Not implemented!")
+
+    def set_iface_ipv6addr(self, iface, ipaddr):
+        raise Exception("Not implemented!")
+
+    def del_file(self, f):
+        raise Exception("Not implemented!")
+
+    def check_docsis_mac_ip_provisioning_mode(self, index):
+        raise Exception("Not implemented!")
 
     def get_cm_mac_cmts_format(self, mac):
         """
@@ -81,19 +125,3 @@ class BaseCmts(base.BaseDevice):
         self.expect(self.prompt)
         return self.before
 
-    def unit_test(self):
-        """
-        This function is designed to do the unit test on the functions in the cmts
-        Input : None (will be called by cmts object)
-        Output : None (will validate the cmts funcions based on the call)
-        Author : Rajan
-        """
-        #calling the cmts modules for unit test
-        self.save_running_to_startup_config()
-        self.save_running_config_to_local('samplefile.txt')
-        qam_list = self.get_qam_module()
-        #print for verification purpose in unit test
-        print qam_list
-        ups_list = self.get_ups_module()
-        #print for verification purpose in unit test
-        print ups_list
