@@ -51,6 +51,24 @@
       "revId": "3bfe8314b31cad44759b7b27694b634c6045518a",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "02a74d09_1557469b",
+        "filename": "devices/arris_cmts.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 369,
+      "author": {
+        "id": 1016854
+      },
+      "writtenOn": "2019-08-14T09:04:27Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "92d755bd_950857e1",
+      "revId": "3bfe8314b31cad44759b7b27694b634c6045518a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
