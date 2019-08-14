@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "560a0032_49f6b4c5",
+        "filename": "devices/arris_cmts.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 302,
+      "author": {
+        "id": 1016854
+      },
+      "writtenOn": "2019-08-14T09:04:02Z",
+      "side": 1,
+      "message": "Here we are unsetting the IP address on Iface specified, thereby Iface parameter is mandatory.",
+      "parentUuid": "d5ffb6e5_496dee5c",
+      "revId": "3bfe8314b31cad44759b7b27694b634c6045518a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "92d755bd_950857e1",
         "filename": "devices/arris_cmts.py",
         "patchSetId": 5
