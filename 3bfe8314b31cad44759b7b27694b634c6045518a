@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "dbeb0f8a_aecdd0d5",
+        "filename": "devices/arris_cmts.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 302,
+      "author": {
+        "id": 1016854
+      },
+      "writtenOn": "2019-08-15T09:44:26Z",
+      "side": 1,
+      "message": "How about something like this\n\n    def set_or_unset_iface_ipaddr(self, iface, ipaddr\u003d\u0027\u0027,set\u003d\u0027\u0027):\n        self.sendline(\u0027interface %s\u0027 % iface)\n        self.expect(self.prompt)\n        self.sendline(\u0027%s ip address %s\u0027 %(set, ipaddr))\n        self.expect(self.prompt)\n        self.sendline(\u0027no shutdown\u0027)\n        self.expect(self.prompt)\n        self.sendline(\u0027exit\u0027)\n        self.expect(self.prompt)\n\nHowever we can eliminate the extra parameter (set) with the value of ip and if you suggest we can even merge the ipv4 and ipv6 functions and proceed based on ip address passed.",
+      "parentUuid": "4163dcdd_fbc53038",
+      "revId": "3bfe8314b31cad44759b7b27694b634c6045518a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "92d755bd_950857e1",
         "filename": "devices/arris_cmts.py",
         "patchSetId": 5
