@@ -89,6 +89,34 @@ class BaseCmts(base.BaseDevice):
     def DUT_chnl_lock(self, cm_mac):
         raise Exception("Not implemented!")
 
+
+    def add_route(self, net, mask, gw):
+        raise Exception("Not implemented!")
+
+    def add_route6(self, net, gw):
+        raise Exception("Not implemented!")
+
+    def del_route(self, net, mask, gw):
+        raise Exception("Not implemented!")
+
+    def del_route6(self, net, gw):
+        raise Exception("Not implemented!")
+
+    def add_ip_bundle(self, index, helper_ip, ip, secondary_ips=[]):
+        raise Exception("Not implemented!")
+
+    def add_ipv6_bundle_addrs(self, index, helper_ip, ip, secondary_ips=[]):
+        raise Exception("Not implemented!")
+
+    def set_iface_qam(self, index, sub, annex, interleave, power):
+        raise Exception("Not implemented!")
+
+    def set_iface_qam_freq(self, index, sub, channel, freq):
+        raise Exception("Not implemented!")
+
+    def set_iface_upstream(self, ups_idx, ups_ch, freq, width, power):
+        raise Exception("Not implemented!")
+
     def get_cm_mac_cmts_format(self, mac):
         """
         Function:   get_cm_mac_cmts_format(mac)
@@ -102,15 +130,4 @@ class BaseCmts(base.BaseDevice):
         mac_cmts_format = tmp[:4]+"."+tmp[4:8]+"."+tmp[8:]
         return mac_cmts_format.lower()
 
-    def show_cable_modems(self):
-        """
-        Shows all the cable modems on this cmts.
-        This function is used by the unit test.
-        Input : None
-        Output : show cable modem output
-        Author : Rajan
-        """
-        self.sendline('show cable modem')
-        self.expect(self.prompt)
-        return self.before
 
