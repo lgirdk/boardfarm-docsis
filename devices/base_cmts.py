@@ -1,5 +1,5 @@
 import base
-import re
+
 
 class BaseCmts(base.BaseDevice):
     '''
