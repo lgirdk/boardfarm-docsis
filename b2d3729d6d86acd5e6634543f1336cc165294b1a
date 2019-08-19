@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "16a84de0_028ba834",
+        "filename": "devices/arris_cmts.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 1016854
+      },
+      "writtenOn": "2019-08-19T16:47:40Z",
+      "side": 1,
+      "message": "Actually this method is only to unset ipv4 address there by shutdown would affect ipv6 service \nHowever have created a new method and updated patch to set/unset and shutdown the interface with the help of parameters to method.",
+      "parentUuid": "3fcd97c0_36fa5e17",
+      "revId": "b2d3729d6d86acd5e6634543f1336cc165294b1a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e362b129_19fe6e99",
         "filename": "devices/arris_cmts.py",
         "patchSetId": 1
@@ -72,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "1705a3a4_3ef17548",
+        "filename": "devices/arris_cmts.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 391,
+      "author": {
+        "id": 1016854
+      },
+      "writtenOn": "2019-08-19T16:47:40Z",
+      "side": 1,
+      "message": "There is method is diluted as it\u0027s functionality is handled in other methods.",
+      "parentUuid": "4a42e187_ebfff87e",
+      "revId": "b2d3729d6d86acd5e6634543f1336cc165294b1a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "619f3ba0_688fc104",
         "filename": "devices/arris_cmts.py",
         "patchSetId": 1
@@ -83,6 +119,30 @@
       "writtenOn": "2019-08-15T18:06:14Z",
       "side": 1,
       "message": "Matthew need you input over here.\nWe are passing extra parameters in arris to make the method generic across cmts and ignoring them inside.",
+      "range": {
+        "startLine": 577,
+        "startChar": 28,
+        "endLine": 577,
+        "endChar": 64
+      },
+      "revId": "b2d3729d6d86acd5e6634543f1336cc165294b1a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "44096294_7732304b",
+        "filename": "devices/arris_cmts.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 577,
+      "author": {
+        "id": 1016854
+      },
+      "writtenOn": "2019-08-19T16:47:40Z",
+      "side": 1,
+      "message": "Added in base.",
+      "parentUuid": "619f3ba0_688fc104",
       "range": {
         "startLine": 577,
         "startChar": 28,
@@ -112,6 +172,24 @@
     },
     {
       "key": {
+        "uuid": "219490e9_8313a327",
+        "filename": "devices/arris_cmts.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 620,
+      "author": {
+        "id": 1016854
+      },
+      "writtenOn": "2019-08-19T16:47:40Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "4992d3b8_a345da0f",
+      "revId": "b2d3729d6d86acd5e6634543f1336cc165294b1a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "824f664a_bcae9f80",
         "filename": "devices/arris_cmts.py",
         "patchSetId": 1
@@ -123,6 +201,24 @@
       "writtenOn": "2019-08-19T09:15:41Z",
       "side": 1,
       "message": "This is a hard-coded logic which is specific to a vendor, we\u0027ll have to set this offset in CM class and then validate the prov mode. \n\nYou can also add the offset as a parameter in the function",
+      "revId": "b2d3729d6d86acd5e6634543f1336cc165294b1a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "629433bd_c7ef6c5c",
+        "filename": "devices/arris_cmts.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 654,
+      "author": {
+        "id": 1016854
+      },
+      "writtenOn": "2019-08-19T16:47:40Z",
+      "side": 1,
+      "message": "Handled with passing offset as parameter to function.",
+      "parentUuid": "824f664a_bcae9f80",
       "revId": "b2d3729d6d86acd5e6634543f1336cc165294b1a",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": true
@@ -143,6 +239,24 @@
       "revId": "b2d3729d6d86acd5e6634543f1336cc165294b1a",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "95a13365_bf7f82e7",
+        "filename": "devices/arris_cmts.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 694,
+      "author": {
+        "id": 1016854
+      },
+      "writtenOn": "2019-08-19T16:47:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "97bb9735_72547473",
+      "revId": "b2d3729d6d86acd5e6634543f1336cc165294b1a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
