@@ -2,6 +2,40 @@
   "comments": [
     {
       "key": {
+        "uuid": "8629d09b_53edb269",
+        "filename": "devices/arris_cmts.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 1016357
+      },
+      "writtenOn": "2019-08-19T09:15:41Z",
+      "side": 1,
+      "message": "If while setting an IP we\u0027re bringing up an interface using shutdown, while unsetting we should bring it down as well.\nAdd a no shutdown in the function.",
+      "revId": "b2d3729d6d86acd5e6634543f1336cc165294b1a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e362b129_19fe6e99",
+        "filename": "devices/arris_cmts.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 391,
+      "author": {
+        "id": 1016357
+      },
+      "writtenOn": "2019-08-19T09:15:41Z",
+      "side": 1,
+      "message": "rename this to reset interface.\nIn Arris CMTS no configuration works for almost all logically created interfaces.\nFor physical interfaces we\u0027re already using unset commands.\nPlease provide in doc string, the interfaces which work with no.",
+      "revId": "b2d3729d6d86acd5e6634543f1336cc165294b1a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "619f3ba0_688fc104",
         "filename": "devices/arris_cmts.py",
         "patchSetId": 1
@@ -19,6 +53,57 @@
         "endLine": 577,
         "endChar": 64
       },
+      "revId": "b2d3729d6d86acd5e6634543f1336cc165294b1a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4992d3b8_a345da0f",
+        "filename": "devices/arris_cmts.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 620,
+      "author": {
+        "id": 1016357
+      },
+      "writtenOn": "2019-08-19T09:15:41Z",
+      "side": 1,
+      "message": "@Matthew, is it okay to raise an Exception here?\nThe test should not continue to execute if the prov-mode is not set.\n\nEither return true or false for this one, considering this is a hardware limitation",
+      "revId": "b2d3729d6d86acd5e6634543f1336cc165294b1a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "824f664a_bcae9f80",
+        "filename": "devices/arris_cmts.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 654,
+      "author": {
+        "id": 1016357
+      },
+      "writtenOn": "2019-08-19T09:15:41Z",
+      "side": 1,
+      "message": "This is a hard-coded logic which is specific to a vendor, we\u0027ll have to set this offset in CM class and then validate the prov mode. \n\nYou can also add the offset as a parameter in the function",
+      "revId": "b2d3729d6d86acd5e6634543f1336cc165294b1a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "97bb9735_72547473",
+        "filename": "devices/arris_cmts.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 694,
+      "author": {
+        "id": 1016357
+      },
+      "writtenOn": "2019-08-19T09:15:41Z",
+      "side": 1,
+      "message": "Same as above",
       "revId": "b2d3729d6d86acd5e6634543f1336cc165294b1a",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": true
