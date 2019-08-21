@@ -194,16 +194,14 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         return mac_domain
 
-    def get_cmts_ip_bundle(self, bundle):
-        """get the CMTS bundle IP"""
-        import devices
-        from devices import provisioner
-        if hasattr(devices, 'provisioner') and hasattr(devices.provisioner, 'open_gateway'):
-            gw_ip = provisioner.open_gateway
-        else:
-            gw_ip = ValidIpv4AddressRegex
-
-        self.sendline('show interface ip-bundle %s | i secondary' % bundle)
+    def get_cmts_ip_bundle(self, cm_mac, gw_ip):
+        '''
+        get CMTS bundle IP
+        to get a gw ip, use get_gateway_address from mv1.py(board.get_gateway_address())
+        '''
+        mac_domain = self.get_cm_mac_domain(cm_mac)
+        bundle_id = self.get_cm_bundle(mac_domain)
+        self.sendline('show interface ip-bundle %s | i secondary' % bundle_id)
         self.expect(self.prompt)
         cmts_ip = re.search('ip address (%s) .* secondary' % gw_ip, self.before)
         if cmts_ip:
