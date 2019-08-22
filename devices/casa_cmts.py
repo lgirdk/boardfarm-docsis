@@ -258,25 +258,65 @@ class CasaCMTS(base_cmts.BaseCmts):
         f.write(self.before)
         f.close()
 
-    def set_iface_ipaddr(self, iface, ipaddr):
-        self.sendline('interface %s' % iface)
-        self.expect(self.prompt)
-        self.sendline('ip address %s' % ipaddr)
-        self.expect(self.prompt)
-        self.sendline('no shutdown')
-        self.expect(self.prompt)
-        self.sendline('exit')
-        self.expect(self.prompt)
+    def set_or_unset_iface_ipaddr(self, iface, ipaddr='',set='',shutdown=''):
+        '''
+        This function is to set an ipv4 address to an interface on cmts.
+        Input : arg1: interface name , arg2: ipv4 address / prefix as one string., agr3 : set or unset the ip and arg4 to shutdown the interface (yes/no)
+        Output : None (sets/unsets the ipv4 address to an interface specified).
+        '''
+        if set.lower()!='no':
+            self.sendline('interface %s' % iface)
+            self.expect(self.prompt)
+            self.sendline('ip address %s' % ipaddr)
+            self.expect(self.prompt)
+            self.sendline('no shutdown')
+            self.expect(self.prompt)
+            self.sendline('exit')
+            self.expect(self.prompt)
+        else:
+            self.sendline('interface %s' % iface)
+            self.expect(self.prompt)
+            self.sendline('no ip address')
+            self.expect(self.prompt)
+            self.sendline('exit')
+            self.expect(self.prompt)
+        if shutdown.lower()=='yes':
+            self.sendline('interface %s' % iface)
+            self.expect(self.prompt)
+            self.sendline('shutdown')
+            self.expect(self.prompt)
+            self.sendline('exit')
+            self.expect(self.prompt)
 
-    def set_iface_ipv6addr(self, iface, ipaddr):
-        self.sendline('interface %s' % iface)
-        self.expect(self.prompt)
-        self.sendline('ipv6 address %s' % ipaddr)
-        self.expect(self.prompt)
-        self.sendline('no shutdown')
-        self.expect(self.prompt)
-        self.sendline('exit')
-        self.expect(self.prompt)
+    def set_or_unset_iface_ipv6addr(self, iface, ipaddr='',set='',shutdown=''):
+        '''
+        This function is to set an ipv6 address to an interface on cmts.
+        Input : arg1: interface name , arg2: ipv6 address / prefix as one string., agr3 : set or unset the ip and arg4 to shutdown the interface (yes/no)
+        Output : None (sets/unsets the ipv4 address to an interface specified).
+        '''
+        if set.lower()!='no':
+            self.sendline('interface %s' % iface)
+            self.expect(self.prompt)
+            self.sendline('ipv6 address %s' % ipaddr)
+            self.expect(self.prompt)
+            self.sendline('no shutdown')
+            self.expect(self.prompt)
+            self.sendline('exit')
+            self.expect(self.prompt)
+        else:
+            self.sendline('interface %s' % iface)
+            self.expect(self.prompt)
+            self.sendline('no ipv6 address')
+            self.expect(self.prompt)
+            self.sendline('exit')
+            self.expect(self.prompt)
+        if shutdown.lower()=='yes':
+            self.sendline('interface %s' % iface)
+            self.expect(self.prompt)
+            self.sendline('shutdown')
+            self.expect(self.prompt)
+            self.sendline('exit')
+            self.expect(self.prompt)
 
     def add_ip_bundle(self, index, helper_ip, ip, secondary_ips=[]):
         self.sendline('interface ip-bundle %s' % index)
@@ -501,14 +541,14 @@ class CasaCMTS(base_cmts.BaseCmts):
         if self.match != None:
             return result
 
-    def get_ertr_ipv4(self, mac):
+    def get_ertr_ipv4(self, mac,offset=''):
         '''Getting erouter ipv4 from CMTS '''
         self.sendline("show cable modem %s cpe" % mac)
         self.expect(self.prompt)
         from netaddr import EUI
         import netaddr
         mac = EUI(mac)
-        ertr_mac = EUI(int(mac) + 2)
+        ertr_mac = EUI(int(mac) + offset)
         ertr_mac.dialect = netaddr.mac_cisco
         ertr_ipv4 = re.search('(%s) .* (%s)' % (ValidIpv4AddressRegex, ertr_mac), self.before)
         if ertr_ipv4:
@@ -551,36 +591,3 @@ class CasaCMTS(base_cmts.BaseCmts):
         assert 'channel %s frequency' % sub in self.before
 
         return str(int(self.before.split(' ')[-1]))
-
-    def show_cable_modems(self):
-        '''
-        Shows all the cable modems on this cmts.
-        This function is used by the unit test.
-        Input : None
-        Output : show cable modem output
-        Author : Rajan
-        '''
-        self.sendline("show cable modem")
-        self.expect(self.prompt)
-        return self.before
-
-if __name__ == '__main__':
-    # Quick  unit test that attempts to run all the functions in this module
-    # Pre condition: cmts MUST have at least 1 cm (in any state)
-    # To run checkout all the needed repos/overlays, then try the following:
-    #    cd ./boardfarm-docsis
-    #    BFT_DEBUG=y PYTHONPATH="./:../boardfarm:../boardfarm/devices/:../boardfarm/tests/" python ./devices/arris_cmts.py
-    #
-    # this could be improved (i.e. the conn_cmd, user, passwd are passed on the cli)
-    kwargs = {"name": "cmts", "conn_cmd": sys.argv[1],"username": sys.argv[2],"password":sys.argv[3]}
-    casacmts = None
-    try:
-        casacmts = CasaCMTS(None, **kwargs)
-    except Exception as e:
-        print(e)
-        pass
-    if casacmts is None:
-        assert 0,"Failed to create CasaCMTS object"
-    from lib.regexlib import CmtsMacFormat
-    cm_list = re.findall(CmtsMacFormat, casacmts.show_cable_modems())
-    print(cm_list)

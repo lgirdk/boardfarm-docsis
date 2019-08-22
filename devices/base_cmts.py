@@ -56,16 +56,64 @@ class BaseCmts(base.BaseDevice):
     def get_ups_module(self):
         raise Exception("Not implemented!")
 
-    def set_iface_ipaddr(self, iface, ipaddr):
+    def set_or_unset_iface_ipaddr(self, iface, ipaddr='',set='',shutdown=''):
         raise Exception("Not implemented!")
 
-    def set_iface_ipv6addr(self, iface, ipaddr):
+    def set_or_unset_iface_ipv6addr(self, iface, ipaddr='',set='',shutdown=''):
         raise Exception("Not implemented!")
 
     def del_file(self, f):
         raise Exception("Not implemented!")
 
     def check_docsis_mac_ip_provisioning_mode(self, index):
+        raise Exception("Not implemented!")
+
+    def wait_for_ready(self):
+        raise Exception("Not implemented!")
+
+    def modify_docsis_mac_ip_provisioning_mode(self, index, ip_pvmode='dual-stack'):
+        raise Exception("Not implemented!")
+
+    def is_cm_bridged(self, mac,offset=''):
+        raise Exception("Not implemented!")
+
+    def get_ertr_ipv4(self, mac,offset=''):
+        raise Exception("Not implemented!")
+
+    def get_ertr_ipv6(self, mac,offset=''):
+        raise Exception("Not implemented!")
+
+    def check_PartialService(self, cmmac):
+        raise Exception("Not implemented!")
+
+    def DUT_chnl_lock(self, cm_mac):
+        raise Exception("Not implemented!")
+
+    def add_route(self, net, mask, gw):
+        raise Exception("Not implemented!")
+
+    def add_route6(self, net, gw):
+        raise Exception("Not implemented!")
+
+    def del_route(self, net, mask, gw):
+        raise Exception("Not implemented!")
+
+    def del_route6(self, net, gw):
+        raise Exception("Not implemented!")
+
+    def add_ip_bundle(self, index, helper_ip, ip, secondary_ips=[]):
+        raise Exception("Not implemented!")
+
+    def add_ipv6_bundle_addrs(self, index, helper_ip, ip, secondary_ips=[]):
+        raise Exception("Not implemented!")
+
+    def set_iface_qam(self, index, sub, annex, interleave, power):
+        raise Exception("Not implemented!")
+
+    def set_iface_qam_freq(self, index, sub, channel, freq):
+        raise Exception("Not implemented!")
+
+    def set_iface_upstream(self, ups_idx, ups_ch, freq, width, power):
         raise Exception("Not implemented!")
 
     def get_cm_mac_cmts_format(self, mac):
@@ -81,29 +129,3 @@ class BaseCmts(base.BaseDevice):
         mac_cmts_format = tmp[:4]+"."+tmp[4:8]+"."+tmp[8:]
         return mac_cmts_format.lower()
 
-    def show_cable_modems(self):
-        """
-        Shows all the cable modems on this cmts.
-        This function is used by the unit test.
-        Input : None
-        Output : show cable modem output
-        Author : Rajan
-        """
-        self.sendline('show cable modem')
-        self.expect(self.prompt)
-        return self.before
-
-    def unit_test(self):
-        """
-        This function is designed to do the unit test on the functions in the cmts
-        Input : None (will be called by cmts object)
-        Output : None (will validate the cmts funcions based on the call)
-        Author : Rajan
-        """
-        #calling the cmts modules for unit test arris
-        self.set_iface_ipaddr("gigabitEthernet 17/3","10.64.42.10 255.255.254.0")
-        self.set_iface_ipv6addr("gigabitEthernet 17/3","2001:730:1f:60d::cbfe:0/64")
-        self.del_file("test.txt")
-        ip_provisioning_mode=self.check_docsis_mac_ip_provisioning_mode(2)
-        #printing to verify the return value
-        print ip_provisioning_mode
