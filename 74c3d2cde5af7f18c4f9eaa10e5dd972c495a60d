@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7e06a8ed_2931fa7f",
+        "filename": "devices/arris_cmts.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 266,
+      "author": {
+        "id": 1016147
+      },
+      "writtenOn": "2019-08-22T22:25:20Z",
+      "side": 1,
+      "message": "the problem is, the comments on the previous change were lost and you rolled that code into this change\n\ni mentioned i preferred two functions set_iface_ipaddr() and possibly a clear_iface_ipaddr()",
+      "revId": "74c3d2cde5af7f18c4f9eaa10e5dd972c495a60d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
