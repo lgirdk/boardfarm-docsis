@@ -203,8 +203,12 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.sendline('show cable modem %s | include impaired' % cmmac)
         self.expect('\(impaired:\s')
         match = self.match.group(1)
+        if match != None:
+            output = 1
+        else:
+            output = 0
         self.expect(self.prompt)
-        return match != None
+        return output
 
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
     def DUT_chnl_lock(self, cm_mac):
@@ -219,7 +223,6 @@ class ArrisCMTS(base_cmts.BaseCmts):
         This function is to save the running config file of the CMTS to the local directory.
         Input : filename to save the config
         Output : writing the CMTS config to the file with specified name
-        Author : Rajan
         '''
         self.sendline('no pagination')
         self.expect(self.prompt)
@@ -236,7 +239,6 @@ class ArrisCMTS(base_cmts.BaseCmts):
         This function is to over write the startup config file of the CMTS with the current running config file.
         Input : None
         Output : Overwritten startup-config file with running-config file on CMTS
-        Author : Rajan
         '''
         self.sendline('exit')
         self.expect(self.prompt)
@@ -250,7 +252,6 @@ class ArrisCMTS(base_cmts.BaseCmts):
         This function is to return the qam (DCAM) modules on cmts.
         Input : None
         Output : Returns the qam (DCAM) modules on cmts.
-        Author : Rajan
         '''
         self.sendline('show linecard status | include DMM/DMM')
         self.expect(self.prompt)
@@ -261,7 +262,6 @@ class ArrisCMTS(base_cmts.BaseCmts):
         This function is to return the upc (UCAM) modules on cmts.
         Input : None
         Output : Returns the upc (UCAM) modules on cmts.
-        Author : Rajan
         '''
         self.sendline('show linecard status | include CAM/CAM')
         self.expect(self.prompt)
@@ -272,7 +272,6 @@ class ArrisCMTS(base_cmts.BaseCmts):
         This function is to set an ip address to an interface on cmts.
         Input : arg1: interface name , arg2: ip address followed by subnet as one string.
         Output : None (sets the ip address to an interface specified).
-        Author : Rajan.
         '''
         self.sendline('interface %s' % iface)
         self.expect(self.prompt)
@@ -288,7 +287,6 @@ class ArrisCMTS(base_cmts.BaseCmts):
         This function is to set an ipv6 address to an interface on cmts.
         Input : arg1: interface name , arg2: ipv6 address / prefix as one string.
         Output : None (sets the ipv6 address to an interface specified).
-        Author : Rajan.
         '''
         self.sendline('interface %s' % iface)
         self.expect(self.prompt)
@@ -299,12 +297,46 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.sendline('exit')
         self.expect(self.prompt)
 
+    def unset_iface_ipaddr(self, iface):
+        '''
+        This function is to unset an ipv4 address of an interface on cmts.
+        Input : arg1: interface name.
+        Output : None (unsets the ip address of an interface specified).
+        '''
+        self.sendline('interface %s' % iface)
+        self.expect(self.prompt)
+        self.sendline('no ip address')
+        self.expect(self.prompt)
+        self.sendline('exit')
+        self.expect(self.prompt)
+
+    def unset_iface_ipv6addr(self, iface):
+        '''
+        This function is to unset an ipv6 address of an interface on cmts.
+        Input : arg1: interface name.
+        Output : None (unsets the ipv6 address of an interface specified).
+        '''
+        self.sendline('interface %s' % iface)
+        self.expect(self.prompt)
+        self.sendline('no ipv6 address')
+        self.expect(self.prompt)
+        self.sendline('exit')
+        self.expect(self.prompt)
+
+    def unset_iface_ipaddr_and_ipv6address(self, iface):
+        '''
+        This function is to unset both ipv4 and ipv6 address of an interface on cmts.
+        Input : arg1: interface name.
+        Output : None (unsets the ip address of an interface specified).
+        '''
+        self.sendline('no interface %s' % iface)
+        self.expect(self.prompt)
+
     def del_file(self, f):
         '''
         This function is to delete a file on cmts.
         Input : arg: file name to be deleted if in current directory relative file name to be deleted from /system if in different directory.
         Output : None (specifie file will be deleted on cmts.)
-        Author : Rajan.
         '''
         self.sendline('exit')
         self.expect(self.prompt)
@@ -316,26 +348,287 @@ class ArrisCMTS(base_cmts.BaseCmts):
         This function is to return the ip provisioning mode of a mac domain.
         Input : arg: integer value of the mac domain for which we need the mode supported.
         Output : Return the mode supports in the form of string (Ex: ipv4only)
-        Author : Rajan.
         '''
         self.sendline('show running-config interface cable-mac %s | include cm-ip-prov-mode' % index)
         self.expect(self.prompt)
         result = self.before.split("\n")[1].split(" ")[-1]
         return result
 
-if __name__ == '__main__':
-    # Quick  unit test that attempts to run all the functions in this module
-    # Pre condition: cmts MUST have at least 1 cm (in any state)        # To run checkout all the needed repos/overlays, then try the following:
-    #    cd ./boardfarm-docsis
-    #    BFT_DEBUG=y PYTHONPATH="./:../boardfarm:../boardfarm/devices/:../boardfarm/tests/" python ./devices/arris_cmts.py
-    #
-    # this could be improved (i.e. the conn_cmd, user, passwd are passed on the cli)
-    #passing the cmts details from cmd
-    kwargs = {"name": "cmts", "conn_cmd": sys.argv[1],"username": sys.argv[2],"password":sys.argv[3]}
-    arriscmts = None
-    try:
-        arriscmts = ArrisCMTS(None, **kwargs)
-        #calling the unit test method in the base_cmts
-        arriscmts.unit_test()
-    except Exception as e:
-        print(e)
+
+    def del_file(self, f):
+        '''
+        This function is to delete a file on cmts.
+        Input : arg: file name to be deleted if in current directory relative file name to be deleted from /system if in different directory.
+        Output : None (specifie file will be deleted on cmts.)
+        '''
+        self.sendline('exit')
+        self.expect(self.prompt)
+        self.sendline('delete %s' % f)
+        self.expect(self.prompt)
+
+    def check_docsis_mac_ip_provisioning_mode(self, index):
+        '''
+        This function is to return the ip provisioning mode of a mac domain.
+        Input : arg: integer value of the mac domain for which we need the mode supported.
+        Output : Return the mode supports in the form of string (Ex: ipv4only)
+        '''
+        self.sendline('show running-config interface cable-mac %s | include cm-ip-prov-mode' % index)
+        self.expect(self.prompt)
+        result = self.before.split("\n")[1].split(" ")[-1]
+        if "ipv4" in result.lower():
+            result="ipv4"
+        elif "dual" in result.lower():
+            result="dual-stack"
+        elif "dslite" in result.lower():
+            result="dslite"
+        elif "bridge" in result.lower():
+            result="bridge"
+        return result
+
+    def wait_for_ready(self):
+        '''
+        This function is to wait until all the interface are up and available.
+        Input : None.
+        Output : None (wait if any interface is down until it is up for a maximum of 5 times with a wait of 1min each).
+        '''
+        max_iteration=5
+        self.sendline('show linecard status')
+        while 0 == self.expect(['Down | OOS'] + self.prompt) and max_iteration>0:
+            max_iteration-=1
+            self.expect(self.prompt)
+            self.expect(pexpect.TIMEOUT, timeout=5)
+            self.sendline('show linecard status')
+
+    def modify_docsis_mac_ip_provisioning_mode(self, index, ip_pvmode='dual-stack'):
+        '''
+        This function is to set the ip provisioning mode.
+        Input : arg1 : index of the interface, arg2 : ip provisioning mode to be set on the interface (default is dual-stack).
+        Output : None (wait if any interface is down until it is up).
+        '''
+        if (ip_pvmode=='dual-stack'):
+            self.sendline('show linecard status | include chassis')
+            self.expect(self.prompt)
+            if ('Chassis Type: C4' in self.before):
+                print 'dual-stack ip provisioning modem is not supported on Chassis Type : C4 please choose apm'
+                return
+
+        self.sendline('interface cable-mac %s' % index)
+        self.expect(self.prompt)
+        self.sendline('cable cm-ip-prov-mode %s' % ip_pvmode)
+        self.expect(self.prompt)
+        self.sendline('exit')
+        self.expect(self.prompt)
+
+    def add_route(self, net, mask, gw):
+        '''
+        This function is to add route.
+        Input : arg1 : network ip, arg2 : subnet ip, arg3 : gateway ip.
+        Output : None (adds the route to the specified parameters).
+        '''
+        self.sendline('ip route %s %s %s' % (net, mask, gw))
+        self.expect(self.prompt)
+
+    def add_route6(self, net, gw):
+        '''
+        This function is to add ipv6 route.
+        Input : arg1 : network ip/subnet, arg3 : gateway ip.
+        Output : None (adds the route to the specified parameters).
+        '''
+        self.sendline('ipv6 route %s %s' % (net, gw))
+        self.expect(self.prompt)
+
+    def del_route(self, net, mask, gw):
+        '''
+        This function is to delete route.
+        Input : arg1 : network ip, arg2 : subnet ip, arg3 : gateway ip.
+        Output : None (deletes the route to the specified parameters).
+        '''
+        self.sendline('no ip route %s %s %s' % (net, mask, gw))
+        self.expect(self.prompt)
+
+    def del_route6(self, net, gw):
+        '''
+        This function is to delete ipv6 route.
+        Input : arg1 : network ip, arg2 : subnet ip, arg3 : gateway ip.
+        Output : None (deletes the route to the specified parameters).
+        '''
+        self.sendline('no ipv6 route %s %s' % (net, gw))
+        self.expect(self.prompt)
+
+    def add_ip_bundle(self, index, helper_ip, ip, secondary_ips=[]):
+        '''
+        This function is to add ip bundle to a cable mac.
+        Input : arg1 : cable mac index, arg2 : helper ip to be used, arg3 : actual ip to be assiged to cable mac in the format <ip><space><subnet>, arg4 : list of seconday ips  in the format <ip><space><subnet>.
+        Output : None (sets the ip bundle to a cable mac).
+        '''
+        self.sendline('interface cable-mac %s' % index)
+        self.expect(self.prompt)
+        self.sendline('ip address %s' % ip)
+        self.expect(self.prompt)
+        for ip2 in secondary_ips:
+            self.sendline('ip address %s secondary' % ip2)
+            self.expect(self.prompt)
+        self.sendline('cable helper-address %s cable-modem' % helper_ip)
+        self.expect(self.prompt)
+        self.sendline('cable helper-address %s mta' % helper_ip)
+        self.expect(self.prompt)
+        self.sendline('cable helper-address %s host' % helper_ip)
+        self.expect(self.prompt)
+        self.sendline('exit')
+        self.expect(self.prompt)
+
+    def add_ipv6_bundle_addrs(self, index, helper_ip, ip, secondary_ips=[]):
+        '''
+        This function is to add ipv6 bundle to a cable mac.
+        Input : arg1 : cable mac index, arg2 : helper ip to be used, arg3 : actual ip to be assiged to cable mac in the format <ipv6/subnet>, arg4 : list of seconday ips  in the format <ipv6/subnet> (ignored in arris).
+        Output : None (sets the ipv6 bundle to a cable mac).
+        '''
+        self.sendline('interface cable-mac %s' % index)
+        self.expect(self.prompt)
+        self.sendline('ipv6 address %s' % ip)
+        self.expect(self.prompt)
+        self.sendline('ipv6 dhcp relay destination %s' % helper_ip)
+        self.expect(self.prompt)
+        self.sendline('exit')
+        self.expect(self.prompt)
+
+    def set_iface_qam(self, index, sub, annex, interleave, power):
+        '''
+        This function is to set the power level on downstraem channel, setting of annex and interleave are global in arris.
+        Input : arg1 : cable mac index, arg2 : channel to be used, arg3 : annnex to be set (ignored in arris), arg4 : interleave to be set (ignored in arris), arg5 : power level to be set.
+        Output : None (sets the power level on channel as defined).
+        '''
+        self.sendline('interface cable-downstream %s/%s' % (index, sub))
+        self.expect(self.prompt)
+        self.sendline('cable power %s' % power)
+        self.expect(self.prompt)
+        self.sendline('no shutdown')
+        self.expect(self.prompt)
+        self.sendline('exit')
+        self.expect(self.prompt)
+
+    def wait_for_ready(self):
+        '''
+        This function is to wait until all the interface are up and available.
+        Input : None.
+        Output : None (wait if any interface is down until it is up for a maximum of 5 times with a wait of 1min each).
+        '''
+        max_iteration=5
+        self.sendline('show linecard status')
+        while 0 == self.expect(['Down | OOS'] + self.prompt) and max_iteration>0:
+            max_iteration-=1
+            self.expect(self.prompt)
+            self.expect(pexpect.TIMEOUT, timeout=5)
+            self.sendline('show linecard status')
+
+    def modify_docsis_mac_ip_provisioning_mode(self, index, ip_pvmode='dual-stack'):
+        '''
+        This function is to set the ip provisioning mode.
+        Input : arg1 : index of the interface, arg2 : ip provisioning mode to be set on the interface (default is dual-stack).
+        Output : None (wait if any interface is down until it is up).
+        '''
+        if (ip_pvmode=='dual-stack'):
+            self.sendline('show linecard status | include chassis')
+            self.expect(self.prompt)
+            if ('Chassis Type: C4' in self.before):
+                print 'dual-stack ip provisioning modem is not supported on Chassis Type : C4 please choose apm'
+                return
+
+        self.sendline('interface cable-mac %s' % index)
+        self.expect(self.prompt)
+        self.sendline('cable cm-ip-prov-mode %s' % ip_pvmode)
+
+    def set_iface_qam_freq(self, index, sub, channel, freq):
+        '''
+        This function is to set the frequency on downstream channel.
+        Input : arg1 : cable mac index, arg2 : channel to be used, arg3 : channel to be used (ignored in arris as sub and channel are same), arg4 : frequency to set.
+        Output : None (sets the frequency on channel as defined).
+        '''
+        self.sendline('interface cable-downstream %s/%s' % (index, sub))
+        self.expect(self.prompt)
+        self.sendline('cable frequency %s' % freq)
+        self.expect(self.prompt)
+        self.sendline('no shutdown' )
+        self.expect(self.prompt)
+        self.sendline('exit')
+        self.expect(self.prompt)
+
+    def is_cm_bridged(self, mac,offset=2):
+        '''
+        This function is to check if the modem is in bridge mode.
+        Input : arg1 : Mac address of the modem, arg2 : offset.
+        Output : Returns True if the modem is bridged else False.
+        '''
+        self.sendline("show cable modem %s detail" % mac)
+        self.expect(self.prompt)
+        from netaddr import EUI
+        import netaddr
+        mac = EUI(mac)
+        ertr_mac = EUI(int(mac) + offset)
+        ertr_mac.dialect = netaddr.mac_cisco
+        if str(ertr_mac) in self.before:
+            return False
+        else:
+            return True
+
+    def get_ertr_ipv4(self, mac,offset=2):
+       '''
+       This function is to return the ipv4 address of erouter of modem.
+       Input : arg1 : Mac address of the modem, arg2 : offset.
+       Output : Returns the ipv4 address of the erouter if exists else None.
+       '''
+       self.sendline("show cable modem %s detail" % mac)
+       self.expect(self.prompt)
+       from netaddr import EUI
+       import netaddr
+       mac = EUI(mac)
+       ertr_mac = EUI(int(mac) + offset)
+       ertr_mac.dialect = netaddr.mac_cisco
+       ertr_ipv4 = re.search('(%s) .*=(%s)' % (ertr_mac,ValidIpv4AddressRegex), self.before)
+       if ertr_ipv4:
+           ipv4 = ertr_ipv4.group(2)
+           return ipv4
+       else:
+           return None
+
+    def get_ertr_ipv6(self, mac,offset=2):
+       '''
+       This function is to return the ipv6 address of erouter of modem.
+       Input : arg1 : Mac address of the modem, arg2 : offset.
+       Output : Returns the ipv6 address of the erouter (not link local ip) if exists else None.
+       '''
+       self.sendline("show cable modem %s detail" % mac)
+       self.expect(self.prompt)
+       from netaddr import EUI
+       import netaddr
+       mac = EUI(mac)
+       ertr_mac = EUI(int(mac) + offset)
+       ertr_mac.dialect = netaddr.mac_cisco
+       ertr_ipv6 = re.search('(%s) IPv6=(%s)' % (ertr_mac,AllValidIpv6AddressesRegex), self.before)
+       if ertr_ipv6:
+           ipv6 = ertr_ipv6.group(2)
+           return ipv6
+       else:
+           return None
+
+    def set_iface_upstream(self, ups_idx, ups_ch, freq, width, power):
+        '''
+        This function is to set the frequency, width and power on upstream channel.
+        Input : arg1 : cable mac index, arg2 : channel to be used, arg3 : frequency to set, arg4 : width to set, arg5 : power to set.
+        Output : None (sets the frequency, width and power on channel as defined).
+        '''
+        self.sendline('interface cable-upstream %s/%s' % (ups_idx, ups_ch))
+        self.expect(self.prompt)
+        self.sendline('cable frequency %s' % freq)
+        self.expect(self.prompt)
+        self.sendline('cable channel-width %s' % width)
+        self.expect(self.prompt)
+        self.sendline('cable power-level %s' % power)
+        self.expect(self.prompt)
+        self.sendline('cable modulation-profile 64')
+        self.expect(self.prompt)
+        self.sendline('cable mini-slot-size 2')
+        self.sendline('no shutdown')
+        self.expect(self.prompt)
+        self.sendline('exit')
+        self.expect(self.prompt)
