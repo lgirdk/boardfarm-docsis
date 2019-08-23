@@ -16,6 +16,24 @@
       "revId": "74c3d2cde5af7f18c4f9eaa10e5dd972c495a60d",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bca27323_cfde1dff",
+        "filename": "devices/arris_cmts.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 266,
+      "author": {
+        "id": 1016854
+      },
+      "writtenOn": "2019-08-23T04:42:26Z",
+      "side": 1,
+      "message": "Actually, there were two functions in the previous commit set_iface_ipv6addr and unset_iface_ipaddr however after this comment \"I guess I had meant, using set_iface_ipaddr(iface, None) instead of an entirely new function. -M\"\nI have merged both the functions.",
+      "parentUuid": "7e06a8ed_2931fa7f",
+      "revId": "74c3d2cde5af7f18c4f9eaa10e5dd972c495a60d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
     }
   ]
 }
