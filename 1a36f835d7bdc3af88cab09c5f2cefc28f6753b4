@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d95ecdee_66c92a13",
+        "filename": "devices/casa_cmts.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 489,
+      "author": {
+        "id": 1016147
+      },
+      "writtenOn": "2019-08-23T20:17:55Z",
+      "side": 1,
+      "message": "Please include a space after the comma",
+      "revId": "1a36f835d7bdc3af88cab09c5f2cefc28f6753b4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cb7199cc_878ac4ca",
+        "filename": "devices/casa_cmts.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 504,
+      "author": {
+        "id": 1016147
+      },
+      "writtenOn": "2019-08-23T20:17:55Z",
+      "side": 1,
+      "message": "please match the dual-stack used for cm configs:\n\nif cm_configmode \u003d\u003d \u0027dual-stack\u0027:\n\n(from boardfarm-docsis)\n\nor better yet, add a class",
+      "revId": "1a36f835d7bdc3af88cab09c5f2cefc28f6753b4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
