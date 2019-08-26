@@ -34,6 +34,24 @@
       "revId": "74c3d2cde5af7f18c4f9eaa10e5dd972c495a60d",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ef9c0c4a_76d8df4c",
+        "filename": "devices/arris_cmts.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 266,
+      "author": {
+        "id": 1016854
+      },
+      "writtenOn": "2019-08-26T15:35:55Z",
+      "side": 1,
+      "message": "This function is split into two functions set_iface_ipaddr and unset_iface_ipaddr as suggested.",
+      "parentUuid": "bca27323_cfde1dff",
+      "revId": "74c3d2cde5af7f18c4f9eaa10e5dd972c495a60d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
