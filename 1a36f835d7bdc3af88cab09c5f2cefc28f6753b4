@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "0200fc31_66862dcc",
+        "filename": "devices/casa_cmts.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 489,
+      "author": {
+        "id": 1016854
+      },
+      "writtenOn": "2019-08-26T09:55:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d95ecdee_66c92a13",
+      "revId": "1a36f835d7bdc3af88cab09c5f2cefc28f6753b4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cb7199cc_878ac4ca",
         "filename": "devices/casa_cmts.py",
         "patchSetId": 7
@@ -33,6 +51,24 @@
       "revId": "1a36f835d7bdc3af88cab09c5f2cefc28f6753b4",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "baecc172_c1665fa5",
+        "filename": "devices/casa_cmts.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 504,
+      "author": {
+        "id": 1016854
+      },
+      "writtenOn": "2019-08-26T09:55:56Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "cb7199cc_878ac4ca",
+      "revId": "1a36f835d7bdc3af88cab09c5f2cefc28f6753b4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
