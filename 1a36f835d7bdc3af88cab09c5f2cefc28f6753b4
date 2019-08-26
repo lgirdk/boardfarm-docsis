@@ -69,6 +69,24 @@
       "revId": "1a36f835d7bdc3af88cab09c5f2cefc28f6753b4",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5eed1374_e7d05291",
+        "filename": "devices/casa_cmts.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 504,
+      "author": {
+        "id": 1016854
+      },
+      "writtenOn": "2019-08-26T14:13:44Z",
+      "side": 1,
+      "message": "Actually this function is used to get the ip provision mode set on the cmts.\nI have used \"dual\" instead of \"dualstack\" or \"dual-stack\" as output might vary across cmts.",
+      "parentUuid": "baecc172_c1665fa5",
+      "revId": "1a36f835d7bdc3af88cab09c5f2cefc28f6753b4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
