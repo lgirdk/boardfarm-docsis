@@ -316,6 +316,24 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.sendline('route6 net %s gw %s' % (net, gw))
         self.expect(self.prompt)
 
+    def del_route(self, net, mask, gw):
+        '''
+        This function is to delete route.
+        Input : arg1 : network ip, arg2 : subnet ip, arg3 : gateway ip.
+        Output : None (deletes the route to the specified parameters).
+        '''
+        self.sendline('no route net %s %s gw %s' % (net, mask, gw))
+        self.expect(self.prompt)
+
+    def del_route6(self, net, gw):
+        '''
+        This function is to delete ipv6 route.
+        Input : arg1 : network ip, arg2 : subnet ip, arg3 : gateway ip.
+        Output : None (deletes the route to the specified parameters).
+        '''
+        self.sendline('no route6 net %s gw %s' % (net, gw))
+        self.expect(self.prompt)
+
     def get_qam_module(self):
         self.sendline('show system')
         self.expect(self.prompt)
@@ -324,7 +342,8 @@ class CasaCMTS(base_cmts.BaseCmts):
     def get_ups_module(self):
         self.sendline('show system')
         self.expect(self.prompt)
-        return re.findall('Module (\d+) UPS', self.before)[0]
+        results = list(map(int, re.findall('Module (\d+) UPS', self.before)))
+        return results
 
     def set_iface_qam(self, index, sub, annex, interleave, power):
         self.sendline('interface qam %s/%s' % (index, sub))

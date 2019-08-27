@@ -200,14 +200,12 @@ class ArrisCMTS(base_cmts.BaseCmts):
 
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
     def check_PartialService(self, cmmac):
-        self.sendline('show cable modem %s | include impaired' % cmmac)
-        self.expect('\(impaired:\s')
-        match = self.match.group(1)
-        if match != None:
+        self.sendline('show cable modem %s' % cmmac)
+        self.expect(self.prompt)
+        if "impaired" in self.before:
             output = 1
         else:
             output = 0
-        self.expect(self.prompt)
         return output
 
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
@@ -265,7 +263,8 @@ class ArrisCMTS(base_cmts.BaseCmts):
         '''
         self.sendline('show linecard status | include CAM/CAM')
         self.expect(self.prompt)
-        return self.before.split("\n",1)[1]
+        results = list(map(int, re.findall('(\d+)    CAM ', self.before)))
+        return results
 
     def set_iface_ipaddr(self, iface, ipaddr):
         '''
@@ -361,20 +360,6 @@ class ArrisCMTS(base_cmts.BaseCmts):
         elif "bridge" in result.lower():
             result="bridge"
         return result
-
-    def wait_for_ready(self):
-        '''
-        This function is to wait until all the interface are up and available.
-        Input : None.
-        Output : None (wait if any interface is down until it is up for a maximum of 5 times with a wait of 1min each).
-        '''
-        max_iteration=5
-        self.sendline('show linecard status')
-        while 0 == self.expect(['Down | OOS'] + self.prompt) and max_iteration>0:
-            max_iteration-=1
-            self.expect(self.prompt)
-            self.expect(pexpect.TIMEOUT, timeout=5)
-            self.sendline('show linecard status')
 
     def modify_docsis_mac_ip_provisioning_mode(self, index, ip_pvmode='dual-stack'):
         '''
@@ -498,23 +483,6 @@ class ArrisCMTS(base_cmts.BaseCmts):
             self.expect(pexpect.TIMEOUT, timeout=5)
             self.sendline('show linecard status')
 
-    def modify_docsis_mac_ip_provisioning_mode(self, index, ip_pvmode='dual-stack'):
-        '''
-        This function is to set the ip provisioning mode.
-        Input : arg1 : index of the interface, arg2 : ip provisioning mode to be set on the interface (default is dual-stack).
-        Output : None (wait if any interface is down until it is up).
-        '''
-        if (ip_pvmode=='dual-stack'):
-            self.sendline('show linecard status | include chassis')
-            self.expect(self.prompt)
-            if ('Chassis Type: C4' in self.before):
-                print 'dual-stack ip provisioning modem is not supported on Chassis Type : C4 please choose apm'
-                return
-
-        self.sendline('interface cable-mac %s' % index)
-        self.expect(self.prompt)
-        self.sendline('cable cm-ip-prov-mode %s' % ip_pvmode)
-
     def set_iface_qam_freq(self, index, sub, channel, freq):
         '''
         This function is to set the frequency on downstream channel.
@@ -609,3 +577,40 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         self.sendline('exit')
         self.expect(self.prompt)
+
+    def get_cm_bundle(self, mac_domain):
+        """Get the bundle id from mac-domain """
+        self.sendline('show running-config interface cable-mac %s | include cable-mac [0-9]+.[0-9]+' % mac_domain)
+        index = self.expect(['(interface cable-mac )([0-9]+.[0-9]+)'] + self.prompt)
+        if index != 0:
+            assert 0, "ERROR:Failed to get the CM bundle id from CMTS"
+        bundle = self.match.group(2)
+        self.expect(self.prompt)
+        return bundle
+
+    def get_cmts_ip_bundle(self, cm_mac, gw_ip):
+        '''
+        get CMTS bundle IP
+        to get a gw ip, use get_gateway_address from mv1.py(board.get_gateway_address())
+        '''
+        mac_domain = self.get_cm_mac_domain(cm_mac)
+        bundle_id = self.get_cm_bundle(mac_domain)
+        self.sendline('show running-config interface cable-mac %s | include secondary' % mac_domain)
+        self.expect(self.prompt)
+        cmts_ip = re.search('ip address (%s) .* secondary' % gw_ip, self.before)
+        if cmts_ip:
+            cmts_ip = cmts_ip.group(1)
+        else:
+            assert 0, "ERROR: Failed to get the CMTS bundle IP"
+        return cmts_ip
+
+    def reset(self):
+       '''
+       This function is to reset the cmts.
+       Input : None.
+       Output : None (resets the cmts).
+       '''
+       self.sendline('erase nvram')
+       self.expect(self.prompt)
+       self.sendline('reload')
+       self.expect(self.prompt)

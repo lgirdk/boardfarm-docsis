@@ -74,9 +74,6 @@ class BaseCmts(base.BaseDevice):
     def modify_docsis_mac_ip_provisioning_mode(self, index, ip_pvmode='dual-stack'):
         raise Exception("Not implemented!")
 
-    def is_cm_bridged(self, mac,offset=2):
-        raise Exception("Not implemented!")
-
     def get_ertr_ipv4(self, mac,offset=2):
         raise Exception("Not implemented!")
 
@@ -114,6 +111,15 @@ class BaseCmts(base.BaseDevice):
         raise Exception("Not implemented!")
 
     def set_iface_upstream(self, ups_idx, ups_ch, freq, width, power):
+        raise Exception("Not implemented!")
+
+    def save_running_config_to_local(self, filename):
+        raise Exception("Not implemented!")
+
+    def reset(self):
+        raise Exception("Not implemented!")
+
+    def is_cm_bridged(self, mac,offset=2):
         raise Exception("Not implemented!")
 
     def get_cm_mac_cmts_format(self, mac):
