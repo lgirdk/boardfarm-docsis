@@ -12,6 +12,7 @@ import Tkinter
 import re
 import time
 import hashlib
+from docsis_lib.cfg_helper import CfgGenerator
 
 from lib.network_helper import valid_ipv4, valid_ipv6
 
@@ -138,18 +139,40 @@ class cm_cfg(object):
     # place so let's allow for that for now
     legacy_search_path = None
 
-    def __init__(self, start=None):
+    def __init__(self, start=None, fname=None):
         '''Creates a default basic CM cfg file for modification'''
 
         # TODO: we require loading a file for the moment
         if start == None:
-            raise Exception("We don't know how to start from scratch yet")
-        else:
-            # TODO: filename should not matter
+            # create a default config file with bare minimum config,
+            # no snmp objs, no CVCs, nothing vendor specific!
+            # only CM RF minimal config
+            # (i.e.: only the RF side configured, no client side, see Prasada)
+            if fname is None:
+                fname = "default_config.txt"
+            start = CfgGenerator()
+            start.gen_dual_stack_cfg()
+            self.txt = start.generate_cfg(fname)
+            self.original_fname = fname
+            self.encoded_fname = self.original_fname.replace('.txt', self.encoded_suffix)
+        elif type(start) is str:
+            # OLD fashined: this is a file name, load the contents from the file
             self.original_file = start
             self.original_fname = os.path.split(start)[1]
             self.encoded_fname = self.original_fname.replace('.txt', self.encoded_suffix)
             self.load(start)
+        elif isinstance(start, CfgGenerator):
+            # the dynamic configure class has created this config.... (ok not very OOD to
+            # have a class type check in the base class....)
+            if fname is None:
+                # create a name and add some sha256 digits
+                fname = "cm-config-" + self.shortname(10) + ".txt"
+                print "Config name created: %s" % fname
+            self.txt = start.generate_cfg() # the derived class already created the skeleton
+            self.original_fname = fname
+            self.encoded_fname = self.original_fname.replace('.txt', self.encoded_suffix)
+        else:
+            raise Exception("Wrong type %s received" % type(start))
 
     def load(self, cm_txt):
         '''Load CM cfg from txt file, for modification'''
@@ -164,9 +187,12 @@ class cm_cfg(object):
         '''String repr of CM txt'''
         return self.txt
 
-    def shortname(self):
+    def shortname(self, num_digits=None):
         '''short name for displaying in summary'''
-        return hashlib.md5(self.txt.encode()).hexdigest()
+        h = hashlib.md5(self.txt.encode()).hexdigest()
+        if num_digits:
+            h = h[0:num_digits]
+        return h
 
     def save(self, full_path):
         with open(full_path, 'w') as txt:
