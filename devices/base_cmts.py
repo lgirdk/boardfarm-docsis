@@ -32,7 +32,7 @@ class BaseCmts(base.BaseDevice):
     def get_cm_mac_domain(self, cm_mac):
         raise Exception("Not implemented!")
 
-    def get_cmts_ip_bundle(self, bundle):
+    def get_cmts_ip_bundle(self, cm_mac, gw_ip):
         raise Exception("Not implemented!")
 
     def get_cmts_model(self):
