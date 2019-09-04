@@ -486,7 +486,7 @@ class CasaCMTS(base_cmts.BaseCmts):
     #             (i.e. theCM mode is in bridge mode)
     #   False     if the cmts sees the CM eRouter
     #             (i.e. theCM mode is in gateway mode)
-    def is_cm_bridged(self, cm_mac):
+    def is_cm_bridged(self, cm_mac, offset=2):
         self.sendline("show cable modem "+cm_mac+" cpe")
         if 0 == self.expect(['eRouter']+self.prompt):
             self.expect(self.prompt)
@@ -499,16 +499,26 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.expect('ip-provisioning-mode (\w+\-\w+)')
         result = self.match.group(1)
         if self.match != None:
+            if "ipv4" in result.lower():
+                result="ipv4"
+            elif "dual" in result.lower():
+                result="dual-stack"
+            elif "dslite" in result.lower():
+                result="dslite"
+            elif "bridge" in result.lower():
+                result="bridge"
             return result
+        else:
+            return "Not able to fetch ip provisioning mode on CMTS"
 
-    def get_ertr_ipv4(self, mac):
+    def get_ertr_ipv4(self, mac,offset=2):
         '''Getting erouter ipv4 from CMTS '''
         self.sendline("show cable modem %s cpe" % mac)
         self.expect(self.prompt)
         from netaddr import EUI
         import netaddr
         mac = EUI(mac)
-        ertr_mac = EUI(int(mac) + 2)
+        ertr_mac = EUI(int(mac) + offset)
         ertr_mac.dialect = netaddr.mac_cisco
         ertr_ipv4 = re.search('(%s) .* (%s)' % (ValidIpv4AddressRegex, ertr_mac), self.before)
         if ertr_ipv4:
@@ -517,7 +527,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         else:
             return None
 
-    def get_ertr_ipv6(self, mac):
+    def get_ertr_ipv6(self, mac,offset=2):
         '''Getting erouter ipv6 from CMTS '''
         self.sendline("show cable modem %s cpe" % mac)
         self.expect(self.prompt)
@@ -551,36 +561,3 @@ class CasaCMTS(base_cmts.BaseCmts):
         assert 'channel %s frequency' % sub in self.before
 
         return str(int(self.before.split(' ')[-1]))
-
-    def show_cable_modems(self):
-        '''
-        Shows all the cable modems on this cmts.
-        This function is used by the unit test.
-        Input : None
-        Output : show cable modem output
-        Author : Rajan
-        '''
-        self.sendline("show cable modem")
-        self.expect(self.prompt)
-        return self.before
-
-if __name__ == '__main__':
-    # Quick  unit test that attempts to run all the functions in this module
-    # Pre condition: cmts MUST have at least 1 cm (in any state)
-    # To run checkout all the needed repos/overlays, then try the following:
-    #    cd ./boardfarm-docsis
-    #    BFT_DEBUG=y PYTHONPATH="./:../boardfarm:../boardfarm/devices/:../boardfarm/tests/" python ./devices/arris_cmts.py
-    #
-    # this could be improved (i.e. the conn_cmd, user, passwd are passed on the cli)
-    kwargs = {"name": "cmts", "conn_cmd": sys.argv[1],"username": sys.argv[2],"password":sys.argv[3]}
-    casacmts = None
-    try:
-        casacmts = CasaCMTS(None, **kwargs)
-    except Exception as e:
-        print(e)
-        pass
-    if casacmts is None:
-        assert 0,"Failed to create CasaCMTS object"
-    from lib.regexlib import CmtsMacFormat
-    cm_list = re.findall(CmtsMacFormat, casacmts.show_cable_modems())
-    print(cm_list)
