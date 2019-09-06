@@ -14,7 +14,7 @@ import time
 import hashlib
 from docsis_lib.cfg_helper import CfgGenerator
 
-from lib.network_helper import valid_ipv4, valid_ipv6
+from boardfarm.lib.network_helper import valid_ipv4, valid_ipv6
 
 class docsis:
     """

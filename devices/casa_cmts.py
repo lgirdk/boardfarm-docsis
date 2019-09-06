@@ -10,7 +10,7 @@ import pexpect
 import sys
 import re
 import connection_decider
-from lib.regexlib import ValidIpv6AddressRegex, ValidIpv4AddressRegex, AllValidIpv6AddressesRegex
+from boardfarm.lib.regexlib import ValidIpv6AddressRegex, ValidIpv4AddressRegex, AllValidIpv6AddressesRegex
 import base_cmts
 
 
