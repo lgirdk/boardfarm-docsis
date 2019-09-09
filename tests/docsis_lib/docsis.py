@@ -6,10 +6,11 @@
 # The full text can be found in LICENSE in the root directory.
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
-import os, config
+import os
 from common import cmd_exists
 import Tkinter
 import re
+import tempfile
 import time
 import hashlib
 from docsis_lib.cfg_helper import CfgGenerator
@@ -35,7 +36,7 @@ class docsis:
         # at some point - need to use a real local tmpdir or maybe even results so we can
         # save the resulting artifacts in other tools
         if tmpdir is None:
-            tmpdir = os.path.join('tmp', config.board['station'])
+            tmpdir = tempfile.mkdtemp()
 
         from devices import board
         if mibs_paths is None and hasattr(board, 'mibs_paths'):
