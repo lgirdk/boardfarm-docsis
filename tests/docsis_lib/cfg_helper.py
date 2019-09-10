@@ -440,8 +440,8 @@ class GlobalParameters(object):
         for i,v in enumerate(l):
             mib_name =v.split(' ',1)[0]
             if mib_name.count('.') > 1:
-                print "No numeric OIDs allowed in SnmpMibObject"
-                print "SnmpMibObject = %s" % l
+                print("No numeric OIDs allowed in SnmpMibObject")
+                print("SnmpMibObject = %s" % l)
                 assert 0, "SnmpMibObject at position " + str(i) + " has '" + mib_name  + "' has numeric OID!!!!"
         pass
 
@@ -618,28 +618,28 @@ if __name__ == '__main__':
     kwargs = {'DsServiceFlowRef':4}
 
     dsServiceFlow = DsServiceFlow(**kwargs)
-    print dsServiceFlow
+    print(dsServiceFlow)
 
     usServiceFlow = UsServiceFlow()
-    print usServiceFlow
+    print(usServiceFlow)
 
     llcPacketClassifier = LLCPacketClassifier()
-    print llcPacketClassifier
+    print(llcPacketClassifier)
 
     globalParams = GlobalParameters()
-    print globalParams
+    print(globalParams)
 
     baselinePrivacy = BaselinePrivacy()
-    print baselinePrivacy
+    print(baselinePrivacy)
 
     gbase_cfg = [GlobalParameters(), DsServiceFlow(**kwargs), UsServiceFlow(), BaselinePrivacy()]
 
-    print "From List:"
+    print("From List:")
     for i in gbase_cfg:
-        print i
+        print(i)
     '''
 
-    print "Using: CfgGenerator"
+    print("Using: CfgGenerator")
     kwargs = {'GlobalPrivacyEnable':0}
     c = CfgGenerator()
 
@@ -651,43 +651,43 @@ if __name__ == '__main__':
             break
     c.gen_dual_stack_cfg()
 
-    print '====================================================================='
-    print 'Dual stack'
-    print c.generate_cfg('dual-stack-config')
-    print '====================================================================='
+    print('=====================================================================')
+    print('Dual stack')
+    print(c.generate_cfg('dual-stack-config'))
+    print('=====================================================================')
 
     GlobalParameters.sys_log_ip = None
     c = CfgGenerator()
     c.gen_bridge_cfg()
-    print '====================================================================='
-    print 'Bridge'
-    print c.generate_cfg('bridge-config')
-    print '====================================================================='
+    print('=====================================================================')
+    print('Bridge')
+    print(c.generate_cfg('bridge-config'))
+    print('=====================================================================')
 
 
     '''
     c = CfgGenerator()
     c.gen_ipv4_cfg()
-    print '====================================================================='
-    print 'IPv4'
-    print c.generate_cfg('ipv4-stack-config')
-    print '====================================================================='
+    print('=====================================================================')
+    print('IPv4')
+    print(c.generate_cfg('ipv4-stack-config'))
+    print('=====================================================================')
 
     c = CfgGenerator()
     c.gen_ipv6_cfg()
 
-    print '====================================================================='
-    print 'IPv6'
-    print c.generate_cfg('ipv6-stack-config')
-    print '====================================================================='
+    print('=====================================================================')
+    print('IPv6')
+    print(c.generate_cfg('ipv6-stack-config'))
+    print('=====================================================================')
 
     c = CfgGenerator()
     c.gen_bridge_cfg()
 
-    print '====================================================================='
-    print 'bridge'
-    print c.generate_cfg('bridge-config')
-    print '====================================================================='
+    print('=====================================================================')
+    print('bridge')
+    print(c.generate_cfg('bridge-config'))
+    print('=====================================================================')
     '''
     '''
     configObj = CfgGenerator()
@@ -709,8 +709,8 @@ if __name__ == '__main__':
     # the snmp mibs are multiline values too
 
     d = configObj.json_to_cfg()
-    print '##############################################'
-    print d
-    print '##############################################'
+    print('##############################################')
+    print(d)
+    print('##############################################')
     '''
-    print 'Done.'
+    print('Done.')
