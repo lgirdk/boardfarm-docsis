@@ -226,7 +226,7 @@ class mta_cfg(cm_cfg):
 
     encoded_suffix = '.bin'
 
-def check_valid_docsis_ip_networking(board, strict=True, time_for_provisioning=120):
+def check_valid_docsis_ip_networking(board, strict=True, time_for_provisioning=240):
     start_time = time.time()
 
     wan_ipv4 = False
