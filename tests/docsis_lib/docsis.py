@@ -236,19 +236,21 @@ def check_valid_docsis_ip_networking(board, strict=True, time_for_provisioning=2
     mta_ipv4 = True
     mta_ipv6 = False # Not in spec
 
+    # this is not cm config mode, it's erouter prov mode
     cm_configmode = board.cm_cfg.cm_configmode
+
+    # we need to fetch the CM config mode from CMTS, skippin wan0 validation for the time being.
 
     if cm_configmode == 'bridge':
         # TODO
         pass
     if cm_configmode == 'ipv4':
-        wan_ipv4 = erouter_ipv4 = True
+        erouter_ipv4 = True
     if cm_configmode == 'dslite':
-        # TODO
-        pass
+        erouter_ipv6 = True
     if cm_configmode == 'dual-stack':
-        wan_ipv4 = erouter_ipv4 = True
-        wan_ipv6 = erouter_ipv6 = True
+        erouter_ipv4 = True
+        erouter_ipv6 = True
 
     failure = "should not see this message"
     while (time.time() - start_time < time_for_provisioning):
