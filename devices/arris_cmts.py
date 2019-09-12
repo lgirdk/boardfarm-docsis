@@ -517,44 +517,44 @@ class ArrisCMTS(base_cmts.BaseCmts):
             return True
 
     def get_ertr_ipv4(self, mac,offset=2):
-       '''
-       This function is to return the ipv4 address of erouter of modem.
-       Input : arg1 : Mac address of the modem, arg2 : offset.
-       Output : Returns the ipv4 address of the erouter if exists else None.
-       '''
-       self.sendline("show cable modem %s detail" % mac)
-       self.expect(self.prompt)
-       from netaddr import EUI
-       import netaddr
-       mac = EUI(mac)
-       ertr_mac = EUI(int(mac) + offset)
-       ertr_mac.dialect = netaddr.mac_cisco
-       ertr_ipv4 = re.search('(%s) .*=(%s)' % (ertr_mac,ValidIpv4AddressRegex), self.before)
-       if ertr_ipv4:
-           ipv4 = ertr_ipv4.group(2)
-           return ipv4
-       else:
-           return None
+        '''
+        This function is to return the ipv4 address of erouter of modem.
+        Input : arg1 : Mac address of the modem, arg2 : offset.
+        Output : Returns the ipv4 address of the erouter if exists else None.
+        '''
+        self.sendline("show cable modem %s detail" % mac)
+        self.expect(self.prompt)
+        from netaddr import EUI
+        import netaddr
+        mac = EUI(mac)
+        ertr_mac = EUI(int(mac) + offset)
+        ertr_mac.dialect = netaddr.mac_cisco
+        ertr_ipv4 = re.search('(%s) .*=(%s)' % (ertr_mac,ValidIpv4AddressRegex), self.before)
+        if ertr_ipv4:
+            ipv4 = ertr_ipv4.group(2)
+            return ipv4
+        else:
+            return None
 
     def get_ertr_ipv6(self, mac,offset=2):
-       '''
-       This function is to return the ipv6 address of erouter of modem.
-       Input : arg1 : Mac address of the modem, arg2 : offset.
-       Output : Returns the ipv6 address of the erouter (not link local ip) if exists else None.
-       '''
-       self.sendline("show cable modem %s detail" % mac)
-       self.expect(self.prompt)
-       from netaddr import EUI
-       import netaddr
-       mac = EUI(mac)
-       ertr_mac = EUI(int(mac) + offset)
-       ertr_mac.dialect = netaddr.mac_cisco
-       ertr_ipv6 = re.search('(%s) IPv6=(%s)' % (ertr_mac,AllValidIpv6AddressesRegex), self.before)
-       if ertr_ipv6:
-           ipv6 = ertr_ipv6.group(2)
-           return ipv6
-       else:
-           return None
+        '''
+        This function is to return the ipv6 address of erouter of modem.
+        Input : arg1 : Mac address of the modem, arg2 : offset.
+        Output : Returns the ipv6 address of the erouter (not link local ip) if exists else None.
+        '''
+        self.sendline("show cable modem %s detail" % mac)
+        self.expect(self.prompt)
+        from netaddr import EUI
+        import netaddr
+        mac = EUI(mac)
+        ertr_mac = EUI(int(mac) + offset)
+        ertr_mac.dialect = netaddr.mac_cisco
+        ertr_ipv6 = re.search('(%s) IPv6=(%s)' % (ertr_mac,AllValidIpv6AddressesRegex), self.before)
+        if ertr_ipv6:
+            ipv6 = ertr_ipv6.group(2)
+            return ipv6
+        else:
+            return None
 
     def set_iface_upstream(self, ups_idx, ups_ch, freq, width, power):
         '''
@@ -605,12 +605,12 @@ class ArrisCMTS(base_cmts.BaseCmts):
         return cmts_ip
 
     def reset(self):
-       '''
-       This function is to reset the cmts.
-       Input : None.
-       Output : None (resets the cmts).
-       '''
-       self.sendline('erase nvram')
-       self.expect(self.prompt)
-       self.sendline('reload')
-       self.expect(self.prompt)
+        '''
+        This function is to reset the cmts.
+        Input : None.
+        Output : None (resets the cmts).
+        '''
+        self.sendline('erase nvram')
+        self.expect(self.prompt)
+        self.sendline('reload')
+        self.expect(self.prompt)
