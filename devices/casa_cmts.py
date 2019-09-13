@@ -12,6 +12,7 @@ import re
 import connection_decider
 from boardfarm.lib.regexlib import ValidIpv6AddressRegex, ValidIpv4AddressRegex, AllValidIpv6AddressesRegex
 import base_cmts
+import ipaddress
 
 
 class CasaCMTS(base_cmts.BaseCmts):
@@ -46,10 +47,10 @@ class CasaCMTS(base_cmts.BaseCmts):
     def connect(self):
         try:
             try:
-                self.expect_exact("Escape character is '^]'.", timeout=30)
+                self.expect_exact("Escape character is '^]'.", timeout = 30)
             except:
                 pass
-            if 2 != self.expect(['\r\n(.*) login:', '(.*) login:', pexpect.TIMEOUT], timeout=10):
+            if 2 != self.expect(['\r\n(.*) login:', '(.*) login:', pexpect.TIMEOUT], timeout = 10):
                 hostname = self.match.group(1).replace('\n', '').replace('\r', '').strip()
                 self.prompt.append(hostname + '>')
                 self.prompt.append(hostname + '#')
@@ -63,7 +64,7 @@ class CasaCMTS(base_cmts.BaseCmts):
                 # over serial it could be stale so we try to recover
                 self.sendline('q')
                 self.sendline('exit')
-                self.expect([pexpect.TIMEOUT] + self.prompt, timeout=20)
+                self.expect([pexpect.TIMEOUT] + self.prompt, timeout = 20)
             self.sendline('enable')
             if 0 == self.expect(['Password:'] + self.prompt):
                 self.sendline(self.password_admin)
@@ -104,12 +105,21 @@ class CasaCMTS(base_cmts.BaseCmts):
         return output
 
     def clear_offline(self, cmmac):
+        if ('c3000' in self.get_cmts_type()):
+            print 'clear offline feature is not supported on casa product name c3000'
+            return
         self.sendline('clear cable modem %s offline' % cmmac)
         self.expect(self.prompt)
 
     def clear_cm_reset(self, cmmac):
         self.sendline("clear cable modem %s reset" % cmmac)
         self.expect(self.prompt)
+        online_state=self.check_online(cmmac)
+        self.expect(pexpect.TIMEOUT, timeout = 5)
+        if(online_state==True):
+            print "CM is still online after 5 seconds."
+        else:
+            print "CM reset is initiated."
 
     def check_PartialService(self, cmmac):
         self.sendline('show cable modem %s' % cmmac)
@@ -124,10 +134,9 @@ class CasaCMTS(base_cmts.BaseCmts):
         return output
 
     def get_cmip(self, cmmac):
-        tmp = cmmac.replace(":", "").lower()
-        cmmac_cmts = tmp[:4]+"." + tmp[4:8]+"."+tmp[8:]
+        cmmac=self.get_cm_mac_cmts_format(cmmac)
         self.sendline('show cable modem %s' % cmmac)
-        self.expect(cmmac_cmts + '\s+([\d\.]+)')
+        self.expect(cmmac + '\s+([\d\.]+)')
         result = self.match.group(1)
         if self.match != None:
             output = result
@@ -218,9 +227,9 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.sendline('YES')
         self.expect(self.prompt)
         self.sendline('system reboot')
-        if 0 == self.expect(['Proceed with reload\? please type YES to confirm :', 'starting up console shell ...'], timeout=180):
+        if 0 == self.expect(['Proceed with reload\? please type YES to confirm :', 'starting up console shell ...'], timeout = 180):
             self.sendline('YES')
-            self.expect('starting up console shell ...', timeout=150)
+            self.expect('starting up console shell ...', timeout = 150)
         self.sendline()
         self.expect(self.prompt)
         self.sendline('page-off')
@@ -236,7 +245,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.sendline('show system')
         while 0 == self.expect(['NotReady'] + self.prompt):
             self.expect(self.prompt)
-            self.expect(pexpect.TIMEOUT, timeout=5)
+            self.expect(pexpect.TIMEOUT, timeout = 5)
             self.sendline('show system')
 
     def save_running_to_startup_config(self):
@@ -257,9 +266,19 @@ class CasaCMTS(base_cmts.BaseCmts):
         f.close()
 
     def set_iface_ipaddr(self, iface, ipaddr):
+        '''
+        This function is to set an ip address to an interface on cmts.
+        Input : arg1: interface name , arg2: <ip></><subnet> using 24 as default if subnet is not provided.
+        Output : None (sets the ip address to an interface specified).
+        '''
+        if  "/" not in ipaddr:
+            ipaddr  += "/24"
+            ipaddr = ipaddress.IPv4Interface(unicode(ipaddr))
+        else:
+            ipaddr = ipaddress.IPv4Interface(unicode(ipaddr))
         self.sendline('interface %s' % iface)
         self.expect(self.prompt)
-        self.sendline('ip address %s' % ipaddr)
+        self.sendline('ip address %s %s'  %(ipaddr.ip, ipaddr.netmask))
         self.expect(self.prompt)
         self.sendline('no shutdown')
         self.expect(self.prompt)
@@ -276,13 +295,54 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.sendline('exit')
         self.expect(self.prompt)
 
-    def add_ip_bundle(self, index, helper_ip, ip, secondary_ips=[]):
+    def unset_iface_ipaddr(self, iface):
+        '''
+        This function is to unset an ipv4 address of an interface on cmts.
+        Input : arg1: interface name.
+        Output : None (unsets the ip address of an interface specified).
+        '''
+        self.sendline('interface %s' % iface)
+        self.expect(self.prompt)
+        self.sendline('no ip address')
+        self.expect(self.prompt)
+        self.sendline('exit')
+        self.expect(self.prompt)
+
+    def unset_iface_ipv6addr(self, iface):
+        '''
+        This function is to unset an ipv6 address of an interface on cmts.
+        Input : arg1: interface name.
+        Output : None (unsets the ipv6 address of an interface specified).
+        '''
+        self.sendline('interface %s' % iface)
+        self.expect(self.prompt)
+        self.sendline('no ipv6 address')
+        self.expect(self.prompt)
+        self.sendline('exit')
+        self.expect(self.prompt)
+
+    def add_ip_bundle(self, index, helper_ip, ipaddr, secondary_ips = []):
+        '''
+        This function is to add ip bundle to a cable mac.
+        Input : arg1 : cable mac index, arg2 : helper ip to be used, arg3 : actual ip to be assiged to cable mac in the format  <ip></><subnet> subnet defaut taken as 24 if not provided, arg4 : list of seconday ips  in the format  <ip></><subnet> subnet defaut taken as 24 if not provided.
+        Output : None (sets the ip bundle to a cable mac).
+        '''
+        if  "/" not in ipaddr:
+            ipaddr  += "/24"
+            ipaddr = ipaddress.IPv4Interface(unicode(ipaddr))
+        else:
+            ipaddr = ipaddress.IPv4Interface(unicode(ipaddr))
         self.sendline('interface ip-bundle %s' % index)
         self.expect(self.prompt)
-        self.sendline('ip address %s 255.255.255.0' % ip)
+        self.sendline('ip address %s %s'  %(ipaddr.ip, ipaddr.netmask))
         self.expect(self.prompt)
         for ip2 in secondary_ips:
-            self.sendline('ip address %s 255.255.255.0 secondary' % ip2)
+            if  "/" not in ip2:
+                ip2  += "/24"
+                ip2 = ipaddress.IPv4Interface(unicode(ip2))
+            else:
+                ip2 = ipaddress.IPv4Interface(unicode(ip2))
+            self.sendline('ip address %s %s secondary' %(ip2.ip, ip2.netmask))
             self.expect(self.prompt)
         self.sendline('cable helper-address %s cable-modem' % helper_ip)
         self.expect(self.prompt)
@@ -292,8 +352,14 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         self.sendline('exit')
         self.expect(self.prompt)
+        self.sendline('show interface ip-bundle %s | include \"ip address\"' % index)
+        self.expect(self.prompt)
+        if str(ipaddr.ip) in self.before:
+            print "The ip bundle is successfully set."
+        else:
+            print "An error occured while setting the ip bundle."
 
-    def add_ipv6_bundle_addrs(self, index, helper_ip, ip, secondary_ips=[]):
+    def add_ipv6_bundle_addrs(self, index, helper_ip, ip, secondary_ips = []):
         self.sendline('interface ip-bundle %s' % index)
         self.expect(self.prompt)
         self.sendline('ipv6 address %s' % ip)
@@ -305,23 +371,69 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         self.sendline('exit')
         self.expect(self.prompt)
-
-    def add_route(self, net, mask, gw):
-        self.sendline('route net %s %s gw %s' % (net, mask, gw))
+        self.sendline('show interface ip-bundle %s | include \"ipv6 address\"' % index)
         self.expect(self.prompt)
+        if str(ipaddress.ip_address(unicode(ip[:-3])).compressed) in self.before:
+            print "The ipv6 bundle is successfully set."
+        else:
+            print "An error occured while setting the ipv6 bundle."
+
+    def add_route(self, ipaddr, gw):
+        '''
+        This function is to add route.
+        Input : arg1 : <network ip></><subnet ip> take subnet 24 if not provided, arg2 : gateway ip.
+        Output : None (adds the route to the specified parameters).
+        '''
+        if  "/" not in ipaddr:
+            ipaddr  += "/24"
+            ipaddr = ipaddress.IPv4Interface(unicode(ipaddr))
+        else:
+            ipaddr = ipaddress.IPv4Interface(unicode(ipaddr))
+        self.sendline('route net %s %s gw %s' % (ipaddr.ip, ipaddr.network.prefixlen, gw))
+        self.expect(self.prompt)
+        if 'error' in self.before.lower():
+            print "An error occured while adding the route."
+        self.sendline('show ip route')
+        self.expect(self.prompt)
+        if gw in self.before:
+            print "The route is available on cmts."
+        else:
+            print "The route is not available on cmts."
 
     def add_route6(self, net, gw):
         self.sendline('route6 net %s gw %s' % (net, gw))
         self.expect(self.prompt)
+        if 'error' in self.before.lower():
+            print "An error occured while adding the route."
+        self.sendline('show ipv6 route')
+        self.expect(self.prompt)
+        if str(ipaddress.IPv6Address(unicode(gw))).lower() in self.before.lower():
+            print "The route is available on cmts."
+        else:
+            print "The route is not available on cmts."
 
-    def del_route(self, net, mask, gw):
+    def del_route(self, ipaddr, gw):
         '''
         This function is to delete route.
-        Input : arg1 : network ip, arg2 : subnet ip, arg3 : gateway ip.
+        Input : arg1 : <network ip></><subnet ip> take subnet 24 if not provided, arg2 : gateway ip.
         Output : None (deletes the route to the specified parameters).
         '''
-        self.sendline('no route net %s %s gw %s' % (net, mask, gw))
+        if  "/" not in ipaddr:
+            ipaddr  += "/24"
+            ipaddr = ipaddress.IPv4Interface(unicode(ipaddr))
+        else:
+            ipaddr = ipaddress.IPv4Interface(unicode(ipaddr))
+        self.sendline('no route net %s %s gw %s' % (ipaddr.ip, ipaddr.network.prefixlen, gw))
         self.expect(self.prompt)
+        if 'error' in self.before.lower():
+            print "An error occured while deleting the route."
+        self.expect(pexpect.TIMEOUT, timeout = 10)
+        self.sendline('show ip route')
+        self.expect(self.prompt)
+        if gw in self.before:
+            print "The route is still available on cmts might be delayed to reflect on cmts."
+        else:
+            print "The route is not available on cmts."
 
     def del_route6(self, net, gw):
         '''
@@ -331,7 +443,14 @@ class CasaCMTS(base_cmts.BaseCmts):
         '''
         self.sendline('no route6 net %s gw %s' % (net, gw))
         self.expect(self.prompt)
-
+        if 'error' in self.before.lower():
+            print "An error occured while deleting the route."
+        self.sendline('show ipv6 route')
+        self.expect(self.prompt)
+        if str(ipaddress.ip_address(unicode(gw)).compressed).lower() in self.before.lower() or gw.lower() in self.before.lower():
+            print "The route is still available on cmts."
+        else:
+            print "The route is not available on cmts."
     def get_qam_module(self):
         self.sendline('show system')
         self.expect(self.prompt)
@@ -391,7 +510,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.sendline('exit')
         self.expect(self.prompt)
 
-    def add_iface_docsis_mac(self, index, ip_bundle, qam_idx, qam_sub, qam_ch, ups_idx, ups_ch):
+    def add_iface_docsis_mac(self, index, ip_bundle, qam_idx, qam_ch, ups_idx, ups_ch, qam_sub = None, prov_mode = None):
         self.sendline('interface docsis-mac %s' % index)
         self.expect(self.prompt)
         self.sendline('no shutdown')
@@ -423,13 +542,20 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.sendline('exit')
         self.expect(self.prompt)
 
-    def modify_docsis_mac_ip_provisioning_mode(self, index, ip_pvmode='dual-stack'):
+    def modify_docsis_mac_ip_provisioning_mode(self, index, ip_pvmode = 'dual-stack'):
         self.sendline('interface docsis-mac %s' % index)
         self.expect(self.prompt)
         self.sendline('ip-provisioning-mode %s' % ip_pvmode)
         self.expect(self.prompt)
+        self.sendline('exit')
+        self.expect(self.prompt)
+        check_docsis_mac_ip_provisioning_mode = self.check_docsis_mac_ip_provisioning_mode(index)
+        if check_docsis_mac_ip_provisioning_mode in ip_pvmode:
+            print "The ip provision mode is successfully set."
+        else:
+            print "An error occured while setting the ip provision mode."
 
-    def add_service_class(self, index, name, max_rate, max_burst, downstream=False):
+    def add_service_class(self, index, name, max_rate, max_burst, max_tr_burst = None, downstream = False):
         self.sendline('cable service-class %s' % index)
         self.expect(self.prompt)
         self.sendline('name %s' % name)
@@ -458,7 +584,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.sendline('exit')
         self.expect(self.prompt)
 
-    def mirror_traffic(self, macaddr=""):
+    def mirror_traffic(self, macaddr = ""):
         self.sendline('diag')
         self.expect('Password:')
         self.sendline('casadiag')
@@ -480,13 +606,13 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.sendline('exit')
         self.expect(self.prompt)
 
-    def run_tcpdump(self, time, iface='any', opts=""):
+    def run_tcpdump(self, time, iface = 'any', opts = ""):
         self.sendline('diag')
         self.expect('Password:')
         self.sendline('casadiag')
         self.expect(self.prompt)
         self.sendline('tcpdump "-i%s %s"' % (iface, opts))
-        self.expect(self.prompt + [pexpect.TIMEOUT], timeout=time)
+        self.expect(self.prompt + [pexpect.TIMEOUT], timeout = time)
         self.sendcontrol('c')
         self.expect(self.prompt)
         self.sendline('exit')
@@ -496,15 +622,13 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.sendline('del %s' % f)
         self.expect(self.prompt)
 
-    # Parameters: cm_mac        (CM mac address)
-    # This function assumes the CM is online
-    # returns:
-    #   True      if the cmts does NOT see the CM eRouter
-    #             (i.e. theCM mode is in bridge mode)
-    #   False     if the cmts sees the CM eRouter
-    #             (i.e. theCM mode is in gateway mode)
-    def is_cm_bridged(self, cm_mac, offset=2):
-        self.sendline("show cable modem "+cm_mac+" cpe")
+    def is_cm_bridged(self, mac, offset = 2):
+        '''
+        This function is to check if the modem is in bridge mode.
+        Input : arg1 : Mac address of the modem, arg2 : offset (ignored in casa specific to arris).
+        Output : Returns True if the modem is bridged else False.
+        '''
+        self.sendline("show cable modem "+mac+" cpe")
         if 0 == self.expect(['eRouter']+self.prompt):
             self.expect(self.prompt)
             return False
@@ -515,20 +639,21 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.sendline('show interface docsis-mac %s' % index)
         self.expect('ip-provisioning-mode (\w+\-\w+)')
         result = self.match.group(1)
+        self.expect(self.prompt)
         if self.match != None:
             if "ipv4" in result.lower():
-                result="ipv4"
+                result ="ipv4"
             elif "dual" in result.lower():
-                result="dual-stack"
-            elif "dslite" in result.lower():
-                result="dslite"
+                result ="dual-stack"
+            elif "ipv6" in result.lower():
+                result ="ipv6"
             elif "bridge" in result.lower():
-                result="bridge"
+                result ="bridge"
             return result
         else:
             return "Not able to fetch ip provisioning mode on CMTS"
 
-    def get_ertr_ipv4(self, mac,offset=2):
+    def get_ertr_ipv4(self, mac, offset = 2):
         '''Getting erouter ipv4 from CMTS '''
         self.sendline("show cable modem %s cpe" % mac)
         self.expect(self.prompt)
@@ -544,7 +669,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         else:
             return None
 
-    def get_ertr_ipv6(self, mac,offset=2):
+    def get_ertr_ipv6(self, mac, offset = 2):
         '''Getting erouter ipv6 from CMTS '''
         self.sendline("show cable modem %s cpe" % mac)
         self.expect(self.prompt)
@@ -555,7 +680,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         else:
             return None
 
-    def get_center_freq(self, mac_domain=None):
+    def get_center_freq(self, mac_domain = None):
         return "512000000"
 
         # TODO: fix below
@@ -578,3 +703,32 @@ class CasaCMTS(base_cmts.BaseCmts):
         assert 'channel %s frequency' % sub in self.before
 
         return str(int(self.before.split(' ')[-1]))
+
+    def get_ip_from_regexp(self, cmmac, ip_regexpr):
+        """
+        Gets an ip address according to a regexpr (helper function)
+        Args: cmmac, ip_regexpr
+        Return: ip addr (ipv4/6 according to regexpr) or None if not found
+        """
+        cmmac=self.get_cm_mac_cmts_format(cmmac)
+        self.sendline('show cable modem | include %s' % cmmac)
+        if 1 == self.expect([cmmac + '\s+(' + ip_regexpr + ')', pexpect.TIMEOUT], timeout=2):
+            output = "None"
+        else:
+            result = self.match.group(1)
+            if self.match != None:
+                output = result
+            else:
+                output = "None"
+        self.expect(self.prompt)
+        return output
+
+    def get_cmts_type(self):
+        '''
+        This function is to get the product type on cmts.
+        Input : None.
+        Output : Returns the cmts module type.
+        '''
+        self.sendline('show system | include Product')
+        self.expect(self.prompt)
+        return self.before.split(",")[0].split(":")[1].strip().lower()
