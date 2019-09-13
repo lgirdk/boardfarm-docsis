@@ -594,7 +594,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         to get a gw ip, use get_gateway_address from mv1.py(board.get_gateway_address())
         '''
         mac_domain = self.get_cm_mac_domain(cm_mac)
-        bundle_id = self.get_cm_bundle(mac_domain)
+        self.get_cm_bundle(mac_domain)
         self.sendline('show running-config interface cable-mac %s | include secondary' % mac_domain)
         self.expect(self.prompt)
         cmts_ip = re.search('ip address (%s) .* secondary' % gw_ip, self.before)

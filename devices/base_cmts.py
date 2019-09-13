@@ -113,9 +113,6 @@ class BaseCmts(base.BaseDevice):
     def set_iface_upstream(self, ups_idx, ups_ch, freq, width, power):
         raise Exception("Not implemented!")
 
-    def save_running_config_to_local(self, filename):
-        raise Exception("Not implemented!")
-
     def reset(self):
         raise Exception("Not implemented!")
 
