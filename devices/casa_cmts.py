@@ -6,6 +6,7 @@
 # The full text can be found in LICENSE in the root directory.
 #!/usr/bin/env python
 
+import netaddr
 import pexpect
 import sys
 import re
@@ -657,10 +658,8 @@ class CasaCMTS(base_cmts.BaseCmts):
         '''Getting erouter ipv4 from CMTS '''
         self.sendline("show cable modem %s cpe" % mac)
         self.expect(self.prompt)
-        from netaddr import EUI
-        import netaddr
-        mac = EUI(mac)
-        ertr_mac = EUI(int(mac) + offset)
+        mac = netaddr.EUI(mac)
+        ertr_mac = netaddr.EUI(int(mac) + offset)
         ertr_mac.dialect = netaddr.mac_cisco
         ertr_ipv4 = re.search('(%s) .* (%s)' % (ValidIpv4AddressRegex, ertr_mac), self.before)
         if ertr_ipv4:
