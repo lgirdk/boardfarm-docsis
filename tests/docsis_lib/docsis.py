@@ -168,7 +168,7 @@ class cm_cfg(object):
             if fname is None:
                 # create a name and add some sha256 digits
                 fname = "cm-config-" + self.shortname(10) + ".txt"
-                print "Config name created: %s" % fname
+                print("Config name created: %s" % fname)
             self.txt = start.generate_cfg() # the derived class already created the skeleton
             self.original_fname = fname
             self.encoded_fname = self.original_fname.replace('.txt', self.encoded_suffix)
