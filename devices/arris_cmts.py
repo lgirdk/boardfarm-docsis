@@ -7,6 +7,7 @@
 #!/usr/bin/env python
 
 import pexpect
+import netaddr
 import sys
 import re
 import connection_decider
@@ -618,10 +619,8 @@ class ArrisCMTS(base_cmts.BaseCmts):
        '''
        self.sendline("show cable modem %s detail" % mac)
        self.expect(self.prompt)
-       from netaddr import EUI
-       import netaddr
-       mac = EUI(mac)
-       ertr_mac = EUI(int(mac) + offset)
+       mac = netaddr.EUI(mac)
+       ertr_mac = netaddr.EUI(int(mac) + offset)
        ertr_mac.dialect = netaddr.mac_cisco
        ertr_ipv4 = re.search('(%s) .*=(%s)' % (ertr_mac,ValidIpv4AddressRegex), self.before)
        if ertr_ipv4:
@@ -639,10 +638,8 @@ class ArrisCMTS(base_cmts.BaseCmts):
        '''
        self.sendline("show cable modem %s detail" % mac)
        self.expect(self.prompt)
-       from netaddr import EUI
-       import netaddr
-       mac = EUI(mac)
-       ertr_mac = EUI(int(mac) + offset)
+       mac = netaddr.EUI(mac)
+       ertr_mac = netaddr.EUI(int(mac) + offset)
        ertr_mac.dialect = netaddr.mac_cisco
        ertr_ipv6 = re.search('(%s) IPv6=(%s)' % (ertr_mac,AllValidIpv6AddressesRegex), self.before)
        if ertr_ipv6:
