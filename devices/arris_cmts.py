@@ -137,9 +137,9 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.expect(pexpect.TIMEOUT, timeout = 5)
         online_state=self.check_online(cmmac)
         if(online_state==True):
-            print "CM is still online after 5 seconds."
+            print("CM is still online after 5 seconds.")
         else:
-            print "CM reset is initiated."
+            print("CM reset is initiated.")
 
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
     def get_mtaip(self, cmmac, mtamac):
@@ -383,7 +383,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         Output : None (wait if any interface is down until it is up).
         '''
         if ('dual-stack' in ip_pvmode.lower() and 'c4' in self.get_cmts_type()):
-            print 'dual-stack ip provisioning modem is not supported on Chassis Type : C4 please choose apm'
+            print('dual-stack ip provisioning modem is not supported on Chassis Type : C4 please choose apm')
             return
         self.sendline('interface cable-mac %s' % index)
         self.expect(self.prompt)
@@ -395,9 +395,9 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         check_docsis_mac_ip_provisioning_mode = self.check_docsis_mac_ip_provisioning_mode(index)
         if check_docsis_mac_ip_provisioning_mode in ip_pvmode:
-            print "The ip provision mode is successfully set."
+            print("The ip provision mode is successfully set.")
         else:
-            print "An error occured while setting the ip provision mode."
+            print("An error occured while setting the ip provision mode.")
 
     def add_route(self, ipaddr, gw):
         '''
@@ -413,13 +413,13 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.sendline('ip route %s %s %s' % (ipaddr.ip, ipaddr.netmask, gw))
         self.expect(self.prompt)
         if 'error' in self.before.lower():
-            print "An error occured while adding the route."
+            print("An error occured while adding the route.")
         self.sendline('show ip route')
         self.expect(self.prompt)
         if gw in self.before:
-            print "The route is available on cmts."
+            print("The route is available on cmts.")
         else:
-            print "The route is not available on cmts."
+            print("The route is not available on cmts.")
 
     def add_route6(self, net, gw):
         '''
@@ -430,13 +430,13 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.sendline('ipv6 route %s %s' % (net, gw))
         self.expect(self.prompt)
         if 'error' in self.before.lower():
-            print "An error occured while adding the route."
+            print("An error occured while adding the route.")
         self.sendline('show ipv6 route')
         self.expect(self.prompt)
         if str(ipaddress.IPv6Address(unicode(gw))).lower() in self.before.lower():
-            print "The route is available on cmts."
+            print("The route is available on cmts.")
         else:
-            print "The route is not available on cmts."
+            print("The route is not available on cmts.")
 
     def del_route(self, ipaddr, gw):
         '''
@@ -452,14 +452,14 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.sendline('no ip route %s %s %s' % (ipaddr.ip, ipaddr.netmask, gw))
         self.expect(self.prompt)
         if 'error' in self.before.lower():
-            print "An error occured while deleting the route."
+            print("An error occured while deleting the route.")
         self.expect(pexpect.TIMEOUT, timeout = 10)
         self.sendline('show ip route')
         self.expect(self.prompt)
         if gw in self.before:
-            print "The route is still available on cmts."
+            print("The route is still available on cmts.")
         else:
-            print "The route is not available on cmts."
+            print("The route is not available on cmts.")
 
     def del_route6(self, net, gw):
         '''
@@ -470,13 +470,13 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.sendline('no ipv6 route %s %s' % (net, gw))
         self.expect(self.prompt)
         if 'error' in self.before.lower():
-            print "An error occured while deleting the route."
+            print("An error occured while deleting the route.")
         self.sendline('show ipv6 route')
         self.expect(self.prompt)
         if str(ipaddress.ip_address(unicode(gw)).compressed).lower() in self.before.lower() or gw.lower() in self.before.lower():
-            print "The route is still available on cmts."
+            print("The route is still available on cmts.")
         else:
-            print "The route is not available on cmts."
+            print("The route is not available on cmts.")
 
     def add_ip_bundle(self, index, helper_ip, ipaddr, secondary_ips = []):
         '''
@@ -512,9 +512,9 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.sendline('show running-config interface cable-mac %s | include ip address' % index)
         self.expect(self.prompt)
         if str(ipaddr.ip) in self.before:
-            print "The ip bundle is successfully set."
+            print("The ip bundle is successfully set.")
         else:
-            print "An error occured while setting the ip bundle."
+            print("An error occured while setting the ip bundle.")
 
     def add_ipv6_bundle_addrs(self, index, helper_ip, ip, secondary_ips = []):
         '''
@@ -533,9 +533,9 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.sendline('show running-config interface cable-mac %s | include ipv6 address' % index)
         self.expect(self.prompt)
         if str(ipaddress.ip_address(unicode(ip[:-3])).compressed) in self.before:
-            print "The ipv6 bundle is successfully set."
+            print("The ipv6 bundle is successfully set.")
         else:
-            print "An error occured while setting the ipv6 bundle."
+            print("An error occured while setting the ipv6 bundle.")
 
     def set_iface_qam(self, index, sub, annex, interleave, power):
         '''
@@ -582,16 +582,16 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
 
     def add_service_group(self, index, qam_idx, qam_sub, qam_channels, ups_idx, ups_channels):
-        print "Service group is auto configured in ARRIS once mac domain is created."
+        print("Service group is auto configured in ARRIS once mac domain is created.")
 
     def mirror_traffic(self, macaddr = ""):
-        print "Mirror traffic feature is not supported in ARRIS unless we use lawful intercept functionality."
+        print("Mirror traffic feature is not supported in ARRIS unless we use lawful intercept functionality.")
 
     def unmirror_traffic(self):
-        print "Unmirror traffic feature is not supported in ARRIS unless we use lawful intercept functionality."
+        print("Unmirror traffic feature is not supported in ARRIS unless we use lawful intercept functionality.")
 
     def run_tcpdump(self, time, iface = 'any', opts = ""):
-        print "TCPDUMP feature is not supported in ARRIS."
+        print("TCPDUMP feature is not supported in ARRIS.")
 
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
     def is_cm_bridged(self, mac, offset = 2):
