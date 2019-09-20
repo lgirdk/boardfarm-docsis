@@ -353,7 +353,7 @@ class GlobalParameters(object):
     CpeMAcAddress       = 'CpeMAcAddress'
     MaxClassifiers      = 'MaxClassifiers' # default value 16 from Prasada (to avoid past config issue)
     DocsisTwoEnable     = 'DocsisTwoEnable'
-    GenericTLV          = 'GenericTLV'       # list 
+    GenericTLV          = 'GenericTLV'       # list
     SwUpgradeFilename   = 'SwUpgradeFilename'
     SwUpgradeServer     = 'SwUpgradeServer'
     SnmpMibObject       = 'SnmpMibObject'    # list
@@ -364,25 +364,40 @@ class GlobalParameters(object):
     CoSignerCVC         = 'CoSignerCVC'      # list?
     MtaConfigDelimiter  = 'MtaConfigDelimiter'
 
+
+    # As requested always add the following
+    snmpobjNmAcc = ['docsDevNmAccessIp.1 IPAddress 255.255.255.255',
+                    'docsDevNmAccessIpMask.1 IPAddress 255.255.255.255',
+                    'docsDevNmAccessCommunity.1 String "public"',
+                    'docsDevNmAccessControl.1 Integer 2',
+                    'docsDevNmAccessInterfaces.1 HexString 0xc0',
+                    'docsDevNmAccessStatus.1 Integer 4',
+                    'docsDevNmAccessIp.2 IPAddress 255.255.255.255',
+                    'docsDevNmAccessIpMask.2 IPAddress 255.255.255.255',
+                    'docsDevNmAccessCommunity.2 String "private"',
+                    'docsDevNmAccessControl.2 Integer 3',
+                    'docsDevNmAccessInterfaces.2 HexString 0xc0',
+                    'docsDevNmAccessStatus.2 Integer 4']
+
     GlobalParameters_defaults = {\
-                                  NetworkAccess:1,\
-                                  GlobalPrivacyEnable:1,\
-                                  DownstreamFrequency:None,\
-                                  UpstreamChannelId:None,\
-                                  MaxCPE:16,\
-                                  CpeMAcAddress:None,\
-                                  MaxClassifiers:16,\
-                                  DocsisTwoEnable:None,\
-                                  GenericTLV:None,\
-                                  SwUpgradeFilename:None,\
-                                  SwUpgradeServer:None,\
-                                  SnmpMibObject:None,\
-                                  SnmpWriteControl:None,\
-                                  SNMPCPEAccessControl:None,\
-                                  MfgCVCData:None,\
-                                  CoSignerCVCData:None,\
-                                  CoSignerCVC:None,\
-                                  MtaConfigDelimiter:None\
+                                  NetworkAccess:1,
+                                  GlobalPrivacyEnable:1,
+                                  DownstreamFrequency:None,
+                                  UpstreamChannelId:None,
+                                  MaxCPE:16,
+                                  CpeMAcAddress:None,
+                                  MaxClassifiers:16,
+                                  DocsisTwoEnable:None,
+                                  GenericTLV:None,
+                                  SwUpgradeFilename:None,
+                                  SwUpgradeServer:None,
+                                  SnmpMibObject:snmpobjNmAcc,
+                                  SnmpWriteControl:None,
+                                  SNMPCPEAccessControl:None,
+                                  MfgCVCData:None,
+                                  CoSignerCVCData:None,
+                                  CoSignerCVC:None,
+                                  MtaConfigDelimiter:None
                                 }
 
     sys_log_ip = None
