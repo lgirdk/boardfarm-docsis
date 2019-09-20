@@ -86,6 +86,9 @@ class BaseCmts(base.BaseDevice):
     def get_ertr_ipv6(self, mac, offset = 2):
         raise Exception("Not implemented!")
 
+    def get_center_freq(self, mac_domain = None):
+        raise Exception("Not implemented!")
+
     def check_PartialService(self, cmmac):
         raise Exception("Not implemented!")
 

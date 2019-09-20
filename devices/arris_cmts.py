@@ -648,6 +648,24 @@ class ArrisCMTS(base_cmts.BaseCmts):
        else:
            return None
 
+    def get_center_freq(self, mac_domain = None):
+        '''
+        This function is to return the center frequency of cmts.
+        Input : arg1 : Mac Domain.
+        Output : Returns center frequency in string format.
+        '''
+        self.sendline('no pagination')
+        self.expect(self.prompt)
+        self.sendline('show interface cable downstream')
+        self.expect(self.prompt)
+        freq_list=[]
+        for row in self.before.split("\n")[3:]:
+            match_grp=re.match("\d{1,2}/\d{1,2}\s+"+str(mac_domain)+"\s.*\s(\d{6,10})\s+\w+",row)
+            if match_grp!=None and match_grp.groups(0)[0]!=None:
+                freq_list.append(match_grp.groups(0)[0])
+        freq_list = map(int, freq_list)
+        return str(min(freq_list))
+
     def set_iface_upstream(self, ups_idx, ups_ch, freq, width, power):
         '''
         This function is to set the frequency, width and power on upstream channel.
