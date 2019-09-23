@@ -7,14 +7,15 @@
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
 import os
-from common import cmd_exists
 import Tkinter
 import re
 import tempfile
 import time
 import hashlib
-from docsis_lib.cfg_helper import CfgGenerator
 
+from cfg_helper import CfgGenerator
+
+from boardfarm.lib.common import cmd_exists
 from boardfarm.lib.network_helper import valid_ipv4, valid_ipv6
 
 class docsis:
