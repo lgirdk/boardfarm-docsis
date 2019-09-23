@@ -38,7 +38,7 @@ class docsis:
         if tmpdir is None:
             tmpdir = tempfile.mkdtemp()
 
-        from boardfarm.devices import board
+        from devices import board
         if mibs_paths is None and hasattr(board, 'mibs_paths'):
             default = os.path.expandvars('/home/$USER/.snmp/mibs:/usr/share/snmp/mibs:/usr/share/snmp/mibs/iana:/usr/share/snmp/mibs/ietf:/usr/share/mibs/site:/usr/share/snmp/mibs:/usr/share/mibs/iana:/usr/share/mibs/ietf:/usr/share/mibs/netsnmp')
             mibs_path_arg = "-M "  + default

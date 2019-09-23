@@ -1,5 +1,5 @@
 import rootfs_boot
-from boardfarm.devices import board
+from devices import board
 class selftest_test_cmts_functions(rootfs_boot.RootFSBootTest):
     def runTest(self):
             '''
@@ -7,7 +7,7 @@ class selftest_test_cmts_functions(rootfs_boot.RootFSBootTest):
             Input : None (self -- cmts object).
             Output : None (checks the cmts methods and prints the output).
             '''
-            from boardfarm.devices import cmts
+            from devices import cmts
             ip_provisioning_mode=cmts.check_docsis_mac_ip_provisioning_mode(cmts.mac_domain)
             print("The ip provisioning mode on given mac domain is %s" % ip_provisioning_mode)
             cmts.wait_for_ready()
