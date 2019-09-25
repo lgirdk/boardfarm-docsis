@@ -566,15 +566,14 @@ class CfgGenerator():
         return next(iter(s))
 
     def update_cm_base_cfg(self, kwargs):
-        # this is a bit dangerous it could get into an infinite loop!! FIX ME
         while kwargs != {}:
             k = self.first(kwargs)
             for elem in self.cm_base_cfg:
                 if elem.name() == k:
                     d = elem.get_dict()
                     d.update(kwargs[k])
-                    kwargs.pop(k)
                     break
+            kwargs.pop(k)
 
     def _gen_cfg(self, erouter, kwargs):
         er = {eRouter.InitializationMode:erouter}
