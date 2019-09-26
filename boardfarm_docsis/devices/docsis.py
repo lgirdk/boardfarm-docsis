@@ -46,3 +46,6 @@ class Docsis(openwrt_router.OpenWrtRouter):
             # this can be a lot longer than 5 minutes so let's touch each pass
             self.touch()
         return False
+
+    def tr069_connected(self):
+        assert False, "Code to detect if tr069 clienti is running is not implemented"
