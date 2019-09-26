@@ -1,7 +1,8 @@
-import openwrt_router
-
+import time
 import pexpect
 
+import openwrt_router
+from boardfarm.lib.network_helper import valid_ipv4, valid_ipv6
 
 # TODO: probably the wrong parent
 class Docsis(openwrt_router.OpenWrtRouter):
@@ -49,3 +50,66 @@ class Docsis(openwrt_router.OpenWrtRouter):
 
     def tr069_connected(self):
         assert False, "Code to detect if tr069 clienti is running is not implemented"
+
+    def check_valid_docsis_ip_networking(self, strict=True, time_for_provisioning=240):
+        start_time = time.time()
+
+        wan_ipv4 = False
+        wan_ipv6 = False
+        erouter_ipv4 = False
+        erouter_ipv6 = False
+        mta_ipv4 = True
+        mta_ipv6 = False # Not in spec
+
+        # this is not cm config mode, it's erouter prov mode
+        cm_configmode = self.cm_cfg.cm_configmode
+
+        # we need to fetch the CM config mode from CMTS, skippin wan0 validation for the time being.
+
+        if cm_configmode == 'bridge':
+            # TODO
+            pass
+        if cm_configmode == 'ipv4':
+            erouter_ipv4 = True
+        if cm_configmode == 'dslite':
+            erouter_ipv6 = True
+        if cm_configmode == 'dual-stack':
+            erouter_ipv4 = True
+            erouter_ipv6 = True
+
+        failure = "should not see this message"
+        while (time.time() - start_time < time_for_provisioning):
+            try:
+                if wan_ipv4:
+                    failure="wan ipv4 failed"
+                    valid_ipv4(self.get_interface_ipaddr(self.wan_iface))
+                if wan_ipv6:
+                    failure="wan ipv6 failed"
+                    valid_ipv6(self.get_interface_ip6addr(self.wan_iface))
+
+                if hasattr(self, 'erouter_iface'):
+                    if erouter_ipv4:
+                        failure="erouter ipv4 failed"
+                        valid_ipv4(self.get_interface_ipaddr(self.erouter_iface))
+                    if erouter_ipv6:
+                        failure="erouter ipv6 failed"
+                        valid_ipv6(self.get_interface_ip6addr(self.erouter_iface))
+
+                if hasattr(self, 'mta_iface'):
+                    if mta_ipv4:
+                        failure="mta ipv4 failed"
+                        valid_ipv4(self.get_interface_ipaddr(self.mta_iface))
+                    if mta_ipv6:
+                        failure="mta ipv6 failed"
+                        valid_ipv6(self.get_interface_ip6addr(self.mta_iface))
+
+                # if we get this far, we have all IPs and can exit while loop
+                break
+            except KeyboardInterrupt:
+                raise
+            except:
+                if time.time() - start_time > time_for_provisioning:
+                    if strict:
+                        assert False, "Failed to provision docsis device properly = " + failure
+                    else:
+                        print("WARN: failed to provision board entirely")
