@@ -39,7 +39,7 @@ class docsis:
         if tmpdir is None:
             tmpdir = tempfile.mkdtemp()
 
-        from devices import board
+        from boardfarm.devices import board
         if mibs_paths == []:
             mibs_paths = getattr(board, 'mibs_paths', [])
         if mibs_paths != []:
