@@ -11,7 +11,7 @@ import pexpect
 import sys
 import re
 import connection_decider
-from boardfarm.lib.regexlib import ValidIpv6AddressRegex, ValidIpv4AddressRegex, AllValidIpv6AddressesRegex
+from boardfarm.lib.regexlib import ValidIpv4AddressRegex, AllValidIpv6AddressesRegex
 import base_cmts
 import ipaddress
 
@@ -672,7 +672,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         '''Getting erouter ipv6 from CMTS '''
         self.sendline("show cable modem %s cpe" % mac)
         self.expect(self.prompt)
-        ertr_ipv6 = re.search(ValidIpv6AddressRegex, self.before)
+        ertr_ipv6 = re.search(AllValidIpv6AddressesRegex, self.before)
         if ertr_ipv6:
             ipv6 = ertr_ipv6.group()
             return ipv6
