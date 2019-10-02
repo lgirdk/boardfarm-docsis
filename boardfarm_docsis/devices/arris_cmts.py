@@ -654,6 +654,9 @@ class ArrisCMTS(base_cmts.BaseCmts):
         Input : arg1 : Mac Domain.
         Output : Returns center frequency in string format.
         '''
+        if mac_domain is None:
+            mac_domain = self.mac_domain
+        assert mac_domain is not None, "get_center_freq() requires mac_domain to be set"
         self.sendline('no pagination')
         self.expect(self.prompt)
         self.sendline('show interface cable downstream')
