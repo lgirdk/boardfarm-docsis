@@ -364,7 +364,9 @@ class GlobalParameters(object):
     CoSignerCVC         = 'CoSignerCVC'      # list?
     MtaConfigDelimiter  = 'MtaConfigDelimiter'
 
-
+    '''
+    These mibs should work, but they don't
+    They will need to be debugged
     # As requested always add the following
     snmpobjNmAcc = ['docsDevNmAccessIp.1 IPAddress 255.255.255.255',
                     'docsDevNmAccessIpMask.1 IPAddress 255.255.255.255',
@@ -378,7 +380,8 @@ class GlobalParameters(object):
                     'docsDevNmAccessControl.2 Integer 3',
                     'docsDevNmAccessInterfaces.2 HexString 0xc0',
                     'docsDevNmAccessStatus.2 Integer 4']
-
+    '''
+    snmpobjNmAcc = None
     GlobalParameters_defaults = {\
                                   NetworkAccess:1,
                                   GlobalPrivacyEnable:1,
@@ -547,6 +550,8 @@ class CfgGenerator():
         if file_cfg is not None:
             assert 0, "Not yet implemented"
 
+        self.additional_cfg = ""
+
         # For future used (if we want to get defaults from json file)
         #json_name = __file__.split('.')[0] + '.json'
         #default_json = os.path.abspath(os.path.realpath(os.path.dirname(__file__))) + json_name
@@ -576,6 +581,12 @@ class CfgGenerator():
             kwargs.pop(k)
 
     def _gen_cfg(self, erouter, kwargs):
+
+        # This is quick way of appending a string at the end of the cfg
+        # file that can be used for config element that are not standard
+        # and/or testing new configs without major changes in the code
+        self.additional_cfg = kwargs.pop("additional_cfg", "")
+
         er = {eRouter.InitializationMode:erouter}
         eRout = eRouter(**er)
 
@@ -609,6 +620,8 @@ class CfgGenerator():
 
         for i in self.cm_base_cfg:
             cfg_file_str += i.to_str()
+
+        cfg_file_str += self.additional_cfg
 
         cfg_file_str += '}\n'
 
