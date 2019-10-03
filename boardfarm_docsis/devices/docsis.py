@@ -1,7 +1,7 @@
 import time
 import pexpect
 
-import openwrt_router
+from boardfarm.devices import openwrt_router
 from boardfarm.lib.network_helper import valid_ipv4, valid_ipv6
 
 # TODO: probably the wrong parent
