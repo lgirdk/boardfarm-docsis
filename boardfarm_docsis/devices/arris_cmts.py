@@ -10,8 +10,9 @@ import pexpect
 import netaddr
 import sys
 import re
-import connection_decider
+
 import base_cmts
+from boardfarm.devices import connection_decider
 from boardfarm.lib.regexlib import AllValidIpv6AddressesRegex, ValidIpv4AddressRegex
 import ipaddress
 

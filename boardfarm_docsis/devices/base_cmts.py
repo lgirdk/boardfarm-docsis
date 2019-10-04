@@ -1,5 +1,5 @@
-import base
 
+from boardfarm.devices import base
 
 class BaseCmts(base.BaseDevice):
     '''
