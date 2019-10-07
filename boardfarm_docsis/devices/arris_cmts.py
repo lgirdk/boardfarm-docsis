@@ -84,7 +84,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
             self.expect(self.prompt)
             return
         except:
-            raise Exception("Unable to get prompt on CASA device")
+            raise Exception("Unable to get prompt on Arris device")
 
     def logout(self):
         self.sendline('exit')
