@@ -113,3 +113,13 @@ class Docsis(openwrt_router.OpenWrtRouter):
                         assert False, "Failed to provision docsis device properly = " + failure
                     else:
                         print("WARN: failed to provision board entirely")
+
+    def get_cm_model_type(self):
+        """
+        Function is used as stub for function in mv1 to get the cm model type
+        Parameters:
+        arg1 (self): NA
+
+        Returns:None
+        """
+        raise Exception("Not implemented! should be implemented to return the cm model name")
