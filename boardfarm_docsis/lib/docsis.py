@@ -120,6 +120,24 @@ class docsis:
         except:
             return encode_mta()
 
+    @staticmethod
+    def configure_board(provisioner, board, **kwargs):
+        cm_cfg = kwargs.pop("cm_cfg", None)
+        mta_cfg = kwargs.pop("mta_cfg", None)
+
+        board.update_docsis_config(cm_cfg=cm_cfg, mta_cfg=mta_cfg, **kwargs)
+
+        override = kwargs.get("force", False)
+        if not override:
+            # calculate and compare sha1 of board cfg file with one present in tftp here.
+            pass
+
+        #TODO: we need to have a common lib which marks services running in each device.
+        # this needs to be removed at a later point.
+        provisioner.tftp_device = board.tftp_dev
+
+        provisioner.provision_board(board.config)
+
 class cm_cfg(object):
     '''
     Class for generating CM cfg from nothing, or even importing from a file
