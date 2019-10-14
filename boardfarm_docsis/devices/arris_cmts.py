@@ -43,13 +43,14 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.username = kwargs.get('username', 'boardfarm')
         self.password = kwargs.get('password', 'boardfarm')
         self.password_admin = kwargs.get('password_admin', 'boardfarm')
+        self.ssh_password = kwargs.get('ssh_password', 'boardfarm')
         self.mac_domain = kwargs.get('mac_domain', None)
 
         if conn_cmd is None:
             # TODO: try to parse from ipaddr, etc
             raise Exception("No command specified to connect to Arris CMTS")
 
-        self.connection = connection_decider.connection(connection_type, device = self, conn_cmd = conn_cmd)
+        self.connection = connection_decider.connection(connection_type, device = self, conn_cmd = conn_cmd, ssh_password = self.ssh_password)
         self.connection.connect()
         self.connect()
         self.logfile_read = sys.stdout
@@ -63,11 +64,15 @@ class ArrisCMTS(base_cmts.BaseCmts):
             except:
                 pass
             self.sendline()
-            if 1 != self.expect(['\r\nLogin:', pexpect.TIMEOUT], timeout = 10):
+            idx = self.expect(['\r\nLogin:', pexpect.TIMEOUT] + self.prompt, timeout = 10)
+            if 0 == idx:
                 self.sendline(self.username)
                 self.expect('assword:')
                 self.sendline(self.password)
                 self.expect(self.prompt)
+            elif idx > 1:
+                # if we get a prompt we have probably ssh to the device
+                pass
             else:
                 # Over telnet we come in at the right prompt
                 # over serial we could have a double login
