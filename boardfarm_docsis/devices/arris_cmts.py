@@ -707,7 +707,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         return bundle
 
-    def get_cmts_ip_bundle(self, cm_mac, gw_ip):
+    def get_cmts_ip_bundle(self, cm_mac, gw_ip=None):
         '''
         get CMTS bundle IP
         to get a gw ip, use get_gateway_address from mv1.py(board.get_gateway_address())
@@ -717,6 +717,10 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.sendline('show running-config interface cable-mac %s | include secondary' % mac_domain)
         self.expect(self.prompt)
         cmts_ip = re.search('ip address (%s) .* secondary' % gw_ip, self.before)
+
+        if gw_ip is None:
+            return self.before
+
         if cmts_ip:
             cmts_ip = cmts_ip.group(1)
         else:
