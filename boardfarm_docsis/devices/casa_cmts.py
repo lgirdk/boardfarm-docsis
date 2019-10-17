@@ -48,11 +48,7 @@ class CasaCMTS(base_cmts.BaseCmts):
 
     def connect(self):
         try:
-            try:
-                self.expect_exact("Escape character is '^]'.", timeout = 30)
-            except:
-                pass
-            if 2 != self.expect(['\r\n(.*) login:', '(.*) login:', pexpect.TIMEOUT], timeout = 10):
+            if 2 != self.expect(['\r\n(.*) login:', '(.*) login:', pexpect.TIMEOUT]):
                 hostname = self.match.group(1).replace('\n', '').replace('\r', '').strip()
                 self.prompt.append(hostname + '>')
                 self.prompt.append(hostname + '#')
