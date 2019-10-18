@@ -1,4 +1,4 @@
-import rootfs_boot
+from boardfarm.tests import rootfs_boot
 from boardfarm.devices import board
 class selftest_test_cmts_functions(rootfs_boot.RootFSBootTest):
     def runTest(self):
