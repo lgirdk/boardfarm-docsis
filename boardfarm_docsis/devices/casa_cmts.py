@@ -35,11 +35,14 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.password_admin = kwargs.get('password_admin', 'casa')
         self.mac_domain = kwargs.get('mac_domain', None)
 
+
         if conn_cmd is None:
             # TODO: try to parse from ipaddr, etc
             raise Exception("No command specified to connect to Casa CMTS")
 
         self.connection = connection_decider.connection(connection_type, device=self, conn_cmd=conn_cmd)
+        if kwargs.get('debug', False):
+            self.logfile_read = sys.stdout
         self.connection.connect()
         self.connect()
         self.logfile_read = sys.stdout
