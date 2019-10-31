@@ -138,6 +138,24 @@ class docsis:
 
         provisioner.provision_board(board.config)
 
+    @staticmethod
+    def validate_modem_cfg_file(board, device):
+        '''
+        To check if the cfg file used in modem and wan container are same.
+        This method is used to compare the sha on the cfg file used in the modem and the one on wan.
+        Parameters: (object)board
+                    (object)wan
+
+        Returns: (bool) True if sha matches else False.
+        '''
+        modem_cfg = board.get_modem_cfg_file(device.get_interface_ipaddr(device.iface_dut))
+        if modem_cfg:
+            device.sendline("sha1sum  /tftpboot/tmp/%s /tftpboot/%s" % (modem_cfg, modem_cfg))
+            device.expect(device.prompt)
+            return (device.before.split("\n")[1].split(" ")[0] == device.before.split("\n")[2].split(" ")[0])
+        else:
+            return False
+
 class cm_cfg(object):
     '''
     Class for generating CM cfg from nothing, or even importing from a file
