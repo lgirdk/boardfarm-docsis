@@ -618,41 +618,41 @@ class ArrisCMTS(base_cmts.BaseCmts):
 
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
     def get_ertr_ipv4(self, mac, offset = 2):
-       '''
-       This function is to return the ipv4 address of erouter of modem.
-       Input : arg1 : Mac address of the modem, arg2 : offset.
-       Output : Returns the ipv4 address of the erouter if exists else None.
-       '''
-       self.sendline("show cable modem %s detail" % mac)
-       self.expect(self.prompt)
-       mac = netaddr.EUI(mac)
-       ertr_mac = netaddr.EUI(int(mac) + offset)
-       ertr_mac.dialect = netaddr.mac_cisco
-       ertr_ipv4 = re.search('(%s) .*=(%s)' % (ertr_mac,ValidIpv4AddressRegex), self.before)
-       if ertr_ipv4:
-           ipv4 = ertr_ipv4.group(2)
-           return ipv4
-       else:
-           return None
+        '''
+        This function is to return the ipv4 address of erouter of modem.
+        Input : arg1 : Mac address of the modem, arg2 : offset.
+        Output : Returns the ipv4 address of the erouter if exists else None.
+        '''
+        self.sendline("show cable modem %s detail" % mac)
+        self.expect(self.prompt)
+        mac = netaddr.EUI(mac)
+        ertr_mac = netaddr.EUI(int(mac) + offset)
+        ertr_mac.dialect = netaddr.mac_cisco
+        ertr_ipv4 = re.search('(%s) .*=(%s)' % (ertr_mac,ValidIpv4AddressRegex), self.before)
+        if ertr_ipv4:
+            ipv4 = ertr_ipv4.group(2)
+            return ipv4
+        else:
+            return None
 
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
     def get_ertr_ipv6(self, mac, offset = 2):
-       '''
-       This function is to return the ipv6 address of erouter of modem.
-       Input : arg1 : Mac address of the modem, arg2 : offset.
-       Output : Returns the ipv6 address of the erouter (not link local ip) if exists else None.
-       '''
-       self.sendline("show cable modem %s detail" % mac)
-       self.expect(self.prompt)
-       mac = netaddr.EUI(mac)
-       ertr_mac = netaddr.EUI(int(mac) + offset)
-       ertr_mac.dialect = netaddr.mac_cisco
-       ertr_ipv6 = re.search('(%s) IPv6=(%s)' % (ertr_mac,AllValidIpv6AddressesRegex), self.before)
-       if ertr_ipv6:
-           ipv6 = ertr_ipv6.group(2)
-           return ipv6
-       else:
-           return None
+        '''
+        This function is to return the ipv6 address of erouter of modem.
+        Input : arg1 : Mac address of the modem, arg2 : offset.
+        Output : Returns the ipv6 address of the erouter (not link local ip) if exists else None.
+        '''
+        self.sendline("show cable modem %s detail" % mac)
+        self.expect(self.prompt)
+        mac = netaddr.EUI(mac)
+        ertr_mac = netaddr.EUI(int(mac) + offset)
+        ertr_mac.dialect = netaddr.mac_cisco
+        ertr_ipv6 = re.search('(%s) IPv6=(%s)' % (ertr_mac,AllValidIpv6AddressesRegex), self.before)
+        if ertr_ipv6:
+            ipv6 = ertr_ipv6.group(2)
+            return ipv6
+        else:
+            return None
 
     def get_center_freq(self, mac_domain = None):
         '''
@@ -728,27 +728,27 @@ class ArrisCMTS(base_cmts.BaseCmts):
         return cmts_ip
 
     def reset(self):
-       '''
-       This function is to reset the cmts.
-       Input : None.
-       Output : None (resets the cmts).
-       '''
-       self.sendline('erase nvram')
-       self.expect(self.prompt)
-       self.sendline('reload')
-       self.expect(self.prompt)
+        '''
+        This function is to reset the cmts.
+        Input : None.
+        Output : None (resets the cmts).
+        '''
+        self.sendline('erase nvram')
+        self.expect(self.prompt)
+        self.sendline('reload')
+        self.expect(self.prompt)
 
     def add_service_class(self, index, name, max_rate, max_burst, max_tr_burst = None, downstream = False):
-       '''
-       This function is to add service class on cmts and set it parameters.
-       Input : arg1 : cable mac index (ignored in arris), arg2 : name to be used for qos, arg3 : the max_rate, arg4 : max transmission burst , arg5 : max burst to be set (used in arris), arg 6 : downstream = True if we want the service class to be used for downstream.
-       Output : None (creates and sets parameters on service class).
-       '''
-       self.sendline('qos-sc name %s max-tr-rate %s max-tr-burst %s max-burst %s' % (name, max_rate,max_tr_burst,max_burst))
-       self.expect(self.prompt)
-       if downstream:
-           self.sendline('qos-sc name %s dir 1' % name)
-           self.expect(self.prompt)
+        '''
+        This function is to add service class on cmts and set it parameters.
+        Input : arg1 : cable mac index (ignored in arris), arg2 : name to be used for qos, arg3 : the max_rate, arg4 : max transmission burst , arg5 : max burst to be set (used in arris), arg 6 : downstream = True if we want the service class to be used for downstream.
+        Output : None (creates and sets parameters on service class).
+        '''
+        self.sendline('qos-sc name %s max-tr-rate %s max-tr-burst %s max-burst %s' % (name, max_rate,max_tr_burst,max_burst))
+        self.expect(self.prompt)
+        if downstream:
+            self.sendline('qos-sc name %s dir 1' % name)
+            self.expect(self.prompt)
 
     def add_iface_docsis_mac(self, index, ip_bundle, qam_idx, qam_ch, ups_idx, ups_ch, qam_sub = None, prov_mode = None):
         '''
