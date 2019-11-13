@@ -586,15 +586,16 @@ class CfgGenerator():
         # file that can be used for config element that are not standard
         # and/or testing new configs without major changes in the code
         self.additional_cfg = kwargs.pop("additional_cfg", "")
-
-        er = {eRouter.InitializationMode:erouter}
-        eRout = eRouter(**er)
+        if erouter:
+            er = {eRouter.InitializationMode:erouter}
+            eRout = eRouter(**er)
 
         tmp_cfg = self.cm_base_cfg[:]
         # is this as bad as i think it is?
-        for i,elem in enumerate(self.cm_base_cfg):
-            if elem.__class__.__name__ == eRout.__class__.__name__:
-                tmp_cfg[i] = eRout
+        if erouter:
+            for i,elem in enumerate(self.cm_base_cfg):
+                if elem.__class__.__name__ == eRout.__class__.__name__:
+                    tmp_cfg[i] = eRout
         self.update_cm_base_cfg(kwargs)
         self.cm_base_cfg = tmp_cfg[:]
         return tmp_cfg
@@ -610,6 +611,9 @@ class CfgGenerator():
 
     def gen_bridge_cfg(self, kwargs):
         return self._gen_cfg('0', kwargs)
+
+    def gen_no_mode(self, kwargs):
+        return self._gen_cfg(None, kwargs)
 
     def generate_cfg(self, fname = None):
         """
