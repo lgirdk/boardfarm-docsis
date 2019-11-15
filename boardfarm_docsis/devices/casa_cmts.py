@@ -13,7 +13,7 @@ import re
 
 from boardfarm.devices import connection_decider
 from boardfarm.lib.regexlib import ValidIpv4AddressRegex, AllValidIpv6AddressesRegex
-import base_cmts
+from . import base_cmts
 import ipaddress
 
 
