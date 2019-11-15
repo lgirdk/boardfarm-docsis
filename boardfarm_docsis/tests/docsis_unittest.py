@@ -1,5 +1,7 @@
 from boardfarm.tests import rootfs_boot
-from boardfarm.devices import board
+from boardfarm.devices import board, wan
+from boardfarm.lib.SnmpHelper import snmp_v2
+
 class selftest_test_cmts_functions(rootfs_boot.RootFSBootTest):
     def runTest(self):
         '''
@@ -17,3 +19,25 @@ class selftest_test_cmts_functions(rootfs_boot.RootFSBootTest):
         print("The erouter Ipv4 address is %s" % ertr_ipv4)
         ertr_ipv6=cmts.get_ertr_ipv6(board.config["cm_mac"])
         print("The erouter Ipv6 address is %s" % ertr_ipv6)
+
+
+class selftest_snmpv2(rootfs_boot.RootFSBootTest):
+
+    def runTest(self):
+        mib_list = ["docsDevSwServer", "docsDevSwFilename"]
+        ip = board.get_interface_ipaddr(board.wan_iface)
+        for mib in mib_list:
+            try:
+                value_1 = snmp_v2(wan, ip, mib)
+                print("snmpget on mib: %s\nvalue: %s" % (mib, value_1))
+
+                # In case of SNMP set, script first performs a get, loads the mib details and then performs a set.
+                value_2 = snmp_v2(wan, ip, mib, value=value_1+"error")
+                print("snmpset on mib: %s\nvalue: %s" % (mib, value_2))
+
+            except Exception as e:
+                print(e)
+            finally:
+                value_2 = snmp_v2(wan, ip, mib, value=value_1)
+                print("snmpset on mib: %s\nvalue: %s" % (mib, value_2))
+
