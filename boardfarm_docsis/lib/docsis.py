@@ -7,12 +7,17 @@
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
 import os
-import Tkinter
+try:
+    # Python 2
+    import Tkinter
+except:
+    # Python 3
+    import tkinter as Tkinter
 import re
 import tempfile
 import hashlib
 
-from cfg_helper import CfgGenerator
+from .cfg_helper import CfgGenerator
 
 from boardfarm.lib.common import cmd_exists
 
