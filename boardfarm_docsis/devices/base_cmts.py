@@ -152,6 +152,9 @@ class BaseCmts(base.BaseDevice):
     def run_tcpdump(self, time, iface = 'any', opts = ""):
         raise Exception("Not implemented!")
 
+    def get_qos_parameter(self, cm_mac):
+        raise Exception("Not implemented!")
+
     def get_cm_mac_cmts_format(self, mac):
         """
         Function:   get_cm_mac_cmts_format(mac)

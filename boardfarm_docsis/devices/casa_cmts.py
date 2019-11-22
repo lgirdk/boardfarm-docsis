@@ -731,3 +731,41 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.sendline('show system | include Product')
         self.expect(self.prompt)
         return self.before.split(",")[0].split(":")[1].strip().lower()
+
+    def get_qos_parameter(self, cm_mac):
+        """
+        To get the qos related parameters of CM.
+        To get the qos related parameters ["Maximum Concatenated Burst", "Maximum Burst", "Maximum Sustained rate", "Mimimum Reserved rate", "Scheduling Type"] of CM.
+        Parameters: (string)cm_mac
+        Returns: (dict) containing the qos related parameters.
+        """
+        qos_dict = {}
+        service_flows = ["US" , "DS"]
+        for value in service_flows:
+            self.sendline("show cable modem %s qos | include %s" % (cm_mac, value))
+            self.expect(self.prompt)
+            qos_dict[value] = {"sfid" : self.before.split("\n")[-2].split(" ")[0].strip()}
+
+        #mapping of the ouput stream to the US/DS and using the index.
+        self.sendline("show cable modem %s qos verbose" % (cm_mac))
+        self.expect(self.prompt)
+
+        #setting the index to filter the US/DS parameters from cmts.
+        US_index = 0 if qos_dict["US"]["sfid"] in self.before.split("Sfid")[1] else 1
+        qos_parameters = ["Maximum Concatenated Burst", "Maximum Burst", "Maximum Sustained rate", "Mimimum Reserved rate", "Scheduling Type"]
+
+        qos_data = []
+        for i in range(1,3):
+            qos_data.append([string[:-1] for string in self.before.split("Sfid")[i].split("\n") if any(param in string for param in qos_parameters)])
+        qos_dict["US"].update(dict([x.split(":")[0].strip(), x.split(":")[1].strip()] for x in qos_data[US_index]))
+        del qos_data[US_index]
+        qos_dict["DS"].update(dict([x.split(":")[0].strip(), x.split(":")[1].strip()] for x in qos_data[0]))
+
+        #this is to replace Mimimum with Minimum typo on casa cmts and convert to unit of measure like kbpc to bitespersecond.
+        for value in service_flows:
+            qos_dict[value].update({"Minimum Reserved rate" : int(qos_dict[value]["Mimimum Reserved rate"].split(" ")[0])*1000})
+            del qos_dict[value]["Mimimum Reserved rate"]
+            qos_dict[value].update({"Maximum Sustained rate" : int(qos_dict[value]["Maximum Sustained rate"].split(" ")[0])*1000})
+            qos_dict[value].update({"Maximum Concatenated Burst" : int(qos_dict[value]["Maximum Concatenated Burst"].split(" ")[0])})
+            qos_dict[value].update({"Maximum Burst" : int(qos_dict[value]["Maximum Burst"].split(" ")[0])})
+        return qos_dict
