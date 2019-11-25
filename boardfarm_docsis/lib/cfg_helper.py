@@ -13,7 +13,6 @@ def update_dict(d, **kwargs):
     for k,v in kwargs.items():
         if k in d:
             d[k] = v
-            kwargs.pop(k)
 
 def dict_to_str(d, name=None, indent=4):
     """
