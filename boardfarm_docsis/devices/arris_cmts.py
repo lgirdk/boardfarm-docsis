@@ -8,6 +8,7 @@
 
 import pexpect
 import netaddr
+import six
 import sys
 import re
 
@@ -299,9 +300,9 @@ class ArrisCMTS(base_cmts.BaseCmts):
         '''
         if  "/" not in ipaddr:
             ipaddr  += "/24"
-            ipaddr = ipaddress.IPv4Interface(unicode(ipaddr))
+            ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
         else:
-            ipaddr = ipaddress.IPv4Interface(unicode(ipaddr))
+            ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
         self.sendline('interface %s' % iface)
         self.expect(self.prompt)
         self.sendline('ip address %s %s'  %(ipaddr.ip, ipaddr.netmask))
@@ -413,9 +414,9 @@ class ArrisCMTS(base_cmts.BaseCmts):
         '''
         if  "/" not in ipaddr:
             ipaddr  += "/24"
-            ipaddr = ipaddress.IPv4Interface(unicode(ipaddr))
+            ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
         else:
-            ipaddr = ipaddress.IPv4Interface(unicode(ipaddr))
+            ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
         self.sendline('ip route %s %s %s' % (ipaddr.ip, ipaddr.netmask, gw))
         self.expect(self.prompt)
         if 'error' in self.before.lower():
@@ -439,7 +440,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
             print("An error occured while adding the route.")
         self.sendline('show ipv6 route')
         self.expect(self.prompt)
-        if str(ipaddress.IPv6Address(unicode(gw))).lower() in self.before.lower():
+        if str(ipaddress.IPv6Address(six.text_type(gw))).lower() in self.before.lower():
             print("The route is available on cmts.")
         else:
             print("The route is not available on cmts.")
@@ -452,9 +453,9 @@ class ArrisCMTS(base_cmts.BaseCmts):
         '''
         if  "/" not in ipaddr:
             ipaddr  += "/24"
-            ipaddr = ipaddress.IPv4Interface(unicode(ipaddr))
+            ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
         else:
-            ipaddr = ipaddress.IPv4Interface(unicode(ipaddr))
+            ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
         self.sendline('no ip route %s %s %s' % (ipaddr.ip, ipaddr.netmask, gw))
         self.expect(self.prompt)
         if 'error' in self.before.lower():
@@ -479,7 +480,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
             print("An error occured while deleting the route.")
         self.sendline('show ipv6 route')
         self.expect(self.prompt)
-        if str(ipaddress.ip_address(unicode(gw)).compressed).lower() in self.before.lower() or gw.lower() in self.before.lower():
+        if str(ipaddress.ip_address(six.text_type(gw)).compressed).lower() in self.before.lower() or gw.lower() in self.before.lower():
             print("The route is still available on cmts.")
         else:
             print("The route is not available on cmts.")
@@ -492,9 +493,9 @@ class ArrisCMTS(base_cmts.BaseCmts):
         '''
         if  "/" not in ipaddr:
             ipaddr  += "/24"
-            ipaddr = ipaddress.IPv4Interface(unicode(ipaddr))
+            ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
         else:
-            ipaddr = ipaddress.IPv4Interface(unicode(ipaddr))
+            ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
         self.sendline('interface cable-mac %s' % index)
         self.expect(self.prompt)
         self.sendline('ip address %s %s'  %(ipaddr.ip, ipaddr.netmask))
@@ -502,9 +503,9 @@ class ArrisCMTS(base_cmts.BaseCmts):
         for ip2 in secondary_ips:
             if  "/" not in ip2:
                 ip2  += "/24"
-                ip2 = ipaddress.IPv4Interface(unicode(ip2))
+                ip2 = ipaddress.IPv4Interface(six.text_type(ip2))
             else:
-                ip2 = ipaddress.IPv4Interface(unicode(ip2))
+                ip2 = ipaddress.IPv4Interface(six.text_type(ip2))
             self.sendline('ip address %s %s secondary' %(ip2.ip, ip2.netmask))
             self.expect(self.prompt)
         self.sendline('cable helper-address %s cable-modem' % helper_ip)
@@ -538,7 +539,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         self.sendline('show running-config interface cable-mac %s | include ipv6 address' % index)
         self.expect(self.prompt)
-        if str(ipaddress.ip_address(unicode(ip[:-3])).compressed) in self.before:
+        if str(ipaddress.ip_address(six.text_type(ip[:-3])).compressed) in self.before:
             print("The ipv6 bundle is successfully set.")
         else:
             print("An error occured while setting the ipv6 bundle.")
@@ -760,9 +761,9 @@ class ArrisCMTS(base_cmts.BaseCmts):
         '''
         if  "/" not in ip_bundle:
             ip_bundle  += "/24"
-            ip_bundle = ipaddress.IPv4Interface(unicode(ip_bundle))
+            ip_bundle = ipaddress.IPv4Interface(six.text_type(ip_bundle))
         else:
-            ip_bundle = ipaddress.IPv4Interface(unicode(ip_bundle))
+            ip_bundle = ipaddress.IPv4Interface(six.text_type(ip_bundle))
         self.sendline('interface cable-mac %s' % index)
         self.expect(self.prompt)
         self.sendline('no shutdown')
