@@ -770,3 +770,41 @@ class CasaCMTS(base_cmts.BaseCmts):
             qos_dict[value].update({"Maximum Concatenated Burst" : int(qos_dict[value]["Maximum Concatenated Burst"].split(" ")[0])})
             qos_dict[value].update({"Maximum Burst" : int(qos_dict[value]["Maximum Burst"].split(" ")[0])})
         return qos_dict
+
+    def get_upstream_channel(self):
+        '''
+        This function is to get the upstream channel type on cmts.
+        Input : None.
+        Output : Upstream channel type 1.0 -> tdma[1], 2.0 -> atdma[2], 3.0 -> scdma[3].
+        '''
+        self.sendline('show interface docsis-mac %s | inc upstream' % self.mac_domain)
+        self.expect(self.prompt)
+        tmp = re.findall(r"upstream\s\d\sinterface\supstream\s(.*)/(.*)/0", self.before)
+        channel_type = list()
+        for ups_idx, ups_ch in tmp:
+            self.sendline('show interface upstream %s/%s | inc "logical-channel 0 profile"' % (ups_idx, ups_ch))
+            self.expect('logical-channel 0 profile\s(.*)')
+            channel_type.append(self.match.group(1).strip())
+            self.expect(self.prompt)
+            self.expect(pexpect.TIMEOUT, timeout=1)
+
+        return channel_type
+
+    def set_upstream_channel(self, channel_type):
+        '''
+        This function is to set the upstream channel type on cmts.
+        Input : channel_type 1.0 -> tdma[1], 2.0 -> atdma[2], 3.0 -> scdma[3].
+        Output : None.
+        '''
+        self.sendline('show interface docsis-mac %s | inc upstream' % self.mac_domain)
+        self.expect(self.prompt)
+        tmp = re.findall(r"upstream\s\d\sinterface\supstream\s(.*)/(.*)/0", self.before)
+        assert len(tmp) == len(channel_type), 'boning index error'
+        for ups, channel in zip(tmp, channel_type):
+            self.sendline('interface upstream %s/%s' % (ups[0], ups[1]))
+            self.expect(self.prompt)
+            self.sendline('logical-channel 0 profile %s' % channel)
+            self.expect(self.prompt)
+            self.sendline('exit')
+            self.expect(self.prompt)
+            self.expect(pexpect.TIMEOUT, timeout=1)
