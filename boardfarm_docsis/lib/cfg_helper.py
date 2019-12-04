@@ -570,6 +570,8 @@ class CfgGenerator():
         return next(iter(s))
 
     def update_cm_base_cfg(self, kwargs):
+        if not kwargs:
+            return
         while kwargs != {}:
             k = self.first(kwargs)
             for elem in self.cm_base_cfg:
@@ -584,7 +586,8 @@ class CfgGenerator():
         # This is quick way of appending a string at the end of the cfg
         # file that can be used for config element that are not standard
         # and/or testing new configs without major changes in the code
-        self.additional_cfg = kwargs.pop("additional_cfg", "")
+        if kwargs:
+            self.additional_cfg = kwargs.pop("additional_cfg", "")
         if erouter:
             er = {eRouter.InitializationMode:erouter}
             eRout = eRouter(**er)
@@ -599,19 +602,19 @@ class CfgGenerator():
         self.cm_base_cfg = tmp_cfg[:]
         return tmp_cfg
 
-    def gen_dual_stack_cfg(self, kwargs):
+    def gen_dual_stack_cfg(self, kwargs=None):
         return self._gen_cfg('3', kwargs)
 
-    def gen_ipv4_cfg(self, kwargs):
+    def gen_ipv4_cfg(self, kwargs=None):
         return self._gen_cfg('1', kwargs)
 
-    def gen_ipv6_cfg(self, kwargs):
+    def gen_ipv6_cfg(self, kwargs=None):
         return self._gen_cfg('2', kwargs)
 
-    def gen_bridge_cfg(self, kwargs):
+    def gen_bridge_cfg(self, kwargs=None):
         return self._gen_cfg('0', kwargs)
 
-    def gen_no_mode(self, kwargs):
+    def gen_no_mode(self, kwargs=None):
         return self._gen_cfg(None, kwargs)
 
     def generate_cfg(self, fname = None):
