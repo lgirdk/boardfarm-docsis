@@ -771,40 +771,57 @@ class CasaCMTS(base_cmts.BaseCmts):
             qos_dict[value].update({"Maximum Burst" : int(qos_dict[value]["Maximum Burst"].split(" ")[0])})
         return qos_dict
 
-    def get_upstream_channel(self):
+    def get_upstream(self):
         '''
-        This function is to get the upstream channel type on cmts.
+        This function is to get the upstream values on cmts.
         Input : None.
-        Output : Upstream channel type 1.0 -> tdma[1], 2.0 -> atdma[2], 3.0 -> scdma[3].
+        Output : Get Upstream frequency, channel type and channel-width.
+        which channel type 1.0 -> tdma[1], 2.0 -> atdma[2], 3.0 -> scdma[3]
         '''
+        from collections import defaultdict
         self.sendline('show interface docsis-mac %s | inc upstream' % self.mac_domain)
         self.expect(self.prompt)
         tmp = re.findall(r"upstream\s\d\sinterface\supstream\s(.*)/(.*)/0", self.before)
-        channel_type = list()
+        get_upstream = defaultdict(list)
         for ups_idx, ups_ch in tmp:
+            self.sendline('show interface upstream %s/%s | inc "frequency"' % (ups_idx, ups_ch))
+            self.expect('frequency\s(.*)')
+            get_upstream['frequency'].append(self.match.group(1).strip())
+            self.expect(self.prompt)
+            self.expect(pexpect.TIMEOUT, timeout=1)
             self.sendline('show interface upstream %s/%s | inc "logical-channel 0 profile"' % (ups_idx, ups_ch))
             self.expect('logical-channel 0 profile\s(.*)')
-            channel_type.append(self.match.group(1).strip())
+            get_upstream['channel_type'].append(self.match.group(1).strip())
+            self.expect(self.prompt)
+            self.expect(pexpect.TIMEOUT, timeout=1)
+            self.sendline('show interface upstream %s/%s | inc "^\s+channel-width"' % (ups_idx, ups_ch))
+            self.expect('channel-width\s(.*)')
+            get_upstream['channel_with'].append(self.match.group(1).strip().split('\r\n')[0])
             self.expect(self.prompt)
             self.expect(pexpect.TIMEOUT, timeout=1)
 
-        return channel_type
+        return get_upstream
 
-    def set_upstream_channel(self, channel_type):
+    def set_upstream(self, get_upstream):
         '''
-        This function is to set the upstream channel type on cmts.
-        Input : channel_type 1.0 -> tdma[1], 2.0 -> atdma[2], 3.0 -> scdma[3].
+        This function is to set the upstream values on cmts.
+        Input : dict types(includes frequency, channel type and channel-width).
         Output : None.
         '''
         self.sendline('show interface docsis-mac %s | inc upstream' % self.mac_domain)
         self.expect(self.prompt)
         tmp = re.findall(r"upstream\s\d\sinterface\supstream\s(.*)/(.*)/0", self.before)
-        assert len(tmp) == len(channel_type), 'boning index error'
-        for ups, channel in zip(tmp, channel_type):
-            self.sendline('interface upstream %s/%s' % (ups[0], ups[1]))
+        index = 0
+        for ups_idx, ups_ch in tmp:
+            self.sendline('interface upstream %s/%s' % (ups_idx, ups_ch))
             self.expect(self.prompt)
-            self.sendline('logical-channel 0 profile %s' % channel)
+            self.sendline('frequency %s' %get_upstream['frequency'][index])
+            self.expect(self.prompt)
+            self.sendline('logical-channel 0 profile %s' %get_upstream['channel_type'][index])
+            self.expect(self.prompt)
+            self.sendline('channel-width %s' %get_upstream['channel_with'][index])
             self.expect(self.prompt)
             self.sendline('exit')
             self.expect(self.prompt)
             self.expect(pexpect.TIMEOUT, timeout=1)
+            index = index+1
