@@ -6,8 +6,20 @@ from boardfarm.lib.network_helper import valid_ipv4, valid_ipv6
 
 # TODO: probably the wrong parent
 class Docsis(openwrt_router.OpenWrtRouter):
-
+    """Docsis class used to perform generic operations
+    """
     def get_cmStatus(self, wan, wan_ip, status_string=None):
+        """This method gets the cm status via snmp.
+
+        :param wan: wan device
+        :type wan: object
+        :param wan_ip: wan ip address
+        :type wan_ip: string
+        :param status_string: the cm status to be used for match, defaults to None
+        :type status_string: string
+        :return: the status of the CM
+        :rtype: string
+        """
         """
         Name: cmStatus
         Purpose: Use snmp mib to get cm status.
@@ -28,7 +40,6 @@ class Docsis(openwrt_router.OpenWrtRouter):
             12: operational(12)
             13: accessDenied(13)
         """
-
         status=['Timeout: No Response from', '(INTEGER: \d+)']
         for not_used in range(100):
             # TODO: wan ip could change after reboot?
@@ -49,9 +60,20 @@ class Docsis(openwrt_router.OpenWrtRouter):
         return False
 
     def tr069_connected(self):
-        assert False, "Code to detect if tr069 clienti is running is not implemented"
+        """This method validates if the TR069 client is running on CM
+
+        :raises Exception: to be implemented
+        """
+        assert False, "Code to detect if tr069 client is running, to be implemented"
 
     def check_valid_docsis_ip_networking(self, strict=True, time_for_provisioning=240):
+        """This method is to check the docsis provision on CM
+
+        :param strict: used to raise Exception if specified as True and provision false, defaults to True
+        :type strict: boolean
+        :param time_for_provisioning: the maximum time allowed for the CM to provision, defaults to 240
+        :type time_for_provisioning: int
+        """
         start_time = time.time()
 
         wan_ipv4 = False
@@ -115,11 +137,8 @@ class Docsis(openwrt_router.OpenWrtRouter):
                         print("WARN: failed to provision board entirely")
 
     def get_cm_model_type(self):
-        """
-        Function is used as stub for function in mv1 to get the cm model type
-        Parameters:
-        arg1 (self): NA
+        """This methods returns the model of the CM
 
-        Returns:None
+        :raises Exception: to be implemented
         """
         raise Exception("Not implemented! should be implemented to return the cm model name")
