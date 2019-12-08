@@ -46,6 +46,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.password_admin = kwargs.get('password_admin', 'boardfarm')
         self.ssh_password = kwargs.get('ssh_password', 'boardfarm')
         self.mac_domain = kwargs.get('mac_domain', None)
+        self.channel_bonding = kwargs.get('channel_bonding', 32) # 24x8 : total 32
 
         if conn_cmd is None:
             # TODO: try to parse from ipaddr, etc

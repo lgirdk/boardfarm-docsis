@@ -35,7 +35,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.password = kwargs.get('password', 'casa')
         self.password_admin = kwargs.get('password_admin', 'casa')
         self.mac_domain = kwargs.get('mac_domain', None)
-
+        self.channel_bonding = kwargs.get('channel_bonding', 24) # 16x8 : total 24
 
         if conn_cmd is None:
             # TODO: try to parse from ipaddr, etc
