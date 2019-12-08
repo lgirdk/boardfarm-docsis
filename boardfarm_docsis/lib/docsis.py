@@ -19,7 +19,7 @@ import hashlib
 
 from .cfg_helper import CfgGenerator
 
-from boardfarm.lib.common import cmd_exists
+from boardfarm.lib.common import cmd_exists, keccak512_checksum
 
 class docsis:
     """
@@ -125,6 +125,7 @@ class docsis:
         except:
             return encode_mta()
 
+    # this is old. This would go eventually.
     @staticmethod
     def configure_board(provisioner, board, **kwargs):
         cm_cfg = kwargs.pop("cm_cfg", None)
@@ -140,9 +141,9 @@ class docsis:
         #TODO: we need to have a common lib which marks services running in each device.
         # this needs to be removed at a later point.
         provisioner.tftp_device = board.tftp_dev
-
         provisioner.provision_board(board.config)
 
+    # This method is old. Added a method on top to calculate sha3.
     @staticmethod
     def validate_modem_cfg_file(board, device):
         '''
@@ -267,3 +268,80 @@ class mta_cfg(cm_cfg):
     '''MTA specific class for cfgs'''
 
     encoded_suffix = '.bin'
+
+
+
+#-----------------------------------Library Methods-----------------------------------
+
+def check_board(board, cmts, cm_mac):
+
+    assert board.is_online(), "CM show not OPERATIONAL on console"
+    assert cmts.check_online(cm_mac) == True, "CM is not online" #check cm online on CMTS
+    assert sum(cmts.DUT_chnl_lock(cm_mac)) == cmts.channel_bonding, "CM is in partial service"
+
+    return True
+
+def check_provisioning(board):
+    # few cmts methods needs to be added before comparing sha3
+    def _shortname(cfg):
+        d = docsis(cfg)
+        ret = d.encode()
+        return keccak512_checksum(ret)
+
+    sha3_on_board = board.cfg_sha3()
+    sha3_on_fw = _shortname(board.cm_cfg)
+    print(sha3_on_board)
+    print(sha3_on_fw)
+    return sha3_on_board == sha3_on_fw
+
+def check_interface(board, ip, prov_mode="dual"):
+    # This is only for erouter and CPE interfaces check.
+    erouter_condition = ip["board"][board.erouter_iface].get("ipv4", None)
+    erouter_condition = erouter_condition if prov_mode not in ["none", "bridge"] else not erouter_condition
+    erouterv6_condition = ip["board"][board.erouter_iface].get("ipv6", None)
+    erouterv6_condition = erouterv6_condition if prov_mode not in ["none", "bridge"] else not erouterv6_condition
+
+    assert erouter_condition, "Failed to fetch board IPv4, mode: %s" % prov_mode
+    assert ip["lan"].get("ipv4", None), "Failed to fetch LAN IPv4, mode: %s" % prov_mode
+    if "lan2" in ip:
+        assert ip["lan2"].get("ipv4", None), "Failed to fetch LAN2 IPv4, mode: %s" % prov_mode
+
+    if prov_mode != "ipv4":
+        if prov_mode == "dslite":
+            assert ip["board"][board.aftr_iface], "No IP address assigned to AFTR"
+        assert erouterv6_condition, "Failed to fetch board IPv6\nmode: %s" % prov_mode
+        assert ip["lan"].get("ipv6", None), "Failed to fetch LAN IPv6\nmode: %s" % prov_mode
+        if "lan2" in ip:
+            assert ip["lan2"].get("ipv6", None), "Failed to fetch LAN2 IPv6, mode: %s" % prov_mode
+
+def generate_cfg_file(board, test_args, cfg_mode, filename=None, cfg_args=None):
+    if not filename:
+        filename = cfg_mode+"_config.txt"
+
+    if cfg_args:
+        extra_snmp_default_mibs = []
+        for dict_name in cfg_args:
+            if dict_name in board.cm_cfg.mib_list:
+                extra_snmp_default_mibs += eval("board.cm_cfg."+dict_name)
+        test_args["extra_snmp"] = extra_snmp_default_mibs
+
+    cfg_file = board.generate_cfg(cfg_mode,
+                                  fname=filename,
+                                  kwargs=test_args)
+    return cfg_file
+
+def configure_board_v2(provisioner, board, test_args, test_data, **kwargs):
+    prov_mode = getattr(test_data, "prov_mode", None)
+    filename = getattr(test_data, "filename", None)
+    cfg_args = getattr(test_data, "cfg_args", None)
+
+    cm_cfg = kwargs.pop("cm_cfg", None)
+    mta_cfg = kwargs.pop("mta_cfg", None)
+
+    if not cm_cfg:
+        cm_cfg = generate_cfg_file(board, test_args, prov_mode, filename, cfg_args)
+    board.update_docsis_config(cm_cfg=cm_cfg, mta_cfg=mta_cfg, **kwargs)
+    provisioner.tftp_device = board.tftp_dev
+    provisioner.provision_board(board.config)
+
+
