@@ -1104,3 +1104,34 @@ class CasaCMTS(base_cmts.BaseCmts):
             self.expect(self.prompt)
             self.expect(pexpect.TIMEOUT, timeout=1)
             index = index+1
+
+    def get_downstream_qam(self):
+        """This function is to get downstream modulation type(64qam, 256qam...)
+
+        :return: Downstream modulation qam values. ex.{'8/6': '256qam', '8/4': '256qam', '8/5': '256qam'}
+        :rtype: dict
+        """
+        self.sendline('show interface docsis-mac %s | inc downstream' % self.mac_domain)
+        self.expect(self.prompt)
+        tmp = re.findall('downstream\s\d+\sinterface\sqam\s(.*)/\d+', self.before)
+        downs = set([x for x in tmp if tmp.count(x) > 1])
+        get_downstream_qam = dict()
+        for i in downs:
+            self.sendline('show interface qam %s | inc "modulation"' % i)
+            self.expect('modulation\s(.*)')
+            get_downstream_qam[i] = self.match.group(1).strip()
+            self.expect(self.prompt)
+
+        return get_downstream_qam
+
+    def set_downstream_qam(self, get_downstream_qam):
+        """This function is to set downstream modulation type(64qam, 256qam...)
+
+        :param get_downstream_qam: ex.{'8/6': '256qam', '8/4': '256qam', '8/5': '256qam'}
+        :type get_downstream_qam: dict
+        """
+        for k,v in get_downstream_qam.items():
+            self.sendline('interface qam %s' % k)
+            self.expect(self.prompt)
+            self.sendline('modulation %s' %v)
+            self.expect(self.prompt)
