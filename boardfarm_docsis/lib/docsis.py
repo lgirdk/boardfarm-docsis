@@ -321,7 +321,7 @@ def check_interface(board, ip, prov_mode="dual", lan_devices=["lan"]):
     """
 
     # This is only for erouter and CPE interfaces check.
-    def _get_ertr_conditions(iface):
+    def _validate_ertr(iface, mode):
         """This function validates if e-router needs to be considered for assertion
 
         If the prov_mode is none or bridge, do not expect an entry for erouter
@@ -330,13 +330,17 @@ def check_interface(board, ip, prov_mode="dual", lan_devices=["lan"]):
 
         :param iface : v6 and v4 details of a board's e-router iface
         :type iface : dict
-        :return : condition checks for router interface
-        :rtype : tuple
+        :param mode : can be IPv4 or IPv6
+        :type mode : str
+
+        :raises CodeError : if the IP addresses are not validated as per prov_mode
         """
-        v4 = iface.get("ipv4", None)
-        v6 = iface.get("ipv6", None)
-        check = lambda x : x if prov_mode not in ["none", "bridge"] else not x
-        return check(v4), check(v6)
+        version = {
+                "ipv4" : ["ipv4", "dual"],
+                "ipv6" : ["dslite", "dual"]
+                }
+        check = lambda x : x if prov_mode in version[mode.lower()] else not x
+        assert check(iface.get(mode.lower(), None)), "Failed to fetch E-Router {}, mode: {}".format(mode, prov_mode)
 
     def _validate_cpe(mode):
         """This function validates v4/v6 ip-addresses of CPEs based on prov_mode
@@ -351,20 +355,14 @@ def check_interface(board, ip, prov_mode="dual", lan_devices=["lan"]):
         for dev in lan_devices:
             assert ip[dev].get(mode.lower(), None), "Failed to fetch {} {}, mode: {}".format(dev, mode, prov_mode)
 
-    # TODO: we could call some extra functions to validate CPEs from CMTS as well.
-    erouter_condition, erouterv6_condition = _get_ertr_conditions(ip["board"][board.erouter_iface])
-
     # Validate IPv4 conditions
-    assert erouter_condition, "Failed to fetch board IPv4, mode: {}".format(prov_mode)
+    _validate_ertr(ip["board"][board.erouter_iface], "IPv4")
     _validate_cpe("IPv4")
 
-    # Validate IPv6 conditions
-    if prov_mode != "ipv4":
-        # Validate AFTR iface as well if prov_mode is in "dslite"
-        if prov_mode == "dslite":
-            assert ip["board"][board.aftr_iface], "No IP address assigned to AFTR"
-        assert erouterv6_condition, "Failed to fetch board IPv6\nmode: %s" % prov_mode
-        _validate_cpe("IPv6")
+    # validate IPv6 conditions
+    _validate_ertr(ip["board"][board.erouter_iface], "IPv6")
+    if prov_mode == "dslite" : _validate_ertr(ip["board"][board.aftr_iface], "IPv6") #validate aftr_v6 for dslite
+    if prov_mode != "ipv4": _validate_cpe("IPv6") # validate ipv6 for CPEs
 
 def generate_cfg_file(board, test_args, cfg_mode, filename=None, cfg_args=None):
     if not filename:
