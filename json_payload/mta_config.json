@@ -1,0 +1,979 @@
+{
+    "global_mta": {
+        "generic_mta_list": {
+                        "pktcMtaDevEnabled": {
+                        "data_type": "int",
+                        "data": "1",
+                        "suffix": ".0"
+                }
+        },
+        "line1": {
+                "ifAdminStatus": {
+                        "data_type": "int",
+                        "data": "1",
+                        "suffix" : ""
+                }
+        },
+        "line2": {
+                "ifAdminStatus": {
+                        "data_type": "int",
+                        "data": "1",
+                        "suffix": ""
+                }
+        }
+    },
+    "global_dial_mta": {
+        "generic_mta_list": {
+                "pktcSigDevCIDMode": {
+                        "data_type": "int",
+			"data":"1",
+                        "suffix" : ".0"
+                },
+                "pktcSigDevCIDFskAfterRing": {
+                        "data_type": "unsigned32",
+                        "data": "500",
+                        "suffix": ".0"
+
+                },
+                "pktcSigDevCallerIdSigProtocol": {
+                        "data_type": "int",
+                        "data": "1",
+                        "suffix": ".0"
+
+                },
+                "pktcSigDevVmwiMode": {
+                        "data_type": "int",
+                        "data": "1",
+                        "suffix": ".0"
+
+                },
+                "pktcSigDevVmwiFskAfterDTAS": {
+                        "data_type": "unsigned32",
+                        "data": "50",
+                        "suffix": ".0"
+                }
+        },
+        "line1": {
+                "pktcNcsEndPntConfigMinHookFlash": {
+                        "data_type": "unsigned32",
+                        "data": "90",
+                        "suffix" : ""
+                },
+                "pktcNcsEndPntConfigMaxHookFlash": {
+                        "data_type": "unsigned32",
+                        "data": "800",
+                        "suffix" : ""
+                },
+                "pktcNcsEndPntConfigPulseDialInterdigitTime": {
+                        "data_type": "unsigned32",
+                        "data": "110",
+                        "suffix" : ""
+                },
+                "pktcNcsEndPntConfigPulseDialMinMakeTime": {
+                        "data_type": "unsigned32",
+                        "data": "25",
+                        "suffix" : ""
+                },
+                "pktcNcsEndPntConfigPulseDialMaxMakeTime": {
+                        "data_type": "unsigned32",
+                        "data": "55",
+                        "suffix" : ""
+                },
+                "pktcNcsEndPntConfigPulseDialMinBreakTime": {
+                        "data_type": "unsigned32",
+                        "data": "45",
+                        "suffix" : ""
+                },
+                "pktcNcsEndPntConfigPulseDialMaxBreakTime": {
+                        "data_type": "unsigned32",
+                        "data": "75",
+                        "suffix" : ""
+                }
+
+        },
+        "line2": {
+                "pktcNcsEndPntConfigMinHookFlash": {
+                        "data_type": "unsigned32",
+                        "data": "90",
+                        "suffix" : ""
+                },
+                "pktcNcsEndPntConfigMaxHookFlash": {
+                        "data_type": "unsigned32",
+                        "data": "800",
+                        "suffix" : ""
+                },
+                "pktcNcsEndPntConfigPulseDialInterdigitTime": {
+                        "data_type": "unsigned32",
+                        "data": "110",
+                        "suffix" : ""
+                },
+                "pktcNcsEndPntConfigPulseDialMinMakeTime": {
+                        "data_type": "unsigned32",
+                        "data": "25",
+                        "suffix" : ""
+                },
+                "pktcNcsEndPntConfigPulseDialMaxMakeTime": {
+                        "data_type": "unsigned32",
+                        "data": "55",
+                        "suffix" : ""
+                },
+                "pktcNcsEndPntConfigPulseDialMinBreakTime": {
+                        "data_type": "unsigned32",
+                        "data": "45",
+                        "suffix" : ""
+                },
+                "pktcNcsEndPntConfigPulseDialMaxBreakTime": {
+                        "data_type": "unsigned32",
+                        "data": "75",
+                        "suffix" : ""
+                }
+
+        }
+    },
+    "global_busy_tone_mta": {
+        "generic_mta_list": {
+                "pktcSigDevToneWholeToneRepeatCount": {
+                        "data_type": "unsigned32",
+                        "data": "35",
+                        "suffix" : ".1"
+                },
+                "pktcSigDevToneSteady": {
+                        "data_type": "int",
+                        "data": "2",
+                        "suffix" : ".1"
+                },
+                "pktcSigDevToneFirstFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "425",
+                        "suffix" : ".1.1"
+                },
+                "pktcSigDevToneSecondFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix" : ".1.1"
+                },
+                "pktcSigDevToneThirdFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix" : ".1.1"
+                },
+                "pktcSigDevToneFourthFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix" : ".1.1"
+                },
+                "pktcSigDevToneFreqMode": {
+                        "data_type": "int",
+                        "data": "2",
+                        "suffix" : ".1.1"
+                },
+                "pktcSigDevToneFreqAmpModePrtg": {
+                        "data_type": "int",
+                        "data": "0",
+                        "suffix" : ".1.1"
+                },
+                "pktcSigDevToneDbLevel": {
+                        "data_type": "int",
+                        "data": "-140",
+                        "suffix" : ".1.1"
+                },
+                "pktcSigDevToneFreqOnDuration": {
+                        "data_type": "unsigned32",
+                        "data": "500",
+                        "suffix" : ".1.1"
+                },
+                "pktcSigDevToneFreqOffDuration": {
+                        "data_type": "unsigned32",
+                        "data": "500",
+                        "suffix" : ".1.1"
+                },
+                "pktcSigDevToneFreqRepeatCount": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix" : ".1.1"
+                }
+        },
+        "line1": {
+               "pktcNcsEndPntConfigBusyToneTO": {
+                        "data_type": "unsigned32",
+                        "data": "30",
+                        "suffix" : ""
+                }
+        },
+        "line2": {
+               "pktcNcsEndPntConfigBusyToneTO": {
+                        "data_type": "unsigned32",
+                        "data": "30",
+                        "suffix" : ""
+                }
+        }
+    },
+    "global_Confirmation_tone_mta": {
+        "generic_mta_list": {
+                "pktcSigDevToneWholeToneRepeatCount": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".2"
+                },
+                "pktcSigDevToneSteady": {
+                        "data_type": "int",
+                        "data": "2",
+                        "suffix": ".2"
+                },
+                "pktcSigDevToneFirstFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "425",
+                        "suffix": ".2.1"
+                },
+                "pktcSigDevToneFirstFreqValue.2.2": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ""
+                },
+                "pktcSigDevToneSecondFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".2.1"
+                },
+                "pktcSigDevToneSecondFreqValue.2.2": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ""
+                },
+                "pktcSigDevToneThirdFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".2.1"
+                },
+                "pktcSigDevToneThirdFreqValue.2.2": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ""
+                },
+                "pktcSigDevToneFourthFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".2.1"
+                },
+                "pktcSigDevToneFreqMode": {
+                        "data_type": "int",
+                        "data": "2",
+                        "suffix": ".2.1"
+                },
+                "pktcSigDevToneFreqMode.2.2": {
+                        "data_type": "int",
+                        "data": "2",
+                        "suffix": ""
+                },
+                "pktcSigDevToneFreqAmpModePrtg": {
+                        "data_type": "int",
+                        "data": "0",
+                        "suffix": ".2.1"
+                },
+                "pktcSigDevToneFreqAmpModePrtg.2.2": {
+                        "data_type": "int",
+                        "data": "0",
+                        "suffix": ""
+                },
+                "pktcSigDevToneDbLevel": {
+                        "data_type": "int",
+                        "data": "-140",
+                        "suffix": ".2.1"
+                },
+                "pktcSigDevToneDbLevel.2.2": {
+                        "data_type": "int",
+                        "data": "0",
+                        "suffix": ""
+                },
+                "pktcSigDevToneFreqOnDuration": {
+                        "data_type": "unsigned32",
+                        "data": "100",
+                        "suffix": ".2.1"
+                },
+                "pktcSigDevToneFreqOnDuration.2.2": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ""
+                },
+                "pktcSigDevToneFreqOffDuration": {
+                        "data_type": "unsigned32",
+                        "data": "100",
+                        "suffix": ".2.1"
+                },
+                "pktcSigDevToneFreqOffDuration.2.2": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ""
+                },
+                "pktcSigDevToneFreqRepeatCount": {
+                        "data_type": "unsigned32",
+                        "data": "2",
+                        "suffix": ".2.1"
+                },
+                "pktcSigDevToneFreqRepeatCount.2.2": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ""
+                }
+
+        }
+
+    },
+    "global_dial_tone_mta": {
+        "generic_mta_list": {
+                "pktcSigDevToneWholeToneRepeatCount": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".3"
+                },
+                "pktcSigDevToneSteady": {
+                        "data_type": "int",
+                        "data": "1",
+                        "suffix": ".3"
+                },
+                "pktcSigDevToneFirstFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "425",
+                        "suffix": ".3.1"
+                },
+                "pktcSigDevToneSecondFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".3.1"
+                },
+                "pktcSigDevToneFourthFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".3.1"
+                },
+                "pktcSigDevToneFreqMode": {
+                        "data_type": "int",
+                        "data": "2",
+                        "suffix": ".3.1"
+                },
+                "pktcSigDevToneFreqAmpModePrtg": {
+                        "data_type": "int",
+                        "data": "0",
+                        "suffix": ".3.1"
+                },
+                "pktcSigDevToneDbLevel": {
+                        "data_type": "int",
+                        "data": "-140",
+                        "suffix": ".3.1"
+                },
+                "pktcSigDevToneFreqOnDuration": {
+                        "data_type": "unsigned32",
+                        "data": "5000",
+                        "suffix": ".3.1"
+                },
+                "pktcSigDevToneFreqOffDuration": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".3.1"
+                },
+                "pktcSigDevToneFreqRepeatCount": {
+                        "data_type": "unsigned32",
+                        "data": "10",
+                        "suffix": ".3.1"
+                }
+
+        },
+        "line1": {
+                "pktcNcsEndPntConfigDialToneTO": {
+                        "data_type": "unsigned32",
+                        "data": "16",
+                        "suffix": ""
+                }
+        },
+        "line2": {
+                "pktcNcsEndPntConfigDialToneTO": {
+                        "data_type": "unsigned32",
+                        "data": "16",
+                        "suffix": ""
+                }
+        }
+    },
+    "global_Message-Waiting_tone_mta": {
+        "generic_mta_list": {
+                "pktcSigDevToneWholeToneRepeatCount": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".4"
+                },
+                "pktcSigDevToneSteady": {
+                        "data_type": "int",
+                        "data": "2",
+                        "suffix": ".4"
+                },
+                "pktcSigDevToneFirstFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "425",
+                        "suffix": ".4.1"
+                },
+                "pktcSigDevToneFirstFreqValue.4.2": {
+                        "data_type": "unsigned32",
+                        "data": "425",
+                        "suffix": ""
+                },
+                "pktcSigDevToneSecondFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".4.1"
+                },
+                "pktcSigDevToneSecondFreqValue.4.2": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ""
+                },
+                "pktcSigDevToneThirdFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".4.1"
+                },
+                "pktcSigDevToneThirdFreqValue.4.2": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ""
+                },
+                "pktcSigDevToneFourthFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".4.1"
+                },
+                "pktcSigDevToneFourthFreqValue.4.2": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ""
+                },
+                "pktcSigDevToneFreqMode": {
+                        "data_type": "int",
+                        "data": "2",
+                        "suffix": ".4.1"
+                },
+                "pktcSigDevToneFreqMode.4.2": {
+                        "data_type": "int",
+                        "data": "2",
+                        "suffix": ""
+                },
+                "pktcSigDevToneFreqAmpModePrtg": {
+                        "data_type": "int",
+                        "data": "0",
+                        "suffix": ".4.1"
+                },
+                "pktcSigDevToneFreqAmpModePrtg.4.2": {
+                        "data_type": "int",
+                        "data": "0",
+                        "suffix": ""
+                },
+                "pktcSigDevToneDbLevel": {
+                        "data_type": "int",
+                        "data": "-140",
+                        "suffix": ".4.1"
+                },
+                "pktcSigDevToneDbLevel.4.2": {
+                        "data_type": "int",
+                        "data": "-140",
+                        "suffix": ""
+                },
+                "pktcSigDevToneFreqOnDuration": {
+                        "data_type": "unsigned32",
+                        "data": "100",
+                        "suffix": ".4.1"
+                },
+                "pktcSigDevToneFreqOnDuration.4.2": {
+                        "data_type": "unsigned32",
+                        "data": "5000",
+                        "suffix": ""
+                },
+                "pktcSigDevToneFreqOffDuration": {
+                        "data_type": "unsigned32",
+                        "data": "100",
+                        "suffix": ".4.1"
+                },
+                "pktcSigDevToneFreqOffDuration.4.2": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ""
+                },
+                "pktcSigDevToneFreqRepeatCount": {
+                        "data_type": "unsigned32",
+                        "data": "2",
+                        "suffix": ".4.1"
+                },
+                "pktcSigDevToneFreqRepeatCount.4.2": {
+                        "data_type": "unsigned32",
+                        "data": "3",
+                        "suffix": ""
+                }
+
+        },
+        "line1": {
+                "pktcNcsEndPntConfigMessageWaitingTO": {
+                        "data_type": "unsigned32",
+                        "data": "16",
+                        "suffix": ""
+                }
+        },
+        "line2": {
+                "pktcNcsEndPntConfigMessageWaitingTO": {
+                        "data_type": "unsigned32",
+                        "data": "16",
+                        "suffix": ""
+                }
+        }
+    },
+    "global_Ringback_tone_mta": {
+        "generic_mta_list": {
+                "pktcSigDevToneWholeToneRepeatCount": {
+                        "data_type": "unsigned32",
+                        "data": "40",
+                        "suffix": ".6"
+                },
+                "pktcSigDevToneSteady": {
+                        "data_type": "int",
+                        "data": "2",
+                        "suffix": ".6"
+                },
+                "pktcSigDevToneFirstFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "425",
+                        "suffix": ".6.1"
+                },
+                "pktcSigDevToneSecondFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".6.1"
+                },
+                "pktcSigDevToneThirdFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".6.1"
+                },
+                "pktcSigDevToneFourthFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".6.1"
+                },
+                "pktcSigDevToneFreqMode": {
+                        "data_type": "int",
+                        "data": "2",
+                        "suffix": ".6.1"
+                },
+                "pktcSigDevToneFreqAmpModePrtg": {
+                        "data_type": "int",
+                        "data": "0",
+                        "suffix": ".6.1"
+                },
+                "pktcSigDevToneDbLevel": {
+                        "data_type": "int",
+                        "data": "-140",
+                        "suffix": ".6.1"
+                },
+                "pktcSigDevToneFreqOnDuration": {
+                        "data_type": "unsigned32",
+                        "data": "1000",
+                        "suffix": ".6.1"
+                },
+                "pktcSigDevToneFreqOffDuration": {
+                        "data_type": "unsigned32",
+                        "data": "4000",
+                        "suffix": ".6.1"
+                },
+                "pktcSigDevToneFreqRepeatCount": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".6.1"
+                }
+        },
+        "line1": {
+                "pktcNcsEndPntConfigRingBackTO": {
+                        "data_type": "unsigned32",
+                        "data": "180",
+                        "suffix": ""
+                }
+        },
+        "line2": {
+                "pktcNcsEndPntConfigRingBackTO": {
+                        "data_type": "unsigned32",
+                        "data": "180",
+                        "suffix": ""
+                }
+        }
+    },
+    "global_Reorder_tone_mta": {
+        "generic_mta_list": {
+                "pktcSigDevToneWholeToneRepeatCount": {
+                        "data_type": "unsigned32",
+                        "data": "80",
+                        "suffix": ".7"
+                },
+                "pktcSigDevToneSteady": {
+                        "data_type": "int",
+                        "data": "2",
+                        "suffix": ".7"
+                },
+                "pktcSigDevToneFirstFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "425",
+                        "suffix": ".7.1"
+                },
+                "pktcSigDevToneSecondFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".7.1"
+                },
+                "pktcSigDevToneThirdFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".7.1"
+                },
+                "pktcSigDevToneFourthFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".7.1"
+                },
+                "pktcSigDevToneFreqMode": {
+                        "data_type": "int",
+                        "data": "2",
+                        "suffix": ".7.1"
+                },
+                "pktcSigDevToneFreqAmpModePrtg": {
+                        "data_type": "int",
+                        "data": "0",
+                        "suffix": ".7.1"
+                },
+                "pktcSigDevToneDbLevel": {
+                        "data_type": "int",
+                        "data": "-190",
+                        "suffix": ".7.1"
+                },
+                "pktcSigDevToneFreqOnDuration": {
+                        "data_type": "unsigned32",
+                        "data": "200",
+                        "suffix": ".7.1"
+                },
+                "pktcSigDevToneFreqOffDuration": {
+                        "data_type": "unsigned32",
+                        "data": "200",
+                        "suffix": ".7.1"
+                },
+                "pktcSigDevToneFreqRepeatCount": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".7.1"
+                }
+        },
+        "line1": {
+                "pktcNcsEndPntConfigReorderToneTO": {
+                        "data_type": "unsigned32",
+                        "data": "30",
+                        "suffix": ""
+                }
+        },
+        "line2": {
+                "pktcNcsEndPntConfigReorderToneTO": {
+                        "data_type": "unsigned32",
+                        "data": "30",
+                        "suffix": ""
+                }
+        }
+    },
+    "global_Stutterdial_tone_mta": {
+        "generic_mta_list": {
+               "pktcSigDevToneWholeToneRepeatCount": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".8"
+                },
+                "pktcSigDevToneSteady": {
+                        "data_type": "int",
+                        "data": "2",
+                        "suffix": ".8"
+                },
+                "pktcSigDevToneFirstFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "425",
+                        "suffix": ".8.1"
+                },
+                "pktcSigDevToneFirstFreqValue.8.2": {
+                        "data_type": "unsigned32",
+                        "data": "425",
+                        "suffix": ""
+                },
+                "pktcSigDevToneSecondFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".8.1"
+                },
+                "pktcSigDevToneSecondFreqValue.8.2": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ""
+                },
+                "pktcSigDevToneThirdFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".8.1"
+                },
+                "pktcSigDevToneThirdFreqValue.8.2": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ""
+                },
+                "pktcSigDevToneFourthFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".8.1"
+                },
+                "pktcSigDevToneFourthFreqValue.8.2": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ""
+                },
+                "pktcSigDevToneFreqMode": {
+                        "data_type": "int",
+                        "data": "2",
+                        "suffix": ".8.1"
+                },
+                "pktcSigDevToneFreqMode.8.2": {
+                        "data_type": "int",
+                        "data": "2",
+                        "suffix": ""
+                },
+                "pktcSigDevToneFreqAmpModePrtg": {
+                        "data_type": "int",
+                        "data": "0",
+                        "suffix": ".8.1"
+                },
+                "pktcSigDevToneFreqAmpModePrtg.8.2": {
+                        "data_type": "int",
+                        "data": "0",
+                        "suffix": ""
+                },
+                "pktcSigDevToneDbLevel": {
+                        "data_type": "int",
+                        "data": "-140",
+                        "suffix": ".8.1"
+                },
+                "pktcSigDevToneDbLevel.8.2": {
+                        "data_type": "int",
+                        "data": "-140",
+                        "suffix": ""
+                },
+                "pktcSigDevToneFreqOnDuration": {
+                        "data_type": "unsigned32",
+                        "data": "100",
+                        "suffix": ".8.1"
+                },
+                "pktcSigDevToneFreqOnDuration.8.2": {
+                        "data_type": "unsigned32",
+                        "data": "5000",
+                        "suffix": ""
+                },
+                "pktcSigDevToneFreqOffDuration": {
+                        "data_type": "unsigned32",
+                        "data": "100",
+                        "suffix": ".8.1"
+                },
+                "pktcSigDevToneFreqOffDuration.8.2": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ""
+                },
+                "pktcSigDevToneFreqRepeatCount": {
+                        "data_type": "unsigned32",
+                        "data": "2",
+                        "suffix": ".8.1"
+                },
+                "pktcSigDevToneFreqRepeatCount.8.2": {
+                        "data_type": "unsigned32",
+                        "data": "3",
+                        "suffix": ""
+                }
+        },
+        "line1": {
+                "pktcNcsEndPntConfigStutterDialToneTO": {
+                        "data_type": "unsigned32",
+                        "data": "16",
+                        "suffix": ""
+                }
+        },
+        "line2": {
+                "pktcNcsEndPntConfigStutterDialToneTO": {
+                        "data_type": "unsigned32",
+                        "data": "16",
+                        "suffix": ""
+                }
+        }
+    },
+    "global_Call_waiting_tone_mta": {
+        "generic_mta_list": {
+                "pktcSigDevToneStead": {
+                        "data_type": "int",
+                        "data": "2",
+                        "suffix": ".9"
+                },
+                "pktcSigDevToneFirstFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "425",
+                        "suffix": ".9.1"
+                },
+                "pktcSigDevToneFirstFreqValue.9.2": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ""
+                },
+                "pktcSigDevToneSecondFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".9.1"
+                },
+                "pktcSigDevToneSecondFreqValue.9.2": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ""
+                },
+                "pktcSigDevToneThirdFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".9.1"
+                },
+                "pktcSigDevToneFourthFreqValue": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".9.1"
+                },
+                "pktcSigDevToneFreqMode": {
+                        "data_type": "int",
+                        "data": "2",
+                        "suffix": ".9.1"
+                },
+                "pktcSigDevToneFreqAmpModePrtg": {
+                        "data_type": "int",
+                        "data": "0",
+                        "suffix": ".9.1"
+                },
+                "pktcSigDevToneDbLevel": {
+                        "data_type": "int",
+                        "data": "-175",
+                        "suffix": ".9.1"
+                },
+                "pktcSigDevToneFreqOnDuration": {
+                        "data_type": "unsigned32",
+                        "data": "500",
+                        "suffix": ".9.1"
+                },
+                "pktcSigDevToneFreqOnDuration.9.2": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ""
+                },
+                "pktcSigDevToneFreqOffDuration": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".9.1"
+                },
+                "pktcSigDevToneFreqOffDuration.9.2": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ""
+                },
+                "pktcSigDevToneFreqRepeatCount": {
+                        "data_type": "unsigned32",
+                        "data": "0",
+                        "suffix": ".9.1"
+                },
+                "pktcSigDevToneFreqRepeatCount.9.2": {
+                        "data_type": "int",
+                        "data": "0",
+                        "suffix": ""
+                }
+        },
+        "line1": {
+                "pktcNcsEndPntConfigCallWaitingMaxRep": {
+                        "data_type": "unsigned32",
+                        "data": "10",
+                        "suffix": ""
+                },
+                "pktcNcsEndPntConfigCallWaitingDelay": {
+                        "data_type": "unsigned32",
+                        "data": "10",
+                        "suffix": ""
+                }
+        },
+        "line2": {
+                "pktcNcsEndPntConfigCallWaitingMaxRep": {
+                        "data_type": "unsigned32",
+                        "data": "10",
+                        "suffix": ""
+                },
+                "pktcNcsEndPntConfigCallWaitingDelay": {
+                        "data_type": "unsigned32",
+                        "data": "10",
+                        "suffix": ""
+                }
+        }
+    },
+    "global_Ringing_mta": {
+        "generic_mta_list": {
+                "pktcSigPowerRingFrequency": {
+                        "data_type": "int",
+                        "data": "2",
+                        "suffix": ".0"
+                },
+                "pktcSigDevRgCadence": {
+                        "data_type": "HexString",
+                        "data": "0x006400fffff000000000000000000000",
+                        "suffix": ".0"
+                }
+        },
+        "line1": {
+                "pktcNcsEndPntConfigRingingTO": {
+                        "data_type": "unsigned32",
+                        "data": "180",
+                        "suffix": ""
+                }
+        },
+        "line2": {
+                "pktcNcsEndPntConfigRingingTO": {
+                        "data_type": "unsigned32",
+                        "data": "180",
+                        "suffix": ""
+                }
+        }
+    },
+    "global_TOS_settings_for_backbone_QOS_mta": {
+        "generic_mta_list": {
+                "emtaRtcpTos": {
+                        "data_type": "int",
+                        "data": "24",
+                        "suffix": ".0"
+                },
+                "pktcSigDefMediaStreamDscp": {
+                        "data_type": "int",
+                        "data": "40",
+                        "suffix": ".0"
+                },
+                "pktcSigDefCallSigDscp": {
+                        "data_type": "int",
+                        "data": "24",
+                        "suffix": ".0"
+                }
+
+        }
+    },
+    "global_Echo_and_Voice_activation_mta": {
+        "generic_mta_list": {
+                "emtaDtmfRelayEnable": {
+                        "data_type": "int",
+                        "data": "1",
+                        "suffix": ".0"
+                },
+                "emtaDSPV25ToneSupportEnable": {
+                        "data_type": "int",
+                        "data": "2",
+                        "suffix": ".0"
+                }
+        }
+    }
+}
