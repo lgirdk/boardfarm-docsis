@@ -3,21 +3,41 @@ import copy
 
 
 def indent_str(string, indent, pad=' '):
-    """Helper function to indent a string (padded with spaces by default)"""
+    """Helper function to indent a string (padded with spaces by default)
+
+    :param string : pattern to be indented
+    :type string : string
+    :param indent : indentation count
+    :type indent : integer
+    :param pad : passed with spaces , defaults to ' '
+    :type pad : empty string(, optional)
+    :return : string with indentation
+    :rtype : string
+    """
     string_length=len(string)+indent
     indented_string = string.rjust(string_length, pad)
     return indented_string
 
 def update_dict(d, **kwargs):
-    """Helper function to update a config dictionary"""
+    """Helper function to update a config dictionary
+
+    :param string : dictionary already available
+    :type string : dict
+    :param **kwargs : dictionary to be updated
+    :type **kwargs : dict
+    """
     for k,v in kwargs.items():
         if k in d:
             d[k] = v
 
 def dict_to_str(d, name=None, indent=4):
-    """
-    Helper function to convert a config dictionary to string.
+    """Helper function to convert a config dictionary to string.
     It takes care of the list elements (like SnmpMibObject).
+
+    :param string : dictionary already available
+    :type string : dict
+    :param **kwargs : dictionary to be updated
+    :type **kwargs : dict
     """
     s = ''
     for k,v in d.items():
@@ -47,6 +67,8 @@ def dict_to_str(d, name=None, indent=4):
 # Or the whole obj could be jsonised maybe
 
 class GeneralServiceFlow(object):
+    """Class to create the service flow parameters in config file
+    """
 
     GeneralServiceFlow_dict = OrderedDict()
 
@@ -73,19 +95,38 @@ class GeneralServiceFlow(object):
                                        }
 
     def __init__(self, **kwargs):
+        """Constructor method to copy the service flow params and update the dict
+        """
         self.GeneralServiceFlow_dict = copy.deepcopy(self.GeneralServiceFlow_dict_defaults)
         update_dict(self.GeneralServiceFlow_dict, **kwargs)
 
     def __str__(self):
+        """Method to get the service flow params string format from method to_str
+
+        :return : conversion of dict to string
+        :rtype : string
+        """
         return self.to_str()
 
     def to_str(self):
+        """Method to get the string from dictionary of service flow params
+
+        :return : conversion of dict to string
+        :rtype : string
+        """
         return dict_to_str(self.GeneralServiceFlow_dict);
 
     def get_dict(self):
+        """Method to get the dictionary of service flow
+
+        :return : service flow in dictionary format
+        :rtype : dict
+        """
         return self.GeneralServiceFlow_dict
 
 class GeneralClassifierParameters(object):
+    """Class to create the classifier parameters in config file
+    """
 
     GeneralClassifierParameters_dict = OrderedDict()
 
@@ -104,19 +145,38 @@ class GeneralClassifierParameters(object):
                                            }
 
     def __init__(self, **kwargs):
+        """Constructor method to copy the classifier params and update the dict
+        """
         self.GeneralClassifierParameters_dict = copy.deepcopy(self.GeneralClassifierParameters_defaults)
         update_dict(self.GeneralClassifierParameters_dict, **kwargs)
 
     def __str__(self):
+        """Method to get the classifer params string format from method to_str
+
+        :return : conversion of dict to string
+        :rtype : string
+        """
         return self.to_str()
 
     def to_str(self):
+        """Method to get the string from dictionary of classifier params
+
+        :return : conversion of dict to string
+        :rtype : string
+        """
         return dict_to_str(self.GeneralClassifierParameters_dict);
 
     def get_dict(self):
+        """Method to get the dictionary of classifier
+
+        :return : general classifier in dictionary format
+        :rtype : dict
+        """
         return self.GeneralClassifierParameters_dict
 
 class LLCPacketClassifier(GeneralClassifierParameters):
+    """Class to create the LLC packet classifier parameters in config file
+    """
 
     LLCPacketClassifier_dict = OrderedDict()
 
@@ -134,21 +194,41 @@ class LLCPacketClassifier(GeneralClassifierParameters):
         return 'LLCPacketClassifier'
 
     def __init__(self, **kwargs):
+        """Constructor method to copy the LLC packet classifier params and update the dict
+        of general classifire params
+        """
         super(LLCPacketClassifier, self).__init__(**kwargs)
         self.LLCPacketClassifier_dict = copy.deepcopy(self.LLCPacketClassifier_defaults)
         update_dict(self.LLCPacketClassifier_dict, **kwargs)
         self.LLCPacketClassifier_dict.update(self.GeneralClassifierParameters_dict)
 
     def __str__(self):
+        """Method to get the LLC packet classifer params string format from method to_str
+
+        :return : conversion of dict to string
+        :rtype : string
+        """
         return self.to_str()
 
     def to_str(self):
+        """Method to get the string from dictionary of LLC packet classifier params
+
+        :return : conversion of dict to string
+        :rtype : string
+        """
         return dict_to_str(self.LLCPacketClassifier_dict, name=self.__class__.__name__);
 
     def get_dict(self):
+        """Method to get the dictionary of LLC packet classifier
+
+        :return : LLC packet classifier in dictionary format
+        :rtype : dict
+        """
         return self.LLCPacketClassifier_dict
 
 class IpPacketClassifier(GeneralClassifierParameters):
+    """Class to create the IP packet classifier parameters in config file
+    """
 
     IpPacketClassifier_dict = OrderedDict()
 
@@ -179,35 +259,58 @@ class IpPacketClassifier(GeneralClassifierParameters):
         return 'IpPacketClassifier'
 
     def __init__(self, **kwargs):
+        """Constructor method to copy the IP packet classifier params and update the dict
+        of general classifier params
+        """
         super(IpPacketClassifier, self).__init__(**kwargs)
         self.IpPacketClassifier_dict = copy.deepcopy(self.IpPacketClassifier_dict_defaults)
         update_dict(self.IpPacketClassifier_dict, **kwargs)
         self.IpPacketClassifier_dict.update(self.GeneralClassifierParameters_dict)
 
     def __str__(self):
+        """Method to get the IP packet classifer params string format from method to_str
+
+        :return : conversion of dict to string
+        :rtype : string
+        """
         return self.to_str()
 
     def to_str(self):
+        """Method to get the string from dictionary of IP packet classifier params
+
+        :return : conversion of dict to string
+        :rtype : string
+        """
         return dict_to_str(self.IpPacketClassifier_dict, name=self.__class__.__name__);
 
     def get_dict(self):
+        """Method to get the dictionary of IP packet classifier
+
+        :return : Ip packet classifier in dictionary format
+        :rtype : dict
+        """
         return self.IpPacketClassifier_dict
 
 class DsPacketClass(GeneralClassifierParameters):
-
+    """Class to create the classifier parameters for DS packets
+    """
     classifier = None
 
     def __init__(self, **kwargs):
         pass
 
 class UsPacketClass(GeneralClassifierParameters):
-
+    """Class to create the classifier parameters for US packets
+    """
     classifier = None
 
     def __init__(self, **kwargs):
         pass
 
 class UsServiceFlow(GeneralServiceFlow):
+    """Class to create the service flow parameters for US service flow
+    GeneralServiceFlow class is inherited
+    """
 
     UsServiceFlow_dict = OrderedDict()
 
@@ -230,22 +333,42 @@ class UsServiceFlow(GeneralServiceFlow):
         return cls.__name__
 
     def __init__(self, **kwargs):
+        """Constructor method to copy the US service flow params and update the dict of
+        general service flow
+        """
         super(UsServiceFlow, self).__init__(**kwargs)
         self.UsServiceFlow_dict = copy.deepcopy(self.UsServiceFlow_defaults)
         update_dict(self.UsServiceFlow_dict, **kwargs)
         self.UsServiceFlow_dict.update(self.GeneralServiceFlow_dict)
 
     def __str__(self):
+        """Method to get the US service flow params string format from method to_str
+
+        :return : conversion of dict to string
+        :rtype : string
+        """
         return self.to_str()
 
     def to_str(self):
+        """Method to get the string from dictionary of US service flow params
+
+        :return : conversion of dict to string
+        :rtype : string
+        """
         return dict_to_str(self.UsServiceFlow_dict, name=self.__class__.__name__);
 
     def get_dict(self):
+        """Method to get the param dictionary of US service flow
+
+        :return : US service flow in dictionary format
+        :rtype : dict
+        """
         return self.UsServiceFlow_dict
 
 class DsServiceFlow(GeneralServiceFlow):
-
+    """Class to create the classifier parameters for DS service flow.
+    GeneralServiceFlow is inherited
+    """
     DsServiceFlow_dict = OrderedDict()
 
     DsServiceFlowRef = 'DsServiceFlowRef'
@@ -261,21 +384,41 @@ class DsServiceFlow(GeneralServiceFlow):
         return cls.__name__
 
     def __init__(self, **kwargs):
+        """Constructor method to copy the DS service flow params and update the dict of
+        general service flow
+        """
         super(DsServiceFlow, self).__init__(**kwargs)
         self.DsServiceFlow_dict = copy.deepcopy(self.DsServiceFlow_dict_defaults)
         update_dict(self.DsServiceFlow_dict, **kwargs)
         self.DsServiceFlow_dict.update(self.GeneralServiceFlow_dict)
 
     def __str__(self):
+        """Method to get the DS service flow params string format from method to_str
+
+        :return : conversion of dict to string
+        :rtype : string
+        """
         return self.to_str()
 
     def to_str(self):
+        """Method to get the string from dictionary of DS service flow params
+
+        :return : conversion of dict to string
+        :rtype : string
+        """
         return dict_to_str(self.DsServiceFlow_dict, name=self.__class__.__name__);
 
     def get_dict(self):
+        """Method to get the param dictionary of DS service flow
+
+        :return : DS service flow in dictionary format
+        :rtype : dict
+        """
         return self.DsServiceFlow_dict
 
 class BaselinePrivacy(object):
+    """Class to create the baseline privacy parameters
+    """
     BaselinePrivacy_dict = OrderedDict()
 
     AuthTimeout   = 'AuthTimeout'
@@ -306,16 +449,33 @@ class BaselinePrivacy(object):
         return cls.__name__
 
     def __init__(self, **kwargs):
+        """Constructor method to copy the baseline privacy and update the dict
+        """
         self.BaselinePrivacy_dict = copy.deepcopy(self.BaselinePrivacy_defaults)
         update_dict(self.BaselinePrivacy_dict, **kwargs)
 
     def __str__(self):
+        """Method to get the baseline privacy string format from method to_str
+
+        :return : conversion of dict to string
+        :rtype : string
+        """
         return self.to_str()
 
     def to_str(self):
+        """Method to get the string from dictionary of baseline privacy params
+
+        :return : conversion of dict to string
+        :rtype : string
+        """
         return dict_to_str(self.BaselinePrivacy_dict, name=self.__class__.__name__);
 
     def get_dict(self):
+        """Method to get the dictionary of baseline privacy
+
+        :return : Baseline privacy in dictionary format
+        :rtype : dict
+        """
         return self.BaselinePrivacy_dict
 
 class GlobalParameters(object):
@@ -458,9 +618,9 @@ class GlobalParameters(object):
 
     @staticmethod
     def _validate_SnmpMibObject(l):
-        """
-        Makes sure that there are no numberic oid in SnmpMibObject
-        Asserts otherwise
+        """Makes sure that there are no numberic oid in SnmpMibObject
+
+        :raises assertion : If condition fails then assert
         """
         if len(l) == 0:
             return
@@ -503,15 +663,32 @@ class GlobalParameters(object):
             self._validate_SnmpMibObject(self.GlobalParameters_dict[self.SnmpMibObject])
 
     def __str__(self):
+        """Method to get the global params in string format from method to_str
+
+        :return : conversion of dict to string
+        :rtype : string
+        """
         return self.to_str()
 
     def to_str(self):
+        """Method to get the string from dictionary of global params
+
+        :return : conversion of dict to string
+        :rtype : string
+        """
         return dict_to_str(self.GlobalParameters_dict)
 
     def get_dict(self):
+        """Method to get the global parameters
+
+        :return : global params in dictionary format
+        :rtype : dict
+        """
         return self.GlobalParameters_dict
 
 class eRouter(object):
+    """Class to create the eRouter related parameters
+    """
 
     eRouter_dict = OrderedDict()
     InitializationMode    = 'InitializationMode'
@@ -536,16 +713,33 @@ class eRouter(object):
         return 'eRouter'
 
     def __init__(self, **kwargs):
+        """Constructor method to copy the erouter params and update the dict
+        """
         self.eRouter_dict = copy.deepcopy(self.eRouter_defaults)
         update_dict(self.eRouter_dict, **kwargs)
 
     def __str__(self):
+        """Method to get the erouter params in string format from method to_str
+
+        :return : conversion of dict to string
+        :rtype : string
+        """
         return self.to_str()
 
     def to_str(self):
+        """Method to get the string from dictionary of service flow params
+
+        :return : conversion of dict to string
+        :rtype : string
+        """
         return dict_to_str(self.eRouter_dict, name=self.__class__.__name__);
 
     def get_dict(self):
+        """Method to get the dictionary of erouter
+
+        :return : service flow in dictionary format
+        :rtype : dict
+        """
         return self.eRouter_dict
 
 ##############################################################################################
@@ -583,6 +777,9 @@ class CfgGenerator():
         return next(iter(s))
 
     def update_cm_base_cfg(self, kwargs):
+        """Method to update the base config file with the additional
+        features
+        """
         if not kwargs:
             return
         while kwargs != {}:
@@ -595,10 +792,13 @@ class CfgGenerator():
             kwargs.pop(k)
 
     def _gen_cfg(self, erouter, kwargs):
+        """This is quick way of appending a string at the end of the cfg
+        file that can be used for config element that are not standard
+        and/or testing new configs without major changes in the code
 
-        # This is quick way of appending a string at the end of the cfg
-        # file that can be used for config element that are not standard
-        # and/or testing new configs without major changes in the code
+        :return : config file after appending the required erouter mode
+        :rtype : string
+        """
         if kwargs:
             self.additional_cfg = kwargs.pop("additional_cfg", "")
         if erouter:
@@ -616,24 +816,60 @@ class CfgGenerator():
         return tmp_cfg
 
     def gen_dual_stack_cfg(self, kwargs=None):
+        """Method to create dual stack as erouter mode in config file
+
+        :return : config file with initialization mode 3 for dual
+        :rtype : string
+        """
         return self._gen_cfg('3', kwargs)
 
     def gen_ipv4_cfg(self, kwargs=None):
+        """Method to create ipv4 as erouter mode in config file
+
+        :param kwargs : Can give if any params required , defaults to None
+        :type kwargs : string(, optional)
+        :return : config file with initialization mode 1 for ipv4
+        :rtype : string
+        """
         return self._gen_cfg('1', kwargs)
 
     def gen_ipv6_cfg(self, kwargs=None):
+        """Method to create ipv6 as erouter mode in config file
+
+        :param kwargs : Can give if any params required , defaults to None
+        :type kwargs : string(, optional)
+        :return : config file with initialization mode 2 for ipv6
+        :rtype : string
+        """
         return self._gen_cfg('2', kwargs)
 
     def gen_bridge_cfg(self, kwargs=None):
+        """Method to create bridge as erouter mode in config file
+
+        :param kwargs : Can give if any params required , defaults to None
+        :type kwargs : string(, optional)
+        :return : config file with initialization mode 0 for bridge
+        :rtype : string
+        """
         return self._gen_cfg('0', kwargs)
 
     def gen_no_mode(self, kwargs=None):
+        """Method to create no erouter mode in config file
+
+        :param kwargs : Can give if any params required , defaults to None
+        :type kwargs : string(, optional)
+        :return : config file withiout any initialization mode
+        :rtype : string
+        """
         return self._gen_cfg(None, kwargs)
 
     def generate_cfg(self, fname = None):
-        """
-        Finalise the config making it ready for use.
-        Returns a multiline string
+        """Finalise the config making it ready for use.
+
+        :param fname : Filename to generate the config file, defaults to None
+        :type fname : string(, optional)
+        :return : Multiline string
+        :rtype : string
         """
         cfg_file_str = 'Main\n{\n'
 
