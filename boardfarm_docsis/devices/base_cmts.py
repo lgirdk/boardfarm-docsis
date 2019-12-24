@@ -374,6 +374,23 @@ class BaseCmts(base.BaseDevice):
         """
         raise Exception("Not implemented!")
 
+    def get_iface_qam_freq(self, cm_mac):
+        """Get the qam interface with channel and frequency
+
+        :param cm_mac: mac address of the CM
+        :type cm_mac: string
+        :return: Downstream index, sub, channel and frequency values.
+        ex.OrderedDict([('8/4/0', '512000000'), ('8/4/1', '520000000'), ('8/4/2', '528000000'), ('8/4/3', '536000000'),
+                        ('8/4/4', '544000000'), ('8/4/5', '552000000'), ('8/4/6', '560000000'), ('8/4/7', '568000000'),
+                        ('8/5/0', '576000000'), ('8/5/1', '584000000'), ('8/5/2', '592000000'), ('8/5/3', '600000000'),
+                        ('8/5/4', '608000000'), ('8/5/5', '616000000'), ('8/5/6', '624000000'), ('8/5/7', '632000000'),
+                        ('8/6/0', '640000000'), ('8/6/1', '648000000'), ('8/6/2', '656000000'), ('8/6/3', '664000000'),
+                        ('8/6/4', '672000000'), ('8/6/5', '680000000'), ('8/6/6', '688000000'), ('8/6/7', '696000000')])
+        :rtype: dict
+        :raises Exception: Not implemented
+        """
+        raise Exception("Not implemented!")
+
     def set_iface_upstream(self, ups_idx, ups_ch, freq, width, power):
         """Configure the interface for upstream
 
