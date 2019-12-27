@@ -1090,14 +1090,17 @@ class CasaCMTS(base_cmts.BaseCmts):
                     qos_dict[value].update({val : int(qos_dict[value][val]) * 1000})
         return qos_dict
 
-    def get_upstream(self):
+    def get_upstream(self, cm_mac):
         """This function is to get the upstream channel type on cmts.
 
+        :param cm_mac: mac address of the CM
+        :type cm_mac: string
         :return: Upstream channel type 1.0 -> tdma[1], 2.0 -> atdma[2], 3.0 -> scdma[3]
         :rtype: string
         """
         from collections import defaultdict
-        self.sendline('show interface docsis-mac %s | inc upstream' % self.mac_domain)
+        mac_domain = self.get_cm_mac_domain(cm_mac)
+        self.sendline('show interface docsis-mac %s | inc upstream' % mac_domain)
         self.expect(self.prompt)
         tmp = re.findall(r"upstream\s\d\sinterface\supstream\s(.*)/(.*)/0", self.before)
         get_upstream = defaultdict(list)
@@ -1120,14 +1123,17 @@ class CasaCMTS(base_cmts.BaseCmts):
 
         return get_upstream
 
-    def set_upstream(self, get_upstream):
+    def set_upstream(self, cm_mac, get_upstream):
         """This function is to set the upstream channel type on cmts.
 
+        :param cm_mac: mac address of the CM
+        :type cm_mac: string
         :param channel_type: channel_type 1.0 -> tdma[1], 2.0 -> atdma[2], 3.0 -> scdma[3].
         :type channel_type: string
         :raises assert: bonding index error
         """
-        self.sendline('show interface docsis-mac %s | inc upstream' % self.mac_domain)
+        mac_domain = self.get_cm_mac_domain(cm_mac)
+        self.sendline('show interface docsis-mac %s | inc upstream' % mac_domain)
         self.expect(self.prompt)
         tmp = re.findall(r"upstream\s\d\sinterface\supstream\s(.*)/(.*)/0", self.before)
         index = 0
@@ -1145,13 +1151,16 @@ class CasaCMTS(base_cmts.BaseCmts):
             self.expect(pexpect.TIMEOUT, timeout=1)
             index = index+1
 
-    def get_downstream_qam(self):
+    def get_downstream_qam(self, cm_mac):
         """This function is to get downstream modulation type(64qam, 256qam...)
 
+        :param cm_mac: mac address of the CM
+        :type cm_mac: string
         :return: Downstream modulation qam values. ex.{'8/6': '256qam', '8/4': '256qam', '8/5': '256qam'}
         :rtype: dict
         """
-        self.sendline('show interface docsis-mac %s | inc downstream' % self.mac_domain)
+        mac_domain = self.get_cm_mac_domain(cm_mac)
+        self.sendline('show interface docsis-mac %s | inc downstream' % mac_domain)
         self.expect(self.prompt)
         tmp = re.findall('downstream\s\d+\sinterface\sqam\s(.*)/\d+', self.before)
         downs = set([x for x in tmp if tmp.count(x) > 1])

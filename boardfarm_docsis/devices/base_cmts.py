@@ -556,9 +556,11 @@ class BaseCmts(base.BaseDevice):
         mac_cmts_format = tmp[:4]+"."+tmp[4:8]+"."+tmp[8:]
         return mac_cmts_format.lower()
 
-    def get_downstream_qam(self):
+    def get_downstream_qam(self, cm_mac):
         """This function is to get downstream modulation type(64qam, 256qam...)
 
+        :param cm_mac: mac address of the CM
+        :type cm_mac: string
         :raises Exception: Not implemented
         """
         raise Exception("Not implemented!")
