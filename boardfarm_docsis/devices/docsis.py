@@ -1,13 +1,31 @@
 import time
 import pexpect
 
-from boardfarm.devices import openwrt_router
+from boardfarm.devices import openwrt_router, mgr, device_type
 from boardfarm.lib.network_helper import valid_ipv4, valid_ipv6
 
 # TODO: probably the wrong parent
 class Docsis(openwrt_router.OpenWrtRouter):
     """Docsis class used to perform generic operations
     """
+
+    def get_cm_mgmt_cfg(self):
+        """This method attempts to obtain the CM management interface configuration. It queries the CMTS for the mac-domain configuration.
+
+        :return: the status of the CM mgmt interface (currently one of 'ipv4', 'ipv6', 'dual-stack', 'bridge', or (python)None)
+        :rtype: string
+        """
+        mac_dom_config = None
+        try:
+            if self.has_cmts:
+                # gets the mac-domain configuration from the cmts
+                cmts = mgr.get_device_by_type(device_type.cmts)
+                mac_dom_config = cmts.check_docsis_mac_ip_provisioning_mode(cmts.mac_domain)
+        except AttributeError:
+            print("Failed on get_cm_mgmt_cfg: has_cmts no set")
+            pass
+        return mac_dom_config
+
     def get_cmStatus(self, wan, wan_ip, status_string=None):
         """This method gets the cm status via snmp.
 
