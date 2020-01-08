@@ -808,7 +808,7 @@
     },
     "global_Call_waiting_tone_mta": {
         "generic_mta_list": {
-                "pktcSigDevToneStead": {
+                "pktcSigDevToneSteady": {
                         "data_type": "int",
                         "data": "2",
                         "suffix": ".9"
@@ -922,8 +922,8 @@
                         "suffix": ".0"
                 },
                 "pktcSigDevRgCadence": {
-                        "data_type": "HexString",
-                        "data": "0x006400fffff000000000000000000000",
+                        "data_type": "octetstring",
+                        "data": "006400fffff000000000000000000000",
                         "suffix": ".0"
                 }
         },
