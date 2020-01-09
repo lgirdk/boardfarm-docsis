@@ -95,12 +95,12 @@ class GeneralClassifierParameters(object):
     ActivationState = 'ActivationState'
     DscAction       = 'DscAction'
 
-    GeneralClassifierParameters_defaults = {\
-                                             ClassifierRef:None,\
-                                             ServiceFlowRef:None,\
-                                             RulePriority:None,\
-                                             ActivationState:None,\
-                                             DscAction:None
+    GeneralClassifierParameters_defaults = {
+                                             ClassifierRef:None,
+                                             ServiceFlowRef:None,
+                                             RulePriority:None,
+                                             ActivationState:None,
+                                             DscAction:None,
                                            }
 
     def __init__(self, **kwargs):
@@ -124,10 +124,10 @@ class LLCPacketClassifier(GeneralClassifierParameters):
     SrcMacAddress = 'SrcMacAddress'
     EtherType     = 'EtherType'
 
-    LLCPacketClassifier_defaults = {\
-                                     DstMacAddress:None,\
-                                     SrcMacAddress:None,\
-                                     EtherType:'0x030f16'\
+    LLCPacketClassifier_defaults = {
+                                     DstMacAddress:None,
+                                     SrcMacAddress:None,
+                                     EtherType:'0x030f16'
                                    }
     @classmethod
     def name(cls):
@@ -289,16 +289,16 @@ class BaselinePrivacy(object):
     SAMapMaxRetries   = 'SAMapMaxRetries'
 
 
-    BaselinePrivacy_defaults = {\
-                                 AuthTimeout:10,\
-                                 ReAuthTimeout:10,\
-                                 AuthGraceTime:600,\
-                                 OperTimeout:10,\
-                                 ReKeyTimeout:10,\
-                                 TEKGraceTime:600,\
-                                 AuthRejectTimeout:60,\
-                                 SAMapWaitTimeout:None,\
-                                 SAMapMaxRetries:None\
+    BaselinePrivacy_defaults = {
+                                 AuthTimeout:10,
+                                 ReAuthTimeout:10,
+                                 AuthGraceTime:600,
+                                 OperTimeout:10,
+                                 ReKeyTimeout:10,
+                                 TEKGraceTime:600,
+                                 AuthRejectTimeout:60,
+                                 SAMapWaitTimeout:None,
+                                 SAMapMaxRetries:None
                                }
 
     @classmethod
@@ -363,10 +363,22 @@ class GlobalParameters(object):
     CoSignerCVC         = 'CoSignerCVC'      # list?
     MtaConfigDelimiter  = 'MtaConfigDelimiter'
 
-    '''
-    These mibs should work, but they don't
-    They will need to be debugged
-    # As requested always add the following
+
+    # LLC filters
+    snmpobjLLC = ['docsDevFilterLLCUnmatchedAction.0 Integer 1', # Default deny
+                  'docsDevFilterLLCIfIndex.1 Integer 0',         # all interfaces
+                  'docsDevFilterLLCProtocolType.1 Integer 1',    # ethertype
+                  'docsDevFilterLLCProtocol.1 Integer 2048',     # ipv4
+                  'docsDevFilterLLCStatus.1 Integer 4',          # createAndGo
+                  'docsDevFilterLLCIfIndex.2 Integer 0',         # all interfaces
+                  'docsDevFilterLLCProtocolType.2 Integer 1',    # ethertype
+                  'docsDevFilterLLCProtocol.2 Integer 2054',     # ARP
+                  'docsDevFilterLLCStatus.2 Integer 4',          # createAndGo
+                  'docsDevFilterLLCIfIndex.3 Integer 0',         # all interfaces
+                  'docsDevFilterLLCProtocolType.3 Integer 1',    # ethertype
+                  'docsDevFilterLLCProtocol.3 Integer 34525' ,   # ipv6
+                  'docsDevFilterLLCStatus.3 Integer 4']          # createAndGo
+
     snmpobjNmAcc = ['docsDevNmAccessIp.1 IPAddress 255.255.255.255',
                     'docsDevNmAccessIpMask.1 IPAddress 255.255.255.255',
                     'docsDevNmAccessCommunity.1 String "public"',
@@ -379,9 +391,8 @@ class GlobalParameters(object):
                     'docsDevNmAccessControl.2 Integer 3',
                     'docsDevNmAccessInterfaces.2 HexString 0xc0',
                     'docsDevNmAccessStatus.2 Integer 4']
-    '''
-    snmpobjNmAcc = None
-    GlobalParameters_defaults = {\
+
+    GlobalParameters_defaults = {
                                   NetworkAccess:1,
                                   GlobalPrivacyEnable:1,
                                   DownstreamFrequency:None,
@@ -509,14 +520,16 @@ class eRouter(object):
     RATransmissionInterval= 'RATransmissionInterval'
     TopologyModeEncoding  = 'TopologyModeEncoding'
     VendorSpecific        = 'VendorSpecific'
+    VendorIdentifier      = 'VendorIdentifier'
 
-    eRouter_defaults = {\
-                         InitializationMode:None,\
-                         TR69ManagementServer:None,\
-                         InitializationModeOverride:None,\
-                         RATransmissionInterval:None,\
-                         TopologyModeEncoding:None,\
-                         VendorSpecific:None,\
+    eRouter_defaults = {
+                         InitializationMode:None,
+                         TR69ManagementServer:None,
+                         InitializationModeOverride:None,
+                         RATransmissionInterval:None,
+                         TopologyModeEncoding:None,
+                         VendorSpecific:None,
+                         VendorIdentifier:None
                        }
     @classmethod
     def name(cls):
