@@ -15,7 +15,8 @@ class DocsisBootStub(rootfs_boot.RootFSBootTest):
         if self.cfg is None:
             self.skipTest("Do not run stub directly")
 
-        board.cm_cfg = board.generate_cfg(self.cfg)
+        ertr_mode = {'max_config':True}
+        board.cm_cfg = board.generate_cfg(self.cfg, None, ertr_mode)
 
         # TODO: why is this required? need to fix globally
         board.config['cm_cfg'] = board.cm_cfg
