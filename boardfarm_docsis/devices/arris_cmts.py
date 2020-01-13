@@ -969,39 +969,40 @@ class ArrisCMTS(base_cmts.BaseCmts):
         return output.strip().lower()
 
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
-    def get_qos_parameter(self, cm_mac, traffic_priority = 1):
-        """To get the qos related parameters of CM
-        Example output format : {'DS': {'Maximum Sustained rate': '0', 'Maximum Burst': '128000',  ....},
-                                 'US': {'Maximum Sustained rate': '0', 'Maximum Burst': '128000', 'IP ToS Overwrite [AND-msk, OR-mask]': ['0x00', '0x00'], ...}}
+    def get_qos_parameter(self, cm_mac):
+        """To get the qos related parameters of CM, to get the qos related parameters ["Maximum Concatenated Burst", "Maximum Burst", "Maximum Sustained rate", "Mimimum Reserved rate", "Scheduling Type"] of CM
 
         :param cm_mac: mac address of the cable modem
         :type cm_mac: string
-        :param traffic_priority: the traffic priority of service flow to be used to filter, defaults to 1.
-        :type traffic_priority: int
         :return: containing the qos related parameters.
         :rtype: dictionary
         """
         self.sendline('no pagination')
         self.expect(self.prompt)
         qos_dict = {}
+        service_flows = ["US" , "DS"]
+        for value in service_flows:
+            self.sendline("show cable modem qos %s | include %s" % (cm_mac, value))
+            self.expect(self.prompt)
+            qos_dict[value] = {"sfid" : self.before.split("\n")[-2].split(" ")[0].strip()}
+
+        #mapping of the ouput stream to the US/DS and using the index
         self.sendline("show cable modem qos %s verbose" % (cm_mac))
         self.expect(self.prompt)
-        service_flows = re.split("\n\s*\n", self.before)[1:-1]
-        for service_flow in service_flows:
-            service_flow_list = [i for i in service_flow.split("\n") if i]
-            matching = [s for s in service_flow_list if "Traffic Priority" in s]
-            qos_dict_flow = {}
-            if(traffic_priority == int(matching[0].split(":")[1].strip())):
-                for service in service_flow_list:
-                    service = re.sub(' +', ' ', service)
-                    if "scheduling type" in service.lower():
-                        qos_dict_flow[service.split(":")[0].strip()] = service.split(":")[1].strip()
-                    elif not ("ip tos" or "current throughput") in service.lower():
-                        qos_dict_flow[service.split(":")[0].strip()] = service.split(":")[1].strip().split(" ")[0]
-                    else:
-                        qos_dict_flow[service.split(":")[0].strip()] = [service.split(":")[1].strip().split(" ")[0][:-1], service.split(":")[1].strip().split(" ")[1]]
-            if "US" in qos_dict_flow.get('Direction'):
-                qos_dict["US"] = qos_dict_flow
-            else:
-                qos_dict["DS"] = qos_dict_flow
+
+        #setting the index to filter the US/DS parameters from cmts.
+        US_index = 0 if qos_dict["US"]["sfid"] in self.before.split("Sfid")[1] else 1
+        qos_parameters = ["Maximum Concatenated Burst", "Maximum Burst", "Maximum Sustained rate", "Minimum Reserved rate", "Scheduling Type"]
+        qos_data = []
+        for i in range(1,3):
+            qos_data.append([string[:-1] for string in self.before.split("Sfid")[i].split("\n") if any(param in string for param in qos_parameters)])
+
+        qos_dict["US"].update(dict([x.split(":")[0].strip(), x.split(":")[1].strip()] for x in qos_data[US_index]))
+        del qos_data[US_index]
+        qos_dict["DS"].update(dict([x.split(":")[0].strip(), x.split(":")[1].strip()] for x in qos_data[0]))
+
+        #removing the unit of measure
+        for value in service_flows:
+            for param in qos_parameters[:-1]:
+                if qos_dict[value].get(param) : qos_dict[value].update({ param : int(qos_dict[value][param].split(" ")[0])})
         return qos_dict
