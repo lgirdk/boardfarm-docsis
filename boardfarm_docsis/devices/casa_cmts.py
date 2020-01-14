@@ -23,7 +23,7 @@ class CasaCMTS(base_cmts.BaseCmts):
     """Connects to and configures a CASA CMTS
     """
 
-    prompt = ['CASA-C3200>', 'CASA-C3200#', 'CASA-C3200\(.*\)#', 'CASA-C10G>', 'CASA-C10G#', 'CASA-C10G\(.*\)#']
+    prompt = ['CASA-C3200>', 'CASA-C3200#', r'CASA-C3200\(.*\)#', 'CASA-C10G>', 'CASA-C10G#', r'CASA-C10G\(.*\)#']
     model = "casa_cmts"
 
     def __init__(self,
@@ -63,7 +63,7 @@ class CasaCMTS(base_cmts.BaseCmts):
                 hostname = self.match.group(1).replace('\n', '').replace('\r', '').strip()
                 self.prompt.append(hostname + '>')
                 self.prompt.append(hostname + '#')
-                self.prompt.append(hostname + '\(.*\)#')
+                self.prompt.append(hostname + r'\(.*\)#')
                 self.sendline(self.username)
                 self.expect('assword:')
                 self.sendline(self.password)
@@ -103,9 +103,9 @@ class CasaCMTS(base_cmts.BaseCmts):
         :rtype: boolean or string
         """
         self.sendline('show cable modem %s' % cmmac)
-        self.expect('.+ranging cm \d+')
+        self.expect(r'.+ranging cm \d+')
         result = self.match.group()
-        match = re.search('\d+/\d+/\d+\**\s+([^\s]+)\s+\d+\s+.+\d+\s+(\w+)\r\n', result)
+        match = re.search(r'\d+/\d+/\d+\**\s+([^\s]+)\s+\d+\s+.+\d+\s+(\w+)\r\n', result)
         if match:
             status = match.group(1)
             encrytion = match.group(2)
@@ -158,9 +158,9 @@ class CasaCMTS(base_cmts.BaseCmts):
         :rtype: integer
         """
         self.sendline('show cable modem %s' % cmmac)
-        self.expect('(\d+/\d+\.\d+/\d+(\*|\#)\s+\d+/\d+/\d+(\*|\#))\s+online')
+        self.expect(r'(\d+/\d+\.\d+/\d+(\*|\#)\s+\d+/\d+/\d+(\*|\#))\s+online')
         result = self.match.group(1)
-        match = re.search('\#', result)
+        match = re.search(r'\#', result)
         if match != None:
             output = 1
         else:
@@ -178,7 +178,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         """
         cmmac=self.get_cm_mac_cmts_format(cmmac)
         self.sendline('show cable modem %s' % cmmac)
-        self.expect(cmmac + '\s+([\d\.]+)')
+        self.expect(cmmac + r'\s+([\d\.]+)')
         result = self.match.group(1)
         if self.match != None:
             output = result
@@ -217,7 +217,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         if ':' in mtamac:
             mtamac = self.get_cm_mac_cmts_format(mtamac)
         self.sendline('show cable modem %s cpe' % cmmac)
-        self.expect('([\d\.]+)\s+dhcp\s+' + mtamac)
+        self.expect(r'([\d\.]+)\s+dhcp\s+' + mtamac)
         result = self.match.group(1)
         if self.match != None:
             output = result
@@ -240,9 +240,9 @@ class CasaCMTS(base_cmts.BaseCmts):
             self.sendline("show cable modem %s verbose | inc \"%s Channel Set\"" % (cm_mac, stream))
             self.expect(self.prompt)
             if stream == 'Upstream':
-                match = re.search('(\d+/\d+.\d+/\d+).+', self.before)
+                match = re.search(r'(\d+/\d+.\d+/\d+).+', self.before)
             elif stream == 'Downstream':
-                match = re.search('(\d+/\d+/\d+).+', self.before)
+                match = re.search(r'(\d+/\d+/\d+).+', self.before)
             channel = len(match.group().split(","))
             channel_list.append(channel)
         return channel_list
@@ -274,7 +274,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         :rtype: string
         """
         self.sendline('show cable modem '+cm_mac+' verbose | i "MAC Domain"')
-        idx = self.expect(['(MAC Domain)[ ]{2,}\:([0-9]|[0-9][0-9])'] + self.prompt)
+        idx = self.expect([r'(MAC Domain)[ ]{2,}\:([0-9]|[0-9][0-9])'] + self.prompt)
         if idx != 0:
             assert 0, "ERROR: Failed to get the CM Mac Domain from the CMTS"
         mac_domain = self.match.group(2)
@@ -316,7 +316,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.sendline('YES')
         self.expect(self.prompt)
         self.sendline('system reboot')
-        if 0 == self.expect(['Proceed with reload\? please type YES to confirm :', 'starting up console shell ...'], timeout = 180):
+        if 0 == self.expect([r'Proceed with reload\? please type YES to confirm :', 'starting up console shell ...'], timeout = 180):
             self.sendline('YES')
             self.expect('starting up console shell ...', timeout = 150)
         self.sendline()
@@ -593,7 +593,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         """
         self.sendline('show system')
         self.expect(self.prompt)
-        return re.findall('Module (\d+) QAM', self.before)[0]
+        return re.findall(r'Module (\d+) QAM', self.before)[0]
 
     def get_ups_module(self):
         """Get the upstream module of the qam
@@ -603,7 +603,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         """
         self.sendline('show system')
         self.expect(self.prompt)
-        results = list(map(int, re.findall('Module (\d+) UPS', self.before)))
+        results = list(map(int, re.findall(r'Module (\d+) UPS', self.before)))
         return results
 
     def set_iface_qam(self, index, sub, annex, interleave, power):
@@ -671,13 +671,13 @@ class CasaCMTS(base_cmts.BaseCmts):
         mac_domain = self.get_cm_mac_domain(cm_mac)
         self.sendline('show interface docsis-mac %s | inc downstream' % mac_domain)
         self.expect(self.prompt)
-        tmp = re.findall('downstream\s\d+\sinterface\sqam\s(.*)/\d+', self.before)
+        tmp = re.findall(r'downstream\s\d+\sinterface\sqam\s(.*)/\d+', self.before)
         downs = set([x for x in tmp if tmp.count(x) > 1])
         get_iface_qam_freq = collections.OrderedDict()
         for index_sub in sorted(downs):
             self.sendline('show interface qam %s | inc "channel"' % index_sub)
             self.expect(self.prompt)
-            tmp = re.findall('channel\s(\d+)\sfrequency\s(\d+)', self.before)
+            tmp = re.findall(r'channel\s(\d+)\sfrequency\s(\d+)', self.before)
             for channel,freq in tmp:
                 get_iface_qam_freq[index_sub+'/'+channel] = freq
 
@@ -931,7 +931,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         :rtype: string
         """
         self.sendline('show interface docsis-mac %s' % index)
-        self.expect('ip-provisioning-mode (\w+\-\w+)')
+        self.expect(r'ip-provisioning-mode (\w+\-\w+)')
         result = self.match.group(1)
         self.expect(self.prompt)
         if self.match != None:
@@ -998,13 +998,13 @@ class CasaCMTS(base_cmts.BaseCmts):
         if mac_domain is None:
             mac_domain = self.mac_domain
         assert mac_domain is not None, "get_center_freq() requires mac_domain to be set"
-        self.sendline('show interface docsis-mac %s | inc downstream\s1\s' % mac_domain)
-        self.expect_exact('show interface docsis-mac %s | inc downstream\s1\s' % mac_domain)
+        self.sendline(r'show interface docsis-mac %s | inc downstream\s1\s' % mac_domain)
+        self.expect_exact(r'show interface docsis-mac %s | inc downstream\s1\s' % mac_domain)
         self.expect(self.prompt)
         assert 'downstream 1 interface qam' in self.before
         major, minor, sub = self.before.strip().split(' ')[-1].split('/')
-        self.sendline('show interface qam %s/%s | inc channel\s%s\sfreq' % (major, minor, sub))
-        self.expect_exact('show interface qam %s/%s | inc channel\s%s\sfreq' % (major, minor, sub))
+        self.sendline(r'show interface qam %s/%s | inc channel\s%s\sfreq' % (major, minor, sub))
+        self.expect_exact(r'show interface qam %s/%s | inc channel\s%s\sfreq' % (major, minor, sub))
         self.expect(self.prompt)
         assert 'channel %s frequency' % sub in self.before
         return str(int(self.before.split(' ')[-1]))
@@ -1019,7 +1019,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         """
         cmmac=self.get_cm_mac_cmts_format(cmmac)
         self.sendline('show cable modem | include %s' % cmmac)
-        if 1 == self.expect([cmmac + '\s+(' + ip_regexpr + ')', pexpect.TIMEOUT], timeout=2):
+        if 1 == self.expect([cmmac + r'\s+(' + ip_regexpr + ')', pexpect.TIMEOUT], timeout=2):
             output = "None"
         else:
             result = self.match.group(1)
@@ -1062,7 +1062,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         #mapping of the ouput stream to the US/DS and using the index.
         self.sendline("show cable modem %s qos verbose" % (cm_mac))
         self.expect(self.prompt)
-        service_flows = re.split("\n\s*\n", self.before)[1:-1]
+        service_flows = re.split(r"\n\s*\n", self.before)[1:-1]
         for service_flow in service_flows:
             service_flow_list = [i for i in service_flow.split("\n") if i]
             matching = [s for s in service_flow_list if "Traffic Priority" in s]
@@ -1106,17 +1106,17 @@ class CasaCMTS(base_cmts.BaseCmts):
         get_upstream = defaultdict(list)
         for ups_idx, ups_ch in tmp:
             self.sendline('show interface upstream %s/%s | inc "frequency"' % (ups_idx, ups_ch))
-            self.expect('frequency\s(.*)')
+            self.expect(r'frequency\s(.*)')
             get_upstream['frequency'].append(self.match.group(1).strip())
             self.expect(self.prompt)
             self.expect(pexpect.TIMEOUT, timeout=1)
             self.sendline('show interface upstream %s/%s | inc "logical-channel 0 profile"' % (ups_idx, ups_ch))
-            self.expect('logical-channel 0 profile\s(.*)')
+            self.expect(r'logical-channel 0 profile\s(.*)')
             get_upstream['channel_type'].append(self.match.group(1).strip())
             self.expect(self.prompt)
             self.expect(pexpect.TIMEOUT, timeout=1)
-            self.sendline('show interface upstream %s/%s | inc "^\s+channel-width"' % (ups_idx, ups_ch))
-            self.expect('channel-width\s(.*)')
+            self.sendline(r'show interface upstream %s/%s | inc "^\s+channel-width"' % (ups_idx, ups_ch))
+            self.expect(r'channel-width\s(.*)')
             get_upstream['channel_with'].append(self.match.group(1).strip().split('\r\n')[0])
             self.expect(self.prompt)
             self.expect(pexpect.TIMEOUT, timeout=1)
@@ -1162,12 +1162,12 @@ class CasaCMTS(base_cmts.BaseCmts):
         mac_domain = self.get_cm_mac_domain(cm_mac)
         self.sendline('show interface docsis-mac %s | inc downstream' % mac_domain)
         self.expect(self.prompt)
-        tmp = re.findall('downstream\s\d+\sinterface\sqam\s(.*)/\d+', self.before)
+        tmp = re.findall(r'downstream\s\d+\sinterface\sqam\s(.*)/\d+', self.before)
         downs = set([x for x in tmp if tmp.count(x) > 1])
         get_downstream_qam = dict()
         for i in downs:
             self.sendline('show interface qam %s | inc "modulation"' % i)
-            self.expect('modulation\s(.*)')
+            self.expect(r'modulation\s(.*)')
             get_downstream_qam[i] = self.match.group(1).strip()
             self.expect(self.prompt)
 
