@@ -32,6 +32,14 @@ class DocsisBootStub(rootfs_boot.RootFSBootTest):
         board.close()
         super(DocsisBootStub, self).recover()
 
+class DocsisBootFromEnv(DocsisBootStub):
+    '''Dynamic boot from ENV json'''
+
+    def runTest(self):
+        self.cfg = self.env_helper.get_prov_mode()
+
+        super(DocsisBootFromEnv, self).runTest()
+
 class DocsisBootDualStack(DocsisBootStub):
     '''Normal boot, but with Dual Stack CM cfg specified'''
     cfg = "dual"
