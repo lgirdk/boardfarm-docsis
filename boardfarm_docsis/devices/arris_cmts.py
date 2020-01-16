@@ -20,7 +20,7 @@ import ipaddress
 class ArrisCMTS(base_cmts.BaseCmts):
     """Connects to and configures a ARRIS CMTS
     """
-    prompt = ['arris(.*)>', 'arris(.*)#', 'arris\(.*\)> ', 'arris\(.*\)# ']
+    prompt = ['arris(.*)>', 'arris(.*)#', r'arris\(.*\)> ', r'arris\(.*\)# ']
     model = "arris_cmts"
 
     class ArrisCMTSDecorators():
@@ -118,7 +118,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
             return True
         else:
             try:
-                r = re.findall('State=(.*?\s)', self.before)[0].strip()
+                r = re.findall(r'State=(.*?\s)', self.before)[0].strip()
             except:
                 r = 'Offline'
         return r
@@ -170,7 +170,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         :rtype: string
         """
         self.sendline('show cable modem %s detail | include MTA' % (cmmac))
-        self.expect('CPE\(MTA\)\s+.*IPv4=(' + ValidIpv4AddressRegex + ')\r\n')
+        self.expect(r'CPE\(MTA\)\s+.*IPv4=(' + ValidIpv4AddressRegex + ')\r\n')
         result = self.match.group(1)
         if self.match != None:
             output = result
@@ -191,7 +191,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         :rtype: string
         """
         self.sendline('show cable modem | include %s' % cmmac)
-        if 1 == self.expect([cmmac + '\s+(' + ip_regexpr + ')', pexpect.TIMEOUT], timeout=2):
+        if 1 == self.expect([cmmac + r'\s+(' + ip_regexpr + ')', pexpect.TIMEOUT], timeout=2):
             output = "None"
         else:
             result = self.match.group(1)
@@ -270,13 +270,13 @@ class ArrisCMTS(base_cmts.BaseCmts):
         bonded_impared_status = self.before;
         if "No CMs were found" in bonded_impared_status:
             self.sendline("show cable modem  %s " % cm_mac)
-            self.expect('(\d+)x(\d+)')
+            self.expect(r'(\d+)x(\d+)')
             downstream = int(self.match.group(1))
             upstream = int(self.match.group(2))
             self.expect(self.prompt)
         else:
-            downstream = int(re.findall('(\d+x\d+)',bonded_impared_status)[1].split("x")[0])
-            upstream = int(re.findall('(\d+x\d+)',bonded_impared_status)[1].split("x")[1])
+            downstream = int(re.findall(r'(\d+x\d+)',bonded_impared_status)[1].split("x")[0])
+            upstream = int(re.findall(r'(\d+x\d+)',bonded_impared_status)[1].split("x")[1])
         return [upstream,downstream]
 
     def save_running_config_to_local(self, filename):
@@ -286,7 +286,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         #show running-config will display the current running config file of CMTS
         self.sendline('show running-config')
-        self.expect('arrisc4\(config\)\#')
+        self.expect(r'arrisc4\(config\)\#')
         f = open(filename, "w")
         f.write(self.before)
         f.write(self.after)
@@ -320,7 +320,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         """
         self.sendline('show linecard status | include CAM/CAM')
         self.expect(self.prompt)
-        results = list(map(int, re.findall('(\d+)    CAM ', self.before)))
+        results = list(map(int, re.findall(r'(\d+)    CAM ', self.before)))
         return results
 
     def set_iface_ipaddr(self, iface, ipaddr):
@@ -781,7 +781,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         freq_list=[]
         for row in self.before.split("\n")[3:]:
-            match_grp=re.match("\d{1,2}/\d{1,2}\s+"+str(mac_domain)+"\s.*\s(\d{6,10})\s+\w+",row)
+            match_grp=re.match(r"\d{1,2}/\d{1,2}\s+"+str(mac_domain)+r"\s.*\s(\d{6,10})\s+\w+",row)
             if match_grp!=None and match_grp.groups(0)[0]!=None:
                 freq_list.append(match_grp.groups(0)[0])
         freq_list = map(int, freq_list)
@@ -986,7 +986,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         qos_dict = {}
         self.sendline("show cable modem qos %s verbose" % (cm_mac))
         self.expect(self.prompt)
-        service_flows = re.split("\n\s*\n", self.before)[1:-1]
+        service_flows = re.split(r"\n\s*\n", self.before)[1:-1]
         for service_flow in service_flows:
             service_flow_list = [i for i in service_flow.split("\n") if i]
             matching = [s for s in service_flow_list if "Traffic Priority" in s]
