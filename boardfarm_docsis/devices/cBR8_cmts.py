@@ -12,7 +12,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
     """Connects to and configures a CBR8 CMTS
     """
 
-    prompt = ['cBR-8(.*)>', 'cBR-8(.*)#', 'cBR-8\(.*\)> ', 'cBR-8\(.*\)# ']
+    prompt = ['cBR-8(.*)>', 'cBR-8(.*)#', r'cBR-8\(.*\)> ', r'cBR-8\(.*\)# ']
     model = "cBR8_cmts"
 
     def __init__(self,
@@ -82,9 +82,9 @@ class CBR8CMTS(base_cmts.BaseCmts):
         :rtype: boolean or string
         """
         self.sendline('show cable modem %s' % cmmac)
-        self.expect('.+ranging cm \d+')
+        self.expect(r'.+ranging cm \d+')
         result = self.match.group()
-        match = re.search('\d+/\d+/\d+\**\s+([^\s]+)\s+\d+\s+.+\d+\s+(\w+)\r\n', result)
+        match = re.search(r'\d+/\d+/\d+\**\s+([^\s]+)\s+\d+\s+.+\d+\s+(\w+)\r\n', result)
         if match:
             status = match.group(1)
             encrytion = match.group(2)
@@ -138,7 +138,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
         """
         cmmac=self.get_cm_mac_cmts_format(cmmac)
         self.sendline('show cable modem %s' % cmmac)
-        self.expect(cmmac + '\s+([\d\.]+)')
+        self.expect(cmmac + r'\s+([\d\.]+)')
         result = self.match.group(1)
         if self.match != None:
             output = result
@@ -181,7 +181,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
             mac_domain = self.mac_domain
         assert mac_domain is not None, "get_center_freq() requires mac_domain to be set"
         self.sendline('show controllers integrated-Cable %s rf-ch 0' %mac_domain)
-        self.expect('.*UP\s+(\d+)\s+DOCSIS')
+        self.expect(r'.*UP\s+(\d+)\s+DOCSIS')
         freq = self.match.group(1)
         if self.match != None:
             output = freq
