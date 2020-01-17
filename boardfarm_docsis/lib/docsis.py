@@ -18,7 +18,7 @@ import tempfile
 import hashlib
 
 from .cfg_helper import CfgGenerator
-
+from boardfarm.lib import SnmpHelper
 from boardfarm.lib.common import cmd_exists, keccak512_checksum
 
 class docsis:
@@ -269,6 +269,35 @@ class mta_cfg(cm_cfg):
 
     encoded_suffix = '.bin'
 
+    def __init__(self, start=None, fname=None):
+        '''
+        Creates a default basic mta  cfg file for modification
+        '''
+        if type(start) is str:
+            # OLD fashined: this is a file name, load the contents from the file
+            self.original_file = start
+            self.original_fname = os.path.split(start)[1]
+            self.encoded_fname = self.original_fname.replace('.txt', self.encoded_suffix)
+            self.load(start)
+        elif isinstance(start, CfgGenerator):
+            if fname is None:
+                # create a name and add some sha256 digits
+                fname = "mta-config-" + self.shortname(10) + ".txt"
+            self.txt = start.gen_mta_cfg() # the derived class already created the skeleton
+            new_list = self.txt.replace('SnmpMibObject','').replace(';','').replace(' ','').split('\n')
+            final_list = []
+            for val in new_list:
+                if val != '':
+                    mib_name = val.split()[0].split(".")[0]
+                    mib_oid = SnmpHelper.get_mib_oid(mib_name)
+                    new_val = val.replace(mib_name,"."+mib_oid)
+                    final_list.append(new_val)
+            self.txt  = '\n'.join(final_list)
+            print("Config name created: %s" % fname)
+            self.original_fname = fname
+            self.encoded_fname = self.original_fname.replace('.txt', self.encoded_suffix)
+        else:
+            raise Exception("Wrong type %s received" % type(start))
 
 
 #-----------------------------------Library Methods-----------------------------------

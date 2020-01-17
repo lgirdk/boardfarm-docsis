@@ -1,6 +1,20 @@
 from collections import OrderedDict
 import copy
+import os
+import json
+import boardfarm_docsis
 
+def get_base_cfg(cfg_name):
+    """Helper function to get base config from json
+
+    :param cfg_name : json file name
+    :type cfg_name : string
+    :return : json file extracted as dict
+    :rtype : dict
+    """
+    base_dir = os.path.dirname(str(boardfarm_docsis.__path__[0]))
+    global_mta_config_file = json.load(open(os.path.join(base_dir, "json_payload/"+cfg_name), 'r'))
+    return global_mta_config_file
 
 def indent_str(string, indent, pad=' '):
     """Helper function to indent a string (padded with spaces by default)
@@ -478,6 +492,80 @@ class BaselinePrivacy(object):
         """
         return self.BaselinePrivacy_dict
 
+class GlobalMTAParams(object):
+    """
+    This class fetches global mta mibs from the json file
+    """
+    global_mta_params_dict = OrderedDict
+    snmp_mib_object = 'SnmpMibObject'
+    snmp_mta_CC = None
+    global_mta_params_defaults = {
+               snmp_mib_object: snmp_mta_CC
+               }
+
+    @classmethod
+    def name(cls):
+        """
+        To get the class name
+        """
+        return cls.__name__
+
+    @classmethod
+    def snmp_mta_global(cls, line1 = '', line2 = '', global_mta_config_json="mta_config.json"):
+        '''
+        To create list of mta global mibs
+
+        Parameters:
+        line1(string): line number for line 1
+        line2(string): line number for line 2
+        '''
+        final_list = []
+        global_mta_config_file = get_base_cfg(global_mta_config_json)
+        for key,val in global_mta_config_file.items():
+            for sub_section,sub_value in val.items():
+                tmp = sub_value
+                line_suffix = ''
+                if 'line1' in sub_section:
+                    line_suffix = "."+line1
+                if 'line2' in sub_section:
+                    line_suffix = "."+line2
+                snmp_mta_global = ["\t{}{}{}\t{}\t{}\t".format(k,line_suffix,v["suffix"],v["data"],v["data_type"]) for k,v in tmp.items()]
+                final_list.extend(snmp_mta_global)
+        return final_list
+
+    def __init__(self, **kwargs):
+        if not kwargs.get(self.snmp_mib_object, None):
+            kwargs[self.snmp_mib_object] = GlobalMTAParams.snmp_mta_global()
+
+        self.global_mta_params_dict = copy.deepcopy(self.global_mta_params_defaults)
+        update_dict(self.global_mta_params_dict, **kwargs)
+
+    def __str__(self):
+        """Method to get the global mta params in string format from method to_str
+
+        :return : conversion of dict to string
+        :rtype : string
+        """
+
+        return self.to_str()
+
+    def to_str(self):
+        """Method to get the string from dictionary of global mta params
+
+        :return : conversion of dict to string
+        :rtype : string
+        """
+
+        return dict_to_str(self.global_mta_params_dict)
+
+    def get_dict(self):
+        """Method to get the global mta parameters
+
+        :return : global params in dictionary format
+        :rtype : dict
+        """
+        return self.global_mta_params_dict
+
 class GlobalParameters(object):
     """
     This class groups the values found at the root level
@@ -768,6 +856,7 @@ class CfgGenerator():
                             UsServiceFlow(),\
                             BaselinePrivacy(),\
                             eRouter()]
+        self.mta_base_cfg = [GlobalMTAParams()]
 
     def first(self, s):
         '''Return the first element from an ordered collection
@@ -776,15 +865,21 @@ class CfgGenerator():
         '''
         return next(iter(s))
 
-    def update_cm_base_cfg(self, kwargs):
-        """Method to update the base config file with the additional
-        features
+    def update_cm_base_cfg(self, kwargs, flag = 'cm'):
+        """
+        Method to update cm or mta base config file with additional features
+        based on the flag.
+
+        :param flag : to mention whether cm or mta base cfg has to be created
+        :type flag : string
         """
         if not kwargs:
             return
+
         while kwargs != {}:
             k = self.first(kwargs)
-            for elem in self.cm_base_cfg:
+            base_cfg = self.mta_base_cfg if flag == 'mta' else self.cm_base_cfg
+            for elem in base_cfg:
                 if elem.name() == k:
                     d = elem.get_dict()
                     d.update(kwargs[k])
@@ -863,6 +958,20 @@ class CfgGenerator():
         """
         return self._gen_cfg(None, kwargs)
 
+
+    def _gen_mta_cfg(self, kwargs):
+        """Method to generate intermediate mta cfg
+
+        :param kwargs : Can give if any params required
+        :type kwargs : string(, optional)
+        :return : mta config file
+        :rtype : string
+        """
+        tmp_cfg = self.mta_base_cfg[:]
+        self.update_cm_base_cfg(kwargs, flag ='mta')
+        self.mta_base_cfg = tmp_cfg[:]
+        return tmp_cfg
+
     def generate_cfg(self, fname = None):
         """Finalise the config making it ready for use.
 
@@ -891,6 +1000,19 @@ class CfgGenerator():
         '''
         return cfg_file_str
 
+    def gen_mta_cfg(self, fname = None):
+        """
+        This method generates final mta cfg and now its ready to use
+
+        :param fname : Filename to generate the config file, defaults to None
+        :type fname : string(, optional)
+        :return : Multiline string
+        :rtype : string
+        """
+        cfg_file_str = ""
+        for i in self.mta_base_cfg:
+            cfg_file_str += i.to_str()
+        return cfg_file_str
 
 ##############################################################################################
 
