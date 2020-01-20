@@ -112,8 +112,11 @@ class ArrisCMTS(base_cmts.BaseCmts):
         :return: True if the CM is operational else actual status on cmts
         :rtype: string / boolean
         """
+        self.sendline('no pagination')
+        self.expect_prompt()
         self.sendline('show cable modem  %s detail' % cmmac)
-        self.expect(self.prompt)
+        self.expect_prompt()
+
         if 'State=Operational' in self.before:
             return True
         else:
