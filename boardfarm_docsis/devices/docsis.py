@@ -8,9 +8,12 @@ from boardfarm.lib.network_helper import valid_ipv4, valid_ipv6
 class Docsis(openwrt_router.OpenWrtRouter):
     """Docsis class used to perform generic operations
     """
-    # The possible configurations
+    # The possible configurations for the CM
     cm_mgmt_config_modes = {"dual", "ipv4", "ipv6"}
-    erouter_config_modes = cm_mgmt_config_modes | {"dslite", "bridge", "none"}
+
+    # The possible configurations for the eRouter
+    disabled = {"bridge", "disabled"} # this will add an erouter initialisation (TLV 202) set to  0
+    erouter_config_modes = cm_mgmt_config_modes | disabled | {"dslite", "none"} # "none" will NOT add any eRouter initialisation to the config file
 
     def get_cm_mgmt_cfg(self):
         """This method attempts to obtain the CM management interface configuration. It queries the CMTS for the mac-domain configuration.
