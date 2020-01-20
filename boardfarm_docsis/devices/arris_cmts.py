@@ -91,7 +91,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
             self.sendline('config')
             self.expect('Enter configuration commands, one per line. End with exit or quit or CTRL Z')
             self.expect(self.prompt)
-            self.sendline('pagination')
+            self.sendline('no pagination')
             self.expect(self.prompt)
             return
         except:
