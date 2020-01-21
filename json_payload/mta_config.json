@@ -282,7 +282,7 @@
                 },
                 "pktcSigDevToneDbLevel.2.2": {
                         "data_type": "int",
-                        "data": "0",
+                        "data": "-140",
                         "suffix": ""
                 },
                 "pktcSigDevToneFreqOnDuration": {
@@ -884,7 +884,7 @@
                         "suffix": ".9.1"
                 },
                 "pktcSigDevToneFreqRepeatCount.9.2": {
-                        "data_type": "int",
+                        "data_type": "unsigned32",
                         "data": "0",
                         "suffix": ""
                 }
