@@ -390,7 +390,12 @@ def check_interface(board, ip, prov_mode="dual", lan_devices=["lan"]):
 
     # validate IPv6 conditions
     _validate_ertr(ip["board"][board.erouter_iface], "IPv6")
-    if prov_mode == "dslite" : _validate_ertr(ip["board"][board.aftr_iface], "IPv6") #validate aftr_v6 for dslite
+
+    # since aftr iface does not have an IP address/mac address of it's own
+    # just validate if the interface exists
+    if prov_mode == "dslite" :
+        assert board.check_iface_exists(board.aftr_iface), \
+                "{} interface didn't come up in prov mode : {}".format(board.aftr_iface, prov_mode)
     if prov_mode != "ipv4": _validate_cpe("IPv6") # validate ipv6 for CPEs
 
 def generate_cfg_file(board, test_args, cfg_mode, filename=None, cfg_args=None):
