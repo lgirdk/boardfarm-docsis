@@ -44,27 +44,7 @@ class Docsis(openwrt_router.OpenWrtRouter):
         :return: the status of the CM
         :rtype: string
         """
-        """
-        Name: cmStatus
-        Purpose: Use snmp mib to get cm status.
-        Input: wan, wan_ip, board, status_string
-        Output: return snmp string
-        Value list (INTEGER: \d+)
-            1: other(1)
-            2: notReady(2)
-            3: notSynchronized(3)
-            4: phySynchronized(4)
-            5: usParametersAcquired(5)
-            6: rangingComplete(6)
-            7: ipComplete(7)
-            8: todEstablished(8)
-            9: securityEstablished(9)
-            10: paramTransferComplete(10)
-            11: registrationComplete(11)
-            12: operational(12)
-            13: accessDenied(13)
-        """
-        status=['Timeout: No Response from', '(INTEGER: \d+)']
+        status=['Timeout: No Response from', r'(INTEGER: \d+)']
         for not_used in range(100):
             # TODO: wan ip could change after reboot?
             wan.sendline("snmpget -v 2c -t 2 -r 10 -c public %s %s.2" %(wan_ip, self.mib["docsIf3CmStatusValue"]) )
