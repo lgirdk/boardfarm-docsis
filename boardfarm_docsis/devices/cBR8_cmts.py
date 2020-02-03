@@ -82,23 +82,21 @@ class CBR8CMTS(base_cmts.BaseCmts):
         :rtype: boolean or string
         """
         self.sendline('show cable modem %s' % cmmac)
-        self.expect(r'.+ranging cm \d+')
-        result = self.match.group()
-        match = re.search(r'\d+/\d+/\d+\**\s+([^\s]+)\s+\d+\s+.+\d+\s+(\w+)\r\n', result)
+        self.expect(self.prompt)
+        result = self.before
+        match = re.search(r'\w+/\w+/\w+/\w+\s+((\w+\-?\(?\)?)+)', result)
         if match:
             status = match.group(1)
-            encrytion = match.group(2)
-            if status == "online(pt)" and encrytion == "yes":
+            if status == "w-online(pt)" or status == "w-online" or status == "w-online(d)":
                 output = True
-            elif status == "online" and encrytion == "no":
+            elif status == "p-online(pt)" or status == "p-online" or status == "p-online(d)":
                 output = True
             elif "online" not in status and status != None:
                 output = status
             else:
-                assert 0, "ERROR: incorrect cmstatus \""+status+"\" in cmts for bpi encrytion \""+encrytion+"\""
+                assert 0, "ERROR: incorrect cmstatus \""+status+"\" in cmts"
         else:
             assert 0, "ERROR: Couldn't fetch CM status from cmts"
-        self.expect(self.prompt)
         return output
 
     def clear_offline(self, cmmac):
