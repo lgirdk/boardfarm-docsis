@@ -16,10 +16,10 @@ class DocsisBootStub(rootfs_boot.RootFSBootTest):
             self.skipTest("Do not run stub directly")
 
         ertr_mode = {'max_config':True}
-        board.cm_cfg = board.generate_cfg(self.cfg, None, ertr_mode)
+        self.dev.board.cm_cfg = self.dev.board.generate_cfg(self.cfg, None, ertr_mode)
 
         # TODO: why is this required? need to fix globally
-        board.config['cm_cfg'] = board.cm_cfg
+        self.dev.board.config['cm_cfg'] = self.dev.board.cm_cfg
 
         try:
             self.boot()
@@ -29,7 +29,7 @@ class DocsisBootStub(rootfs_boot.RootFSBootTest):
             raise BootFail
 
     def recover(self):
-        board.close()
+        self.dev.board.close()
         super(DocsisBootStub, self).recover()
 
 class DocsisBootFromEnv(DocsisBootStub):
