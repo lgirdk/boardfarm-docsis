@@ -27,3 +27,6 @@ class DocsisEnvHelper(EnvHelper):
             return True
         except:
             return False
+
+    def get_ertr_mode(self):
+        return {'max_config': True}

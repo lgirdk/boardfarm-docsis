@@ -9,14 +9,14 @@ class DocsisBootStub(rootfs_boot.RootFSBootTest):
     '''
 
     cfg = None
+    ertr_mode = {}
 
     @run_once
     def runTest(self):
         if self.cfg is None:
             self.skipTest("Do not run stub directly")
 
-        ertr_mode = {'max_config':True}
-        self.dev.board.cm_cfg = self.dev.board.generate_cfg(self.cfg, None, ertr_mode)
+        self.dev.board.cm_cfg = self.dev.board.generate_cfg(self.cfg, None, self.ertr_mode)
 
         # TODO: why is this required? need to fix globally
         self.dev.board.config['cm_cfg'] = self.dev.board.cm_cfg
@@ -37,6 +37,7 @@ class DocsisBootFromEnv(DocsisBootStub):
 
     def runTest(self):
         self.cfg = self.env_helper.get_prov_mode()
+        self.ertr_mode = self.env_helper.get_ertr_mode()
 
         super(DocsisBootFromEnv, self).runTest()
 
