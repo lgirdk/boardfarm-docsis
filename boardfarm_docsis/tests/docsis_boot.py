@@ -1,5 +1,4 @@
 from boardfarm.tests import rootfs_boot
-from boardfarm.devices import board
 from boardfarm.exceptions import BootFail
 from boardfarm.lib.common import run_once
 
