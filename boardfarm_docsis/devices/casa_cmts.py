@@ -33,6 +33,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         """
         conn_cmd = kwargs.get('conn_cmd', None)
         connection_type = kwargs.get('connection_type', 'local_serial')
+        self.ipaddr = kwargs.get('ipaddr', None)
         self.username = kwargs.get('username', 'root')
         self.password = kwargs.get('password', 'casa')
         self.password_admin = kwargs.get('password_admin', 'casa')

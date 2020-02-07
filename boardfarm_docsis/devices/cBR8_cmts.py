@@ -22,6 +22,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
         """
         conn_cmd = kwargs.get('conn_cmd', None)
         connection_type = kwargs.get('connection_type', 'local_serial')
+        self.ipaddr = kwargs.get('ipaddr', None)
         self.password = kwargs.get('password', 'cisco')
         self.password_admin = kwargs.get('password_admin', 'cisco')
         self.mac_domain = kwargs.get('mac_domain', None)
