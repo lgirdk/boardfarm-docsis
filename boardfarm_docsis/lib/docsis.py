@@ -16,10 +16,17 @@ except:
 import re
 import tempfile
 import hashlib
+from aenum import Enum
 
 from .cfg_helper import CfgGenerator
 from boardfarm.lib import SnmpHelper
 from boardfarm.lib.common import cmd_exists, keccak512_checksum
+from boardfarm_docsis.exceptions import CMCfgEncodeFailed, MTACfgEncodeFailed, CfgUnknownType
+
+class cfg_type(Enum):
+    UNKNOWN = 0
+    CM = 1
+    MTA = 2
 
 class docsis:
     """
@@ -83,6 +90,18 @@ class docsis:
         tclsh = Tkinter.Tcl()
         assert tclsh.eval("package require sha1"), "please run apt-get install tcllib first"
 
+
+    def get_cfg_type(self):
+        with open(self.file_path) as cfg:
+            # TODO: this is OK but could be better
+            data = cfg.read()
+            if data.startswith('Main'):
+                return cfg_type.CM
+            elif data.startswith('	.'):
+                return cfg_type.MTA
+            else:
+                return cfg_type.UNKNOWN
+
     def decode(self):
         if '.cfg' in self.file:
             os.system("docsis -d %s > %s" %(self.file_path, self.file_path.replace('.cfg', '.txt')))
@@ -101,7 +120,8 @@ class docsis:
             tclsh = Tkinter.Tcl()
             tclsh.eval("source %s/mta_conf_Proc.tcl" % os.path.dirname(__file__))
             tclsh.eval("run [list %s -e -hash eu -out %s]" % (self.file_path, mtacfg_path))
-            assert os.path.exists(mtacfg_path)
+            if not os.path.exists(mtacfg_path):
+                raise MTACfgEncodeFailed()
 
             return mtacfg_path
 
@@ -112,18 +132,20 @@ class docsis:
                 os.remove(cmcfg_path)
             print("docsis %s -e %s /dev/null %s" % (self.mibs_path_arg, self.file_path, cmcfg_path))
             os.system("docsis %s -e %s /dev/null %s" % (self.mibs_path_arg, self.file_path, cmcfg_path))
-            assert os.path.exists(cmcfg_path)
+            if not os.path.exists(cmcfg_path):
+                raise CMCfgEncodeFailed()
 
             return cmcfg_path
 
         if output_type == 'mta_cfg':
             return encode_mta()
 
-        # default is CM cfg, if that fails we try to use special mta tool
-        try:
+        if self.get_cfg_type() == cfg_type.CM:
             return encode_cm()
-        except:
+        elif self.get_cfg_type() == cfg_type.MTA:
             return encode_mta()
+        else:
+            raise CfgUnknownType()
 
     # this is old. This would go eventually.
     @staticmethod
