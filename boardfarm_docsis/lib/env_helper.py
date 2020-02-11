@@ -30,3 +30,14 @@ class DocsisEnvHelper(EnvHelper):
 
     def get_ertr_mode(self):
         return {'max_config': True}
+
+    def get_country(self):
+        """This method returns the country name from env json.
+
+        :return: possible values are NL,AT,CH,CZ,DE,HU,IE,PL,RO,SK
+        :rtype: string
+        """
+        try:
+            return self.env['environment_def']['board']['country']
+        except (KeyError, AttributeError):
+            raise BftEnvExcKeyError
