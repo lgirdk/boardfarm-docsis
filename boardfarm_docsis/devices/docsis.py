@@ -1,7 +1,8 @@
 import time
 import pexpect
 
-from boardfarm.devices import openwrt_router, mgr, device_type
+from boardfarm.lib.DeviceManager import device_type
+from boardfarm.devices import openwrt_router
 from boardfarm.lib.network_helper import valid_ipv4, valid_ipv6
 
 # TODO: probably the wrong parent
@@ -25,7 +26,7 @@ class Docsis(openwrt_router.OpenWrtRouter):
         try:
             if self.has_cmts:
                 # gets the mac-domain configuration from the cmts
-                cmts = mgr.get_device_by_type(device_type.cmts)
+                cmts = self.dev.get_device_by_type(device_type.cmts)
                 mac_dom_config = cmts.check_docsis_mac_ip_provisioning_mode(cmts.mac_domain)
         except AttributeError:
             print("Failed on get_cm_mgmt_cfg: has_cmts no set")
