@@ -1,6 +1,6 @@
 from boardfarm.tests import rootfs_boot
-from boardfarm.devices import board, wan
 from boardfarm.lib.SnmpHelper import snmp_v2
+
 
 class selftest_test_cmts_functions(rootfs_boot.RootFSBootTest):
     def runTest(self):
@@ -9,7 +9,8 @@ class selftest_test_cmts_functions(rootfs_boot.RootFSBootTest):
         Input : None (self -- cmts object).
         Output : None (checks the cmts methods and prints the output).
         '''
-        from boardfarm.devices import cmts
+        cmts = self.dev.cmts
+        board = self.dev.board
         ip_provisioning_mode=cmts.check_docsis_mac_ip_provisioning_mode(cmts.mac_domain)
         print("The ip provisioning mode on given mac domain is %s" % ip_provisioning_mode)
         cmts.wait_for_ready()
@@ -24,6 +25,8 @@ class selftest_test_cmts_functions(rootfs_boot.RootFSBootTest):
 class selftest_snmpv2(rootfs_boot.RootFSBootTest):
 
     def runTest(self):
+        board = self.dev.board
+        wan = self.dev.wan
         mib_list = ["docsDevSwServer", "docsDevSwFilename"]
         ip = board.get_interface_ipaddr(board.wan_iface)
         for mib in mib_list:
