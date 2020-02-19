@@ -41,7 +41,7 @@ class docsis:
     """
 
     mibs_path_arg = ""
-    def __init__(self, file_or_obj, tmpdir=None, mibs_paths=[]):
+    def __init__(self, file_or_obj, tmpdir=None, mibs_paths=[], board=None):
         # TODO: fix at some point, this tmpdir is already relative to the CM config you
         # are grabbing? Not ideal as that dir might not be writeable, or a tftp or http URL
         # at some point - need to use a real local tmpdir or maybe even results so we can
@@ -49,8 +49,9 @@ class docsis:
         if tmpdir is None:
             tmpdir = tempfile.mkdtemp()
 
-        from boardfarm.devices import board
         if mibs_paths == []:
+            if board is None:
+                from boardfarm.devices import board
             mibs_paths = getattr(board, 'mibs_paths', [])
         if mibs_paths != []:
             default = os.path.expandvars('/home/$USER/.snmp/mibs:/usr/share/snmp/mibs:/usr/share/snmp/mibs/iana:/usr/share/snmp/mibs/ietf:/usr/share/mibs/site:/usr/share/snmp/mibs:/usr/share/mibs/iana:/usr/share/mibs/ietf:/usr/share/mibs/netsnmp')
