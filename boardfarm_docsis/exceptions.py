@@ -14,3 +14,6 @@ class MTACfgEncodeFailed(CfgEncodeFailed):
 
 class CfgUnknownType(CfgEncodeFailed):
     '''Unknown type of cfg'''
+
+class VoiceSetupConfigureFailure(BftBaseException):
+    '''Exception that occurs when Voice setup is not configured'''
