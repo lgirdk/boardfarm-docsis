@@ -1,5 +1,6 @@
 from boardfarm.tests import rootfs_boot
 from boardfarm.exceptions import BootFail
+from boardfarm_docsis.exceptions import BftProvEnvMismatch
 from boardfarm.lib.common import run_once
 from boardfarm.lib.voice import voice_devices_configure, dns_setup_sipserver
 from boardfarm_docsis.exceptions import VoiceSetupConfigureFailure
@@ -16,6 +17,8 @@ class DocsisBootStub(rootfs_boot.RootFSBootTest):
 
     @run_once
     def runTest(self):
+        if not self.env_helper.env_check(self.env_req):
+            raise BftProvEnvMismatch()
         if self.cfg is None:
             self.skipTest("Do not run stub directly")
 
@@ -53,6 +56,8 @@ class DocsisBootStub(rootfs_boot.RootFSBootTest):
 class DocsisBootFromEnv(DocsisBootStub):
     '''Dynamic boot from ENV json'''
 
+    env_req = {}
+
     def runTest(self):
         self.cfg = self.env_helper.get_prov_mode()
         self.ertr_mode = self.env_helper.get_ertr_mode()
@@ -62,25 +67,37 @@ class DocsisBootFromEnv(DocsisBootStub):
 
 class DocsisBootDualStack(DocsisBootStub):
     '''Normal boot, but with Dual Stack CM cfg specified'''
+
+    env_req = {"environment_def": {"board": {"eRouter_Provisioning_mode": "dual"}}}
     cfg = "dual"
 
 class DocsisBootIPv4(DocsisBootStub):
     '''Normal boot, but with IPv4 CM cfg specified'''
+
+    env_req = {"environment_def": {"board": {"eRouter_Provisioning_mode": "ipv4"}}}
     cfg = "ipv4"
 
 class DocsisBootIPv6(DocsisBootStub):
     '''Normal boot, but with IPv6 CM cfg specified'''
+
+    env_req = {"environment_def": {"board": {"eRouter_Provisioning_mode": "ipv6"}}}
     cfg = "ipv6"
 
 class DocsisBootDSLite(DocsisBootStub):
     '''Normal boot, but with DSLite CM cfg specified'''
+
+    env_req = {"environment_def": {"board": {"eRouter_Provisioning_mode": "dslite"}}}
     cfg = "dslite"
 
 class DocsisBootBridge(DocsisBootStub):
     '''Normal boot, but with bridged CM cfg specified'''
+
+    env_req = {"environment_def": {"board": {"eRouter_Provisioning_mode": "bridge"}}}
     cfg = "bridge"
 
 class DocsisBootNone(DocsisBootStub):
     '''Normal boot, but with none specified'''
+
+    env_req = {"environment_def": {"board": {"eRouter_Provisioning_mode": "none"}}}
     cfg = "none"
 

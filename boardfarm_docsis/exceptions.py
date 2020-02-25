@@ -17,3 +17,6 @@ class CfgUnknownType(CfgEncodeFailed):
 
 class VoiceSetupConfigureFailure(BftBaseException):
     '''Exception that occurs when Voice setup is not configured'''
+
+class BftProvEnvMismatch(BftBaseException):
+    '''Exception that occurs when prov mode is not equal to environment'''
