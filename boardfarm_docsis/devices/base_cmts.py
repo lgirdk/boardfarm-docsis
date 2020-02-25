@@ -573,3 +573,15 @@ class BaseCmts(base.BaseDevice):
         :raises Exception: Not implemented
         """
         raise Exception("Not implemented!")
+
+    def ping(self, ping_ip, ping_count=3, timeout=10):
+        """This function to ping the device from cmts
+        :param ping_ip: device ip which needs to be verified
+        :ping_ip type: string
+        :param ping_count: Repeating ping packets, defaults to 3
+        :ping_count type: integer
+        :param timeout: timeout for the packets, defaults to 10 sec
+        :type timeout: integer
+        :return: True if ping passed else False
+        """
+        raise Exception("Not implemented!")

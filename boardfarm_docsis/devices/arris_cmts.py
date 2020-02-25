@@ -1008,3 +1008,26 @@ class ArrisCMTS(base_cmts.BaseCmts):
             else:
                 qos_dict["DS"] = qos_dict_flow
         return qos_dict
+
+    def ping(self, ping_ip, ping_count=5, timeout=10):
+        """This function to ping the device from cmts
+        :param ping_ip: device ip which needs to be verified
+        :ping_ip type: string
+        :param ping_count: Repeating ping packets, defaults to 3
+        :ping_count type: integer
+        :param timeout: timeout for the packets, defaults to 10 sec
+        :type timeout: integer
+        :return: True if ping passed else False
+        """
+
+        mode = "ipv%s" % ipaddress.ip_address(ping_ip).version
+        basic_ping = "ping repeat-count {} timeout {}".format(ping_count, timeout) if mode=="ipv4" else "ping ipv6"
+
+        self.check_output("end")
+        self.sendline("{} {}".format(basic_ping, ping_ip))
+        self.expect(self.prompt)
+        match = re.search("{} packets transmitted, {} packets received".format(ping_count, ping_count), self.before)
+        if match:
+            return True
+        else:
+            return False

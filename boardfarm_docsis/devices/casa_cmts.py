@@ -1183,3 +1183,26 @@ class CasaCMTS(base_cmts.BaseCmts):
             self.expect(self.prompt)
             self.sendline('modulation %s' %v)
             self.expect(self.prompt)
+
+    def ping(self, ping_ip, ping_count=3, timeout=10):
+        """This function to ping the device from cmts
+        :param ping_ip: device ip which needs to be verified
+        :ping_ip type: string
+        :param ping_count: Repeating ping packets, defaults to 3
+        :ping_count type: integer
+        :param timeout: timeout for the packets, defaults to 10 sec
+        :type timeout: integer
+        :return: True if ping passed else False
+        """
+
+        mode = "ipv%s" % ipaddress.ip_address(ping_ip).version
+        basic_ping = "ping repeat {} timeout {}".format(ping_count, timeout) if mode=="ipv4" else "ping6"
+
+        self.sendline("{} {}".format(basic_ping, ping_ip))
+        self.expect(self.prompt)
+
+        match = re.search("{} packets transmitted, {} (.*)received, 0% packet loss".format(ping_count, ping_count), self.before)
+        if match:
+            return True
+        else:
+            return False
