@@ -1,6 +1,8 @@
 from boardfarm.tests import rootfs_boot
 from boardfarm.exceptions import BootFail
 from boardfarm.lib.common import run_once
+from boardfarm.lib.voice import voice_devices_configure, dns_setup_sipserver
+from boardfarm_docsis.exceptions import VoiceSetupConfigureFailure
 
 class DocsisBootStub(rootfs_boot.RootFSBootTest):
     '''
@@ -9,6 +11,8 @@ class DocsisBootStub(rootfs_boot.RootFSBootTest):
 
     cfg = None
     ertr_mode = {}
+    country = 'NL' #default
+    voice = False
 
     @run_once
     def runTest(self):
@@ -16,12 +20,27 @@ class DocsisBootStub(rootfs_boot.RootFSBootTest):
             self.skipTest("Do not run stub directly")
 
         self.dev.board.cm_cfg = self.dev.board.generate_cfg(self.cfg, None, self.ertr_mode)
+        self.dev.board.mta_cfg = self.dev.board.generate_mta_cfg(self.country)
 
         # TODO: why is this required? need to fix globally
         self.dev.board.config['cm_cfg'] = self.dev.board.cm_cfg
 
+        if self.voice:
+            try:
+                sipserver = self.dev.sipcenter
+                sipserver.kill_asterisk()
+                dns_setup_sipserver(sipserver, self.config)
+                voice_devices_list = [sipserver, self.dev.softphone, self.dev.lan, self.dev.lan2]
+                voice_devices_configure(voice_devices_list, self.dev.sipcenter)
+            except Exception as e:
+                print("\n\nFailed to configure voice setup")
+                print(e)
+                raise VoiceSetupConfigureFailure
         try:
             self.boot()
+            if self.voice:
+                self.dev.board.wait_for_mta_provisioning()
+
         except Exception as e:
             print("\n\nFailed to Boot")
             print(e)
@@ -37,7 +56,8 @@ class DocsisBootFromEnv(DocsisBootStub):
     def runTest(self):
         self.cfg = self.env_helper.get_prov_mode()
         self.ertr_mode = self.env_helper.get_ertr_mode()
-
+        self.country = self.env_helper.get_country()
+        self.voice = False #To be acquired from env Json once the Json schema is decided
         super(DocsisBootFromEnv, self).runTest()
 
 class DocsisBootDualStack(DocsisBootStub):
