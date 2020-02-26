@@ -62,7 +62,7 @@ class DocsisBootFromEnv(DocsisBootStub):
         self.cfg = self.env_helper.get_prov_mode()
         self.ertr_mode = self.env_helper.get_ertr_mode()
         self.country = self.env_helper.get_country()
-        self.voice = False #To be acquired from env Json once the Json schema is decided
+        self.voice = self.env_helper.voice_enabled()
         super(DocsisBootFromEnv, self).runTest()
 
 class DocsisBootDualStack(DocsisBootStub):
