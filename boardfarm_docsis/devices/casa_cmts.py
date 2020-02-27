@@ -179,12 +179,10 @@ class CasaCMTS(base_cmts.BaseCmts):
         """
         cmmac=self.get_cm_mac_cmts_format(cmmac)
         self.sendline('show cable modem %s' % cmmac)
-        self.expect(cmmac + r'\s+([\d\.]+)')
-        result = self.match.group(1)
-        if self.match != None:
-            output = result
-        else:
-            output = "None"
+        self.expect(cmmac + r'\s+('+ValidIpv4AddressRegex+'+)')
+        output = "None"
+        if self.match and self.match.group(1) != '0.0.0.0':
+            output = self.match.group(1)
         self.expect(self.prompt)
         return output
 
