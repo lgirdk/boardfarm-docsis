@@ -41,3 +41,14 @@ class DocsisEnvHelper(EnvHelper):
             return self.env['environment_def']['board']['country']
         except (KeyError, AttributeError):
             raise BftEnvExcKeyError
+
+    def voice_enabled(self):
+        """This method returns true if voice is enabled in env JSON.
+
+        :return: possible values are True/False
+        :rtype: boolean
+        """
+        try:
+            return self.env['environment_def']['board']['voice']
+        except (KeyError, AttributeError):
+            raise BftEnvExcKeyError
