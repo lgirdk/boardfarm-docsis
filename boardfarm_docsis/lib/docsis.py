@@ -17,11 +17,13 @@ import re
 import tempfile
 import hashlib
 from aenum import Enum
+import glob
 
 from .cfg_helper import CfgGenerator
 from boardfarm.lib import SnmpHelper
 from boardfarm.lib.common import cmd_exists, keccak512_checksum
 from boardfarm_docsis.exceptions import CMCfgEncodeFailed, MTACfgEncodeFailed, CfgUnknownType
+import boardfarm
 
 class cfg_type(Enum):
     UNKNOWN = 0
@@ -184,6 +186,39 @@ class docsis:
             return (device.before.split("\n")[1].split(" ")[0] == device.before.split("\n")[2].split(" ")[0])
         else:
             return False
+
+    @classmethod
+    def copy_cmts_provisioning_files(cls, board_config, tftp_device, board):
+        """
+        This method looks for board's config file in all overlays.
+        The file is then encrypted using docsis and pushed to TFTP server.
+
+        args:
+        board_config (dict): requires tftp_cfg_files key in board config.
+        """
+        # Look in all overlays as well, and PATH as a workaround for standalone
+        paths = os.environ['PATH'].split(os.pathsep)
+        paths += [os.path.dirname(boardfarm.plugins[x].__file__) for x in boardfarm.plugins]
+        cfg_list = []
+
+        if 'tftp_cfg_files' in board_config:
+            for cfg in board_config['tftp_cfg_files']:
+                if isinstance(cfg, cm_cfg) or isinstance(cfg, mta_cfg):
+                    cfg_list.append(cfg)
+                else:
+                    for path in paths:
+                        cfg_list += glob.glob(path + '/devices/cm-cfg/%s' % cfg)
+        else:
+            # TODO: this needs to be removed
+            for path in paths:
+                cfg_list += glob.glob(path + '/devices/cm-cfg/UNLIMITCASA.cfg')
+        cfg_set = set(cfg_list)
+
+        # Copy binary files to tftp server
+        for cfg in cfg_set:
+            d = cls(cfg, board=board)
+            ret = d.encode()
+            tftp_device.copy_file_to_server(ret)
 
 class cm_cfg(object):
     '''
