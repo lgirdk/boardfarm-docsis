@@ -1003,10 +1003,11 @@ class ArrisCMTS(base_cmts.BaseCmts):
                         qos_dict_flow[service.split(":")[0].strip()] = service.split(":")[1].strip().split(" ")[0]
                     else:
                         qos_dict_flow[service.split(":")[0].strip()] = [service.split(":")[1].strip().split(" ")[0][:-1], service.split(":")[1].strip().split(" ")[1]]
-            if "US" in qos_dict_flow.get('Direction'):
-                qos_dict["US"] = qos_dict_flow
-            else:
-                qos_dict["DS"] = qos_dict_flow
+            if(bool(qos_dict_flow)):
+                if "US" in qos_dict_flow.get('Direction'):
+                    qos_dict["US"] = qos_dict_flow
+                else:
+                    qos_dict["DS"] = qos_dict_flow
         return qos_dict
 
     def ping(self, ping_ip, ping_count=5, timeout=10):

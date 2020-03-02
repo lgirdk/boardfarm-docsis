@@ -1075,10 +1075,11 @@ class CasaCMTS(base_cmts.BaseCmts):
                         qos_dict_flow[service.split(":")[0].strip()] = service.split(":")[1].strip().split(" ")[0]
                     else:
                         qos_dict_flow[service.split(":")[0].strip()] = [service.split(":")[1].strip().split(" ")[0][:-1], service.split(":")[1].strip().split(" ")[1]]
-            if qos_dict["US"].get("sfid") == qos_dict_flow.get('Sfid'):
-                qos_dict["US"] = qos_dict_flow
-            else:
-                qos_dict["DS"] = qos_dict_flow
+            if(bool(qos_dict_flow)):
+                if qos_dict["US"].get("sfid") == qos_dict_flow.get('Sfid'):
+                    qos_dict["US"] = qos_dict_flow
+                elif qos_dict["DS"].get("sfid") == qos_dict_flow.get('Sfid'):
+                    qos_dict["DS"] = qos_dict_flow
         #this is to replace Mimimum with Minimum typo on casa cmts and convert to unit of measure like kbpc to bitespersecond.
         for value in service_flow_direction:
             if "Mimimum Reserved rate" in qos_dict[value] :
