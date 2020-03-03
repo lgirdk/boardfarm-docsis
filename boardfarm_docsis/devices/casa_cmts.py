@@ -757,11 +757,17 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         self.sendline('ip-provisioning-mode dual-stack')
         self.expect(self.prompt)
+
+        if type(qam_sub) is int:
+            qam_sub = [qam_sub]
+
         count = 1
-        for ch in qam_ch:
-            self.sendline('downstream %s interface qam %s/%s/%s' % (count, qam_idx, qam_sub, ch))
-            self.expect(self.prompt)
-            count += 1
+        for qs in qam_sub:
+            for ch in qam_ch:
+                self.sendline('downstream %s interface qam %s/%s/%s' % (count, qam_idx, qs, ch))
+                self.expect(self.prompt)
+                count += 1
+
         count = 1
         for ch in ups_ch:
             self.sendline('upstream %s interface upstream %s/%s/0' % (count, ups_idx, ch))
@@ -838,9 +844,14 @@ class CasaCMTS(base_cmts.BaseCmts):
         """
         self.sendline('service group %s' % index)
         self.expect(self.prompt)
-        for ch in qam_channels:
-            self.sendline('qam %s/%s/%s' % (qam_idx, qam_sub, ch))
-            self.expect(self.prompt)
+
+        if type(qam_sub) is int:
+            qam_sub = [qam_sub]
+
+        for qs in qam_sub:
+            for ch in qam_channels:
+                self.sendline('qam %s/%s/%s' % (qam_idx, qs, ch))
+                self.expect(self.prompt)
         for ch in ups_channels:
             self.sendline('upstream %s/%s' % (ups_idx, ch))
             self.expect(self.prompt)
