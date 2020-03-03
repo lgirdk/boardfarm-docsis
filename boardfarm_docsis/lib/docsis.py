@@ -21,7 +21,7 @@ import glob
 
 from .cfg_helper import CfgGenerator
 from boardfarm.lib import SnmpHelper
-from boardfarm.lib.common import cmd_exists, keccak512_checksum
+from boardfarm.lib.common import cmd_exists, keccak512_checksum, retry_on_exception
 from boardfarm_docsis.exceptions import CMCfgEncodeFailed, MTACfgEncodeFailed, CfgUnknownType
 import boardfarm
 
@@ -486,4 +486,31 @@ def configure_board_v2(provisioner, board, test_args, test_data, **kwargs):
     provisioner.tftp_device = board.tftp_dev
     provisioner.provision_board(board.config)
 
+def check_cm_firmware_version(board, wan, env_helper):
+    """Compare CM firmware version with provided enviornment FM version
+       checking all images ending with suffix <fm_version>.*
+             eg CH7465LG-NCIP-6.12.18.26-3-GA-SH.p7
+
+       :param board : board DUT device class
+       :type board : device_type.DUT
+       :param wan : wan is wan device type
+       :type wan :  device_type.wan
+       :param env_helper : device class to fetch different devices
+       :type env_helper : boardfarm_docsis.devices.Docsis
+       :rtype: Bool
+       :raise Assertion: Asserts when CM FM Mismatch or exception
+       :return: returns bool True if FM Matches
+    """
+    if env_helper.has_image():
+        fm_ver = env_helper.get_image(mirror=False).rpartition(".")[0]
+        cm_ip = board.get_interface_ipaddr(board.wan_iface)
+        result = retry_on_exception( SnmpHelper.snmp_v2,
+                                     [ wan,
+                                       cm_ip,
+                                       'docsDevSwCurrentVers'
+                                     ],
+                                     retries=2 )
+        assert fm_ver == result, "CM FM Version Mismatch ENV(%s) != CM(%s)" % (fm_ver, result)
+
+    return True
 
