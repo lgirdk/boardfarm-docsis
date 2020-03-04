@@ -510,7 +510,8 @@ def check_cm_firmware_version(board, wan, env_helper):
                                        'docsDevSwCurrentVers'
                                      ],
                                      retries=2 )
-        assert fm_ver == result, "CM FM Version Mismatch ENV(%s) != CM(%s)" % (fm_ver, result)
+        # temporary fix, needs rework  to being vendor independent
+        assert result in fm_ver, "CM FM Version Mismatch current {} not in requested {}".format(result, fm_ver)
 
     return True
 
