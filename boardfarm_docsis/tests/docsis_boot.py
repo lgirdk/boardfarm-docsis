@@ -50,7 +50,8 @@ class DocsisBootStub(rootfs_boot.RootFSBootTest):
             raise BootFail
 
     def recover(self):
-        self.dev.board.close()
+        if self.__class__.__name__.startswith("DocsisBoot"):
+            self.dev.board.close()
         super(DocsisBootStub, self).recover()
 
 class DocsisBootFromEnv(DocsisBootStub):
