@@ -1,11 +1,11 @@
 from boardfarm.lib.env_helper import EnvHelper
 from boardfarm.exceptions import BftEnvExcKeyError
 
+
 class DocsisEnvHelper(EnvHelper):
     '''
     Docsis specific env helper, adds more options such as  "eRouter_Provisioning_mode": "Bridge"
     '''
-
     def get_prov_mode(self):
         '''
         returns the provisioning mode of the desired environment.
@@ -13,7 +13,8 @@ class DocsisEnvHelper(EnvHelper):
         '''
 
         try:
-            return self.env['environment_def']['board']['eRouter_Provisioning_mode']
+            return self.env['environment_def']['board'][
+                'eRouter_Provisioning_mode']
         except (KeyError, AttributeError):
             raise BftEnvExcKeyError
 

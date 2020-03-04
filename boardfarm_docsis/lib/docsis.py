@@ -25,10 +25,12 @@ from boardfarm.lib.common import cmd_exists, keccak512_checksum, retry_on_except
 from boardfarm_docsis.exceptions import CMCfgEncodeFailed, MTACfgEncodeFailed, CfgUnknownType
 import boardfarm
 
+
 class cfg_type(Enum):
     UNKNOWN = 0
     CM = 1
     MTA = 2
+
 
 class docsis:
     """
@@ -43,6 +45,7 @@ class docsis:
     """
 
     mibs_path_arg = ""
+
     def __init__(self, file_or_obj, tmpdir=None, mibs_paths=[], board=None):
         # TODO: fix at some point, this tmpdir is already relative to the CM config you
         # are grabbing? Not ideal as that dir might not be writeable, or a tftp or http URL
@@ -56,8 +59,10 @@ class docsis:
                 from boardfarm.devices import board
             mibs_paths = getattr(board, 'mibs_paths', [])
         if mibs_paths != []:
-            default = os.path.expandvars('/home/$USER/.snmp/mibs:/usr/share/snmp/mibs:/usr/share/snmp/mibs/iana:/usr/share/snmp/mibs/ietf:/usr/share/mibs/site:/usr/share/snmp/mibs:/usr/share/mibs/iana:/usr/share/mibs/ietf:/usr/share/mibs/netsnmp')
-            mibs_path_arg = "-M "  + default
+            default = os.path.expandvars(
+                '/home/$USER/.snmp/mibs:/usr/share/snmp/mibs:/usr/share/snmp/mibs/iana:/usr/share/snmp/mibs/ietf:/usr/share/mibs/site:/usr/share/snmp/mibs:/usr/share/mibs/iana:/usr/share/mibs/ietf:/usr/share/mibs/netsnmp'
+            )
+            mibs_path_arg = "-M " + default
 
             for mibs_path in mibs_paths:
                 mibs_path_arg = mibs_path_arg + ":" + mibs_path
@@ -68,13 +73,13 @@ class docsis:
         if isinstance(file_or_obj, cm_cfg):
             self.cm_cfg = file_or_obj
             # TODO: this seems like the wrong place to store these but OK
-            self.dir_path=os.path.join(os.path.split(__file__)[0], tmpdir)
+            self.dir_path = os.path.join(os.path.split(__file__)[0], tmpdir)
             self.file = self.cm_cfg.original_fname
             self.file_path = os.path.join(self.dir_path, self.file)
         else:
-            self.file_path=file_or_obj
-            self.dir_path=os.path.join(os.path.split(file_or_obj)[0], tmpdir)
-            self.file=os.path.split(file_or_obj)[1]
+            self.file_path = file_or_obj
+            self.dir_path = os.path.join(os.path.split(file_or_obj)[0], tmpdir)
+            self.file = os.path.split(file_or_obj)[1]
 
         # make target tmpdir if it does not exist
         try:
@@ -91,8 +96,8 @@ class docsis:
         assert cmd_exists('docsis')
         assert cmd_exists('tclsh')
         tclsh = Tkinter.Tcl()
-        assert tclsh.eval("package require sha1"), "please run apt-get install tcllib first"
-
+        assert tclsh.eval(
+            "package require sha1"), "please run apt-get install tcllib first"
 
     def get_cfg_type(self):
         with open(self.file_path) as cfg:
@@ -107,34 +112,39 @@ class docsis:
 
     def decode(self):
         if '.cfg' in self.file:
-            os.system("docsis -d %s > %s" %(self.file_path, self.file_path.replace('.cfg', '.txt')))
+            os.system("docsis -d %s > %s" %
+                      (self.file_path, self.file_path.replace('.cfg', '.txt')))
             assert os.path.exists(self.file.replace('.cfg', '.txt'))
 
-            return  self.file.replace('.cfg', '.txt')
+            return self.file.replace('.cfg', '.txt')
 
         # TODO: decode MTA?
 
     def encode(self, output_type='cm_cfg'):
         def encode_mta():
-            mtacfg_name=self.file.replace('.txt', '.bin')
-            mtacfg_path=os.path.join(self.dir_path, mtacfg_name)
+            mtacfg_name = self.file.replace('.txt', '.bin')
+            mtacfg_path = os.path.join(self.dir_path, mtacfg_name)
             if os.path.isfile(mtacfg_path):
                 os.remove(mtacfg_path)
             tclsh = Tkinter.Tcl()
-            tclsh.eval("source %s/mta_conf_Proc.tcl" % os.path.dirname(__file__))
-            tclsh.eval("run [list %s -e -hash eu -out %s]" % (self.file_path, mtacfg_path))
+            tclsh.eval("source %s/mta_conf_Proc.tcl" %
+                       os.path.dirname(__file__))
+            tclsh.eval("run [list %s -e -hash eu -out %s]" %
+                       (self.file_path, mtacfg_path))
             if not os.path.exists(mtacfg_path):
                 raise MTACfgEncodeFailed()
 
             return mtacfg_path
 
         def encode_cm():
-            cmcfg_name=self.file.replace('.txt', '.cfg')
-            cmcfg_path=os.path.join(self.dir_path, cmcfg_name)
+            cmcfg_name = self.file.replace('.txt', '.cfg')
+            cmcfg_path = os.path.join(self.dir_path, cmcfg_name)
             if os.path.isfile(cmcfg_path):
                 os.remove(cmcfg_path)
-            print("docsis %s -e %s /dev/null %s" % (self.mibs_path_arg, self.file_path, cmcfg_path))
-            os.system("docsis %s -e %s /dev/null %s" % (self.mibs_path_arg, self.file_path, cmcfg_path))
+            print("docsis %s -e %s /dev/null %s" %
+                  (self.mibs_path_arg, self.file_path, cmcfg_path))
+            os.system("docsis %s -e %s /dev/null %s" %
+                      (self.mibs_path_arg, self.file_path, cmcfg_path))
             if not os.path.exists(cmcfg_path):
                 raise CMCfgEncodeFailed()
 
@@ -179,11 +189,14 @@ class docsis:
 
         Returns: (bool) True if sha matches else False.
         '''
-        modem_cfg = board.get_modem_cfg_file(device.get_interface_ipaddr(device.iface_dut))
+        modem_cfg = board.get_modem_cfg_file(
+            device.get_interface_ipaddr(device.iface_dut))
         if modem_cfg:
-            device.sendline("sha1sum  /tftpboot/tmp/%s /tftpboot/%s" % (modem_cfg, modem_cfg))
+            device.sendline("sha1sum  /tftpboot/tmp/%s /tftpboot/%s" %
+                            (modem_cfg, modem_cfg))
             device.expect(device.prompt)
-            return (device.before.split("\n")[1].split(" ")[0] == device.before.split("\n")[2].split(" ")[0])
+            return (device.before.split("\n")[1].split(" ")[0] ==
+                    device.before.split("\n")[2].split(" ")[0])
         else:
             return False
 
@@ -198,7 +211,10 @@ class docsis:
         """
         # Look in all overlays as well, and PATH as a workaround for standalone
         paths = os.environ['PATH'].split(os.pathsep)
-        paths += [os.path.dirname(boardfarm.plugins[x].__file__) for x in boardfarm.plugins]
+        paths += [
+            os.path.dirname(boardfarm.plugins[x].__file__)
+            for x in boardfarm.plugins
+        ]
         cfg_list = []
 
         if 'tftp_cfg_files' in board_config:
@@ -207,7 +223,8 @@ class docsis:
                     cfg_list.append(cfg)
                 else:
                     for path in paths:
-                        cfg_list += glob.glob(path + '/devices/cm-cfg/%s' % cfg)
+                        cfg_list += glob.glob(path +
+                                              '/devices/cm-cfg/%s' % cfg)
         else:
             # TODO: this needs to be removed
             for path in paths:
@@ -219,6 +236,7 @@ class docsis:
             d = cls(cfg, board=board)
             ret = d.encode()
             tftp_device.copy_file_to_server(ret)
+
 
 class cm_cfg(object):
     '''
@@ -256,12 +274,14 @@ class cm_cfg(object):
             start.gen_dual_stack_cfg()
             self.txt = start.generate_cfg(fname)
             self.original_fname = fname
-            self.encoded_fname = self.original_fname.replace('.txt', self.encoded_suffix)
+            self.encoded_fname = self.original_fname.replace(
+                '.txt', self.encoded_suffix)
         elif type(start) is str:
             # OLD fashined: this is a file name, load the contents from the file
             self.original_file = start
             self.original_fname = os.path.split(start)[1]
-            self.encoded_fname = self.original_fname.replace('.txt', self.encoded_suffix)
+            self.encoded_fname = self.original_fname.replace(
+                '.txt', self.encoded_suffix)
             self.load(start)
         elif isinstance(start, CfgGenerator):
             # the dynamic configure class has created this config.... (ok not very OOD to
@@ -270,9 +290,11 @@ class cm_cfg(object):
                 # create a name and add some sha256 digits
                 fname = "cm-config-" + self.shortname(10) + ".txt"
                 print("Config name created: %s" % fname)
-            self.txt = start.generate_cfg() # the derived class already created the skeleton
+            self.txt = start.generate_cfg(
+            )  # the derived class already created the skeleton
             self.original_fname = fname
-            self.encoded_fname = self.original_fname.replace('.txt', self.encoded_suffix)
+            self.encoded_fname = self.original_fname.replace(
+                '.txt', self.encoded_suffix)
         else:
             raise Exception("Wrong type %s received" % type(start))
 
@@ -307,7 +329,9 @@ class cm_cfg(object):
         self.txt = re.sub(regex, sub, self.txt)
 
         if saved_txt == self.txt:
-            print("WARN: no regex sub was made for %s, to be replaced with %s" % (regex, sub))
+            print(
+                "WARN: no regex sub was made for %s, to be replaced with %s" %
+                (regex, sub))
 
     def _cm_configmode(self):
         '''function to check config mode in CM'''
@@ -315,12 +339,14 @@ class cm_cfg(object):
         modeset = ['0x010100', '0x010101', '0x010102', '0x010103']
         modestr = ['bridge', 'ipv4', 'dslite', 'dual-stack']
         for mode in range(0, len(modeset)):
-            tlv_check = "GenericTLV TlvCode 202 TlvLength 3 TlvValue "+modeset[mode]
-            initmode_check = "InitializationMode "+str(mode)
+            tlv_check = "GenericTLV TlvCode 202 TlvLength 3 TlvValue " + modeset[
+                mode]
+            initmode_check = "InitializationMode " + str(mode)
             if (tlv_check in self.txt) or (initmode_check in self.txt):
                 return modestr[mode]
 
     cm_configmode = property(_cm_configmode)
+
 
 class mta_cfg(cm_cfg):
     '''MTA specific class for cfgs'''
@@ -335,38 +361,48 @@ class mta_cfg(cm_cfg):
             # OLD fashined: this is a file name, load the contents from the file
             self.original_file = start
             self.original_fname = os.path.split(start)[1]
-            self.encoded_fname = self.original_fname.replace('.txt', self.encoded_suffix)
+            self.encoded_fname = self.original_fname.replace(
+                '.txt', self.encoded_suffix)
             self.load(start)
         elif isinstance(start, CfgGenerator):
             if fname is None:
                 # create a name and add some sha256 digits
                 fname = "mta-config-" + self.shortname(10) + ".txt"
-            self.txt = start.gen_mta_cfg() # the derived class already created the skeleton
-            new_list = self.txt.replace('SnmpMibObject','').replace(';','').replace(' ','').split('\n')
+            self.txt = start.gen_mta_cfg(
+            )  # the derived class already created the skeleton
+            new_list = self.txt.replace('SnmpMibObject',
+                                        '').replace(';',
+                                                    '').replace(' ',
+                                                                '').split('\n')
             final_list = []
             for val in new_list:
                 if val != '':
                     mib_name = val.split()[0].split(".")[0]
                     mib_oid = SnmpHelper.get_mib_oid(mib_name)
-                    new_val = val.replace(mib_name,"."+mib_oid)
+                    new_val = val.replace(mib_name, "." + mib_oid)
                     final_list.append(new_val)
-            self.txt  = '\n'.join(final_list)
+            self.txt = '\n'.join(final_list)
             print("Config name created: %s" % fname)
             self.original_fname = fname
-            self.encoded_fname = self.original_fname.replace('.txt', self.encoded_suffix)
+            self.encoded_fname = self.original_fname.replace(
+                '.txt', self.encoded_suffix)
         else:
             raise Exception("Wrong type %s received" % type(start))
 
 
 #-----------------------------------Library Methods-----------------------------------
 
+
 def check_board(board, cmts, cm_mac):
 
     assert board.is_online(), "CM show not OPERATIONAL on console"
-    assert cmts.check_online(cm_mac) == True, "CM is not online" #check cm online on CMTS
-    assert sum(cmts.DUT_chnl_lock(cm_mac)) == cmts.channel_bonding, "CM is in partial service"
+    assert cmts.check_online(
+        cm_mac) == True, "CM is not online"  #check cm online on CMTS
+    assert sum(cmts.DUT_chnl_lock(
+        cm_mac)) == cmts.channel_bonding, "CM is in partial service"
 
     return True
+
 
 def check_provisioning(board):
 
@@ -387,6 +423,7 @@ def check_provisioning(board):
     print(sha3_on_board)
     print(sha3_on_fw)
     return sha3_on_board == sha3_on_fw
+
 
 def check_interface(board, ip, prov_mode="dual", lan_devices=["lan"]):
     """This function is used to validate IP addresses for CPEs
@@ -422,12 +459,12 @@ def check_interface(board, ip, prov_mode="dual", lan_devices=["lan"]):
 
         :raises CodeError : if the IP addresses are not validated as per prov_mode
         """
-        version = {
-                "ipv4" : ["ipv4", "dual"],
-                "ipv6" : ["dslite", "dual"]
-                }
-        check = lambda x : x if prov_mode in version[mode.lower()] else not x
-        assert check(iface.get(mode.lower(), None)), "Failed to fetch E-Router {}, mode: {}".format(mode, prov_mode)
+        version = {"ipv4": ["ipv4", "dual"], "ipv6": ["dslite", "dual"]}
+        check = lambda x: x if prov_mode in version[mode.lower()] else not x
+        assert check(
+            iface.get(mode.lower(),
+                      None)), "Failed to fetch E-Router {}, mode: {}".format(
+                          mode, prov_mode)
 
     def _validate_cpe(mode):
         """This function validates v4/v6 ip-addresses of CPEs based on prov_mode
@@ -440,7 +477,9 @@ def check_interface(board, ip, prov_mode="dual", lan_devices=["lan"]):
         :raises CodeError : if the IP addresses are not validated as per prov_mode
         """
         for dev in lan_devices:
-            assert ip[dev].get(mode.lower(), None), "Failed to fetch {} {}, mode: {}".format(dev, mode, prov_mode)
+            assert ip[dev].get(mode.lower(),
+                               None), "Failed to fetch {} {}, mode: {}".format(
+                                   dev, mode, prov_mode)
 
     # Validate IPv4 conditions
     _validate_ertr(ip["board"][board.erouter_iface], "IPv4")
@@ -451,26 +490,30 @@ def check_interface(board, ip, prov_mode="dual", lan_devices=["lan"]):
 
     # since aftr iface does not have an IP address/mac address of it's own
     # just validate if the interface exists
-    if prov_mode == "dslite" :
+    if prov_mode == "dslite":
         assert board.check_iface_exists(board.aftr_iface), \
                 "{} interface didn't come up in prov mode : {}".format(board.aftr_iface, prov_mode)
-    if prov_mode != "ipv4": _validate_cpe("IPv6") # validate ipv6 for CPEs
+    if prov_mode != "ipv4": _validate_cpe("IPv6")  # validate ipv6 for CPEs
 
-def generate_cfg_file(board, test_args, cfg_mode, filename=None, cfg_args=None):
+
+def generate_cfg_file(board,
+                      test_args,
+                      cfg_mode,
+                      filename=None,
+                      cfg_args=None):
     if not filename:
-        filename = cfg_mode+"_config.txt"
+        filename = cfg_mode + "_config.txt"
 
     if cfg_args:
         extra_snmp_default_mibs = []
         for dict_name in cfg_args:
             if dict_name in board.cm_cfg.mib_list:
-                extra_snmp_default_mibs += eval("board.cm_cfg."+dict_name)
+                extra_snmp_default_mibs += eval("board.cm_cfg." + dict_name)
         test_args["extra_snmp"] = extra_snmp_default_mibs
 
-    cfg_file = board.generate_cfg(cfg_mode,
-                                  fname=filename,
-                                  kwargs=test_args)
+    cfg_file = board.generate_cfg(cfg_mode, fname=filename, kwargs=test_args)
     return cfg_file
+
 
 def configure_board_v2(provisioner, board, test_args, test_data, **kwargs):
     prov_mode = getattr(test_data, "prov_mode", None)
@@ -481,10 +524,12 @@ def configure_board_v2(provisioner, board, test_args, test_data, **kwargs):
     mta_cfg = kwargs.pop("mta_cfg", None)
 
     if not cm_cfg:
-        cm_cfg = generate_cfg_file(board, test_args, prov_mode, filename, cfg_args)
+        cm_cfg = generate_cfg_file(board, test_args, prov_mode, filename,
+                                   cfg_args)
     board.update_docsis_config(cm_cfg=cm_cfg, mta_cfg=mta_cfg, **kwargs)
     provisioner.tftp_device = board.tftp_dev
     provisioner.provision_board(board.config)
+
 
 def check_cm_firmware_version(board, wan, env_helper):
     """Compare CM firmware version with provided enviornment FM version
@@ -504,14 +549,11 @@ def check_cm_firmware_version(board, wan, env_helper):
     if env_helper.has_image():
         fm_ver = env_helper.get_image(mirror=False).rpartition(".")[0]
         cm_ip = board.get_interface_ipaddr(board.wan_iface)
-        result = retry_on_exception( SnmpHelper.snmp_v2,
-                                     [ wan,
-                                       cm_ip,
-                                       'docsDevSwCurrentVers'
-                                     ],
-                                     retries=2 )
+        result = retry_on_exception(SnmpHelper.snmp_v2,
+                                    [wan, cm_ip, 'docsDevSwCurrentVers'],
+                                    retries=2)
         # temporary fix, needs rework  to being vendor independent
-        assert result in fm_ver, "CM FM Version Mismatch current {} not in requested {}".format(result, fm_ver)
+        assert result in fm_ver, "CM FM Version Mismatch current {} not in requested {}".format(
+            result, fm_ver)
 
     return True
-

@@ -5,6 +5,7 @@ import os
 import json
 import boardfarm_docsis
 
+
 def get_base_cfg(cfg_name):
     """Helper function to get base config from json
 
@@ -14,8 +15,10 @@ def get_base_cfg(cfg_name):
     :rtype : dict
     """
     base_dir = os.path.dirname(str(boardfarm_docsis.__path__[0]))
-    global_mta_config_file = json.load(open(os.path.join(base_dir, "json_payload/"+cfg_name), 'r'))
+    global_mta_config_file = json.load(
+        open(os.path.join(base_dir, "json_payload/" + cfg_name), 'r'))
     return global_mta_config_file
+
 
 def indent_str(string, indent, pad=' '):
     """Helper function to indent a string (padded with spaces by default)
@@ -29,9 +32,10 @@ def indent_str(string, indent, pad=' '):
     :return : string with indentation
     :rtype : string
     """
-    string_length=len(string)+indent
+    string_length = len(string) + indent
     indented_string = string.rjust(string_length, pad)
     return indented_string
+
 
 def update_dict(d, **kwargs):
     """Helper function to update a config dictionary
@@ -41,9 +45,10 @@ def update_dict(d, **kwargs):
     :param **kwargs : dictionary to be updated
     :type **kwargs : dict
     """
-    for k,v in kwargs.items():
+    for k, v in kwargs.items():
         if k in d:
             d[k] = v
+
 
 def dict_to_str(d, name=None, indent=4):
     """Helper function to convert a config dictionary to string.
@@ -55,14 +60,14 @@ def dict_to_str(d, name=None, indent=4):
     :type **kwargs : dict
     """
     s = ''
-    for k,v in d.items():
+    for k, v in d.items():
         if v is None:
             continue
         if type(v) is list:
             if all(isinstance(x, str) for x in v):
                 # we need to unroll the list into a multiline sequence of values (like SnmpMibObject)
                 for list_val in v:
-                    s +=  indent_str(k, indent) + ' ' + str(list_val) + ';\n'
+                    s += indent_str(k, indent) + ' ' + str(list_val) + ';\n'
             elif all(isinstance(x, collections.OrderedDict) for x in v) or \
                  all(isinstance(x, dict) for x in v):
                 # we could have a list of dictionaries (i.e. several Ds/UsServiceFlow specs)
@@ -70,13 +75,15 @@ def dict_to_str(d, name=None, indent=4):
                     # recursively parse the dictionary
                     s += dict_to_str(dict_val, k, indent)
             else:
-                print("Skipping list {} as not all elements are of the same type".format(k))
+                print(
+                    "Skipping list {} as not all elements are of the same type"
+                    .format(k))
         elif type(v) is collections.OrderedDict or type(v) is dict:
             # recursively parse the dictionary
             s += dict_to_str(v, k, indent)
         else:
             # single value string, append it to the rest
-            s +=  indent_str(k, indent) + ' ' + str(v) + ';\n'
+            s += indent_str(k, indent) + ' ' + str(v) + ';\n'
 
     if name and len(s):
         s = indent_str(name, indent) +\
@@ -88,10 +95,12 @@ def dict_to_str(d, name=None, indent=4):
 
     return s
 
+
 #############################
 #
 # The following classes could take the default vals from json
 # Or the whole obj could be jsonised maybe
+
 
 class GeneralServiceFlow(object):
     """Class to create the service flow parameters in config file
@@ -99,11 +108,11 @@ class GeneralServiceFlow(object):
 
     GeneralServiceFlow_dict = OrderedDict()
 
-    QosParamSetType  = 'QosParamSetType'
-    TrafficPriority  = 'TrafficPriority'
+    QosParamSetType = 'QosParamSetType'
+    TrafficPriority = 'TrafficPriority'
     MaxRateSustained = 'MaxRateSustained'
-    MaxTrafficBurst  = 'MaxTrafficBurst'
-    MinReservedRate  = 'MinReservedRate'
+    MaxTrafficBurst = 'MaxTrafficBurst'
+    MinReservedRate = 'MinReservedRate'
     MinResPacketSize = 'MinResPacketSize'
     ActQosParamsTimeout = 'ActQosParamsTimeout'
     AdmQosParamsTimeout = 'AdmQosParamsTimeout'
@@ -124,7 +133,8 @@ class GeneralServiceFlow(object):
     def __init__(self, **kwargs):
         """Constructor method to copy the service flow params and update the dict
         """
-        self.GeneralServiceFlow_dict = copy.deepcopy(self.GeneralServiceFlow_dict_defaults)
+        self.GeneralServiceFlow_dict = copy.deepcopy(
+            self.GeneralServiceFlow_dict_defaults)
         update_dict(self.GeneralServiceFlow_dict, **kwargs)
 
     def __str__(self):
@@ -141,7 +151,7 @@ class GeneralServiceFlow(object):
         :return : conversion of dict to string
         :rtype : string
         """
-        return dict_to_str(self.GeneralServiceFlow_dict);
+        return dict_to_str(self.GeneralServiceFlow_dict)
 
     def get_dict(self):
         """Method to get the dictionary of service flow
@@ -151,31 +161,33 @@ class GeneralServiceFlow(object):
         """
         return self.GeneralServiceFlow_dict
 
+
 class GeneralClassifierParameters(object):
     """Class to create the classifier parameters in config file
     """
 
     GeneralClassifierParameters_dict = OrderedDict()
 
-    ClassifierRef   = 'ClassifierRef'
-    ServiceFlowRef  = 'ServiceFlowRef'
-    RulePriority    = 'RulePriority'
+    ClassifierRef = 'ClassifierRef'
+    ServiceFlowRef = 'ServiceFlowRef'
+    RulePriority = 'RulePriority'
     ActivationState = 'ActivationState'
-    DscAction       = 'DscAction'
-    GenericTLV      = 'GenericTLV'    # list
+    DscAction = 'DscAction'
+    GenericTLV = 'GenericTLV'  # list
     GeneralClassifierParameters_defaults = {
-                                             ClassifierRef:None,
-                                             ServiceFlowRef:None,
-                                             RulePriority:None,
-                                             ActivationState:None,
-                                             DscAction:None,
-                                             GenericTLV:None
-                                           }
+        ClassifierRef: None,
+        ServiceFlowRef: None,
+        RulePriority: None,
+        ActivationState: None,
+        DscAction: None,
+        GenericTLV: None
+    }
 
     def __init__(self, **kwargs):
         """Constructor method to copy the classifier params and update the dict
         """
-        self.GeneralClassifierParameters_dict = copy.deepcopy(self.GeneralClassifierParameters_defaults)
+        self.GeneralClassifierParameters_dict = copy.deepcopy(
+            self.GeneralClassifierParameters_defaults)
         update_dict(self.GeneralClassifierParameters_dict, **kwargs)
 
     def __str__(self):
@@ -192,7 +204,7 @@ class GeneralClassifierParameters(object):
         :return : conversion of dict to string
         :rtype : string
         """
-        return dict_to_str(self.GeneralClassifierParameters_dict);
+        return dict_to_str(self.GeneralClassifierParameters_dict)
 
     def get_dict(self):
         """Method to get the dictionary of classifier
@@ -202,6 +214,7 @@ class GeneralClassifierParameters(object):
         """
         return self.GeneralClassifierParameters_dict
 
+
 class LLCPacketClassifier(GeneralClassifierParameters):
     """Class to create the LLC packet classifier parameters in config file
     """
@@ -210,13 +223,14 @@ class LLCPacketClassifier(GeneralClassifierParameters):
 
     DstMacAddress = 'DstMacAddress'
     SrcMacAddress = 'SrcMacAddress'
-    EtherType     = 'EtherType'
+    EtherType = 'EtherType'
 
     LLCPacketClassifier_defaults = {
-                                     DstMacAddress:None,
-                                     SrcMacAddress:None,
-                                     EtherType:'0x030f16'
-                                   }
+        DstMacAddress: None,
+        SrcMacAddress: None,
+        EtherType: '0x030f16'
+    }
+
     @classmethod
     def name(cls):
         return 'LLCPacketClassifier'
@@ -226,9 +240,11 @@ class LLCPacketClassifier(GeneralClassifierParameters):
         of general classifire params
         """
         super(LLCPacketClassifier, self).__init__(**kwargs)
-        self.LLCPacketClassifier_dict = copy.deepcopy(self.LLCPacketClassifier_defaults)
+        self.LLCPacketClassifier_dict = copy.deepcopy(
+            self.LLCPacketClassifier_defaults)
         update_dict(self.LLCPacketClassifier_dict, **kwargs)
-        self.LLCPacketClassifier_dict.update(self.GeneralClassifierParameters_dict)
+        self.LLCPacketClassifier_dict.update(
+            self.GeneralClassifierParameters_dict)
 
     def __str__(self):
         """Method to get the LLC packet classifer params string format from method to_str
@@ -244,7 +260,8 @@ class LLCPacketClassifier(GeneralClassifierParameters):
         :return : conversion of dict to string
         :rtype : string
         """
-        return dict_to_str(self.LLCPacketClassifier_dict, name=self.__class__.__name__);
+        return dict_to_str(self.LLCPacketClassifier_dict,
+                           name=self.__class__.__name__)
 
     def get_dict(self):
         """Method to get the dictionary of LLC packet classifier
@@ -253,6 +270,7 @@ class LLCPacketClassifier(GeneralClassifierParameters):
         :rtype : dict
         """
         return self.LLCPacketClassifier_dict
+
 
 class IpPacketClassifier(GeneralClassifierParameters):
     """Class to create the IP packet classifier parameters in config file
@@ -267,8 +285,8 @@ class IpPacketClassifier(GeneralClassifierParameters):
     IpDstAddr = 'IpDstAddr'
     IpDstMask = 'IpDstMask'
     DstPortStart = 'DstPortStart'
-    DstPortEnd   = 'DstPortEnd'
-    IpProto      = 'IpProto'
+    DstPortEnd = 'DstPortEnd'
+    IpProto = 'IpProto'
 
     IpPacketClassifier_dict_defaults = {\
                  IpSrcAddr:None,\
@@ -291,9 +309,11 @@ class IpPacketClassifier(GeneralClassifierParameters):
         of general classifier params
         """
         super(IpPacketClassifier, self).__init__(**kwargs)
-        self.IpPacketClassifier_dict = copy.deepcopy(self.IpPacketClassifier_dict_defaults)
+        self.IpPacketClassifier_dict = copy.deepcopy(
+            self.IpPacketClassifier_dict_defaults)
         update_dict(self.IpPacketClassifier_dict, **kwargs)
-        self.IpPacketClassifier_dict.update(self.GeneralClassifierParameters_dict)
+        self.IpPacketClassifier_dict.update(
+            self.GeneralClassifierParameters_dict)
 
     def __str__(self):
         """Method to get the IP packet classifer params string format from method to_str
@@ -309,7 +329,8 @@ class IpPacketClassifier(GeneralClassifierParameters):
         :return : conversion of dict to string
         :rtype : string
         """
-        return dict_to_str(self.IpPacketClassifier_dict, name=self.__class__.__name__);
+        return dict_to_str(self.IpPacketClassifier_dict,
+                           name=self.__class__.__name__)
 
     def get_dict(self):
         """Method to get the dictionary of IP packet classifier
@@ -319,6 +340,7 @@ class IpPacketClassifier(GeneralClassifierParameters):
         """
         return self.IpPacketClassifier_dict
 
+
 class DsPacketClass(GeneralClassifierParameters):
     """Class to create the classifier parameters for DS packets
     """
@@ -327,9 +349,11 @@ class DsPacketClass(GeneralClassifierParameters):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         if IpPacketClassifier.name() in kwargs:
-            self.classifier = IpPacketClassifier(**kwargs[IpPacketClassifier.name()])
+            self.classifier = IpPacketClassifier(
+                **kwargs[IpPacketClassifier.name()])
         elif LLCPacketClassifier.__class__.__name__ in kwargs:
-            self.classifier = LLCPacketClassifier(**kwargs[LLCPacketClassifier.name()])
+            self.classifier = LLCPacketClassifier(
+                **kwargs[LLCPacketClassifier.name()])
 
     @classmethod
     def name(cls):
@@ -344,8 +368,11 @@ class DsPacketClass(GeneralClassifierParameters):
     def get_dict(self):
         d = super().get_dict()
         if self.classifier:
-            d.update(OrderedDict({self.classifier.name():self.classifier.get_dict()}))
+            d.update(
+                OrderedDict(
+                    {self.classifier.name(): self.classifier.get_dict()}))
         return d
+
 
 class UsPacketClass(GeneralClassifierParameters):
     """Class to create the classifier parameters for US packets
@@ -355,9 +382,11 @@ class UsPacketClass(GeneralClassifierParameters):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         if IpPacketClassifier.name() in kwargs:
-            self.classifier = IpPacketClassifier(**kwargs[IpPacketClassifier.name()])
+            self.classifier = IpPacketClassifier(
+                **kwargs[IpPacketClassifier.name()])
         elif LLCPacketClassifier.__name__ in kwargs:
-            self.classifier = LLCPacketClassifier(**kwargs[LLCPacketClassifier.name()])
+            self.classifier = LLCPacketClassifier(
+                **kwargs[LLCPacketClassifier.name()])
 
     @classmethod
     def name(cls):
@@ -372,8 +401,11 @@ class UsPacketClass(GeneralClassifierParameters):
     def get_dict(self):
         d = super().get_dict()
         if self.classifier:
-            d.update(OrderedDict({self.classifier.name():self.classifier.get_dict()}))
+            d.update(
+                OrderedDict(
+                    {self.classifier.name(): self.classifier.get_dict()}))
         return d
+
 
 class UsServiceFlow(GeneralServiceFlow):
     """Class to create the service flow parameters for US service flow
@@ -382,11 +414,11 @@ class UsServiceFlow(GeneralServiceFlow):
 
     UsServiceFlow_dict = OrderedDict()
 
-    UsServiceFlowRef  = 'UsServiceFlowRef'
+    UsServiceFlowRef = 'UsServiceFlowRef'
     MaxConcatenatedBurst = 'MaxConcatenatedBurst'
-    SchedulingType    = 'SchedulingType'
+    SchedulingType = 'SchedulingType'
     RequestOrTxPolicy = 'RequestOrTxPolicy'
-    IpTosOverwrite    = 'IpTosOverwrite'
+    IpTosOverwrite = 'IpTosOverwrite'
 
     UsServiceFlow_defaults = {\
                  UsServiceFlowRef:1,\
@@ -423,7 +455,8 @@ class UsServiceFlow(GeneralServiceFlow):
         :return : conversion of dict to string
         :rtype : string
         """
-        return dict_to_str(self.UsServiceFlow_dict, name=self.__class__.__name__);
+        return dict_to_str(self.UsServiceFlow_dict,
+                           name=self.__class__.__name__)
 
     def get_dict(self):
         """Method to get the param dictionary of US service flow
@@ -433,6 +466,7 @@ class UsServiceFlow(GeneralServiceFlow):
         """
         return self.UsServiceFlow_dict
 
+
 class DsServiceFlow(GeneralServiceFlow):
     """Class to create the classifier parameters for DS service flow.
     GeneralServiceFlow is inherited
@@ -440,7 +474,7 @@ class DsServiceFlow(GeneralServiceFlow):
     DsServiceFlow_dict = OrderedDict()
 
     DsServiceFlowRef = 'DsServiceFlowRef'
-    MaxDsLatency     = 'MaxDsLatency'
+    MaxDsLatency = 'MaxDsLatency'
 
     DsServiceFlow_dict_defaults = {\
                  DsServiceFlowRef:3,\
@@ -456,7 +490,8 @@ class DsServiceFlow(GeneralServiceFlow):
         general service flow
         """
         super(DsServiceFlow, self).__init__(**kwargs)
-        self.DsServiceFlow_dict = copy.deepcopy(self.DsServiceFlow_dict_defaults)
+        self.DsServiceFlow_dict = copy.deepcopy(
+            self.DsServiceFlow_dict_defaults)
         update_dict(self.DsServiceFlow_dict, **kwargs)
         self.DsServiceFlow_dict.update(self.GeneralServiceFlow_dict)
 
@@ -474,7 +509,8 @@ class DsServiceFlow(GeneralServiceFlow):
         :return : conversion of dict to string
         :rtype : string
         """
-        return dict_to_str(self.DsServiceFlow_dict, name=self.__class__.__name__);
+        return dict_to_str(self.DsServiceFlow_dict,
+                           name=self.__class__.__name__)
 
     def get_dict(self):
         """Method to get the param dictionary of DS service flow
@@ -484,33 +520,33 @@ class DsServiceFlow(GeneralServiceFlow):
         """
         return self.DsServiceFlow_dict
 
+
 class BaselinePrivacy(object):
     """Class to create the baseline privacy parameters
     """
     BaselinePrivacy_dict = OrderedDict()
 
-    AuthTimeout   = 'AuthTimeout'
+    AuthTimeout = 'AuthTimeout'
     ReAuthTimeout = 'ReAuthTimeout'
     AuthGraceTime = 'AuthGraceTime'
-    OperTimeout   = 'OperTimeout'
-    ReKeyTimeout  = 'ReKeyTimeout'
-    TEKGraceTime  = 'TEKGraceTime'
+    OperTimeout = 'OperTimeout'
+    ReKeyTimeout = 'ReKeyTimeout'
+    TEKGraceTime = 'TEKGraceTime'
     AuthRejectTimeout = 'AuthRejectTimeout'
-    SAMapWaitTimeout  = 'SAMapWaitTimeout'
-    SAMapMaxRetries   = 'SAMapMaxRetries'
-
+    SAMapWaitTimeout = 'SAMapWaitTimeout'
+    SAMapMaxRetries = 'SAMapMaxRetries'
 
     BaselinePrivacy_defaults = {
-                                 AuthTimeout:10,
-                                 ReAuthTimeout:10,
-                                 AuthGraceTime:600,
-                                 OperTimeout:10,
-                                 ReKeyTimeout:10,
-                                 TEKGraceTime:600,
-                                 AuthRejectTimeout:60,
-                                 SAMapWaitTimeout:None,
-                                 SAMapMaxRetries:None
-                               }
+        AuthTimeout: 10,
+        ReAuthTimeout: 10,
+        AuthGraceTime: 600,
+        OperTimeout: 10,
+        ReKeyTimeout: 10,
+        TEKGraceTime: 600,
+        AuthRejectTimeout: 60,
+        SAMapWaitTimeout: None,
+        SAMapMaxRetries: None
+    }
 
     @classmethod
     def name(cls):
@@ -519,7 +555,8 @@ class BaselinePrivacy(object):
     def __init__(self, **kwargs):
         """Constructor method to copy the baseline privacy and update the dict
         """
-        self.BaselinePrivacy_dict = copy.deepcopy(self.BaselinePrivacy_defaults)
+        self.BaselinePrivacy_dict = copy.deepcopy(
+            self.BaselinePrivacy_defaults)
         update_dict(self.BaselinePrivacy_dict, **kwargs)
 
     def __str__(self):
@@ -536,7 +573,8 @@ class BaselinePrivacy(object):
         :return : conversion of dict to string
         :rtype : string
         """
-        return dict_to_str(self.BaselinePrivacy_dict, name=self.__class__.__name__)
+        return dict_to_str(self.BaselinePrivacy_dict,
+                           name=self.__class__.__name__)
 
     def get_dict(self):
         """Method to get the dictionary of baseline privacy
@@ -546,6 +584,7 @@ class BaselinePrivacy(object):
         """
         return self.BaselinePrivacy_dict
 
+
 class GlobalMTAParams(object):
     """
     This class fetches global mta mibs from the json file
@@ -553,9 +592,7 @@ class GlobalMTAParams(object):
     global_mta_params_dict = OrderedDict
     snmp_mib_object = 'SnmpMibObject'
     snmp_mta_CC = None
-    global_mta_params_defaults = {
-               snmp_mib_object: snmp_mta_CC
-               }
+    global_mta_params_defaults = {snmp_mib_object: snmp_mta_CC}
 
     @classmethod
     def name(cls):
@@ -565,7 +602,10 @@ class GlobalMTAParams(object):
         return cls.__name__
 
     @classmethod
-    def snmp_mta_global(cls, line1 = '', line2 = '', global_mta_config_json="mta_config.json"):
+    def snmp_mta_global(cls,
+                        line1='',
+                        line2='',
+                        global_mta_config_json="mta_config.json"):
         '''
         To create list of mta global mibs
 
@@ -575,15 +615,19 @@ class GlobalMTAParams(object):
         '''
         final_list = []
         global_mta_config_file = get_base_cfg(global_mta_config_json)
-        for key,val in global_mta_config_file.items():
-            for sub_section,sub_value in val.items():
+        for key, val in global_mta_config_file.items():
+            for sub_section, sub_value in val.items():
                 tmp = sub_value
                 line_suffix = ''
                 if 'line1' in sub_section:
-                    line_suffix = "."+line1
+                    line_suffix = "." + line1
                 if 'line2' in sub_section:
-                    line_suffix = "."+line2
-                snmp_mta_global = ["\t{}{}{}\t{}\t{}\t".format(k,line_suffix,v["suffix"],v["data"],v["data_type"]) for k,v in tmp.items()]
+                    line_suffix = "." + line2
+                snmp_mta_global = [
+                    "\t{}{}{}\t{}\t{}\t".format(k, line_suffix, v["suffix"],
+                                                v["data"], v["data_type"])
+                    for k, v in tmp.items()
+                ]
                 final_list.extend(snmp_mta_global)
         return final_list
 
@@ -591,7 +635,8 @@ class GlobalMTAParams(object):
         if not kwargs.get(self.snmp_mib_object, None):
             kwargs[self.snmp_mib_object] = GlobalMTAParams.snmp_mta_global()
 
-        self.global_mta_params_dict = copy.deepcopy(self.global_mta_params_defaults)
+        self.global_mta_params_dict = copy.deepcopy(
+            self.global_mta_params_defaults)
         update_dict(self.global_mta_params_dict, **kwargs)
 
     def __str__(self):
@@ -620,13 +665,14 @@ class GlobalMTAParams(object):
         """
         return self.global_mta_params_dict
 
+
 class VendorSpecific(object):
     VendorSpecific_dict = OrderedDict()
 
     VendorIdentifier = 'VendorIdentifier'
-    GenericTLV       = 'GenericTLV'
+    GenericTLV = 'GenericTLV'
 
-    VendorSpecific_defaults = { VendorIdentifier:None, GenericTLV:None }
+    VendorSpecific_defaults = {VendorIdentifier: None, GenericTLV: None}
 
     @classmethod
     def name(cls):
@@ -643,10 +689,12 @@ class VendorSpecific(object):
         return self.to_str()
 
     def to_str(self):
-        return dict_to_str(self. VendorSpecific_dict, name=self.__class__.__name__)
+        return dict_to_str(self.VendorSpecific_dict,
+                           name=self.__class__.__name__)
 
     def get_dict(self):
         return self.VendorSpecific_dict
+
 
 class GlobalParameters(object):
     """
@@ -674,74 +722,78 @@ class GlobalParameters(object):
     """
     GlobalParameters_dict = OrderedDict()
 
-    NetworkAccess       = 'NetworkAccess'
+    NetworkAccess = 'NetworkAccess'
     GlobalPrivacyEnable = 'GlobalPrivacyEnable'
     DownstreamFrequency = 'DownstreamFrequency'
-    UpstreamChannelId   = 'UpstreamChannelId'
-    MaxCPE              = 'MaxCPE'
-    CpeMAcAddress       = 'CpeMAcAddress'
-    MaxClassifiers      = 'MaxClassifiers' # default value 16 from Prasada (to avoid past config issue)
-    DocsisTwoEnable     = 'DocsisTwoEnable'
-    GenericTLV          = 'GenericTLV'       # list
-    SwUpgradeFilename   = 'SwUpgradeFilename'
-    SwUpgradeServer     = 'SwUpgradeServer'
-    SnmpMibObject       = 'SnmpMibObject'    # list
-    SnmpWriteControl    = 'SnmpWriteControl'
-    SNMPCPEAccessControl= 'SNMPCPEAccessControl'
-    MfgCVCData          = 'MfgCVCData'       # list
-    CoSignerCVCData     = 'CoSignerCVCData'  # list?
-    CoSignerCVC         = 'CoSignerCVC'      # list?
-    MtaConfigDelimiter  = 'MtaConfigDelimiter'
-    VendorSpecific      = 'VendorSpecific'   # dict
+    UpstreamChannelId = 'UpstreamChannelId'
+    MaxCPE = 'MaxCPE'
+    CpeMAcAddress = 'CpeMAcAddress'
+    MaxClassifiers = 'MaxClassifiers'  # default value 16 from Prasada (to avoid past config issue)
+    DocsisTwoEnable = 'DocsisTwoEnable'
+    GenericTLV = 'GenericTLV'  # list
+    SwUpgradeFilename = 'SwUpgradeFilename'
+    SwUpgradeServer = 'SwUpgradeServer'
+    SnmpMibObject = 'SnmpMibObject'  # list
+    SnmpWriteControl = 'SnmpWriteControl'
+    SNMPCPEAccessControl = 'SNMPCPEAccessControl'
+    MfgCVCData = 'MfgCVCData'  # list
+    CoSignerCVCData = 'CoSignerCVCData'  # list?
+    CoSignerCVC = 'CoSignerCVC'  # list?
+    MtaConfigDelimiter = 'MtaConfigDelimiter'
+    VendorSpecific = 'VendorSpecific'  # dict
 
     # LLC filters
-    snmpobjDocsLLC = ['docsDevFilterLLCUnmatchedAction.0 Integer 1', # Default deny
-                      'docsDevFilterLLCIfIndex.1 Integer 0',         # all interfaces
-                      'docsDevFilterLLCProtocolType.1 Integer 1',    # ethertype
-                      'docsDevFilterLLCProtocol.1 Integer 2048',     # ipv4
-                      'docsDevFilterLLCStatus.1 Integer 4',          # createAndGo
-                      'docsDevFilterLLCIfIndex.2 Integer 0',         # all interfaces
-                      'docsDevFilterLLCProtocolType.2 Integer 1',    # ethertype
-                      'docsDevFilterLLCProtocol.2 Integer 2054',     # ARP
-                      'docsDevFilterLLCStatus.2 Integer 4',          # createAndGo
-                      'docsDevFilterLLCIfIndex.3 Integer 0',         # all interfaces
-                      'docsDevFilterLLCProtocolType.3 Integer 1',    # ethertype
-                      'docsDevFilterLLCProtocol.3 Integer 34525' ,   # ipv6
-                      'docsDevFilterLLCStatus.3 Integer 4']          # createAndGo
-    snmpobjNmAcc = ['docsDevNmAccessIp.1 IPAddress 255.255.255.255',
-                    'docsDevNmAccessIpMask.1 IPAddress 255.255.255.255',
-                    'docsDevNmAccessCommunity.1 String "public"',
-                    'docsDevNmAccessControl.1 Integer 2',
-                    'docsDevNmAccessInterfaces.1 HexString 0xc0',
-                    'docsDevNmAccessStatus.1 Integer 4',
-                    'docsDevNmAccessIp.2 IPAddress 255.255.255.255',
-                    'docsDevNmAccessIpMask.2 IPAddress 255.255.255.255',
-                    'docsDevNmAccessCommunity.2 String "private"',
-                    'docsDevNmAccessControl.2 Integer 3',
-                    'docsDevNmAccessInterfaces.2 HexString 0xc0',
-                    'docsDevNmAccessStatus.2 Integer 4']
+    snmpobjDocsLLC = [
+        'docsDevFilterLLCUnmatchedAction.0 Integer 1',  # Default deny
+        'docsDevFilterLLCIfIndex.1 Integer 0',  # all interfaces
+        'docsDevFilterLLCProtocolType.1 Integer 1',  # ethertype
+        'docsDevFilterLLCProtocol.1 Integer 2048',  # ipv4
+        'docsDevFilterLLCStatus.1 Integer 4',  # createAndGo
+        'docsDevFilterLLCIfIndex.2 Integer 0',  # all interfaces
+        'docsDevFilterLLCProtocolType.2 Integer 1',  # ethertype
+        'docsDevFilterLLCProtocol.2 Integer 2054',  # ARP
+        'docsDevFilterLLCStatus.2 Integer 4',  # createAndGo
+        'docsDevFilterLLCIfIndex.3 Integer 0',  # all interfaces
+        'docsDevFilterLLCProtocolType.3 Integer 1',  # ethertype
+        'docsDevFilterLLCProtocol.3 Integer 34525',  # ipv6
+        'docsDevFilterLLCStatus.3 Integer 4'
+    ]  # createAndGo
+    snmpobjNmAcc = [
+        'docsDevNmAccessIp.1 IPAddress 255.255.255.255',
+        'docsDevNmAccessIpMask.1 IPAddress 255.255.255.255',
+        'docsDevNmAccessCommunity.1 String "public"',
+        'docsDevNmAccessControl.1 Integer 2',
+        'docsDevNmAccessInterfaces.1 HexString 0xc0',
+        'docsDevNmAccessStatus.1 Integer 4',
+        'docsDevNmAccessIp.2 IPAddress 255.255.255.255',
+        'docsDevNmAccessIpMask.2 IPAddress 255.255.255.255',
+        'docsDevNmAccessCommunity.2 String "private"',
+        'docsDevNmAccessControl.2 Integer 3',
+        'docsDevNmAccessInterfaces.2 HexString 0xc0',
+        'docsDevNmAccessStatus.2 Integer 4'
+    ]
 
     GlobalParameters_defaults = {
-                                  NetworkAccess:1,
-                                  GlobalPrivacyEnable:1,
-                                  DownstreamFrequency:None,
-                                  UpstreamChannelId:None,
-                                  MaxCPE:16,
-                                  CpeMAcAddress:None,
-                                  MaxClassifiers:16,
-                                  DocsisTwoEnable:None,
-                                  GenericTLV:None,
-                                  SwUpgradeFilename:None,
-                                  SwUpgradeServer:None,
-                                  SnmpMibObject:[],
-                                  SnmpWriteControl:None,
-                                  SNMPCPEAccessControl:None,
-                                  MfgCVCData:None,
-                                  CoSignerCVCData:None,
-                                  CoSignerCVC:None,
-                                  MtaConfigDelimiter:None,
-                                  VendorSpecific:None
-                                }
+        NetworkAccess: 1,
+        GlobalPrivacyEnable: 1,
+        DownstreamFrequency: None,
+        UpstreamChannelId: None,
+        MaxCPE: 16,
+        CpeMAcAddress: None,
+        MaxClassifiers: 16,
+        DocsisTwoEnable: None,
+        GenericTLV: None,
+        SwUpgradeFilename: None,
+        SwUpgradeServer: None,
+        SnmpMibObject: [],
+        SnmpWriteControl: None,
+        SNMPCPEAccessControl: None,
+        MfgCVCData: None,
+        CoSignerCVCData: None,
+        CoSignerCVC: None,
+        MtaConfigDelimiter: None,
+        VendorSpecific: None
+    }
 
     sys_log_ip = None
 
@@ -765,9 +817,9 @@ class GlobalParameters(object):
         newl = []
         tmplist = origlist[:]
         for newelem in newvals:
-            name, val = newelem.split(' ',1)
+            name, val = newelem.split(' ', 1)
             for cfgelem in tmplist:
-                if name == cfgelem.split(' ',1)[0]:
+                if name == cfgelem.split(' ', 1)[0]:
                     if val == 'none':
                         # skip this value (i.e. delete)
                         pass
@@ -795,12 +847,13 @@ class GlobalParameters(object):
         if len(l) == 0:
             return
 
-        for i,v in enumerate(l):
-            mib_name =v.split(' ',1)[0]
+        for i, v in enumerate(l):
+            mib_name = v.split(' ', 1)[0]
             if mib_name.count('.') > 1:
                 print("No numeric OIDs allowed in SnmpMibObject")
                 print("SnmpMibObject = %s" % l)
-                assert 0, "SnmpMibObject at position " + str(i) + " has '" + mib_name  + "' has numeric OID!!!!"
+                assert 0, "SnmpMibObject at position " + str(
+                    i) + " has '" + mib_name + "' has numeric OID!!!!"
         pass
 
     @classmethod
@@ -826,11 +879,13 @@ class GlobalParameters(object):
                 kwargs[self.SnmpMibObject] = []
             kwargs[self.SnmpMibObject].extend(snmpobjlogs)
 
-        self.GlobalParameters_dict = copy.deepcopy(self.GlobalParameters_defaults)
+        self.GlobalParameters_dict = copy.deepcopy(
+            self.GlobalParameters_defaults)
         update_dict(self.GlobalParameters_dict, **kwargs)
 
         if self.GlobalParameters_dict[self.SnmpMibObject]:
-            self._validate_SnmpMibObject(self.GlobalParameters_dict[self.SnmpMibObject])
+            self._validate_SnmpMibObject(
+                self.GlobalParameters_dict[self.SnmpMibObject])
 
     def __str__(self):
         """Method to get the global params in string format from method to_str
@@ -856,25 +911,27 @@ class GlobalParameters(object):
         """
         return self.GlobalParameters_dict
 
+
 class eRouter(object):
     """Class to create the eRouter related parameters
     """
 
     eRouter_dict = OrderedDict()
-    InitializationMode    = 'InitializationMode'
-    TR69ManagementServer  = 'TR69ManagementServer'
+    InitializationMode = 'InitializationMode'
+    TR69ManagementServer = 'TR69ManagementServer'
     InitializationModeOverride = 'InitializationModeOverride'
-    RATransmissionInterval= 'RATransmissionInterval'
-    TopologyModeEncoding  = 'TopologyModeEncoding'
-    VendorSpecific        = 'VendorSpecific'  # dictionary
+    RATransmissionInterval = 'RATransmissionInterval'
+    TopologyModeEncoding = 'TopologyModeEncoding'
+    VendorSpecific = 'VendorSpecific'  # dictionary
     eRouter_defaults = {
-                         InitializationMode:None,
-                         TR69ManagementServer:None,
-                         InitializationModeOverride:None,
-                         RATransmissionInterval:None,
-                         TopologyModeEncoding:None,
-                         VendorSpecific:None,
-                       }
+        InitializationMode: None,
+        TR69ManagementServer: None,
+        InitializationModeOverride: None,
+        RATransmissionInterval: None,
+        TopologyModeEncoding: None,
+        VendorSpecific: None,
+    }
+
     @classmethod
     def name(cls):
         return 'eRouter'
@@ -899,7 +956,7 @@ class eRouter(object):
         :return : conversion of dict to string
         :rtype : string
         """
-        return dict_to_str(self.eRouter_dict, name=self.__class__.__name__);
+        return dict_to_str(self.eRouter_dict, name=self.__class__.__name__)
 
     def get_dict(self):
         """Method to get the dictionary of erouter
@@ -909,7 +966,9 @@ class eRouter(object):
         """
         return self.eRouter_dict
 
+
 ##############################################################################################
+
 
 class CfgGenerator():
     """This class generates a docsis configuration file"""
@@ -944,7 +1003,7 @@ class CfgGenerator():
         '''
         return next(iter(s))
 
-    def update_cm_base_cfg(self, kwargs, flag = 'cm'):
+    def update_cm_base_cfg(self, kwargs, flag='cm'):
         """
         Method to update cm or mta base config file with additional features
         based on the flag.
@@ -978,15 +1037,15 @@ class CfgGenerator():
         if erouter:
             if eRouter.name() in kwargs:
                 er = kwargs[eRouter.name()]
-                er.update({eRouter.InitializationMode:erouter})
+                er.update({eRouter.InitializationMode: erouter})
             else:
-                er = {eRouter.InitializationMode:erouter}
+                er = {eRouter.InitializationMode: erouter}
             eRout = eRouter(**er)
 
         tmp_cfg = self.cm_base_cfg[:]
         # is this as bad as i think it is?
         if erouter:
-            for i,elem in enumerate(self.cm_base_cfg):
+            for i, elem in enumerate(self.cm_base_cfg):
                 if elem.__class__.__name__ == eRout.__class__.__name__:
                     tmp_cfg[i] = eRout
         self.update_cm_base_cfg(kwargs)
@@ -1041,7 +1100,6 @@ class CfgGenerator():
         """
         return self._gen_cfg(None, kwargs)
 
-
     def _gen_mta_cfg(self, kwargs):
         """Method to generate intermediate mta cfg
 
@@ -1051,11 +1109,11 @@ class CfgGenerator():
         :rtype : string
         """
         tmp_cfg = self.mta_base_cfg[:]
-        self.update_cm_base_cfg(kwargs, flag ='mta')
+        self.update_cm_base_cfg(kwargs, flag='mta')
         self.mta_base_cfg = tmp_cfg[:]
         return tmp_cfg
 
-    def generate_cfg(self, fname = None):
+    def generate_cfg(self, fname=None):
         """Finalise the config making it ready for use.
 
         :param fname : Filename to generate the config file, defaults to None
@@ -1071,7 +1129,6 @@ class CfgGenerator():
         cfg_file_str += self.additional_cfg
 
         cfg_file_str += '}\n'
-
         '''
         is this really needed? probably not
         if fname:
@@ -1083,7 +1140,7 @@ class CfgGenerator():
         '''
         return cfg_file_str
 
-    def gen_mta_cfg(self, fname = None):
+    def gen_mta_cfg(self, fname=None):
         """
         This method generates final mta cfg and now its ready to use
 
@@ -1097,10 +1154,10 @@ class CfgGenerator():
             cfg_file_str += i.to_str()
         return cfg_file_str
 
+
 ##############################################################################################
 
 if __name__ == '__main__':
-
     '''
     kwargs = {'DsServiceFlowRef':4}
 
@@ -1127,39 +1184,60 @@ if __name__ == '__main__':
     '''
 
     print("Using: CfgGenerator")
-    kwargs = {'GlobalPrivacyEnable':0}
+    kwargs = {'GlobalPrivacyEnable': 0}
     c = CfgGenerator()
 
     GlobalParameters.sys_log_ip = '10.64.38.21'
     newGlobalParameters = copy.deepcopy(GlobalParameters(**kwargs))
-    for i,elem in enumerate(c.cm_base_cfg):
+    for i, elem in enumerate(c.cm_base_cfg):
         if type(elem) is GlobalParameters:
             c.cm_base_cfg[i] = newGlobalParameters
             break
     c.gen_dual_stack_cfg(kwargs)
-    print('=====================================================================')
+    print(
+        '====================================================================='
+    )
     print('Dual stack')
     print(c.generate_cfg('dual-stack-config'))
-    print('=====================================================================')
-    print(UsServiceFlow(**{'UsServiceFlowRef':1, 'QosParamSetType':7, 'TrafficPriority':1,
-                                                  'MaxRateSustained':300000000, 'SchedulingType':2,
-                                                  'IpTosOverwrite':'0x0000', 'MaxTrafficBurst':42600,
-                                                  'MaxConcatenatedBurst':42600}))
-    k = UsPacketClass(**{'ClassifierRef':21, 'ServiceFlowRef':2,
-                                                  'RulePriority': 64,
-                                                  'IpPacketClassifier':{
-                                                      'IpProto':17,
-                                                      'SrcPortStart':5060,
-                                                      'SrcPortEnd':5060}})
+    print(
+        '====================================================================='
+    )
+    print(
+        UsServiceFlow(
+            **{
+                'UsServiceFlowRef': 1,
+                'QosParamSetType': 7,
+                'TrafficPriority': 1,
+                'MaxRateSustained': 300000000,
+                'SchedulingType': 2,
+                'IpTosOverwrite': '0x0000',
+                'MaxTrafficBurst': 42600,
+                'MaxConcatenatedBurst': 42600
+            }))
+    k = UsPacketClass(
+        **{
+            'ClassifierRef': 21,
+            'ServiceFlowRef': 2,
+            'RulePriority': 64,
+            'IpPacketClassifier': {
+                'IpProto': 17,
+                'SrcPortStart': 5060,
+                'SrcPortEnd': 5060
+            }
+        })
     print(k)
-    k = UsPacketClass(**{'ClassifierRef':132,
-                                                  'ServiceFlowRef':103,
-                                                  'IpPacketClassifier':{
-                                                       'IpProto':17,
-                                                       'SrcPortStart':1812, 
-                                                       'SrcPortEnd':1813,
-                                                       'IpSrcAddr':'123.123.123.123',
-                                                       'IpSrcMask':'255.255.255.255'}})
+    k = UsPacketClass(
+        **{
+            'ClassifierRef': 132,
+            'ServiceFlowRef': 103,
+            'IpPacketClassifier': {
+                'IpProto': 17,
+                'SrcPortStart': 1812,
+                'SrcPortEnd': 1813,
+                'IpSrcAddr': '123.123.123.123',
+                'IpSrcMask': '255.255.255.255'
+            }
+        })
     print(k)
     '''
     GlobalParameters.sys_log_ip = None
