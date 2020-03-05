@@ -999,5 +999,29 @@
                         "suffix": ".109.116.97.112.114.111.118"
                 }
         }
+    },
+    "global_snmp_private": {
+        "generic_mta_list": {
+                "snmpCommunityName": {
+                        "data_type": "string",
+                        "data": "private",
+                        "suffix": ".97.100.109.105.110"
+                },
+                "snmpCommunitySecurityName": {
+                        "data_type": "string",
+                        "data": "@admin",
+                        "suffix": ".97.100.109.105.110"
+                },
+                "snmpCommunityStorageType": {
+                        "data_type": "int",
+                        "data": "2",
+                        "suffix": ".97.100.109.105.110"
+                },
+                "snmpCommunityStatus": {
+                        "data_type": "int",
+                        "data": "4",
+                        "suffix": ".97.100.109.105.110"
+                }
+        }
     }
 }
