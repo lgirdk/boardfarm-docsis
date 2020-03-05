@@ -404,7 +404,7 @@ def check_board(board, cmts, cm_mac):
     return True
 
 
-def check_provisioning(board):
+def check_provisioning(board, mta=False):
 
     # few cmts methods needs to be added before comparing sha3
     #TODO: need to do this
@@ -418,8 +418,9 @@ def check_provisioning(board):
         ret = d.encode()
         return keccak512_checksum(ret)
 
-    sha3_on_board = board.cfg_sha3()
-    sha3_on_fw = _shortname(board.cm_cfg)
+    sha3_on_board = board.cfg_sha3(mta)
+    cfg = board.mta_cfg if mta else board.cm_cfg
+    sha3_on_fw = _shortname(cfg)
     print(sha3_on_board)
     print(sha3_on_fw)
     return sha3_on_board == sha3_on_fw
