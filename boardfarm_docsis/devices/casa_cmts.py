@@ -544,7 +544,7 @@ class CasaCMTS(base_cmts.BaseCmts):
     def del_route(self, ipaddr, gw):
         """This function removes an ipv4 network route entry.
 
-        :param ipaddr: <network ip></><subnet ip> take subnet 24 if not provided, 
+        :param ipaddr: <network ip></><subnet ip> take subnet 24 if not provided,
         :type ipaddr: string
         :param gw: gateway ip
         :type gw: string

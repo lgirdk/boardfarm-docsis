@@ -1,16 +1,16 @@
 DOCS-DRF-MIB DEFINITIONS ::= BEGIN
 
 IMPORTS
-    MODULE-IDENTITY, 
+    MODULE-IDENTITY,
     OBJECT-IDENTITY,
-    OBJECT-TYPE, 
+    OBJECT-TYPE,
     Unsigned32
-                            FROM SNMPv2-SMI 
+                            FROM SNMPv2-SMI
     TruthValue,
     AutonomousType
-                            FROM SNMPv2-TC 
-    OBJECT-GROUP, 
-    MODULE-COMPLIANCE 
+                            FROM SNMPv2-TC
+    OBJECT-GROUP,
+    MODULE-COMPLIANCE
                             FROM SNMPv2-CONF
     PhysicalIndexOrZero,
     PhysicalIndex
@@ -23,29 +23,29 @@ IMPORTS
     clabProjDocsis
                             FROM CLAB-DEF-MIB;
 
-docsDrfMib MODULE-IDENTITY 
+docsDrfMib MODULE-IDENTITY
     LAST-UPDATED    "200812090000Z" -- December 9, 2008
-    ORGANIZATION    "Cable Television Laboratories, Inc" 
-    CONTACT-INFO 
-            "Postal: Cable Television Laboratories, Inc. 
-            858 Coal Creek Circle 
-            Louisville, Colorado 80027-9750 
-            U.S.A. 
-            Phone: +1 303-661-9100 
-            Fax:   +1 303-661-9199 
-            E-mail: mibs@cablelabs.com" 
-    DESCRIPTION 
-            "This MIB module contains the management objects for the 
+    ORGANIZATION    "Cable Television Laboratories, Inc"
+    CONTACT-INFO
+            "Postal: Cable Television Laboratories, Inc.
+            858 Coal Creek Circle
+            Louisville, Colorado 80027-9750
+            U.S.A.
+            Phone: +1 303-661-9100
+            Fax:   +1 303-661-9199
+            E-mail: mibs@cablelabs.com"
+    DESCRIPTION
+            "This MIB module contains the management objects for the
             management of the Downstream RF Interface specification.
             Copyright 1999-2008 Cable Television Laboratories, Inc.
             All rights reserved."
     REVISION "200812090000Z"  -- December 9, 2008
-    DESCRIPTION 
+    DESCRIPTION
             "Revised Version includes ECN DRFI-N-08.0697-2 and
              and published as CM-SP-DRFI-I07-081209."
     REVISION "200712060000Z"  -- December 6, 2007
-    DESCRIPTION 
-            "Initial version, published as part of the CableLabs 
+    DESCRIPTION
+            "Initial version, published as part of the CableLabs
             M-OSSI specification, CM-SP-M-OSSI-I07-071206, via ECN
             M-OSSI-N-07.0562-5."
     ::= { clabProjDocsis 23 }
@@ -63,7 +63,7 @@ docsDrfObjects       OBJECT IDENTIFIER ::= { docsDrfMib 1 }
 
 
 -- --------------------------------------------------------------------
--- DOCSIS DRF objects 
+-- DOCSIS DRF objects
 -- --------------------------------------------------------------------
 
 -- --------------------------------------------------------------------
@@ -71,11 +71,11 @@ docsDrfObjects       OBJECT IDENTIFIER ::= { docsDrfMib 1 }
 -- PHY Parameters dependencies OBJECT-IDENTITY definitions
 --
 -- --------------------------------------------------------------------
- 
+
 docsDrfRegistry OBJECT-IDENTITY
     STATUS      current
     DESCRIPTION
-            "Registration point for M-CMTS characterization of PHY 
+            "Registration point for M-CMTS characterization of PHY
             parameters dependencies."
     ::= { docsDrfObjects 1 }
 
@@ -90,7 +90,7 @@ docsDrfPhyParamSameValue OBJECT-IDENTITY
     STATUS      current
     DESCRIPTION
             "Indicates that the PHY parameter value is the same for
-            the elements in a dependency group; thus, a change in 
+            the elements in a dependency group; thus, a change in
             the PHY parameter of an element in the group will change
             the PHY parameter value in the other elements of the
             dependency group."
@@ -101,11 +101,11 @@ docsDrfPhyParamAdjacentValues OBJECT-IDENTITY
     DESCRIPTION
             "Indicates that the PHY parameter has an adjacency or
             sequence pattern for the elements in a dependency group
-            e.g., A group of channels all using J.83 Annex A, may set 
-            frequencies in the group by setting a 6 MHz spacing 
+            e.g., A group of channels all using J.83 Annex A, may set
+            frequencies in the group by setting a 6 MHz spacing
             between the channels in the group. Vendors may rather
             use a more detailed vendor-specific OBJECT-IDENTITY or a
-            table pointer to describe this type of PHY parameter 
+            table pointer to describe this type of PHY parameter
             dependency."
     ::= { docsDrfRegistry 3 }
 
@@ -114,14 +114,14 @@ docsDrfPhyParamFrequencyRange OBJECT-IDENTITY
     DESCRIPTION
             "This object indicates that the frequency in a TSID Group
             is constrained to a frequency range. Vendors may extend
-            the MIB construct containing this reference to detail such 
-            constraints or rather use a more detailed vendor-specific 
-            OBJECT-IDENTITY or a table pointer to describe the 
+            the MIB construct containing this reference to detail such
+            constraints or rather use a more detailed vendor-specific
+            OBJECT-IDENTITY or a table pointer to describe the
             frequency range supported."
     ::= { docsDrfRegistry 4 }
 
 -- ---------------------------------------------------------------------
--- DOCSIS DRF Interface Extension objects 
+-- DOCSIS DRF Interface Extension objects
 -- ---------------------------------------------------------------------
 
 docsDrfDownstreamTable OBJECT-TYPE
@@ -139,16 +139,16 @@ docsDrfDownstreamEntry OBJECT-TYPE
     STATUS      current
     DESCRIPTION
             "A conceptual row for this table.
-            There is a corresponding entry for each entry of 
+            There is a corresponding entry for each entry of
             docsIfDownstreamChannelTable."
-    AUGMENTS { docsIfDownstreamChannelEntry } 
+    AUGMENTS { docsIfDownstreamChannelEntry }
     ::= { docsDrfDownstreamTable 1 }
 
 DocsDrfDownstreamEntry ::= SEQUENCE
     {
     docsDrfDownstreamPhyDependencies          BITS
     }
- 
+
 docsDrfDownstreamPhyDependencies OBJECT-TYPE
     SYNTAX  BITS {
         frequency(0),
@@ -162,20 +162,20 @@ docsDrfDownstreamPhyDependencies OBJECT-TYPE
         }
     MAX-ACCESS  read-only
     STATUS      current
-    DESCRIPTION 
-            "The summary of the Downstream Interface 
-            dependencies based on the constraints of 
+    DESCRIPTION
+            "The summary of the Downstream Interface
+            dependencies based on the constraints of
             docsDrfGroupDependencyEntry.
             A BIT position set to '1' indicates the PHY parameter
             belongs to a dependency group.
             A BIT position set to '0', indicates the PHY parameter
             does not belong to a dependency group.
-            
-            For Interfaces configured via DEPI this information is 
-            reflected in the DEPI session as DEPI TSID group 
-            dependencies. 
-                    
-            If this object value is the zero-length string, it indicates 
+
+            For Interfaces configured via DEPI this information is
+            reflected in the DEPI session as DEPI TSID group
+            dependencies.
+
+            If this object value is the zero-length string, it indicates
             this interface is configurable via DEPI but no session is
             currently active."
     ::= { docsDrfDownstreamEntry 1 }
@@ -223,41 +223,41 @@ docsDrfDownstreamCapabFrequency OBJECT-TYPE
         }
     MAX-ACCESS  read-only
     STATUS      current
-    DESCRIPTION 
-            "The QAM channel frequency capabilities. 
+    DESCRIPTION
+            "The QAM channel frequency capabilities.
             'qamDependency' BIT set to '1' indicates the QAM channel
-            frequency value has dependencies with other QAM channels 
-            and an entry that includes this QAM channel is in 
-            in docsDrfGroupDependencyTable for the PHY 
+            frequency value has dependencies with other QAM channels
+            and an entry that includes this QAM channel is in
+            in docsDrfGroupDependencyTable for the PHY
             parameter 'frequency'.
 
             'adjacentChannel' BIT set to '1' indicates the QAM channel
-            frequencies in the dependency group (DEPI TSID group) are 
-            adjacent and constrained in a frequency range based on 
+            frequencies in the dependency group (DEPI TSID group) are
+            adjacent and constrained in a frequency range based on
             the number of QAM channels in the dependency group.
-            
-            'adjacentChannelOrder' BIT set to '1' indicates the QAM 
-            channel frequency adjacency is based in the QAM channel 
+
+            'adjacentChannelOrder' BIT set to '1' indicates the QAM
+            channel frequency adjacency is based in the QAM channel
             sequence like entPhysicalParentRelPos in EntPhysicalTable
             or other vendor sequence.
-            
-            e.g., a dependency group of four QAM channels 
+
+            e.g., a dependency group of four QAM channels
             with 'adjacentChannelOrder' BIT set to '1':
             The 4th QAM channel in the sequence gets a frequency
-            assignment f + 1*bandwidth when the frequency value of 
-            the 3rd QAM channel in the sequence is set to f. 
-            Similarly the 1st QAM channel in the sequence gets a 
-            frequency assignment of f - 2*bandwidth and the 2nd QAM 
+            assignment f + 1*bandwidth when the frequency value of
+            the 3rd QAM channel in the sequence is set to f.
+            Similarly the 1st QAM channel in the sequence gets a
+            frequency assignment of f - 2*bandwidth and the 2nd QAM
             channels gets a frequency of f -1*bandwidth.
 
             'adjacentChannel' 'adjacentChannelOrder' BITs may be set to
             '1' when a dependency group includes the QAM channel
-            of this M-CMTS Downstream interface and the value of the 
-            object docsDrfGroupDependencyType is 
+            of this M-CMTS Downstream interface and the value of the
+            object docsDrfGroupDependencyType is
             docsDrfPhyParamAdjacentValues.
-            
-            'adjacentChannel' BIT may be set to '1' if 
-            'qamDependency' BIT is set to '1'. The same way, 
+
+            'adjacentChannel' BIT may be set to '1' if
+            'qamDependency' BIT is set to '1'. The same way,
             'adjacentChannelOrder' BIT may be set to '1' and implies
             'adjacentChannel' BIT is set to '1'."
     ::= { docsDrfDownstreamCapabilitiesEntry 1 }
@@ -270,21 +270,21 @@ docsDrfDownstreamCapabBandwidth OBJECT-TYPE
         }
     MAX-ACCESS  read-only
     STATUS      current
-    DESCRIPTION 
+    DESCRIPTION
             "The QAM channel Bandwidth capabilities.
             'qamDependency' BIT set to '1' indicates the QAM channel
-            bandwidth value has dependencies with other QAM channels 
+            bandwidth value has dependencies with other QAM channels
             as indicated in docsDrfGroupDependencyTable.
 
-            'chan6Mhz' set to '1' indicates 6 MHz channel width 
+            'chan6Mhz' set to '1' indicates 6 MHz channel width
             support.
-            'chan8Mhz' set to '1' indicates 8 MHz channel width 
+            'chan8Mhz' set to '1' indicates 8 MHz channel width
             support.
-            
-            When 'qamDependency' BIT is set to '1', a set to the 
+
+            When 'qamDependency' BIT is set to '1', a set to the
             channel bandwidth PHY parameter of a QAM channels in a
             dependency group (with docsDrfGroupDependencyType
-            set to docsDrfPhyParamSameValue), sets the same channel 
+            set to docsDrfPhyParamSameValue), sets the same channel
             bandwidth  value to all QAM channels in the dependency
             group."
     ::= { docsDrfDownstreamCapabilitiesEntry 2 }
@@ -295,16 +295,16 @@ docsDrfDownstreamCapabPower OBJECT-TYPE
         }
     MAX-ACCESS  read-only
     STATUS      current
-    DESCRIPTION 
+    DESCRIPTION
             "The QAM channel Power capabilities.
             'qamDependency' BIT set to '1' indicates the QAM channel
-            power value has dependencies with other QAM channels 
+            power value has dependencies with other QAM channels
             as indicated in docsDrfGroupDependencyTable.
 
-            When 'qamDependency' BIT is set to '1', a set to the 
+            When 'qamDependency' BIT is set to '1', a set to the
             power level PHY parameter of a QAM channels in a
             dependency group (with docsDrfGroupDependencyType
-            set to docsDrfPhyParamSameValue), sets the same power 
+            set to docsDrfPhyParamSameValue), sets the same power
             level to all QAM channels in the dependency group."
     ::= { docsDrfDownstreamCapabilitiesEntry 3 }
 
@@ -316,19 +316,19 @@ docsDrfDownstreamCapabModulation OBJECT-TYPE
         }
     MAX-ACCESS  read-only
     STATUS      current
-    DESCRIPTION 
+    DESCRIPTION
             "The QAM channel Modulation capabilities.
             'qamDependency' BIT set to '1' indicates the QAM channel
             modulation value has dependencies with other QAM channels
             as indicated in docsDrfGroupDependencyTable.
-            
+
             'qam64' set to '1' indicates 64 QAM modulation support.
             'qam256' set to '1' indicates 256 QAM modulation support.
 
-            When 'qamDependency' BIT is set to '1', a set to the 
-            modulation PHY parameter of a QAM channels in a 
+            When 'qamDependency' BIT is set to '1', a set to the
+            modulation PHY parameter of a QAM channels in a
             dependency group (with docsDrfGroupDependencyType
-            set to docsDrfPhyParamSameValue), sets the same modulation 
+            set to docsDrfPhyParamSameValue), sets the same modulation
             type to all QAM channels in the dependency group."
     ::= { docsDrfDownstreamCapabilitiesEntry 4 }
 
@@ -351,55 +351,55 @@ docsDrfDownstreamCapabInterleaver OBJECT-TYPE
         }
     MAX-ACCESS  read-only
     STATUS      current
-    DESCRIPTION 
+    DESCRIPTION
             "The QAM channel Interleaver capabilities.
             'qamDependency' BIT set to '1' indicates the QAM channel
             interleave value has dependencies with other QAM channels
             as indicated in docsDrfGroupDependencyTable.
-            
+
              'taps8Increment16'  set to '1' indicates the support of
                                  j = 8, i = 16 interleave.
- 
+
              'taps16Increment8'  set to '1' indicates the support of
                                  j = 16, i = 8 interleave.
- 
+
              'taps32Increment4'  set to '1' indicates the support of
                                  j = 32, i = 4 interleave.
- 
+
              'taps64Increment2'  set to '1' indicates the support of
                                  j = 64, i = 2 interleave.
- 
+
              'taps128Increment1' set to '1' indicates the support of
                                  j = 128, i = 1 interleave.
- 
+
              'taps12increment17' set to '1' indicates the support of
                                  j = 12, i = 17 interleave.
- 
+
              'taps128increment2' set to '1' indicates the support of
                                  j = 128, i = 2 interleave.
- 
+
              'taps128increment3' set to '1' indicates the support of
                                  j = 128, i = 3 interleave.
- 
+
              'taps128increment4' set to '1' indicates the support of
                                  j = 128, i = 4 interleave.
- 
+
              'taps128increment5' set to '1' indicates the support of
                                  j = 128, i = 5 interleave.
- 
+
              'taps128increment6' set to '1' indicates the support of
                                  j = 128, i = 6 interleave.
- 
+
              'taps128increment7' set to '1' indicates the support of
                                  j = 128, i = 7 interleave.
- 
+
              'taps128increment8' set to '1' indicates the support of
                                  j = 128, i = 8 interleave.
 
-            When 'qamDependency' BIT is set to '1', a set to the 
+            When 'qamDependency' BIT is set to '1', a set to the
             interleave PHY parameter of a QAM channels in a
             dependency group (with docsDrfGroupDependencyType
-            set to docsDrfPhyParamSameValue), sets the same Interleave 
+            set to docsDrfPhyParamSameValue), sets the same Interleave
             value to all QAM channels in the dependency group."
     ::= { docsDrfDownstreamCapabilitiesEntry 5 }
 
@@ -412,7 +412,7 @@ docsDrfDownstreamCapabJ83Annex OBJECT-TYPE
         }
     MAX-ACCESS  read-only
     STATUS      current
-    DESCRIPTION 
+    DESCRIPTION
             "The QAM channel J.83 Annex Capabilities.
             'qamDependency' BIT set to '1' indicates the QAM channel
             J.83 Annex value has dependencies with other QAM channels
@@ -421,8 +421,8 @@ docsDrfDownstreamCapabJ83Annex OBJECT-TYPE
             'annexA' set to '1' indicates J.83 Annex A support.
             'annexB' set to '1' indicates J.83 Annex B support.
             'annexC' set to '1' indicates J.83 Annex C support.
-            
-            When 'qamDependency' BIT is set to '1', a set to the 
+
+            When 'qamDependency' BIT is set to '1', a set to the
             J.83 Annex PHY parameter of a QAM channels in a
             dependency group (with docsDrfGroupDependencyType
             set to docsDrfPhyParamSameValue), sets the same J.83 Annex
@@ -436,11 +436,11 @@ docsDrfDownstreamCapabConcurrentServices OBJECT-TYPE
         }
     MAX-ACCESS  read-only
     STATUS      current
-    DESCRIPTION 
+    DESCRIPTION
             "The QAM channel Concurrent Services Capabilities.
             'qamDependency' BIT set to '1' indicates the QAM channel
-            is part of a dependency group that supports concurrent 
-            services mode as indicated in 
+            is part of a dependency group that supports concurrent
+            services mode as indicated in
             docsDrfGroupDependencyTable.
 
             'videoAndDocsis' BIT set to '1' indicates video transport
@@ -451,7 +451,7 @@ docsDrfDownstreamCapabConcurrentServices OBJECT-TYPE
     ::= { docsDrfDownstreamCapabilitiesEntry 7 }
 
 docsDrfDownstreamCapabServicesTransport OBJECT-TYPE
-    SYNTAX      BITS { 
+    SYNTAX      BITS {
         qamDependency(0),
         mpeg2OverIP(1),
         dmpt(2),
@@ -459,15 +459,15 @@ docsDrfDownstreamCapabServicesTransport OBJECT-TYPE
         }
     MAX-ACCESS  read-only
     STATUS      current
-    DESCRIPTION 
+    DESCRIPTION
             "The QAM channel Services transports modes Capabilities.
 
             'qamDependency' BIT set to '1' indicates the QAM channel
-            Service transport type has dependencies with other QAM 
-            channels as indicated in 
+            Service transport type has dependencies with other QAM
+            channels as indicated in
             docsDrfGroupDependencyTable.
 
-            'mpeg2OverIP' set to '1' indicates video transports as 
+            'mpeg2OverIP' set to '1' indicates video transports as
             conventional VoD is supported (known as MPT mode, MPEG-2
             transport).
             'dmpt' set to 1 indicates DOCSIS MPT mode (D-MPT) support.
@@ -475,33 +475,33 @@ docsDrfDownstreamCapabServicesTransport OBJECT-TYPE
             mode (PSP) support.
 
             When 'qamDependency' BIT is set to '1', a request to set
-            a QAM channel to a service type in a dependency group 
-            (with docsDrfGroupDependencyType set to 
+            a QAM channel to a service type in a dependency group
+            (with docsDrfGroupDependencyType set to
             docsDrfPhyParamSameValue) may be rejected."
     ::= { docsDrfDownstreamCapabilitiesEntry 8 }
- 
+
 docsDrfDownstreamCapabMuting OBJECT-TYPE
     SYNTAX      BITS {
         qamDependency(0)
         }
     MAX-ACCESS  read-only
     STATUS      current
-    DESCRIPTION 
+    DESCRIPTION
             "The QAM channel muting capabilities.
             'qamDependency' BIT set to '1' indicates the QAM Mute
-            state has dependencies with other QAM channels as 
+            state has dependencies with other QAM channels as
             indicated in docsDrfGroupDependencyTable.
 
-            When 'qamDependency' BIT is set to '1', a request to 
-            mute a QAM channels in a dependency group (with 
-            docsDrfGroupDependencyType set to 
-            docsDrfPhyParamSameValue), sets all QAM channels in the 
+            When 'qamDependency' BIT is set to '1', a request to
+            mute a QAM channels in a dependency group (with
+            docsDrfGroupDependencyType set to
+            docsDrfPhyParamSameValue), sets all QAM channels in the
             dependency group to mute."
     ::= { docsDrfDownstreamCapabilitiesEntry 9 }
 
 -- ---------------------------------------------------------------------
 -- DRF Group Dependency of PHY parameters Definitions
--- Defines the group of QAM channels that may be impacted for 
+-- Defines the group of QAM channels that may be impacted for
 -- individual QAM channels PHY parameters changes. Extends ENTITY-MIB
 -- ---------------------------------------------------------------------
 
@@ -510,32 +510,32 @@ docsDrfGroupDependencyTable OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-            "This table describes the rules that identify groups of 
-            QAM channels with PHY parameters dependencies. 
-            A PHY parameter dependency group means that a set to 
-            a QAM channel parameter may affect the value of 
+            "This table describes the rules that identify groups of
+            QAM channels with PHY parameters dependencies.
+            A PHY parameter dependency group means that a set to
+            a QAM channel parameter may affect the value of
             other QAM Channels in the group.
 
-            TSID is a broadcast term borrowed by the M-CMTS 
+            TSID is a broadcast term borrowed by the M-CMTS
             architecture to represent a unique identifier of QAM
-            channels in the M-CMTS architecture. 
-            
+            channels in the M-CMTS architecture.
+
             TSID Group is the DEPI concept of a set of QAM channels
-            with a PHY parameter dependency. This module refers to 
+            with a PHY parameter dependency. This module refers to
             TSID group as a PHY dependency Group.
-            
+
             This table uses the ENTITY-MIB physical component structure
             to allows the managed system to describe the QAM channels'
             PHY parameters dependencies. A management entity can use
             the information from this table to generate the DEPI TSID
             Groups.
-            
+
             Examples of PHY dependencies could be usage of adjacent
-            frequencies, or QAM channels of RF ports restricted, or 
+            frequencies, or QAM channels of RF ports restricted, or
             same interleaver value, modulation and J.83 Annex value.
-            
+
             Additional details and rules to describe the PHY parameter
-            dependency is indicated in 
+            dependency is indicated in
             docsDrfGroupDependencyType.
             Vendors may extend via other MIB modules the usage of
             docsDrfGroupDependencyType."
@@ -547,85 +547,85 @@ docsDrfGroupDependencyEntry OBJECT-TYPE
     STATUS      current
     DESCRIPTION
             "A conceptual row of this table.
-            
-            QAM channels are modeled as PhysicalClass 'port' from 
+
+            QAM channels are modeled as PhysicalClass 'port' from
             the ENTITY-MIB.
-            An QAM channel can be represented as part of an entity 
-            MIB containment tree as follows: 
+            An QAM channel can be represented as part of an entity
+            MIB containment tree as follows:
             chassis(device)
                   .container(Slot)
-                        .module(field-replaceable-module) 
+                        .module(field-replaceable-module)
                              .module ( Physical RF spigot)
-                                 . port (QAM channel) 
-            
-            PhysicalClass 'stack' is left optional and not included 
+                                 . port (QAM channel)
+
+            PhysicalClass 'stack' is left optional and not included
             as a reference or examples for this table.
-            
+
             Based on the hardware capabilities the Agent will create
             entries in this table including the entPhysicalEntry of
-            the close element to the root (e.g., up to 'chassis' or 
-            'stack') including the PHY parameter of the dependency 
+            the close element to the root (e.g., up to 'chassis' or
+            'stack') including the PHY parameter of the dependency
             as part of the entry index
-            
+
             The Aggregation is then defined as all the QAM channels
-            (entity PhysicalClass = 'port') below the tree as 
+            (entity PhysicalClass = 'port') below the tree as
             indicated in entyPhysicalContainsTable.
 
             Logical or software dependencies of the QAM channels PHY
             parameters in addition to the hardware dependency entries
             can be present and MUST persist during system
-            re-initialization. The storage realization of hardware 
-            dependent entries are 'permanent' or 'readOnly'. The 
-            storage realization of logical dependency entries is 
+            re-initialization. The storage realization of hardware
+            dependent entries are 'permanent' or 'readOnly'. The
+            storage realization of logical dependency entries is
             'nonVolatile'.
-            
+
             PHY parameter dependencies that are logically defined may
-            be present in this table but its configuration is outside 
-            of the scope of this MIB Module, including the definition 
-            of simulated Physical components such backplane types or 
+            be present in this table but its configuration is outside
+            of the scope of this MIB Module, including the definition
+            of simulated Physical components such backplane types or
             modules accomplish its logical grouping.
-            
-            PHY parameters with no Physical entities associated in 
+
+            PHY parameters with no Physical entities associated in
             this table indicate no PHY dependencies for certain groups
             of QAM channels.
-            
-            Administrative changes to the 
+
+            Administrative changes to the
             docsDrfGroupDependencyPhyParamLock are preserved in
             non-volatile memory upon system re-initialization.
-            
+
             Note that any change in the system due to the
             insertion or removal or components will reset to factory
             default the entries associated with those components.
-            
+
             An entry in this table is reflected in the MIB object
             docsIfMExtDownstreamTSIDGroupPhyParamFlag for individual
             QAM channels.
-            
+
             A recursive method to find the PHY dependency group of an
             QAM channel A, PHY parameter X is as follows:
-            
+
             The parent tree of QAM channel A is recursively calculated
             by navigating entyPhysicalContainsTable from bottom to top
             Pi(P1..Pn)
-            
-            The list Mj (M1..Mn) of 
-            docsDrfGroupDependencyPhysicalIndex represents the 
-            values from this table with PHY parameter 
-            docsDrfGroupDependencyPhyParam X and/or 'all' 
-            
+
+            The list Mj (M1..Mn) of
+            docsDrfGroupDependencyPhysicalIndex represents the
+            values from this table with PHY parameter
+            docsDrfGroupDependencyPhyParam X and/or 'all'
+
             The list Qi (Q1..n) is the list of matches of Mi in Pi
 
             Qi with the lower position in the entyPhysicalContainsTable
             is selected Qy and My is the group criteria selected.
-            
+
             All QAM channels Bi below My are candidates for inclusion
             in the dependency group.
 
             Each Bi is verified as A for its own BPi parent tree to
-            verify that in effect My is the lowest denominator in Mi 
-            BPi intersection to become part of the Dependency Group 
+            verify that in effect My is the lowest denominator in Mi
+            BPi intersection to become part of the Dependency Group
             of A."
-    INDEX { docsDrfGroupDependencyPhyParam, 
+    INDEX { docsDrfGroupDependencyPhyParam,
             docsDrfGroupDependencyPhysicalIndex }
     ::= { docsDrfGroupDependencyTable 1 }
 
@@ -633,7 +633,7 @@ DocsDrfGroupDependencyEntry ::= SEQUENCE
     {
     docsDrfGroupDependencyPhyParam         INTEGER,
     docsDrfGroupDependencyPhysicalIndex    PhysicalIndexOrZero,
-    docsDrfGroupDependencyGroupID          Unsigned32, 
+    docsDrfGroupDependencyGroupID          Unsigned32,
     docsDrfGroupDependencyType             AutonomousType
     }
 
@@ -650,71 +650,71 @@ docsDrfGroupDependencyPhyParam OBJECT-TYPE
         symbolRate(8),
         mute(9)
         }
-    MAX-ACCESS  not-accessible 
-    STATUS      current 
-    DESCRIPTION 
-            "This object represents the type of PHY parameter 
-            that may have dependencies when setting an individual 
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+            "This object represents the type of PHY parameter
+            that may have dependencies when setting an individual
             object in the dependency group.
             The value 'all' may be used as a wildcard to indicate
-            all PHY parameters have dependencies. The other 
+            all PHY parameters have dependencies. The other
             enumeration values are common QAM PHY parameters.
-            
+
             The opposite to 'all' is 'noDependencies', which indicates
-            no dependencies in PHY parameters, but is only used to 
+            no dependencies in PHY parameters, but is only used to
             indicate no dependencies across all the device. Thus,
-            when used, 'noDependencies' is accompanied by 
+            when used, 'noDependencies' is accompanied by
             docsDrfGroupDependencyPhysicalIndex '0' as the only
-            entry in the table. 
+            entry in the table.
             In this way it is clearly distinguished when a device
-            has dependencies instead of an empty table." 
+            has dependencies instead of an empty table."
     ::= { docsDrfGroupDependencyEntry 1 }
 
 docsDrfGroupDependencyPhysicalIndex OBJECT-TYPE
     SYNTAX      PhysicalIndexOrZero
     MAX-ACCESS  not-accessible
     STATUS      current
-    DESCRIPTION 
-            "Indicates the physical element from where the PHY 
+    DESCRIPTION
+            "Indicates the physical element from where the PHY
             parameter dependency for QAM channels is derived.
             All the QAM channels elements under this Physical index
-            will belong to a dependency group of the specified PHY 
-            parameter." 
+            will belong to a dependency group of the specified PHY
+            parameter."
     ::= { docsDrfGroupDependencyEntry 2 }
 
-docsDrfGroupDependencyGroupID OBJECT-TYPE 
-    SYNTAX      Unsigned32 (1..127) 
-    MAX-ACCESS  read-only 
-    STATUS      current 
-    DESCRIPTION 
-            "The internal ID assigned for the QAM channels in the 
-            dependency group. 
+docsDrfGroupDependencyGroupID OBJECT-TYPE
+    SYNTAX      Unsigned32 (1..127)
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+            "The internal ID assigned for the QAM channels in the
+            dependency group.
             The value of this object is unique in the scope of the
-            PHY parameter being mapped." 
-    ::= { docsDrfGroupDependencyEntry 3 } 
+            PHY parameter being mapped."
+    ::= { docsDrfGroupDependencyEntry 3 }
 
-docsDrfGroupDependencyType OBJECT-TYPE 
+docsDrfGroupDependencyType OBJECT-TYPE
     SYNTAX      AutonomousType
-    MAX-ACCESS  read-only 
-    STATUS      current 
-    DESCRIPTION 
-            "The description of the type of dependency associated 
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+            "The description of the type of dependency associated
             with this dependency group.
-            Basic type of dependencies are docsDrfPhyParamSameValue, 
-            docsDrfPhyParamAdjacentValues, docsDrfPhyParamFrequencyRange. 
+            Basic type of dependencies are docsDrfPhyParamSameValue,
+            docsDrfPhyParamAdjacentValues, docsDrfPhyParamFrequencyRange.
             Vendors may define their own rules and policies to describe
             their implementation dependency definitions such as
             RowPointers to table entries or OBJECT-IDENTITY clauses.
             If the dependency is not described this object is set to
             zeroDotZero, although the dependency does exist."
-    ::= { docsDrfGroupDependencyEntry 4 } 
+    ::= { docsDrfGroupDependencyEntry 4 }
 
 -- ---------------------------------------------------------------------
--- DRF Channel Block configuration 
+-- DRF Channel Block configuration
 -- Configuration and diagnostic of block Channels.
 -- This table is only for Channels Blocks Physical containments
--- Other configuration parameters (PHY) applicable to all channels in a 
--- QAM Channel Block are set through the DS (QAM) channel interface and 
+-- Other configuration parameters (PHY) applicable to all channels in a
+-- QAM Channel Block are set through the DS (QAM) channel interface and
 -- configuration objects
 -- ---------------------------------------------------------------------
 
@@ -725,7 +725,7 @@ docsDrfChannelBlockTable OBJECT-TYPE
     DESCRIPTION
             "This table configure attributes of block channels and
              Controls channel Block Tests.
-            A channel block is an ENTITY-MIB containment of 
+            A channel block is an ENTITY-MIB containment of
             PhysicalClass 'module' that represent an RF connector."
     ::= { docsDrfObjects  5 }
 
@@ -734,9 +734,9 @@ docsDrfChannelBlockEntry OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-            "The conceptual row of this table. 
-            Entries in this table are created at system 
-            Initialization for Block Channels compliant to DRFI 
+            "The conceptual row of this table.
+            Entries in this table are created at system
+            Initialization for Block Channels compliant to DRFI
             Specification.
             Sets in entries of this table persist after system
             initialization."
@@ -761,13 +761,13 @@ docsDrfChannelBlockPhysicalIndex OBJECT-TYPE
             "The Physical Index of the QAM Channel Block."
     ::= { docsDrfChannelBlockEntry 1 }
 
-docsDrfChannelBlockNumberChannels OBJECT-TYPE 
+docsDrfChannelBlockNumberChannels OBJECT-TYPE
     SYNTAX      Unsigned32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
             "The Number of QAM Channels N associated with this entry.
-             
+
             The value of this attribute corresponds to the number
             of channels that can be transmitted from this block"
     ::= { docsDrfChannelBlockEntry 2 }
@@ -777,19 +777,19 @@ docsDrfChannelBlockCfgNumberChannels OBJECT-TYPE
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
-            "The Number of QAM Channels N' to configure for the 
-            QAM block. 
-            
+            "The Number of QAM Channels N' to configure for the
+            QAM block.
+
             This number corresponds to the number of channels that
             are configured to be currently transmitted by the block.
-            
-            The maximum number of channels per block follows the 
-            consideration of maximum number of digital channels in 
+
+            The maximum number of channels per block follows the
+            consideration of maximum number of digital channels in
             a headend described in the DRFI specification.
-            As a rule N' is valid if it is less than or equal to N. 
-            In addition N minimal requirements consist of even 
-            numbers and 1 (one QAM channel per Block Channel). Odd 
-            number of QAM channels per Block Channel are optional 
+            As a rule N' is valid if it is less than or equal to N.
+            In addition N minimal requirements consist of even
+            numbers and 1 (one QAM channel per Block Channel). Odd
+            number of QAM channels per Block Channel are optional
             for implementation.
             A Set to an invalid value or not supported value returns
             Error 'wrongValue'."
@@ -801,11 +801,11 @@ docsDrfChannelBlockMute OBJECT-TYPE
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
-            "The Mute control object for the Block Channel. 
-            A set to this object to 'true' is reflected in 
-            ifOperStatus set to 'down' of the QAM channels 
+            "The Mute control object for the Block Channel.
+            A set to this object to 'true' is reflected in
+            ifOperStatus set to 'down' of the QAM channels
             associated to the block Channel.
-            The opposite, a set to this object to 'false', is not 
+            The opposite, a set to this object to 'false', is not
             necessarily reflected as ifOperStatus set to 'up' since
             other interface conditions might prevent such status."
     ::= { docsDrfChannelBlockEntry 4 }
@@ -818,7 +818,7 @@ docsDrfChannelBlockTestType OBJECT-TYPE
                  onOthersOff(4),
                  cwOnOthersOff(5),
                  cwOnOthersNormal(6),
-                 clockTest(7)    
+                 clockTest(7)
                 }
     MAX-ACCESS  read-write
     STATUS      current
@@ -828,19 +828,19 @@ docsDrfChannelBlockTestType OBJECT-TYPE
              reinitialization where the QAM channels are expected in
              operation.
 
-             'noTest' 
+             'noTest'
              It is also used to take out of testing mode
              a QAM channel within the block.
-             
+
              In-service tests modes:
              'offOthersNormal'
              It is the condition where the QAM Channel indicated in
-             docsDrfChannelBlockTestIfIndex has its carrier 
-             suppressed and the other channels in the 
+             docsDrfChannelBlockTestIfIndex has its carrier
+             suppressed and the other channels in the
              Block Channel are operational.
              'allOff'
              All QAM channel carriers in the channel block are
-             Suppressed. 
+             Suppressed.
              'onOthersOff'
              It is the condition where the QAM channel indicated in
              docsDrfChannelBlockTestIfIndex is in operation
@@ -849,25 +849,25 @@ docsDrfChannelBlockTestType OBJECT-TYPE
 
              Out-of-service test modes:
              'cwOnOthersOff'
-             It is the condition where the QAM channel indicated in 
-             docsDrfChannelBlockTestIfIndex transmits a 
-             continuous wave (CW) while the other QAM 
-             channels in the channel Block have their carriers 
+             It is the condition where the QAM channel indicated in
+             docsDrfChannelBlockTestIfIndex transmits a
+             continuous wave (CW) while the other QAM
+             channels in the channel Block have their carriers
              suppressed.
              'cwOnOthersNormal'
              It is the condition where the QAM channel indicated
-             in docsDrfChannelBlockTestIfIndex transmits a 
+             in docsDrfChannelBlockTestIfIndex transmits a
              continuous wave (CW) while the other QAM channels in
              the channel Block are operational.
-              
+
              'clockTest'
              It is the condition where the QAM channel indicated in
-             docsDrfChannelBlockTestIfIndex transmits a sequence 
+             docsDrfChannelBlockTestIfIndex transmits a sequence
              of alternating -1 and 1 symbols.
 
-             This object value does not persist after system 
+             This object value does not persist after system
              Reinitialization.
-             The value of this object is meaningless if 
+             The value of this object is meaningless if
              docsDrfChannelBlockTestIfIndex is set to zero."
     ::= { docsDrfChannelBlockEntry 5 }
 
@@ -878,8 +878,8 @@ docsDrfChannelBlockTestIfIndex OBJECT-TYPE
     DESCRIPTION
             "The ifIndex of the QAM channel to perform the QAM
              channel test.
-             A Set to a value that does not correspond to a QAM 
-             Channel within the Block channel returns error 
+             A Set to a value that does not correspond to a QAM
+             Channel within the Block channel returns error
              'wrongValue'.
              A set to zero stops a current test execution."
     ::= { docsDrfChannelBlockEntry 6 }
@@ -887,17 +887,17 @@ docsDrfChannelBlockTestIfIndex OBJECT-TYPE
 
 
 -- ---------------------------------------------------------
--- Conformance definitions 
+-- Conformance definitions
 -- ---------------------------------------------------------
 
 docsDrfConformance OBJECT IDENTIFIER ::= { docsDrfMib 2 }
 docsDrfCompliances OBJECT IDENTIFIER ::= { docsDrfConformance 1 }
 docsDrfGroups      OBJECT IDENTIFIER ::= { docsDrfConformance 2 }
 
-docsDrfDeviceCompliance MODULE-COMPLIANCE 
-    STATUS      current 
-    DESCRIPTION 
-            "The compliance statement DOCSIS DRFI compliant 
+docsDrfDeviceCompliance MODULE-COMPLIANCE
+    STATUS      current
+    DESCRIPTION
+            "The compliance statement DOCSIS DRFI compliant
             devices."
 
     MODULE -- this MODULE
@@ -909,10 +909,10 @@ docsDrfDeviceCompliance MODULE-COMPLIANCE
         }
 ::= { docsDrfCompliances 1}
 
-docsDrfCmtsCompliance MODULE-COMPLIANCE 
-    STATUS      current 
-    DESCRIPTION 
-            "The compliance statement for CMTS compliant 
+docsDrfCmtsCompliance MODULE-COMPLIANCE
+    STATUS      current
+    DESCRIPTION
+            "The compliance statement for CMTS compliant
             devices."
 
 MODULE -- this MODULE

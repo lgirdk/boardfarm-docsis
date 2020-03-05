@@ -175,7 +175,7 @@ DataRateUnitType ::= TEXTUAL-CONVENTION
                          bps(0),
                          kbps (1),
                          mbps(2),
-                         gbps(4)                        
+                         gbps(4)
                           }
 
 docsQosMibObjects  OBJECT IDENTIFIER ::= { docsQosMib 1 }
@@ -967,14 +967,14 @@ docsQosParamSetTable OBJECT-TYPE
         descriptions.
 
         For CM devices supporting the ParamSet object, the CM MUST
-        report only the active service flow parameter set values.  
-        The CM MAY report the admitted and provisioned service 
+        report only the active service flow parameter set values.
+        The CM MAY report the admitted and provisioned service
         flow parameter sets.
-		
-		Beginning with CCAP OSSI specification I15, CCAP reporting 
+
+		Beginning with CCAP OSSI specification I15, CCAP reporting
 		of admitted and provisioned service flow parameter sets becomes optional,
 		as a means of reducing the volume of information reported by the CCAP.
-        The CCAP MUST report the active service flow parameter set values. 
+        The CCAP MUST report the active service flow parameter set values.
 		The CCAP MAY report the admitted and provisioned service flow parameter sets."
      REFERENCE
         "DOCSIS 3.0 MAC and Upper Layer Protocols Interface
@@ -1603,8 +1603,8 @@ docsQosParamSetType OBJECT-TYPE
         'provisioned'
         Indicates the QOS Parameter Set defined in the DOCSIS
         CM Configuration file for the service flow.
-        Only the   'active ' service flow parameter set is required to 
-        be reported.  The  'admitted ' and  'provisioned'sets are not 
+        Only the   'active ' service flow parameter set is required to
+        be reported.  The  'admitted ' and  'provisioned'sets are not
         required to be reported."
      REFERENCE
         "DOCSIS 3.0 MAC and Upper Layer Protocols Interface
@@ -2144,12 +2144,12 @@ docsQosParamSetAqmLatencyTarget OBJECT-TYPE
      MAX-ACCESS  read-only
      STATUS      current
      DESCRIPTION
-        "This attribute provides the target latency for this service flow 
-         when operating under Classic Active Queue Management 
-         (e.g. DOCSIS-PIE). If set to 0, the value in the 
-		 AqmGlobalLatencyTarget attribute of the DocsQosCfg 
-		 object will be used. This attribute applies to both upstream 
-		 and downstream service flows. This attribute is only used when 
+        "This attribute provides the target latency for this service flow
+         when operating under Classic Active Queue Management
+         (e.g. DOCSIS-PIE). If set to 0, the value in the
+		 AqmGlobalLatencyTarget attribute of the DocsQosCfg
+		 object will be used. This attribute applies to both upstream
+		 and downstream service flows. This attribute is only used when
 		 AqmGlobalEnable in the DocsQosCfg object is set to 'true' and the
 		 AqmEnable attribute is set to 'true'. This parameter will be ignored
 		 if the AQM Algorithm used by the Service Flow is ImmediateAqm."
@@ -2238,7 +2238,7 @@ docsQosParamSetAqmAlgInUse OBJECT-TYPE
      STATUS      current
      DESCRIPTION
         "This attribute specifies the AQM algorithm in use for this
-         service flow. 
+         service flow.
          The value unknown(1) is reported for downstream service flows
          or when AQM is disabled.
          The value other(2) indicates a vendor proprietary algorithm
@@ -2261,14 +2261,14 @@ docsQosParamSetGuaranteedGrantInterval OBJECT-TYPE
      DESCRIPTION
         "This attribute specifies the maximum interval between
         successive data transmission opportunities, for a PGS Service
-        Flow. The valid range of this parameter is specific to the CMTS. 
-		If the referenced parameter is not applicable to the direction 
-		or scheduling type of the corresponding DOCSIS QoS Parameter Set, 
+        Flow. The valid range of this parameter is specific to the CMTS.
+		If the referenced parameter is not applicable to the direction
+		or scheduling type of the corresponding DOCSIS QoS Parameter Set,
 		both CMTS and CM report this attribute's value as 0."
      REFERENCE
         "DOCSIS 3.1 MAC and Upper Layer Protocols Interface
         Specification CM-SP-MULPIv3.1-I17,
-        Guaranteed Grant Interval section in the Common 
+        Guaranteed Grant Interval section in the Common
         TLV Encodings Annex"
      ::= { docsQosParamSetEntry 48 }
 
@@ -2284,7 +2284,7 @@ docsQosParamSetGuaranteedGrantRate OBJECT-TYPE
      REFERENCE
         "DOCSIS 3.1 MAC and Upper Layer Protocols Interface
         Specification CM-SP-MULPIv3.1-I17,
-        Guaranteed Grant Rate section in the Common 
+        Guaranteed Grant Rate section in the Common
         TLV Encodings Annex."
      ::= { docsQosParamSetEntry 49 }
 
@@ -2297,8 +2297,8 @@ docsQosParamSetGuaranteedRequestInterval OBJECT-TYPE
         "The value of this parameter specifies the maximum interval (in
         units of microseconds) between successive request opportunities
         (including unicast request opportunities and piggyback request
-        opportunities) for an upstream PGS service flow. This attribute is a 
-        16-bit representation of the request interval in units of microseconds. 
+        opportunities) for an upstream PGS service flow. This attribute is a
+        16-bit representation of the request interval in units of microseconds.
         The value zero represents polling disabled. "
      REFERENCE
         "DOCSIS 3.1 MAC and Upper Layer Protocols Interface
@@ -2401,7 +2401,7 @@ DocsQosServiceFlowEntry ::= SEQUENCE {
      }
 
 docsQosServiceFlowId OBJECT-TYPE
-     SYNTAX      Unsigned32 
+     SYNTAX      Unsigned32
      MAX-ACCESS  not-accessible
      STATUS      current
      DESCRIPTION
@@ -2862,7 +2862,7 @@ docsQosServiceFlowSanctionedPkts OBJECT-TYPE
      MAX-ACCESS  read-only
      STATUS      current
      DESCRIPTION
-        "This attribute represents the number of packets redirected to the 
+        "This attribute represents the number of packets redirected to the
           Classic Service Flow queue by the Queue Protection function."
      REFERENCE
         "DOCSIS 3.1 MAC and Upper Layer Protocols Interface
@@ -4384,12 +4384,12 @@ docsQosServiceClassAqmLatencyTarget OBJECT-TYPE
      DESCRIPTION
         "This attribute configures the target latency for this service flow
           when operating under Classic Active Queue Management (e.g. DOCSIS-PIE).
-           If set to 0, the value in the AqmGlobalLatencyTarget attribute 
-           of the DocsQosCfg object will be used. This attribute applies to 
+           If set to 0, the value in the AqmGlobalLatencyTarget attribute
+           of the DocsQosCfg object will be used. This attribute applies to
            both upstream and downstream service flows. This attribute is
            only used when AqmGlobalEnable in the DocsQosCfg object is set
-           to 'true' and the AqmEnable attribute is set to 'true'. This parameter 
-           will be ignored if the AQM Algorithm used by the Service Flow is 
+           to 'true' and the AqmEnable attribute is set to 'true'. This parameter
+           will be ignored if the AQM Algorithm used by the Service Flow is
            ImmediateAqm."
      REFERENCE
         "DOCSIS 3.1 MAC and Upper Layer Protocols Interface
@@ -4600,12 +4600,12 @@ docsQosServiceClassDataRateUnitSetting  OBJECT-TYPE
      MAX-ACCESS  read-create
      STATUS      current
      DESCRIPTION
-        "The default units for the traffic rate parameters 
+        "The default units for the traffic rate parameters
           (Maximum Sustained Traffic Rate, Minimum Reserved Traffic Rate,
-          and Peak Traffic Rate) within a Service Flow are bits per second (bps). 
-          This parameter indicates the base unit for the rates configured 
+          and Peak Traffic Rate) within a Service Flow are bits per second (bps).
+          This parameter indicates the base unit for the rates configured
           using the Maximum Sustained Traffic Rate, Minimum Reserved Traffic Rate,
-          and Peak Traffic Rate. The value of this parameter allows for their 
+          and Peak Traffic Rate. The value of this parameter allows for their
           interpretation in units of bps, kbps, mbps or gbps."
      REFERENCE
         "DOCSIS 3.1 MAC and Upper Layer Protocols Interface
@@ -6159,7 +6159,7 @@ docsQosAggregateServiceFlowTable OBJECT-TYPE
      MAX-ACCESS  not-accessible
      STATUS      current
      DESCRIPTION
-        "This table describes the  attributes for an aggregate service 
+        "This table describes the  attributes for an aggregate service
 		 Flow (ASF). It contains an entry for every active ASF in each MAC Domain."
      REFERENCE
         "DOCSIS 3.1 MAC and Upper Layer Protocols Interface
@@ -6244,9 +6244,9 @@ docsQosAggregateServiceFlowPriority OBJECT-TYPE
      MAX-ACCESS  read-only
      STATUS      current
      DESCRIPTION
-        "This attribute indicates the relative priority of the 
-		 Aggregate Service Flow. It represents the sum of the 
-		 traffic rate for the Classic Service flow and Aggregate 
+        "This attribute indicates the relative priority of the
+		 Aggregate Service Flow. It represents the sum of the
+		 traffic rate for the Classic Service flow and Aggregate
 		 Service Flow."
      ::= { docsQosAggregateServiceFlowEntry 3 }
 
@@ -6256,7 +6256,7 @@ docsQosAggregateServiceFlowMaxAggregateTrafficRate OBJECT-TYPE
      MAX-ACCESS  read-only
      STATUS      current
      DESCRIPTION
-        "This attribute represents the maximum sustained traffic rate 
+        "This attribute represents the maximum sustained traffic rate
           allowed for this Aggregate Service Flow."
      ::= { docsQosAggregateServiceFlowEntry 4 }
 
@@ -6265,11 +6265,11 @@ docsQosAggregateServiceFlowMaxTrafficBurst OBJECT-TYPE
      MAX-ACCESS  read-only
      STATUS      current
      DESCRIPTION
-        "This attribute represents the token bucket size in bytes for 
-         this parameter set. The value is calculated from the byte 
-         following the MAC header HCS to the end of the CRC. 
-         This object is applied in conjunction with MaxTrafficRate to 
-         calculate maximum sustained traffic rate the token bucket 
+        "This attribute represents the token bucket size in bytes for
+         this parameter set. The value is calculated from the byte
+         following the MAC header HCS to the end of the CRC.
+         This object is applied in conjunction with MaxTrafficRate to
+         calculate maximum sustained traffic rate the token bucket
          size B (in bytes) for this Service Flow or an Aggregate Service Flow."
      ::= { docsQosAggregateServiceFlowEntry 5 }
 
@@ -6280,11 +6280,11 @@ docsQosAggregateServiceFlowMinReservedRate OBJECT-TYPE
      DESCRIPTION
         "This attribute represents the guaranteed minimum rate in bits/sec
           for this parameter set. The value is calculated from the byte following
-          the MAC header HCS to the end of the CRC. The value of 0 indicates 
-          that no bandwidth is reserved. If the referenced parameter is not 
+          the MAC header HCS to the end of the CRC. The value of 0 indicates
+          that no bandwidth is reserved. If the referenced parameter is not
           present in the corresponding DOCSIS QoS Parameter Set, this attribute
-          returns 0. If the parameter is not applicable, it is reported as 0. 
-          This attribute will also return 0 if DataRateUnitSetting is enabled and 
+          returns 0. If the parameter is not applicable, it is reported as 0.
+          This attribute will also return 0 if DataRateUnitSetting is enabled and
           the resulting value cannot be represented in 32 bits, in which case
           HcMinReservedRate should be utilized."
      ::= { docsQosAggregateServiceFlowEntry 6}
@@ -6295,7 +6295,7 @@ docsQosAggregateServiceFlowMinReservedPkt OBJECT-TYPE
      MAX-ACCESS  read-only
      STATUS      current
      DESCRIPTION
-        "This attribute represents Assumed Minimum Reserved 
+        "This attribute represents Assumed Minimum Reserved
           Rate Packet Size for the Aggregate Service Flow."
      ::= { docsQosAggregateServiceFlowEntry 7 }
 
@@ -6305,12 +6305,12 @@ docsQosAggregateServiceFlowPeakTrafficRate OBJECT-TYPE
      MAX-ACCESS  read-only
      STATUS      current
      DESCRIPTION
-        "This attribute represents the rate parameter 'P' of a 
-         token-bucket-based peak rate limiter for packets of a service flow. 
+        "This attribute represents the rate parameter 'P' of a
+         token-bucket-based peak rate limiter for packets of a service flow.
          A value of 0 signifies no Peak Traffic Rate is enforced. If the referenced
          parameter is not present in the corresponding DOCSIS QoS Parameter Set,
          this attribute returns 0. This attribute will also return 0 if DataRateUnitSetting
-         is enabled and the resulting value cannot be represented in 32 bits, 
+         is enabled and the resulting value cannot be represented in 32 bits,
 		 in which case HCPeakTrafficRate should be utilized."
      ::= { docsQosAggregateServiceFlowEntry 8 }
 
@@ -6323,9 +6323,9 @@ docsQosAggregateServiceFlowDataRateUnitSetting OBJECT-TYPE
           parameters (Maximum Sustained Traffic Rate, Minimum
           Reserved Traffic Rate, and Peak Traffic Rate) within a Service
           Flow are bits per second (bps). This parameter indicates
-          the base unit for the rates configured using the Maximum 
+          the base unit for the rates configured using the Maximum
           Sustained Traffic Rate, Minimum Reserved Traffic Rate, and
-          Peak Traffic Rate. The value of this parameter allows for their 
+          Peak Traffic Rate. The value of this parameter allows for their
           interpretation in units of bps, kbps, mbps or gbps."
      ::= { docsQosAggregateServiceFlowEntry 9 }
 
@@ -6335,7 +6335,7 @@ docsQosAggregateServiceFlowLowLatencyAsf OBJECT-TYPE
      STATUS      current
      DESCRIPTION
         "This attribute indicates whether this ASF is a Low Latency ASF.
-		 This implies the ASF is describing a Dual Queue SF setup 
+		 This implies the ASF is describing a Dual Queue SF setup
 		 underneath the ASF"
      ::= { docsQosAggregateServiceFlowEntry 10 }
 
@@ -6346,9 +6346,9 @@ docsQosAggregateServiceFlowLowLatencySfId OBJECT-TYPE
      STATUS      current
      DESCRIPTION
         "This attribute represents which of the Individual Service Flows
-         within this Aggregate Service Flow is the Low Latency Service 
+         within this Aggregate Service Flow is the Low Latency Service
          Flow. For an Aggregate Service Flow, the CM configuration file
-         can indicate which of the constituent service flows will act as 
+         can indicate which of the constituent service flows will act as
          the Low Latency queue the Service Class Name of the Low
          Latency Service flow in this ASF. "
      ::= { docsQosAggregateServiceFlowEntry 11 }
@@ -6359,7 +6359,7 @@ docsQosAggregateServiceFlowClassicSfScn OBJECT-TYPE
      MAX-ACCESS  read-only
      STATUS      current
      DESCRIPTION
-        "This attribute represents the Service Class Name that was 
+        "This attribute represents the Service Class Name that was
          used to instantiate the Classic Service Flow by the CMTS.
          This attribute may not be known by the CM, and could report
          an empty string."
@@ -6370,7 +6370,7 @@ docsQosAggregateServiceFlowLowLatencySfScn OBJECT-TYPE
      MAX-ACCESS  read-only
      STATUS      current
      DESCRIPTION
-        "This attribute represents the Service Class Name that was 
+        "This attribute represents the Service Class Name that was
          used to instantiate the Low Latency Service Flow by the CMTS.
          This attribute may not be known by the CM, and could report
          an empty string."
@@ -6381,7 +6381,7 @@ docsQosAggregateServiceFlowAqmCouplingFactor OBJECT-TYPE
      MAX-ACCESS  read-only
      STATUS      current
      DESCRIPTION
-        "This attribute represents the coupling factor for the AQMs 
+        "This attribute represents the coupling factor for the AQMs
          between the Classic Service Flow and the Low Latency Service Flow. "
      ::= { docsQosAggregateServiceFlowEntry 14 }
 
@@ -6471,7 +6471,7 @@ docsQosAggregateServiceFlowStatsTable OBJECT-TYPE
      DESCRIPTION
         "This object describes statistics associated with
         the Service Flows in a managed device. The CMTS MUST
-		create an instance of AggregateServiceFlowStats for 
+		create an instance of AggregateServiceFlowStats for
 		every ASF instantiated in the MAC Domain."
      ::= { docsQosMibObjects 27}
 
@@ -6856,16 +6856,16 @@ docsQosSfLatencyHistCfgTable OBJECT-TYPE
      MAX-ACCESS  not-accessible
      STATUS      current
      DESCRIPTION
-        "This table defines the latency histogram structure for each 
-         upstream histogram enabled service flow. The CM/CMTS MUST create 
+        "This table defines the latency histogram structure for each
+         upstream histogram enabled service flow. The CM/CMTS MUST create
          an active instance of the SfLatencyHistCfg object for every service flow
-		 for which histogram calculation is enabled via the Latency Histogram 
+		 for which histogram calculation is enabled via the Latency Histogram
 		 Encodings TLV. The activation of an instance of this object enables histogram
          calculation for the indexed service flow. The deactivation or deletion
          of an instance of this object disables histogram calculation for the indexed
          service flow.  The CM/CMTS MUST delete an instance of the SfLatencyHistCfg
 		 object if the indexed service flow is deleted (e.g. because of a DSD operation)
-		 or the histogram calculation is disabled via the Latency Histogram 
+		 or the histogram calculation is disabled via the Latency Histogram
 		 Encodings TLV(i.e. because of a DSC operation)."
      REFERENCE
         "DOCSIS 3.1 MAC and Upper Layer Protocols Interface
@@ -6938,11 +6938,11 @@ docsQosSfLatencySfLabel OBJECT-TYPE
      MAX-ACCESS  read-create
      STATUS      current
      DESCRIPTION
-        "This attribute represents the Service Class Name or a Label 
+        "This attribute represents the Service Class Name or a Label
         (configured by the operator) to be used in Service Flow Latency
-         Performance Reporting. The CMTS SHOULD default this attribute 
-		 to the SCN if it's known. If the SCN is not known, the CMTS MUST 
-		 default the SfLabel to the value 'unknown'. The Operator can 
+         Performance Reporting. The CMTS SHOULD default this attribute
+		 to the SCN if it's known. If the SCN is not known, the CMTS MUST
+		 default the SfLabel to the value 'unknown'. The Operator can
 		 set this attribute to any string."
        DEFVAL { "unknown" }
      ::= { docsQosSfLatencyHistCfgEntry 2 }
@@ -7131,8 +7131,8 @@ docsQosSfLatencyBinEdgeNum OBJECT-TYPE
      MAX-ACCESS  read-create
      STATUS      current
      DESCRIPTION
-        "This attribute represents the number of consecutive 
-          configured upper bin edges. The number of histogram bins 
+        "This attribute represents the number of consecutive
+          configured upper bin edges. The number of histogram bins
           is then LatencyBinEdgeNum + 1. "
      ::= { docsQosSfLatencyHistCfgEntry 18 }
 
@@ -7145,7 +7145,7 @@ docsQosSfLatencyStatsTable OBJECT-TYPE
         statistics such as histogram of latencies, Max Latency,
         Number of histogram updates at the CMTS for the down-
         stream service flow. The CMTS MUST create an instance
-        of the SfLatencyStats object for every combination of 
+        of the SfLatencyStats object for every combination of
 		MAC Domain and ServiceFlowId on which latency histogram
 		calculation is enabled. The CMTS MUST delete the instance
         of SfLatencyStats when latency histogram

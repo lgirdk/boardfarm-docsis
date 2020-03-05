@@ -59,9 +59,9 @@ clabAniNidStatusObjects      OBJECT IDENTIFIER ::= { clabAniNidMibObjects 2 }
 -- ---------------------------------------------------------------------
 -- NID Coonfiguration
 -- ---------------------------------------------------------------------
-   
+
 clabAniNidCfgID    OBJECT-TYPE
-    SYNTAX      SnmpAdminString    
+    SYNTAX      SnmpAdminString
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -72,20 +72,20 @@ clabAniNidCfgID    OBJECT-TYPE
 clabAniNidCfgPtpMcastMac    OBJECT-TYPE
     SYNTAX      INTEGER {
                     forwardable(1),
-                    nonforwardable(2) 
+                    nonforwardable(2)
                     }
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
-        "For transmitting PTP packets, either the forwardable multicast MAC 
-         address (01-1B-19-00-00-00) or the non-forwardable multicast MAC 
-         address (01-80-C2-00-00-0E) must be used as the destination MAC 
+        "For transmitting PTP packets, either the forwardable multicast MAC
+         address (01-1B-19-00-00-00) or the non-forwardable multicast MAC
+         address (01-80-C2-00-00-0E) must be used as the destination MAC
          address. The MAC address in use is selected on a per-port basis
          through the configuration. However, the non-forwardable multicast
          MAC address (01-80-C2-00-00-0E) will be used if no destination MAC
          is configured."
     ::= { clabAniNidCfgObjects 2 }
-    
+
 clabAniNidCfgTelnetEnabled    OBJECT-TYPE
     SYNTAX      TruthValue
     MAX-ACCESS  read-write
@@ -95,7 +95,7 @@ clabAniNidCfgTelnetEnabled    OBJECT-TYPE
          on the NID."
     ::= { clabAniNidCfgObjects 3 }
 
-    
+
 clabAniNidCfgTftpEnabled    OBJECT-TYPE
     SYNTAX      TruthValue
     MAX-ACCESS  read-write
@@ -104,8 +104,8 @@ clabAniNidCfgTftpEnabled    OBJECT-TYPE
         "This object allows enabling or disabling TFTP access to/from the NID.
          The default is false (disabled)"
     ::= { clabAniNidCfgObjects 4 }
-    
-        
+
+
 -- ---------------------------------------------------------------------
 -- AAA Authentication and Server Information
 -- ---------------------------------------------------------------------
@@ -120,10 +120,10 @@ clabAniNidCfgClientAuthStatus OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "Current authentication status of the NID authentication 
+        "Current authentication status of the NID authentication
          client with respect to the AAA server."
     ::= { clabAniNidCfgObjects 5 }
-    
+
 clabAniNidCfgAuthServerServiceType OBJECT-TYPE
     SYNTAX      INTEGER {
                      unknown(0),
@@ -144,7 +144,7 @@ clabAniNidCfgPrimaryServerIpAddressType OBJECT-TYPE
     DESCRIPTION
         "AAA primary server IP Address Type"
     ::= { clabAniNidCfgObjects 7 }
-    
+
 clabAniNidCfgPrimaryServerIpAddress OBJECT-TYPE
     SYNTAX      InetAddress
     MAX-ACCESS  read-write
@@ -168,7 +168,7 @@ clabAniNidCfgSecondaryServerIpAddressType OBJECT-TYPE
     DESCRIPTION
         "AAA Secondary server IP Address Type"
     ::= { clabAniNidCfgObjects 10 }
-    
+
 clabAniNidCfgSecondaryServerIpAddress OBJECT-TYPE
     SYNTAX      InetAddress
     MAX-ACCESS  read-write
@@ -176,22 +176,22 @@ clabAniNidCfgSecondaryServerIpAddress OBJECT-TYPE
     DESCRIPTION
         "AAA Secondary server IP Address"
     ::= { clabAniNidCfgObjects 11 }
-    
+
 clabAniNidCfgSecondaryServerPort OBJECT-TYPE
     SYNTAX      InetPortNumber
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
         "AAA secondary port number"
-    ::= { clabAniNidCfgObjects 12 }   
+    ::= { clabAniNidCfgObjects 12 }
 
 -- ---------------------------------------------------------------------
 -- NID Status and Configuration Reporting
--- ---------------------------------------------------------------------    
+-- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
 -- NID Authentication History
 -- ---------------------------------------------------------------------
-    
+
 clabAniNidStatusAuthHistoryMaxTableSize OBJECT-TYPE
     SYNTAX      Unsigned32
     MAX-ACCESS  read-write
@@ -200,10 +200,10 @@ clabAniNidStatusAuthHistoryMaxTableSize OBJECT-TYPE
         "Sets the maximum number of rows.  If a new row is to be added
          (i.e., a new session attempt)and the addition would cause
          the table to exceed the maximam table size, the oldest entry
-         must be first deleted then the new authentication attempt row 
+         must be first deleted then the new authentication attempt row
          is appended to the table (i.e., added as the last row)."
     ::= { clabAniNidStatusObjects 1 }
-     
+
 clabAniNidStatusAuthHistoryTable OBJECT-TYPE
     SYNTAX      SEQUENCE OF ClabAniNidStatusAuthHistoryEntry
     MAX-ACCESS  not-accessible
@@ -222,7 +222,7 @@ clabAniNidStatusAuthHistoryEntry OBJECT-TYPE
         "One entry per authentication attempt."
     INDEX { clabAniNidStatusAuthHistoryInitiationTime }
     ::= { clabAniNidStatusAuthHistoryTable 1 }
-    
+
 ClabAniNidStatusAuthHistoryEntry ::= SEQUENCE {
     clabAniNidStatusAuthHistoryInitiationTime                TimeTicks,
     clabAniNidStatusAuthHistoryResults                       INTEGER,
@@ -244,7 +244,7 @@ clabAniNidStatusAuthHistoryResults OBJECT-TYPE
                      failedRc1(2),
                      failedRc2(3),
                      failedRc3(4)
-                }   
+                }
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
@@ -253,32 +253,32 @@ clabAniNidStatusAuthHistoryResults OBJECT-TYPE
          failed_rc1(2) - Unknown
          failed_rc2(3) - Server Not Available
          failed_rc3(4) - Unknown User
-        ."                                         
+        ."
     ::= { clabAniNidStatusAuthHistoryEntry 2 }
 
 clabAniNidStatusAuthHistoryServer OBJECT-TYPE
     SYNTAX      INTEGER {
                      primary(0),
                      secondary(1)
-                }   
+                }
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
         "Identifies whether primary or secondary server access
-         was attempted. If the primary server rejected the session 
+         was attempted. If the primary server rejected the session
          or was not available, the NID should attempt accessing
-         the secondary server if defined."        
+         the secondary server if defined."
     ::= { clabAniNidStatusAuthHistoryEntry 3 }
-            
+
 -- ---------------------------------------------------------------------
 -- Circuit Inventory Table
--- ---------------------------------------------------------------------    
+-- ---------------------------------------------------------------------
 clabAniNidStatusReportCircuitTable OBJECT-TYPE
     SYNTAX      SEQUENCE OF ClabAniNidStatusReportCircuitEntry
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This table reports each circuit associated with this NID.  
+        "This table reports each circuit associated with this NID.
          This table and its contents are stored in non-volatile
          memory."
     ::= { clabAniNidStatusObjects 3 }
@@ -291,12 +291,12 @@ clabAniNidStatusReportCircuitEntry OBJECT-TYPE
         "One entry per circuit."
     INDEX { clabAniNidStatusReportCircuitIndex }
     ::= { clabAniNidStatusReportCircuitTable 1 }
-    
+
 ClabAniNidStatusReportCircuitEntry ::= SEQUENCE {
     clabAniNidStatusReportCircuitIndex                Unsigned32,
     clabAniNidStatusReportCircuitIdentifier           SnmpAdminString,
     clabAniNidStatusReportCircuitTargetIdentifier     SnmpAdminString
-    } 
+    }
 
 clabAniNidStatusReportCircuitIndex OBJECT-TYPE
     SYNTAX      Unsigned32 (1..255)
@@ -305,7 +305,7 @@ clabAniNidStatusReportCircuitIndex OBJECT-TYPE
     DESCRIPTION
         "Index value of the clabAniNidStatusCircuitReportTable."
     ::= { clabAniNidStatusReportCircuitEntry 1 }
-    
+
 clabAniNidStatusReportCircuitIdentifier OBJECT-TYPE
     SYNTAX      SnmpAdminString
     MAX-ACCESS  read-only
@@ -321,7 +321,7 @@ clabAniNidStatusReportCircuitTargetIdentifier OBJECT-TYPE
     DESCRIPTION
         "Target identifier (TID)"
     ::= { clabAniNidStatusReportCircuitEntry 3 }
-    
+
 
 -- ---------------------------------------------------------------------
 -- Compliance Statements
@@ -348,8 +348,8 @@ clabAniNidGroup OBJECT-GROUP
             clabAniNidCfgPtpMcastMac,
             clabAniNidCfgTelnetEnabled,
             clabAniNidCfgTftpEnabled,
-           --AAA Server Info 
-            clabAniNidCfgClientAuthStatus,           
+           --AAA Server Info
+            clabAniNidCfgClientAuthStatus,
             clabAniNidCfgAuthServerServiceType,
             clabAniNidCfgPrimaryServerIpAddressType,
             clabAniNidCfgPrimaryServerIpAddress,
@@ -357,19 +357,19 @@ clabAniNidGroup OBJECT-GROUP
             clabAniNidCfgSecondaryServerIpAddressType,
             clabAniNidCfgSecondaryServerIpAddress,
             clabAniNidCfgSecondaryServerPort,
-           -- NID History 
+           -- NID History
             clabAniNidStatusAuthHistoryMaxTableSize,
             clabAniNidStatusAuthHistoryResults,
             clabAniNidStatusAuthHistoryServer,
             clabAniNidStatusReportCircuitIndex,
-           --clabAniNidStatusReportCircuitReportTable 
-            clabAniNidStatusReportCircuitIdentifier,        
-            clabAniNidStatusReportCircuitTargetIdentifier  
+           --clabAniNidStatusReportCircuitReportTable
+            clabAniNidStatusReportCircuitIdentifier,
+            clabAniNidStatusReportCircuitTargetIdentifier
 
             }
     STATUS      current
     DESCRIPTION
              "Objects implemented in the clabAniNidGroup."
     ::= { clabAniNidMibGroups 1 }
-        
+
 END

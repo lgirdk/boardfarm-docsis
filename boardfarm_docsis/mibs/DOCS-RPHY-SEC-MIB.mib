@@ -1,16 +1,16 @@
 DOCS-RPHY-SEC-MIB DEFINITIONS ::= BEGIN
 IMPORTS
-    MODULE-IDENTITY, 
-    OBJECT-TYPE, 
+    MODULE-IDENTITY,
+    OBJECT-TYPE,
     Unsigned32,
     Counter64,
     Gauge32
         FROM SNMPv2-SMI         -- RFC 2578
     TruthValue,
     TEXTUAL-CONVENTION
-        FROM SNMPv2-TC 
-    OBJECT-GROUP, 
-    MODULE-COMPLIANCE 
+        FROM SNMPv2-TC
+    OBJECT-GROUP,
+    MODULE-COMPLIANCE
         FROM SNMPv2-CONF
     SnmpAdminString
         FROM SNMP-FRAMEWORK-MIB -- RFC 3411
@@ -24,28 +24,28 @@ IMPORTS
         FROM CLAB-DEF-MIB;
 
 
-docsRphySecMib MODULE-IDENTITY 
+docsRphySecMib MODULE-IDENTITY
     LAST-UPDATED    "201906200000Z" -- June 20, 2019
-    ORGANIZATION    "Cable Television Laboratories, Inc" 
-    CONTACT-INFO 
+    ORGANIZATION    "Cable Television Laboratories, Inc"
+    CONTACT-INFO
          "
-         Postal: Cable Television Laboratories, Inc. 
-         400 Centennial Parkway 
-         Louisville, Colorado 80027-1266 
-         U.S.A. 
-         Phone: +1 303-661-9100 
-         Fax: +1 303-661-9199 
-         E-mail: mibs@cablelabs.com" 
-    DESCRIPTION 
+         Postal: Cable Television Laboratories, Inc.
+         400 Centennial Parkway
+         Louisville, Colorado 80027-1266
+         U.S.A.
+         Phone: +1 303-661-9100
+         Fax: +1 303-661-9199
+         E-mail: mibs@cablelabs.com"
+    DESCRIPTION
         "This MIB module contains the RPD objects for Security Management,
          as managed by the CCAP Core.
          Copyright 2017-2019 Cable Television Laboratories, Inc.
          All rights reserved."
-    REVISION "201906200000Z" 
-    DESCRIPTION 
+    REVISION "201906200000Z"
+    DESCRIPTION
         "Modified per ECN DOCS-RPHY-SEC-MIB-N-19.2028-1."
-    REVISION "201810180000Z" 
-    DESCRIPTION 
+    REVISION "201810180000Z"
+    DESCRIPTION
         "Initial version, created by R-OSSI-N-18.1960-1."
 ::= { clabProjDocsis 34 }
 
@@ -54,7 +54,7 @@ docsRphySecMib MODULE-IDENTITY
 -- Textual Conventions
 -- ---------------------------------------------------------
 
-                         
+
 -- ---------------------------------------------------------------------
 -- Main Groups
 -- ---------------------------------------------------------------------
@@ -65,7 +65,7 @@ docsRphySecConformance            OBJECT IDENTIFIER ::= { docsRphySecMib 2}
 docsRphySecRpdMibObjects          OBJECT IDENTIFIER ::= { docsRphySecObjects 1}
 docsRphySecCcapMibObjects         OBJECT IDENTIFIER ::= { docsRphySecObjects 2}
 
-docsRphySecCompliances            OBJECT IDENTIFIER ::= { docsRphySecConformance 1 } 
+docsRphySecCompliances            OBJECT IDENTIFIER ::= { docsRphySecConformance 1 }
 docsRphySecGroups                 OBJECT IDENTIFIER ::= { docsRphySecConformance 2 }
 
 
@@ -86,7 +86,7 @@ docsRphySecRpdIee8021xPaeSupplicantStatusTable OBJECT-TYPE
         MAX-ACCESS  not-accessible
         STATUS      current
         DESCRIPTION
-            "This table reports status information for the 
+            "This table reports status information for the
              IEEE 802.1x PAE RPD supplicant."
         ::= { docsRphySecRpdMibObjects 1 }
 
@@ -115,34 +115,34 @@ docsRphySecRpdIee8021xPaeSupplicantStatusPortNumber OBJECT-TYPE
     STATUS      current
     DESCRIPTION
             "This attribute reports an interface index indicating
-             the port number associated with this port.  
-             Each PAE is uniquely identified by a port number. 
-             The port number used is unique amongst all port numbers 
-             for the system, and directly or indirectly identifies 
+             the port number associated with this port.
+             Each PAE is uniquely identified by a port number.
+             The port number used is unique amongst all port numbers
+             for the system, and directly or indirectly identifies
              the Uncontrolled Port that supports the PAE."
     ::= { docsRphySecRpdIee8021xPaeSupplicantStatusEntry 1 }
 
-docsRphySecRpdIee8021xPaeSupplicantStatusAuthenticated     OBJECT-TYPE 
+docsRphySecRpdIee8021xPaeSupplicantStatusAuthenticated     OBJECT-TYPE
     SYNTAX      TruthValue
-    MAX-ACCESS  read-only 
+    MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-            "This attribute will be set to 'true' by PACP if the 
-             PAE supplicant currently authenticated, and 'false' 
+            "This attribute will be set to 'true' by PACP if the
+             PAE supplicant currently authenticated, and 'false'
              if the authentication fails or is revoked."
      ::= { docsRphySecRpdIee8021xPaeSupplicantStatusEntry 2 }
 
-docsRphySecRpdIee8021xPaeSupplicantStatusFailed          OBJECT-TYPE 
+docsRphySecRpdIee8021xPaeSupplicantStatusFailed          OBJECT-TYPE
     SYNTAX      TruthValue
-    MAX-ACCESS  read-only 
+    MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-            "This attribute will be set to 'true' by PACP if the 
-             authentication has failed or has been terminated.  
-             The cause could be a failure returned by EAP, either 
-             immediately or following a reauthentication, an excessive 
-             number of attempts to authenticate (either immediately or 
-             upon reauthentication).  The PACP will set the attribute 
+            "This attribute will be set to 'true' by PACP if the
+             authentication has failed or has been terminated.
+             The cause could be a failure returned by EAP, either
+             immediately or following a reauthentication, an excessive
+             number of attempts to authenticate (either immediately or
+             upon reauthentication).  The PACP will set the attribute
              Authenticated false as well as setting this attribute 'true'."
      ::= { docsRphySecRpdIee8021xPaeSupplicantStatusEntry 3 }
 
@@ -165,13 +165,13 @@ docsRphySecRpdCertTable OBJECT-TYPE
         MAX-ACCESS  not-accessible
         STATUS      current
         DESCRIPTION
-            "This table describes the set of known Certificate Authority 
+            "This table describes the set of known Certificate Authority
              certificates acquired by the RPD. Reference: Certificate Hierarchy
              and Profiles section of [RPHY]."
         ::= { docsRphySecRpdMibObjects 2 }
 
 
-docsRphySecRpdCertEntry OBJECT-TYPE 
+docsRphySecRpdCertEntry OBJECT-TYPE
         SYNTAX     DocsRphySecRpdCertEntry
         MAX-ACCESS not-accessible
         STATUS     current
@@ -201,8 +201,8 @@ docsRphySecRpdCertSigningCaCert OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-            "This attribute represents the X509 
-             DER-encoded CA certificate that signed       
+            "This attribute represents the X509
+             DER-encoded CA certificate that signed
              the RPD device certificate."
     ::= { docsRphySecRpdCertEntry 2 }
 
@@ -221,7 +221,7 @@ docsRphySecRpdTrustAnchorCertTable OBJECT-TYPE
         ::= { docsRphySecRpdMibObjects 3 }
 
 
-docsRphySecRpdTrustAnchorCertEntry OBJECT-TYPE 
+docsRphySecRpdTrustAnchorCertEntry OBJECT-TYPE
         SYNTAX     DocsRphySecRpdTrustAnchorCertEntry
         MAX-ACCESS not-accessible
         STATUS     current
@@ -234,27 +234,27 @@ docsRphySecRpdTrustAnchorCertEntry OBJECT-TYPE
 DocsRphySecRpdTrustAnchorCertEntry ::= SEQUENCE
        {
        docsRphySecRpdTrustAnchorCertIndex           Unsigned32,
-       docsRphySecRpdTrustAnchorCertCaCert          DocsX509ASN1DEREncodedCertificate 
+       docsRphySecRpdTrustAnchorCertCaCert          DocsX509ASN1DEREncodedCertificate
        }
 docsRphySecRpdTrustAnchorCertIndex OBJECT-TYPE
     SYNTAX      Unsigned32 (1.. 4294967295)
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-            "This key attribute uniquely identifies the 
+            "This key attribute uniquely identifies the
             trust anchor Certification Authority certificate."
     ::= { docsRphySecRpdTrustAnchorCertEntry 1 }
-    
+
 docsRphySecRpdTrustAnchorCertCaCert OBJECT-TYPE
     SYNTAX      DocsX509ASN1DEREncodedCertificate
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
             "This attribute represents the X509 DER-encoded trust
-             anchor CA certificate used to validate certificates 
+             anchor CA certificate used to validate certificates
              received from the CCAP Core or AAA server."
     ::= { docsRphySecRpdTrustAnchorCertEntry 2 }
-    
+
 
 
 -- ---------------------------------------------------------------------
@@ -266,12 +266,12 @@ docsRphySecRpdAaaServerAuthTable OBJECT-TYPE
         MAX-ACCESS  not-accessible
         STATUS      current
         DESCRIPTION
-            "This table reports the authentication status 
+            "This table reports the authentication status
              of the AAA Server."
         ::= { docsRphySecRpdMibObjects 4 }
 
 
-docsRphySecRpdAaaServerAuthEntry OBJECT-TYPE 
+docsRphySecRpdAaaServerAuthEntry OBJECT-TYPE
         SYNTAX     DocsRphySecRpdAaaServerAuthEntry
         MAX-ACCESS not-accessible
         STATUS     current
@@ -295,8 +295,8 @@ docsRphySecRpdAaaServerAuthStatus  OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-            "This attribute reports the authentication 
-             status of the AAA Server. The default value 
+            "This attribute reports the authentication
+             status of the AAA Server. The default value
              is authNotPerformed(3)."
     ::= { docsRphySecRpdAaaServerAuthEntry 1 }
 
@@ -309,12 +309,12 @@ docsRphySecRpdCcapCoreAuthTable OBJECT-TYPE
         MAX-ACCESS  not-accessible
         STATUS      current
         DESCRIPTION
-            "This table reports the authentication status 
+            "This table reports the authentication status
              of the CCAP Core."
         ::= { docsRphySecRpdMibObjects 5 }
 
 
-docsRphySecRpdCcapCoreAuthEntry OBJECT-TYPE 
+docsRphySecRpdCcapCoreAuthEntry OBJECT-TYPE
         SYNTAX     DocsRphySecRpdCcapCoreAuthEntry
         MAX-ACCESS not-accessible
         STATUS     current
@@ -338,8 +338,8 @@ docsRphySecRpdCcapCoreAuthStatus  OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-            "This attribute reports the authentication 
-             status of the CCAP Core. The default value 
+            "This attribute reports the authentication
+             status of the CCAP Core. The default value
              is authNotPerformed(3)."
     ::= { docsRphySecRpdCcapCoreAuthEntry 1 }
 
@@ -352,11 +352,11 @@ docsRphySecCcapServerCertSubject   OBJECT-TYPE
            MAX-ACCESS  read-only
            STATUS      current
            DESCRIPTION
-              "This attribute represents the subject name exactly as 
-              it is encoded in the X509 certificate. The organizationName 
-              portion of the certificate's subject name must be present.  
-              All other fields are optional.  Any optional field present 
-              must be prepended with <CR> (carriage return, U+000D) 
+              "This attribute represents the subject name exactly as
+              it is encoded in the X509 certificate. The organizationName
+              portion of the certificate's subject name must be present.
+              All other fields are optional.  Any optional field present
+              must be prepended with <CR> (carriage return, U+000D)
               <LF> (line feed, U+000A).
               Ordering of fields present must conform to the following:
                 organizationName <CR> <LF>
@@ -368,16 +368,16 @@ docsRphySecCcapServerCertSubject   OBJECT-TYPE
                 commonName
             "
            ::= { docsRphySecCcapMibObjects 1 }
-           
+
 docsRphySecCcapServerCertIssuer   OBJECT-TYPE
            SYNTAX      SnmpAdminString
            MAX-ACCESS  read-only
            STATUS      current
            DESCRIPTION
-              "This attribute represents the issuer name exactly as it is 
-              encoded in the X509 certificate. The commonName portion of 
-              the certificate's issuer name must be present.  All other 
-              fields are optional.  Any optional field present must be 
+              "This attribute represents the issuer name exactly as it is
+              encoded in the X509 certificate. The commonName portion of
+              the certificate's issuer name must be present.  All other
+              fields are optional.  Any optional field present must be
               prepended with <CR> (carriage return, U+000D) <LF> (line feed, U+000A).
             Ordering of fields present must conform to the following:
                 commonName <CR> <LF>
@@ -385,16 +385,16 @@ docsRphySecCcapServerCertIssuer   OBJECT-TYPE
                 stateOrProvinceName <CR> <LF>
                 localityName <CR> <LF>
                 organizationalUnitName <CR> <LF>
-                organizationalUnitName=<Manufacturing Location> 
+                organizationalUnitName=<Manufacturing Location>
             "
            ::= { docsRphySecCcapMibObjects 2 }
-           
+
 docsRphySecCcapServerCertSerialNumber   OBJECT-TYPE
            SYNTAX      OCTET STRING (SIZE (0..32))
            MAX-ACCESS  read-only
            STATUS      current
            DESCRIPTION
-              "This attribute represents the certificate's serial number, 
+              "This attribute represents the certificate's serial number,
               represented as an octet string. "
            ::= { docsRphySecCcapMibObjects 3 }
 
@@ -410,43 +410,43 @@ docsRphySecCcapServerCertSource   OBJECT-TYPE
            MAX-ACCESS  read-only
            STATUS      current
            DESCRIPTION
-              "This attribute indicates how the certificate reached the 
-              CCAP Core.  Other (4) means that it originated from a source 
+              "This attribute indicates how the certificate reached the
+              CCAP Core.  Other (4) means that it originated from a source
               not identified above."
            ::= { docsRphySecCcapMibObjects 4 }
 
 docsRphySecCcapServerCertCert   OBJECT-TYPE
-           SYNTAX      DocsX509ASN1DEREncodedCertificate 
+           SYNTAX      DocsX509ASN1DEREncodedCertificate
            MAX-ACCESS  read-only
            STATUS      current
            DESCRIPTION
               "This attribute represents an X509 DER-encoded CCAP Core certificate."
            ::= { docsRphySecCcapMibObjects 5 }
-           
+
 docsRphySecCcapServerCertCertThumbprint   OBJECT-TYPE
            SYNTAX      OCTET STRING (SIZE (20))
            MAX-ACCESS  read-only
            STATUS      current
            DESCRIPTION
-              "This attribute represents the SHA-1 hash of the 
+              "This attribute represents the SHA-1 hash of the
               CCAP Core certificate.  "
            ::= { docsRphySecCcapMibObjects 6 }
-    
+
 
 -- ---------------------------------------------------------
--- Conformance definitions 
+-- Conformance definitions
 -- ---------------------------------------------------------
 
-docsRphySecCompliance MODULE-COMPLIANCE 
-     STATUS current 
-     DESCRIPTION 
+docsRphySecCompliance MODULE-COMPLIANCE
+     STATUS current
+     DESCRIPTION
           "The compliance statement for CCAP Core and RPD Security Management."
 
 MODULE -- docsRphySecMib
-        
+
 -- conditionally mandatory groups
 
-GROUP docsRphySecRpdGroup 
+GROUP docsRphySecRpdGroup
         DESCRIPTION
             "Group of objects applicable to RPDs only.
             These objects are implemented on the CCAP Core
@@ -456,7 +456,7 @@ GROUP docsRphySecCcapGroup
         DESCRIPTION
             "Group of objects implemented to support security
              in CCAP Core."
-            
+
 -- conditionally optional groups
 
 
@@ -476,12 +476,12 @@ docsRphySecRpdGroup OBJECT-GROUP
 
                     docsRphySecRpdAaaServerAuthStatus,
 
-                    docsRphySecRpdCcapCoreAuthStatus                  
+                    docsRphySecRpdCcapCoreAuthStatus
         }
         STATUS      current
         DESCRIPTION
             "Group of objects implemented in CCAP Cores which
-            represent RPD managed objects derived via the GCP 
+            represent RPD managed objects derived via the GCP
             protocol."
         ::= { docsRphySecGroups 1 }
 

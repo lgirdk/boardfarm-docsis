@@ -1,16 +1,16 @@
 
 DOCS-RPHY-STATS-MIB DEFINITIONS ::= BEGIN
 IMPORTS
-    MODULE-IDENTITY, 
-    OBJECT-TYPE, 
+    MODULE-IDENTITY,
+    OBJECT-TYPE,
     Unsigned32,
     Counter64
         FROM SNMPv2-SMI         -- RFC 2578
     DateAndTime,
     TEXTUAL-CONVENTION
-        FROM SNMPv2-TC 
-    OBJECT-GROUP, 
-    MODULE-COMPLIANCE 
+        FROM SNMPv2-TC
+    OBJECT-GROUP,
+    MODULE-COMPLIANCE
         FROM SNMPv2-CONF
     SnmpAdminString
         FROM SNMP-FRAMEWORK-MIB -- RFC 3411
@@ -26,34 +26,34 @@ IMPORTS
         FROM CLAB-DEF-MIB;
 
 
-docsRphyStatsMib MODULE-IDENTITY 
+docsRphyStatsMib MODULE-IDENTITY
     LAST-UPDATED    "201906130000Z" -- June 13, 2019
-    ORGANIZATION    "Cable Television Laboratories, Inc" 
-    CONTACT-INFO 
+    ORGANIZATION    "Cable Television Laboratories, Inc"
+    CONTACT-INFO
          "
-         Postal: Cable Television Laboratories, Inc. 
-         400 Centennial Parkway 
-         Louisville, Colorado 80027-1266 
-         U.S.A. 
-         Phone: +1 303-661-9100 
-         Fax: +1 303-661-9199 
-         E-mail: mibs@cablelabs.com" 
-    DESCRIPTION 
+         Postal: Cable Television Laboratories, Inc.
+         400 Centennial Parkway
+         Louisville, Colorado 80027-1266
+         U.S.A.
+         Phone: +1 303-661-9100
+         Fax: +1 303-661-9199
+         E-mail: mibs@cablelabs.com"
+    DESCRIPTION
         "This MIB module contains the statistics reporting objects
          for the Remote PHY CCAP Core and RPD monitoring.
          Copyright 2017-2019 Cable Television Laboratories, Inc.
          All rights reserved."
-    REVISION "201906130000Z" 
-    DESCRIPTION 
+    REVISION "201906130000Z"
+    DESCRIPTION
         "Revised per DOCS-RPHY-STATS-MIB-N-19.2026-1."
-    REVISION "201807260000Z" 
-    DESCRIPTION 
+    REVISION "201807260000Z"
+    DESCRIPTION
         "Revised per DOCS-RPHY-STATS-MIB-N-18.1936-2."
-    REVISION "201804120000Z" 
-    DESCRIPTION 
+    REVISION "201804120000Z"
+    DESCRIPTION
         "Revised per DOCS-RPHY-STATS-MIB-N-18.1895-1."
-    REVISION "201711160000Z" 
-    DESCRIPTION 
+    REVISION "201711160000Z"
+    DESCRIPTION
         "Initial version, created by R-OSSI-N-17.1848-5."
 ::= { clabProjDocsis 33 }
 
@@ -62,7 +62,7 @@ docsRphyStatsMib MODULE-IDENTITY
 -- Textual Conventions
 -- ---------------------------------------------------------
 
-                         
+
 -- ---------------------------------------------------------------------
 -- Main Groups
 -- ---------------------------------------------------------------------
@@ -75,7 +75,7 @@ docsRphyStatsRpdDsMibObjects      OBJECT IDENTIFIER ::= { docsRphyStatsRpdMibObj
 docsRphyStatsRpdUsMibObjects      OBJECT IDENTIFIER ::= { docsRphyStatsRpdMibObjects 2}
 docsRphyStatsCcapMibObjects       OBJECT IDENTIFIER ::= { docsRphyStatsObjects 2}
 
-docsRphyStatsCompliances          OBJECT IDENTIFIER ::= { docsRphyStatsConformance 1 } 
+docsRphyStatsCompliances          OBJECT IDENTIFIER ::= { docsRphyStatsConformance 1 }
 docsRphyStatsGroups               OBJECT IDENTIFIER ::= { docsRphyStatsConformance 2 }
 
 
@@ -96,7 +96,7 @@ docsRphyStatsRpdDsScQamPerfStatsTable OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This table reports statistical counters for a 
+        "This table reports statistical counters for a
          downstream SC-QAM channel."
     ::= { docsRphyStatsRpdDsMibObjects 1 }
 
@@ -107,7 +107,7 @@ docsRphyStatsRpdDsScQamPerfStatsEntry OBJECT-TYPE
     STATUS     current
     DESCRIPTION
         "The conceptual row of docsRphyStatsRpdDsScQamPerfStatsTable."
-    INDEX { docsRphyRpdDevInfoUniqueId, docsRphyStatsRpdDsScQamPerfStatsCoreIfIndex, 
+    INDEX { docsRphyRpdDevInfoUniqueId, docsRphyStatsRpdDsScQamPerfStatsCoreIfIndex,
             docsRphyStatsRpdDsScQamPerfStatsDsRfPortIndex }
     ::= { docsRphyStatsRpdDsScQamPerfStatsTable 1 }
 
@@ -128,7 +128,7 @@ docsRphyStatsRpdDsScQamPerfStatsCoreIfIndex OBJECT-TYPE
     STATUS      current
     DESCRIPTION
         "This key attribute uniquely identifies
-         the selected SC-QAM channel on the 
+         the selected SC-QAM channel on the
          reporting core."
     ::= { docsRphyStatsRpdDsScQamPerfStatsEntry 1 }
 
@@ -137,8 +137,8 @@ docsRphyStatsRpdDsScQamPerfStatsDsRfPortIndex OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This key attribute uniquely identifies a 
-         downstream RF port of the RPD on which 
+        "This key attribute uniquely identifies a
+         downstream RF port of the RPD on which
          the channel is being transmitted."
     ::= { docsRphyStatsRpdDsScQamPerfStatsEntry 2 }
 
@@ -148,7 +148,7 @@ docsRphyStatsRpdDsScQamPerfStatsOutDiscards OBJECT-TYPE
     STATUS     current
     DESCRIPTION
         "This attribute reports the number of outbound packets
-         which were internally discarded before transmission 
+         which were internally discarded before transmission
          (e.g. due to lack of buffering) for the downstream
          SC-QAM channel."
     ::= { docsRphyStatsRpdDsScQamPerfStatsEntry 3 }
@@ -159,7 +159,7 @@ docsRphyStatsRpdDsScQamPerfStatsOutErrors OBJECT-TYPE
     STATUS     current
     DESCRIPTION
         "This attribute reports the number of outbound packets
-         that could not be transmitted because of errors for 
+         that could not be transmitted because of errors for
          the downstream SC-QAM channel."
     ::= { docsRphyStatsRpdDsScQamPerfStatsEntry 4 }
 
@@ -168,8 +168,8 @@ docsRphyStatsRpdDsScQamPerfStatsOutPackets OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS     current
     DESCRIPTION
-        "This attribute reports the number of outbound 
-         packets successfully transmitted for 
+        "This attribute reports the number of outbound
+         packets successfully transmitted for
          the downstream SC-QAM channel."
     ::= { docsRphyStatsRpdDsScQamPerfStatsEntry 5 }
 
@@ -178,9 +178,9 @@ docsRphyStatsRpdDsScQamPerfStatsRpdDsCounterDiscTime OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS     current
     DESCRIPTION
-        "This attribute reports the date and time at which any one or more 
-         of the counters in this group were created or last reset to zero. 
-         If the RPD does not acquire time of day it can report an initial 
+        "This attribute reports the date and time at which any one or more
+         of the counters in this group were created or last reset to zero.
+         If the RPD does not acquire time of day it can report an initial
          CounterDiscontinuityTime of Jan 1 1970."
     ::= { docsRphyStatsRpdDsScQamPerfStatsEntry 6 }
 
@@ -193,7 +193,7 @@ docsRphyStatsRpdDsOfdmPerfStatsTable OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This table reports statistical counters for a 
+        "This table reports statistical counters for a
          downstream OFDM channel."
     ::= { docsRphyStatsRpdDsMibObjects 2 }
 
@@ -234,8 +234,8 @@ docsRphyStatsRpdDsOfdmPerfStatsDsRfPortIndex OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This key attribute uniquely identifies a 
-         downstream RF port of the RPD on which the 
+        "This key attribute uniquely identifies a
+         downstream RF port of the RPD on which the
          channel is being transmitted."
     ::= { docsRphyStatsRpdDsOfdmPerfStatsEntry 2 }
 
@@ -245,7 +245,7 @@ docsRphyStatsRpdDsOfdmPerfStatsOutDiscards OBJECT-TYPE
     STATUS     current
     DESCRIPTION
         "This attribute reports the number of outbound packets
-         which were internally discarded before transmission 
+         which were internally discarded before transmission
          (e.g. due to lack of buffering) for the downstream
          OFDM channel."
     ::= { docsRphyStatsRpdDsOfdmPerfStatsEntry 3 }
@@ -256,7 +256,7 @@ docsRphyStatsRpdDsOfdmPerfStatsOutErrors OBJECT-TYPE
     STATUS     current
     DESCRIPTION
         "This attribute reports the number of outbound packets
-         that could not be transmitted because of errors for 
+         that could not be transmitted because of errors for
          the downstream OFDM channel."
     ::= { docsRphyStatsRpdDsOfdmPerfStatsEntry 4 }
 
@@ -265,8 +265,8 @@ docsRphyStatsRpdDsOfdmPerfStatsOutPackets OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS     current
     DESCRIPTION
-        "This attribute reports the number of outbound 
-         packets successfully transmitted for 
+        "This attribute reports the number of outbound
+         packets successfully transmitted for
          the downstream OFDM channel."
     ::= { docsRphyStatsRpdDsOfdmPerfStatsEntry 5 }
 
@@ -275,9 +275,9 @@ docsRphyStatsRpdDsOfdmPerfStatsRpdDsCounterDiscTime OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS     current
     DESCRIPTION
-        "This attribute reports the date and time at which any one or more 
-         of the counters in this group were created or last reset to zero. 
-         If the RPD does not acquire time of day it can report an initial 
+        "This attribute reports the date and time at which any one or more
+         of the counters in this group were created or last reset to zero.
+         If the RPD does not acquire time of day it can report an initial
          CounterDiscontinuityTime of Jan 1 1970. "
     ::= { docsRphyStatsRpdDsOfdmPerfStatsEntry 6 }
 
@@ -290,8 +290,8 @@ docsRphyStatsRpdDsOob551PerfStatsTable OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This table reports statistical counters for a 
-         downstream channel with DEPI channel type 
+        "This table reports statistical counters for a
+         downstream channel with DEPI channel type
          SCTE-55-1-FWD."
     ::= { docsRphyStatsRpdDsMibObjects 3 }
 
@@ -302,8 +302,8 @@ docsRphyStatsRpdDsOob551PerfStatsEntry OBJECT-TYPE
     STATUS     current
     DESCRIPTION
         "The conceptual row of docsRphyStatsRpdDsOob551PerfStatsTable."
-    INDEX { docsRphyRpdDevInfoUniqueId, docsRphyStatsRpdDsOob551PerfStatsCoreIfIndex, 
-            docsRphyStatsRpdDsOob551PerfStatsDsRfPortIndex, 
+    INDEX { docsRphyRpdDevInfoUniqueId, docsRphyStatsRpdDsOob551PerfStatsCoreIfIndex,
+            docsRphyStatsRpdDsOob551PerfStatsDsRfPortIndex,
             docsRphyStatsRpdDsOob551PerfStatsFreqIndex}
     ::= { docsRphyStatsRpdDsOob551PerfStatsTable 1 }
 
@@ -324,8 +324,8 @@ docsRphyStatsRpdDsOob551PerfStatsCoreIfIndex OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This key attribute uniquely identifies the 
-         selected SCTE-55-1 forward channel on 
+        "This key attribute uniquely identifies the
+         selected SCTE-55-1 forward channel on
          the reporting core."
     ::= { docsRphyStatsRpdDsOob551PerfStatsEntry 1 }
 
@@ -334,8 +334,8 @@ docsRphyStatsRpdDsOob551PerfStatsDsRfPortIndex OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This key attribute uniquely identifies a 
-         downstream RF port of the RPD on which 
+        "This key attribute uniquely identifies a
+         downstream RF port of the RPD on which
          the channel is being transmitted."
     ::= { docsRphyStatsRpdDsOob551PerfStatsEntry 2 }
 
@@ -344,10 +344,10 @@ docsRphyStatsRpdDsOob551PerfStatsFreqIndex OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This key attribute uniquely identifies the 
-         selected SCTE-55-1 FWD channel. A value of 0 
-         identifies the first SCTE 55-1 downstream channel. 
-         A value of 1 identifies the second SCTE 55-1 
+        "This key attribute uniquely identifies the
+         selected SCTE-55-1 FWD channel. A value of 0
+         identifies the first SCTE 55-1 downstream channel.
+         A value of 1 identifies the second SCTE 55-1
          downstream channel"
     ::= { docsRphyStatsRpdDsOob551PerfStatsEntry 3 }
 
@@ -357,7 +357,7 @@ docsRphyStatsRpdDsOob551PerfStatsOutDiscards OBJECT-TYPE
     STATUS     current
     DESCRIPTION
         "This attribute reports the number of outbound packets
-         which were internally discarded before transmission 
+         which were internally discarded before transmission
          (e.g. due to lack of buffering) for the downstream
          selected DEPI channel type SCTE-55-1-FWD."
     ::= { docsRphyStatsRpdDsOob551PerfStatsEntry 4 }
@@ -368,7 +368,7 @@ docsRphyStatsRpdDsOob551PerfStatsOutErrors OBJECT-TYPE
     STATUS     current
     DESCRIPTION
         "This attribute reports the number of outbound packets
-         that could not be transmitted because of errors for 
+         that could not be transmitted because of errors for
          the downstream selected DEPI channel type SCTE-55-1-FWD."
     ::= { docsRphyStatsRpdDsOob551PerfStatsEntry 5 }
 
@@ -377,8 +377,8 @@ docsRphyStatsRpdDsOob551PerfStatsOutPackets OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS     current
     DESCRIPTION
-        "This attribute reports the number of outbound 
-         packets successfully transmitted for 
+        "This attribute reports the number of outbound
+         packets successfully transmitted for
          the downstream selected DEPI channel type SCTE-55-1-FWD."
     ::= { docsRphyStatsRpdDsOob551PerfStatsEntry 6 }
 
@@ -387,9 +387,9 @@ docsRphyStatsRpdDsOob551PerfStatsRpdDsCounterDiscTime OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS     current
     DESCRIPTION
-        "This attribute reports the date and time at which any one or more 
-         of the counters in this group were created or last reset to zero. 
-         If the RPD does not acquire time of day it can report an initial 
+        "This attribute reports the date and time at which any one or more
+         of the counters in this group were created or last reset to zero.
+         If the RPD does not acquire time of day it can report an initial
          CounterDiscontinuityTime of Jan 1 1970. "
     ::= { docsRphyStatsRpdDsOob551PerfStatsEntry 7 }
 
@@ -402,8 +402,8 @@ docsRphyStatsRpdDsOob552PerfStatsTable OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This table reports statistical counters for a 
-         downstream channel with DEPI channel type 
+        "This table reports statistical counters for a
+         downstream channel with DEPI channel type
          SCTE-55-2-FWD."
     ::= { docsRphyStatsRpdDsMibObjects 4 }
 
@@ -415,7 +415,7 @@ docsRphyStatsRpdDsOob552PerfStatsEntry OBJECT-TYPE
     DESCRIPTION
         "The conceptual row of docsRphyStatsRpdDsOob552PerfStatsTable."
     INDEX { docsRphyRpdDevInfoUniqueId, docsRphyStatsRpdDsOob552PerfStatsCoreIfIndex,
-            docsRphyStatsRpdDsOob552PerfStatsModuleIndex, 
+            docsRphyStatsRpdDsOob552PerfStatsModuleIndex,
             docsRphyStatsRpdDsOob552PerfStatsDsRfPortIndex}
     ::= { docsRphyStatsRpdDsOob552PerfStatsTable 1 }
 
@@ -436,8 +436,8 @@ docsRphyStatsRpdDsOob552PerfStatsCoreIfIndex OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This key attribute uniquely identifies the 
-         selected SCTE 55-2 forward channel on the 
+        "This key attribute uniquely identifies the
+         selected SCTE 55-2 forward channel on the
          reporting core."
     ::= { docsRphyStatsRpdDsOob552PerfStatsEntry 1 }
 
@@ -446,7 +446,7 @@ docsRphyStatsRpdDsOob552PerfStatsModuleIndex OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This key attribute uniquely identifies the 
+        "This key attribute uniquely identifies the
          selected SCTE 55-2 module."
     ::= { docsRphyStatsRpdDsOob552PerfStatsEntry 2 }
 
@@ -455,8 +455,8 @@ docsRphyStatsRpdDsOob552PerfStatsDsRfPortIndex OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This key attribute uniquely identifies a 
-         downstream RF port of the RPD on which the 
+        "This key attribute uniquely identifies a
+         downstream RF port of the RPD on which the
          channel is being transmitted."
     ::= { docsRphyStatsRpdDsOob552PerfStatsEntry 3 }
 
@@ -466,7 +466,7 @@ docsRphyStatsRpdDsOob552PerfStatsOutDiscards OBJECT-TYPE
     STATUS     current
     DESCRIPTION
         "This attribute reports the number of outbound packets
-         which were internally discarded before transmission 
+         which were internally discarded before transmission
          (e.g. due to lack of buffering) for the downstream
          selected DEPI channel type SCTE-55-2-FWD."
     ::= { docsRphyStatsRpdDsOob552PerfStatsEntry 4 }
@@ -477,7 +477,7 @@ docsRphyStatsRpdDsOob552PerfStatsOutErrors OBJECT-TYPE
     STATUS     current
     DESCRIPTION
         "This attribute reports the number of outbound packets
-         that could not be transmitted because of errors for 
+         that could not be transmitted because of errors for
          the downstream selected DEPI channel type SCTE-55-2-FWD."
     ::= { docsRphyStatsRpdDsOob552PerfStatsEntry 5 }
 
@@ -486,8 +486,8 @@ docsRphyStatsRpdDsOob552PerfStatsOutPackets OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS     current
     DESCRIPTION
-        "This attribute reports the number of outbound 
-         packets successfully transmitted for 
+        "This attribute reports the number of outbound
+         packets successfully transmitted for
          the downstream selected DEPI channel type SCTE-55-2-FWD."
     ::= { docsRphyStatsRpdDsOob552PerfStatsEntry 6 }
 
@@ -496,9 +496,9 @@ docsRphyStatsRpdDsOob552PerfStatsRpdDsCounterDiscTime OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS     current
     DESCRIPTION
-        "This attribute reports the date and time at which any one or more 
-         of the counters in this group were created or last reset to zero. 
-         If the RPD does not acquire time of day it can report an initial 
+        "This attribute reports the date and time at which any one or more
+         of the counters in this group were created or last reset to zero.
+         If the RPD does not acquire time of day it can report an initial
          CounterDiscontinuityTime of Jan 1 1970. "
     ::= { docsRphyStatsRpdDsOob552PerfStatsEntry 7 }
 
@@ -511,7 +511,7 @@ docsRphyStatsRpdDsNdfPerfStatsTable OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This table reports statistical counters for a 
+        "This table reports statistical counters for a
          downstream channel with DEPI channel type NDF
          per the RPD Channel Selector table in [DEPI]."
     ::= { docsRphyStatsRpdDsMibObjects 5 }
@@ -523,7 +523,7 @@ docsRphyStatsRpdDsNdfPerfStatsEntry OBJECT-TYPE
     STATUS     current
     DESCRIPTION
         "The conceptual row of docsRphyStatsRpdDsNdfPerfStatsTable."
-    INDEX { docsRphyRpdDevInfoUniqueId, docsRphyStatsRpdDsNdfPerfStatsCoreIfIndex, 
+    INDEX { docsRphyRpdDevInfoUniqueId, docsRphyStatsRpdDsNdfPerfStatsCoreIfIndex,
             docsRphyStatsRpdDsNdfPerfStatsDsRfPortIndex}
     ::= { docsRphyStatsRpdDsNdfPerfStatsTable 1 }
 
@@ -543,7 +543,7 @@ docsRphyStatsRpdDsNdfPerfStatsCoreIfIndex OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This key attribute uniquely identifies the 
+        "This key attribute uniquely identifies the
          selected NDF channel on the reporting core."
     ::= { docsRphyStatsRpdDsNdfPerfStatsEntry 1 }
 
@@ -552,8 +552,8 @@ docsRphyStatsRpdDsNdfPerfStatsDsRfPortIndex OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This key attribute uniquely identifies a 
-         downstream RF port of the RPD on which 
+        "This key attribute uniquely identifies a
+         downstream RF port of the RPD on which
          the channel is being transmitted."
     ::= { docsRphyStatsRpdDsNdfPerfStatsEntry 2 }
 
@@ -563,7 +563,7 @@ docsRphyStatsRpdDsNdfPerfStatsOutDiscards OBJECT-TYPE
     STATUS     current
     DESCRIPTION
         "This attribute reports the number of outbound packets
-         which were internally discarded before transmission 
+         which were internally discarded before transmission
          (e.g. due to lack of buffering) for the downstream
          selected DEPI channel type NDF."
     ::= { docsRphyStatsRpdDsNdfPerfStatsEntry 3 }
@@ -574,7 +574,7 @@ docsRphyStatsRpdDsNdfPerfStatsOutErrors OBJECT-TYPE
     STATUS     current
     DESCRIPTION
         "This attribute reports the number of outbound packets
-         that could not be transmitted because of errors for 
+         that could not be transmitted because of errors for
          the downstream selected DEPI channel type NDF."
     ::= { docsRphyStatsRpdDsNdfPerfStatsEntry 4 }
 
@@ -583,8 +583,8 @@ docsRphyStatsRpdDsNdfPerfStatsOutPackets OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS     current
     DESCRIPTION
-        "This attribute reports the number of outbound 
-         packets successfully transmitted for 
+        "This attribute reports the number of outbound
+         packets successfully transmitted for
          the downstream selected DEPI channel type NDF."
     ::= { docsRphyStatsRpdDsNdfPerfStatsEntry 5 }
 
@@ -593,9 +593,9 @@ docsRphyStatsRpdDsNdfPerfStatsRpdDsCounterDiscTime OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS     current
     DESCRIPTION
-        "This attribute reports the date and time at which any one or more 
-         of the counters in this group were created or last reset to zero. 
-         If the RPD does not acquire time of day it can report an initial 
+        "This attribute reports the date and time at which any one or more
+         of the counters in this group were created or last reset to zero.
+         If the RPD does not acquire time of day it can report an initial
          CounterDiscontinuityTime of Jan 1 1970. "
     ::= { docsRphyStatsRpdDsNdfPerfStatsEntry 6 }
 
@@ -637,8 +637,8 @@ docsRphyStatsRpdDsOfdmPlcPerfStatsOutDiscards OBJECT-TYPE
     STATUS     current
     DESCRIPTION
         "This attribute reports the number of outbound packets
-         which were internally discarded before transmission 
-         (e.g. due to lack of buffering) for the PLC sub-channel 
+         which were internally discarded before transmission
+         (e.g. due to lack of buffering) for the PLC sub-channel
          of a downstream OFDM channel."
     ::= { docsRphyStatsRpdDsOfdmPlcPerfStatsEntry 1 }
 
@@ -657,8 +657,8 @@ docsRphyStatsRpdDsOfdmPlcPerfStatsOutPackets OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS     current
     DESCRIPTION
-        "This attribute reports the number of outbound 
-         packets successfully transmitted for 
+        "This attribute reports the number of outbound
+         packets successfully transmitted for
          the PLC sub-channel of a downstream OFDM channel."
     ::= { docsRphyStatsRpdDsOfdmPlcPerfStatsEntry 3 }
 
@@ -667,9 +667,9 @@ docsRphyStatsRpdDsOfdmPlcPerfStatsRpdDsCounterDiscTime OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS     current
     DESCRIPTION
-        "This attribute reports the date and time at which any one or more 
-         of the counters in this group were created or last reset to zero. 
-         If the RPD does not acquire time of day it can report an initial 
+        "This attribute reports the date and time at which any one or more
+         of the counters in this group were created or last reset to zero.
+         If the RPD does not acquire time of day it can report an initial
          CounterDiscontinuityTime of Jan 1 1970. "
     ::= { docsRphyStatsRpdDsOfdmPlcPerfStatsEntry 4 }
 
@@ -694,7 +694,7 @@ docsRphyStatsRpdDsOfdmProfilePerfStatsEntry OBJECT-TYPE
     DESCRIPTION
         "The conceptual row of docsRphyStatsRpdDsOfdmProfilePerfStatsTable."
     INDEX { docsRphyRpdDevInfoUniqueId, docsRphyStatsRpdDsOfdmPerfStatsCoreIfIndex,
-            docsRphyStatsRpdDsOfdmPerfStatsDsRfPortIndex, 
+            docsRphyStatsRpdDsOfdmPerfStatsDsRfPortIndex,
             docsRphyStatsRpdDsOfdmProfilePerfStatsProfileIndex }
     ::= { docsRphyStatsRpdDsOfdmProfilePerfStatsTable 1 }
 
@@ -719,7 +719,7 @@ docsRphyStatsRpdDsOfdmProfilePerfStatsOutCodewords OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS     current
     DESCRIPTION
-        "This attribute reports the number of 
+        "This attribute reports the number of
          transmitted LDPC codewords for the profile."
     ::= { docsRphyStatsRpdDsOfdmProfilePerfStatsEntry 2 }
 
@@ -765,7 +765,7 @@ docsRphyStatsRpdUsOfdmaChanPerfStatsCoreIfIndex OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This key attribute uniquely identifies 
+        "This key attribute uniquely identifies
          the selected OFDMA channel of the reporting core."
     ::= { docsRphyStatsRpdUsOfdmaChanPerfStatsEntry 1 }
 
@@ -775,7 +775,7 @@ docsRphyStatsRpdUsOfdmaChanPerfStatsUsRfPortIndex OBJECT-TYPE
     STATUS      current
     DESCRIPTION
         "This key attribute uniquely identifies an upstream
-         RF port of the RPD on which the channel is being 
+         RF port of the RPD on which the channel is being
          received."
     ::= { docsRphyStatsRpdUsOfdmaChanPerfStatsEntry 2 }
 
@@ -793,7 +793,7 @@ docsRphyStatsRpdUsOfdmaChanPerfStatsHcsErrors OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS     current
     DESCRIPTION
-        "This attribute reports the number of bursts with detected HCS error 
+        "This attribute reports the number of bursts with detected HCS error
          in the DOCSIS header for the upstream OFDMA channel."
     ::= { docsRphyStatsRpdUsOfdmaChanPerfStatsEntry 4 }
 
@@ -811,7 +811,7 @@ docsRphyStatsRpdUsOfdmaChanPerfStatsIllegalMaps OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS     current
     DESCRIPTION
-        "This attribute reports the number MAP messages 
+        "This attribute reports the number MAP messages
          with detected errors, other than late error,
          for the upstream OFDMA channel."
     ::= { docsRphyStatsRpdUsOfdmaChanPerfStatsEntry 6 }
@@ -832,9 +832,9 @@ docsRphyStatsRpdUsOfdmaChanPerfStatsRpdUsCounterDiscTime OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS     current
     DESCRIPTION
-        "This attribute reports the date and time at which any one or more 
-         of the counters in this group were created or last reset to zero. 
-         If the RPD does not acquire time of day it can report an initial 
+        "This attribute reports the date and time at which any one or more
+         of the counters in this group were created or last reset to zero.
+         If the RPD does not acquire time of day it can report an initial
          CounterDiscontinuityTime of Jan 1 1970. "
     ::= { docsRphyStatsRpdUsOfdmaChanPerfStatsEntry 8 }
 
@@ -880,7 +880,7 @@ docsRphyStatsRpdUsScQamChanPerfStatsCoreIfIndex OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This key attribute uniquely identifies 
+        "This key attribute uniquely identifies
          the selected SC-QAM channel on the reporting core."
     ::= { docsRphyStatsRpdUsScQamChanPerfStatsEntry 1 }
 
@@ -889,8 +889,8 @@ docsRphyStatsRpdUsScQamChanPerfStatsUsRfPortIndex OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This key attribute uniquely identifies an 
-         upstream RF port of the RPD on which the 
+        "This key attribute uniquely identifies an
+         upstream RF port of the RPD on which the
          channel is being received."
     ::= { docsRphyStatsRpdUsScQamChanPerfStatsEntry 2 }
 
@@ -909,7 +909,7 @@ docsRphyStatsRpdUsScQamChanPerfStatsHcsErrors OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS     current
     DESCRIPTION
-        "This attribute reports the number of bursts with detected HCS error 
+        "This attribute reports the number of bursts with detected HCS error
          in the DOCSIS header for the upstream SC-QAM channel."
     ::= { docsRphyStatsRpdUsScQamChanPerfStatsEntry 4 }
 
@@ -927,7 +927,7 @@ docsRphyStatsRpdUsScQamChanPerfStatsIllegalMaps OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS     current
     DESCRIPTION
-        "This attribute reports the number MAP messages 
+        "This attribute reports the number MAP messages
          with detected errors, other than late error,
          for the upstream SC-QAM channel."
     ::= { docsRphyStatsRpdUsScQamChanPerfStatsEntry 6 }
@@ -948,9 +948,9 @@ docsRphyStatsRpdUsScQamChanPerfStatsRpdUsCounterDiscTime OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS     current
     DESCRIPTION
-        "This attribute reports the date and time at which any one or more 
-         of the counters in this group were created or last reset to zero. 
-         If the RPD does not acquire time of day it can report an initial 
+        "This attribute reports the date and time at which any one or more
+         of the counters in this group were created or last reset to zero.
+         If the RPD does not acquire time of day it can report an initial
          CounterDiscontinuityTime of Jan 1 1970. "
     ::= { docsRphyStatsRpdUsScQamChanPerfStatsEntry 8 }
 
@@ -987,7 +987,7 @@ DocsRphyStatsRpdUsOfdmaLowIucPerfStatsEntry ::= SEQUENCE
     docsRphyStatsRpdUsOfdmaLowIucPerfStatsNumPostdecodePass        Counter64,
     docsRphyStatsRpdUsOfdmaLowIucPerfStatsNumPostdecodeFail        Counter64,
     docsRphyStatsRpdUsOfdmaLowIucPerfStatsUnicastOpportunities     Counter64,
-    docsRphyStatsRpdUsOfdmaLowIucPerfStatsUnicastOpCollisions      Counter64,    
+    docsRphyStatsRpdUsOfdmaLowIucPerfStatsUnicastOpCollisions      Counter64,
     docsRphyStatsRpdUsOfdmaLowIucPerfStatsUnicastOpNoEnergy        Counter64,
     docsRphyStatsRpdUsOfdmaLowIucPerfStatsUnicastOpErrors          Counter64,
     docsRphyStatsRpdUsOfdmaLowIucPerfStatsMulticastOpportunities   Counter64,
@@ -1001,8 +1001,8 @@ docsRphyStatsRpdUsOfdmaLowIucPerfStatsUsIuc OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This key attribute provides an index in the form of 
-         the IUC for which the statistical counters will 
+        "This key attribute provides an index in the form of
+         the IUC for which the statistical counters will
          be stored."
     ::= { docsRphyStatsRpdUsOfdmaLowIucPerfStatsEntry 1 }
 
@@ -1020,7 +1020,7 @@ docsRphyStatsRpdUsOfdmaLowIucPerfStatsNumPostdecodePass OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS     current
     DESCRIPTION
-        "This attribute reports the number of LDPC codewords 
+        "This attribute reports the number of LDPC codewords
          for the selected IUC that passed post-decode syndrome check."
     ::= { docsRphyStatsRpdUsOfdmaLowIucPerfStatsEntry 3 }
 
@@ -1039,7 +1039,7 @@ docsRphyStatsRpdUsOfdmaLowIucPerfStatsUnicastOpportunities OBJECT-TYPE
     STATUS     current
     DESCRIPTION
         "This attribute reports the total number of unicast transmission
-         opportunities for the selected IUC. Unicast opportunities are 
+         opportunities for the selected IUC. Unicast opportunities are
          counted for SIDs in range 0x0001-0x3dff."
     ::= { docsRphyStatsRpdUsOfdmaLowIucPerfStatsEntry 5 }
 
@@ -1076,7 +1076,7 @@ docsRphyStatsRpdUsOfdmaLowIucPerfStatsMulticastOpportunities OBJECT-TYPE
     STATUS     current
     DESCRIPTION
         "This attribute reports the total number of multicast transmission
-         opportunities for the selected IUC. Multicast opportunities are 
+         opportunities for the selected IUC. Multicast opportunities are
          counted for SIDs in range 0x0001-0x3dff."
     ::= { docsRphyStatsRpdUsOfdmaLowIucPerfStatsEntry 9 }
 
@@ -1128,7 +1128,7 @@ docsRphyStatsRpdUsOfdmaHighIucPerfStatsEntry OBJECT-TYPE
     DESCRIPTION
         "The conceptual row of docsRphyStatsRpdUsOfdmaHighIucPerfStatsTable."
     INDEX { docsRphyRpdDevInfoUniqueId, docsRphyStatsRpdUsOfdmaChanPerfStatsCoreIfIndex,
-            docsRphyStatsRpdUsOfdmaChanPerfStatsUsRfPortIndex,   
+            docsRphyStatsRpdUsOfdmaChanPerfStatsUsRfPortIndex,
             docsRphyStatsRpdUsOfdmaHighIucPerfStatsUsIuc}
     ::= { docsRphyStatsRpdUsOfdmaHighIucPerfStatsTable 1 }
 
@@ -1151,8 +1151,8 @@ docsRphyStatsRpdUsOfdmaHighIucPerfStatsUsIuc OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This key attribute provides an index in the form of 
-         the IUC for which the statistical counters will 
+        "This key attribute provides an index in the form of
+         the IUC for which the statistical counters will
          be stored."
     ::= { docsRphyStatsRpdUsOfdmaHighIucPerfStatsEntry 1 }
 
@@ -1161,7 +1161,7 @@ docsRphyStatsRpdUsOfdmaHighIucPerfStatsAverageMer OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS     current
     DESCRIPTION
-        "This attribute reports the average MER value 
+        "This attribute reports the average MER value
          for the selected IUC."
     ::= { docsRphyStatsRpdUsOfdmaHighIucPerfStatsEntry 2 }
 
@@ -1179,7 +1179,7 @@ docsRphyStatsRpdUsOfdmaHighIucPerfStatsNumPostdecodePass OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS     current
     DESCRIPTION
-        "This attribute reports the number of LDPC codewords 
+        "This attribute reports the number of LDPC codewords
          for the selected IUC that passed post-decode syndrome check."
     ::= { docsRphyStatsRpdUsOfdmaHighIucPerfStatsEntry 4 }
 
@@ -1215,7 +1215,7 @@ docsRphyStatsRpdUsOfdmaHighIucPerfStatsNoPreambleBursts OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS     current
     DESCRIPTION
-        "This attribute reports the number of bursts 
+        "This attribute reports the number of bursts
          no preamble detected for the selected IUC."
     ::= { docsRphyStatsRpdUsOfdmaHighIucPerfStatsEntry 8 }
 
@@ -1225,7 +1225,7 @@ docsRphyStatsRpdUsOfdmaHighIucPerfStatsErrorBursts OBJECT-TYPE
     STATUS     current
     DESCRIPTION
         "This attribute reports the number of bursts received
-         with errors other than 'no energy' or 'no preamble' 
+         with errors other than 'no energy' or 'no preamble'
          for the selected IUC."
     ::= { docsRphyStatsRpdUsOfdmaHighIucPerfStatsEntry 9 }
 
@@ -1262,7 +1262,7 @@ DocsRphyStatsRpdUsScQamLowIucPerfStatsEntry ::= SEQUENCE
     docsRphyStatsRpdUsScQamLowIucPerfStatsCorrectedFecCw         Counter64,
     docsRphyStatsRpdUsScQamLowIucPerfStatsUncorrectedFecCw       Counter64,
     docsRphyStatsRpdUsScQamLowIucPerfStatsUnicastOpportunities   Counter64,
-    docsRphyStatsRpdUsScQamLowIucPerfStatsUnicastOpCollisions    Counter64,    
+    docsRphyStatsRpdUsScQamLowIucPerfStatsUnicastOpCollisions    Counter64,
     docsRphyStatsRpdUsScQamLowIucPerfStatsUnicastOpNoEnergy      Counter64,
     docsRphyStatsRpdUsScQamLowIucPerfStatsUnicastOpErrors        Counter64,
     docsRphyStatsRpdUsScQamLowIucPerfStatsMulticastOpportunities Counter64,
@@ -1276,8 +1276,8 @@ docsRphyStatsRpdUsScQamLowIucPerfStatsUsIuc OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This key attribute provides an index in the form of 
-         the IUC for which the statistical counters will 
+        "This key attribute provides an index in the form of
+         the IUC for which the statistical counters will
          be stored."
     ::= { docsRphyStatsRpdUsScQamLowIucPerfStatsEntry 1 }
 
@@ -1286,7 +1286,7 @@ docsRphyStatsRpdUsScQamLowIucPerfStatsGoodFecCw OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS     current
     DESCRIPTION
-        "This attribute reports the number of good FEC 
+        "This attribute reports the number of good FEC
          codewords for the selected IUC."
     ::= { docsRphyStatsRpdUsScQamLowIucPerfStatsEntry 2 }
 
@@ -1314,7 +1314,7 @@ docsRphyStatsRpdUsScQamLowIucPerfStatsUnicastOpportunities OBJECT-TYPE
     STATUS     current
     DESCRIPTION
         "This attribute reports the total number of unicast transmission
-         opportunities for the selected IUC. Unicast opportunities are 
+         opportunities for the selected IUC. Unicast opportunities are
          counted for SIDs in range 0x0001-0x3dff."
     ::= { docsRphyStatsRpdUsScQamLowIucPerfStatsEntry 5 }
 
@@ -1351,7 +1351,7 @@ docsRphyStatsRpdUsScQamLowIucPerfStatsMulticastOpportunities OBJECT-TYPE
     STATUS     current
     DESCRIPTION
         "This attribute reports the total number of multicast transmission
-         opportunities for the selected IUC. Multicast opportunities are 
+         opportunities for the selected IUC. Multicast opportunities are
          counted for SIDs in range 0x0001-0x3dff."
     ::= { docsRphyStatsRpdUsScQamLowIucPerfStatsEntry 9 }
 
@@ -1392,7 +1392,7 @@ docsRphyStatsRpdUsScQamHighIucPerfStatsTable OBJECT-TYPE
     STATUS      current
     DESCRIPTION
         "This table reports reports the statistical counters for
-         IUCs 4, 5, 6, 9, 10, 11, 12 and 13 of an upstream 
+         IUCs 4, 5, 6, 9, 10, 11, 12 and 13 of an upstream
          SC-QAM channel."
     ::= { docsRphyStatsRpdUsMibObjects 6 }
 
@@ -1426,8 +1426,8 @@ docsRphyStatsRpdUsScQamHighIucPerfStatsUsIuc OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This key attribute provides an index in the form of 
-         the IUC for which the statistical counters will 
+        "This key attribute provides an index in the form of
+         the IUC for which the statistical counters will
          be stored."
     ::= { docsRphyStatsRpdUsScQamHighIucPerfStatsEntry 1 }
 
@@ -1436,7 +1436,7 @@ docsRphyStatsRpdUsScQamHighIucPerfStatsGoodFecCw OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS     current
     DESCRIPTION
-        "This attribute reports the number of good FEC 
+        "This attribute reports the number of good FEC
          codewords for the selected IUC."
     ::= { docsRphyStatsRpdUsScQamHighIucPerfStatsEntry 2 }
 
@@ -1481,7 +1481,7 @@ docsRphyStatsRpdUsScQamHighIucPerfStatsNoPreambleBursts OBJECT-TYPE
     MAX-ACCESS read-only
     STATUS     current
     DESCRIPTION
-        "This attribute reports the number of bursts 
+        "This attribute reports the number of bursts
          no preamble detected for the selected IUC."
     ::= { docsRphyStatsRpdUsScQamHighIucPerfStatsEntry 7 }
 
@@ -1491,10 +1491,10 @@ docsRphyStatsRpdUsScQamHighIucPerfStatsErrorBursts OBJECT-TYPE
     STATUS     current
     DESCRIPTION
         "This attribute reports the number of bursts received
-         with errors other than 'no energy' or 'no preamble' 
+         with errors other than 'no energy' or 'no preamble'
          for the selected IUC."
     ::= { docsRphyStatsRpdUsScQamHighIucPerfStatsEntry 8 }
-    
+
 -- ---------------------------------------------------------------------
 -- Upstream OOB552 Performance Statistics
 -- ---------------------------------------------------------------------
@@ -1504,7 +1504,7 @@ docsRphyStatsRpdUsOob552PerfStatsTable OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This table reports statistical counters for an SCTE 55-2 
+        "This table reports statistical counters for an SCTE 55-2
          OOB upstream channel."
     ::= { docsRphyStatsRpdUsMibObjects 7 }
 
@@ -1530,23 +1530,23 @@ DocsRphyStatsRpdUsOob552PerfStatsEntry ::= SEQUENCE
     docsRphyStatsRpdUsOob552PerfStatsRcvdBytes      Counter64,
     docsRphyStatsRpdUsOob552PerfStatsUncorrectables Counter64
     }
-       
+
 docsRphyStatsRpdUsOob552PerfStatsCoreIfIndex OBJECT-TYPE
     SYNTAX      InterfaceIndex
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This key attribute uniquely identifies the 
-         selected SCTE 55-2 return channel on the 
+        "This key attribute uniquely identifies the
+         selected SCTE 55-2 return channel on the
          reporting core."
     ::= { docsRphyStatsRpdUsOob552PerfStatsEntry 1 }
-    
+
  docsRphyStatsRpdUsOob552PerfStatsModuleIndex OBJECT-TYPE
     SYNTAX      Unsigned32 (0..255)
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This key attribute uniquely identifies the 
+        "This key attribute uniquely identifies the
          selected SCTE 55-2 module."
     ::= { docsRphyStatsRpdUsOob552PerfStatsEntry 2 }
 
@@ -1555,26 +1555,26 @@ docsRphyStatsRpdUsOob552PerfStatsUsRfPortIndex OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This key attribute uniquely identifies an 
-         upstream RF port of the RPD on which the 
+        "This key attribute uniquely identifies an
+         upstream RF port of the RPD on which the
          channel is being received."
-    ::= { docsRphyStatsRpdUsOob552PerfStatsEntry 3 }  
+    ::= { docsRphyStatsRpdUsOob552PerfStatsEntry 3 }
 
 docsRphyStatsRpdUsOob552PerfStatsRcvdCells OBJECT-TYPE
     SYNTAX      Counter64
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "This attribute reports the number 
+        "This attribute reports the number
          of received ATM cells."
-    ::= { docsRphyStatsRpdUsOob552PerfStatsEntry 4 } 
+    ::= { docsRphyStatsRpdUsOob552PerfStatsEntry 4 }
 
 docsRphyStatsRpdUsOob552PerfStatsRcvdBytes OBJECT-TYPE
     SYNTAX      Counter64
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "This attribute reports the number 
+        "This attribute reports the number
          of received bytes."
     ::= { docsRphyStatsRpdUsOob552PerfStatsEntry 5 }
 
@@ -1583,9 +1583,9 @@ docsRphyStatsRpdUsOob552PerfStatsUncorrectables OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "This attribute reports the number of 
+        "This attribute reports the number of
          received slots with uncorrectable FEC errors."
-    ::= { docsRphyStatsRpdUsOob552PerfStatsEntry 6 }     
+    ::= { docsRphyStatsRpdUsOob552PerfStatsEntry 6 }
 
 -- ---------------------------------------------------------------------
 -- CCAP Core Group Objects
@@ -1595,27 +1595,27 @@ docsRphyStatsRpdUsOob552PerfStatsUncorrectables OBJECT-TYPE
 -- TBD Table
 -- ---------------------------------------------------------------------
 
-    
+
 -- ---------------------------------------------------------
--- Conformance definitions 
+-- Conformance definitions
 -- ---------------------------------------------------------
 
-docsRphyStatsCompliance MODULE-COMPLIANCE 
-     STATUS current 
-     DESCRIPTION 
+docsRphyStatsCompliance MODULE-COMPLIANCE
+     STATUS current
+     DESCRIPTION
          "The compliance statement for CCAP Core and
           RPD Statistical monitoring features."
 
 MODULE -- docsRphyStatsMib
-        
+
 -- conditionally mandatory groups
 
-GROUP docsRphyStatsRpdGroup 
+GROUP docsRphyStatsRpdGroup
     DESCRIPTION
         "Group of objects applicable to RPDs only.
          These objects are implemented on the CCAP Core
          but are derived from the RPD via the GCP protocol."
-            
+
 -- conditionally optional groups
 
 
@@ -1674,7 +1674,7 @@ docsRphyStatsRpdGroup OBJECT-GROUP
                  docsRphyStatsRpdUsOfdmaLowIucPerfStatsNumPostdecodePass,
                  docsRphyStatsRpdUsOfdmaLowIucPerfStatsNumPostdecodeFail,
                  docsRphyStatsRpdUsOfdmaLowIucPerfStatsUnicastOpportunities,
-                 docsRphyStatsRpdUsOfdmaLowIucPerfStatsUnicastOpCollisions,    
+                 docsRphyStatsRpdUsOfdmaLowIucPerfStatsUnicastOpCollisions,
                  docsRphyStatsRpdUsOfdmaLowIucPerfStatsUnicastOpNoEnergy,
                  docsRphyStatsRpdUsOfdmaLowIucPerfStatsUnicastOpErrors,
                  docsRphyStatsRpdUsOfdmaLowIucPerfStatsMulticastOpportunities,
@@ -1682,7 +1682,7 @@ docsRphyStatsRpdGroup OBJECT-GROUP
                  docsRphyStatsRpdUsOfdmaLowIucPerfStatsMulticastOpNoEnergy,
                  docsRphyStatsRpdUsOfdmaLowIucPerfStatsMulticastOpErrors,
 
-                 docsRphyStatsRpdUsOfdmaHighIucPerfStatsAverageMer,                    
+                 docsRphyStatsRpdUsOfdmaHighIucPerfStatsAverageMer,
                  docsRphyStatsRpdUsOfdmaHighIucPerfStatsNumPredecodePass,
                  docsRphyStatsRpdUsOfdmaHighIucPerfStatsNumPostdecodePass,
                  docsRphyStatsRpdUsOfdmaHighIucPerfStatsNumPostdecodeFail,
@@ -1690,7 +1690,7 @@ docsRphyStatsRpdGroup OBJECT-GROUP
                  docsRphyStatsRpdUsOfdmaHighIucPerfStatsNoEnergyBursts,
                  docsRphyStatsRpdUsOfdmaHighIucPerfStatsNoPreambleBursts,
                  docsRphyStatsRpdUsOfdmaHighIucPerfStatsErrorBursts,
-                    
+
                  docsRphyStatsRpdUsOob552PerfStatsRcvdCells,
                  docsRphyStatsRpdUsOob552PerfStatsRcvdBytes,
                  docsRphyStatsRpdUsOob552PerfStatsUncorrectables,
@@ -1699,7 +1699,7 @@ docsRphyStatsRpdGroup OBJECT-GROUP
                  docsRphyStatsRpdUsScQamLowIucPerfStatsCorrectedFecCw,
                  docsRphyStatsRpdUsScQamLowIucPerfStatsUncorrectedFecCw,
                  docsRphyStatsRpdUsScQamLowIucPerfStatsUnicastOpportunities,
-                 docsRphyStatsRpdUsScQamLowIucPerfStatsUnicastOpCollisions,    
+                 docsRphyStatsRpdUsScQamLowIucPerfStatsUnicastOpCollisions,
                  docsRphyStatsRpdUsScQamLowIucPerfStatsUnicastOpNoEnergy,
                  docsRphyStatsRpdUsScQamLowIucPerfStatsUnicastOpErrors,
                  docsRphyStatsRpdUsScQamLowIucPerfStatsMulticastOpportunities,
@@ -1718,7 +1718,7 @@ docsRphyStatsRpdGroup OBJECT-GROUP
     STATUS      current
     DESCRIPTION
         "Group of objects implemented in CCAP Cores which
-         represent RPD managed objects derived via the GCP 
+         represent RPD managed objects derived via the GCP
          protocol."
     ::= { docsRphyStatsGroups 1 }
         END

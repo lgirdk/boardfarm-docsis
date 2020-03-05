@@ -21,7 +21,7 @@ DOCS-SUBMGT3-MIB DEFINITIONS ::= BEGIN
     docsIf3CmtsCmRegStatusEntry,
     docsIf3CmtsCmRegStatusId
              FROM DOCS-IF3-MIB
-   SnmpTagList             
+   SnmpTagList
              FROM SNMP-TARGET-MIB     -- RFC 3411
     clabProjDocsis,
     DocsL2vpnIfList
@@ -97,8 +97,8 @@ docsSubmgt3BaseCpeMaxIpv4Def OBJECT-TYPE
      MAX-ACCESS  read-write
      STATUS      current
      DESCRIPTION
-        "This attribute represents the maximum number of IPv4 
-        Addresses allowed for the CM's CPEs if not signaled in the 
+        "This attribute represents the maximum number of IPv4
+        Addresses allowed for the CM's CPEs if not signaled in the
         registration process."
      DEFVAL { 16 }
      ::= { docsSubmgt3Base 1 }
@@ -108,15 +108,15 @@ docsSubmgt3BaseCpeMaxIpv6AddressesDef OBJECT-TYPE
      MAX-ACCESS  read-write
      STATUS      deprecated
      DESCRIPTION
-        "This attribute represents the maximum number of IPv6 
+        "This attribute represents the maximum number of IPv6
          prefixes or addresses allowed for the CM's CPEs if not signaled in
-         the registration process. All IPv6 
+         the registration process. All IPv6
          addresses, including Link-Local and any address with
          a scope greater than 1 are counted against the
          docsSubmgt3BaseCpeMaxIpv6AddressesDef."
      DEFVAL { 16 }
      ::= { docsSubmgt3Base 2 }
-     
+
 docsSubmgt3BaseCpeMaxIpv6PrefixesDef OBJECT-TYPE
      SYNTAX      Unsigned32 (0..1023)
      MAX-ACCESS  read-write
@@ -349,21 +349,21 @@ docsSubmgt3CpeCtrlMaxCpeIpv6Addresses OBJECT-TYPE
      MAX-ACCESS  read-write
      STATUS      deprecated
      DESCRIPTION
-        "This attribute represents the maximum number of simultaneous IPv6 
+        "This attribute represents the maximum number of simultaneous IPv6
         prefixes and addresses that are permitted for CPEs connected to the CM.
         When the MaxCpeIpv6Prefix is set to zero (0), all IPv6 CPE traffic from
-        the CM is dropped. The CMTS configures this attribute with whichever of 
-        the ('Subscriber Management CPE IPv6 List (TLV 67)' plus 'Subscriber 
-        Management CPE IPv6 Prefix List (TLV 61)') or ('Subscriber Management 
-        Control Max CPE IPv6 Addresses (TLV 63)') signaled encodings is 
-        greater, or in the absence of all of those provisioning parameters, 
-        with the MaxIpv6AddressDef from the Base object. This limit applies to 
+        the CM is dropped. The CMTS configures this attribute with whichever of
+        the ('Subscriber Management CPE IPv6 List (TLV 67)' plus 'Subscriber
+        Management CPE IPv6 Prefix List (TLV 61)') or ('Subscriber Management
+        Control Max CPE IPv6 Addresses (TLV 63)') signaled encodings is
+        greater, or in the absence of all of those provisioning parameters,
+        with the MaxIpv6AddressDef from the Base object. This limit applies to
         learned and DOCSIS-provisioned entries but not to entries added through
-        some administrative process at the CMTS. Note that this attribute is 
+        some administrative process at the CMTS. Note that this attribute is
         only meaningful when the Active attribute of the CM is set to 'true'.
 
         All IPv6 addresses, including Link-Local and any address with a scope
-        greater than 1 are counted against the 
+        greater than 1 are counted against the
         docsSubmgt3CpeCtrlMaxCpeIpv6Addresses."
      REFERENCE
          "DOCSIS 3.0 MAC and Upper Layer Protocols Interface
@@ -371,26 +371,26 @@ docsSubmgt3CpeCtrlMaxCpeIpv6Addresses OBJECT-TYPE
          TLVs section in the Common Radio Frequency Interface Encodings
          Annex."
      ::= { docsSubmgt3CpeCtrlEntry 2 }
-     
+
 docsSubmgt3CpeCtrlMaxCpeIpv6Prefixes OBJECT-TYPE
      SYNTAX      Unsigned32 (0..1023)
      MAX-ACCESS  read-write
      STATUS      current
      DESCRIPTION
-        "This attribute represents the maximum number of simultaneous IPv6 
-        IA_PDs (delegated prefixes) that are permitted for CPEs connected to 
+        "This attribute represents the maximum number of simultaneous IPv6
+        IA_PDs (delegated prefixes) that are permitted for CPEs connected to
         the CM.When the MaxCpeIpv6Prefixes is set to zero (0), all IPv6 CPE
-        traffic from the CM is dropped. The CMTS configures this attribute 
-        with whichever of the ('Subscriber Management CPE IPv6 List (TLV 67)' 
-        plus 'Subscriber Management CPE IPv6 Prefix List (TLV 61) ') 
-        or ('Subscriber Management Control Max CPE IPv6 Addresses (TLV 63)') 
+        traffic from the CM is dropped. The CMTS configures this attribute
+        with whichever of the ('Subscriber Management CPE IPv6 List (TLV 67)'
+        plus 'Subscriber Management CPE IPv6 Prefix List (TLV 61) ')
+        or ('Subscriber Management Control Max CPE IPv6 Addresses (TLV 63)')
         signaled encodings is greater, or in the absence of all of those
-        provisioning parameters, with the MaxIpv6PrefixesDef from the Base object. 
+        provisioning parameters, with the MaxIpv6PrefixesDef from the Base object.
         This limit applies to learned and DOCSIS-provisioned entries but not to
-        entries added through some administrative process at the CMTS. Note 
+        entries added through some administrative process at the CMTS. Note
         that this attribute is only meaningful when the Active attribute of
-        the CM is set to 'true'. IPv6 IA_PDs s are counted against the               
-        CpeCtrlMaxCpeIpv6Prefixes in order to limit the number of simultaneous 
+        the CM is set to 'true'. IPv6 IA_PDs s are counted against the
+        CpeCtrlMaxCpeIpv6Prefixes in order to limit the number of simultaneous
         IA_PDs permitted for the CMs CPEs."
      REFERENCE
          "DOCSIS 3.0 MAC and Upper Layer Protocols Interface
@@ -490,8 +490,8 @@ docsSubmgt3CpeIpEntry OBJECT-TYPE
      STATUS      current
      DESCRIPTION
          "The conceptual row of docsSubmgt3CpeIpTable."
-     INDEX { 
-             docsIf3CmtsCmRegStatusId, 
+     INDEX {
+             docsIf3CmtsCmRegStatusId,
              docsSubmgt3CpeIpId
            }
      ::= { docsSubmgt3CpeIpTable 1 }
@@ -540,7 +540,7 @@ docsSubmgt3CpeIpAddr OBJECT-TYPE
      STATUS      current
      DESCRIPTION
         "This attribute represents the IP address either set
-        from provisioning or learned via address gleaning of the DHCP exchange 
+        from provisioning or learned via address gleaning of the DHCP exchange
         or some other means."
      ::= { docsSubmgt3CpeIpEntry 3 }
 
@@ -552,11 +552,11 @@ docsSubmgt3CpeIpAddrPrefixLen OBJECT-TYPE
         "This attribute represents the prefix length associated
          with the IP prefix (IPv4 or IPv6) that is either set via
          provisioning or learned via address gleaning of the DHCP exchange
-         or  some other means. For IPv4 CPE addresses, this attribute 
-         generally reports the value 32 (32 bits) to indicate a unicast 
-         IPv4 address. For IPv6 CPE addresses, this attribute represents 
-         either a discrete IPv6 IA_NA unicast address (a value of 128 bits, 
-         equal to /128 prefix length) or a delegated prefix (IA_PD) and 
+         or  some other means. For IPv4 CPE addresses, this attribute
+         generally reports the value 32 (32 bits) to indicate a unicast
+         IPv4 address. For IPv6 CPE addresses, this attribute represents
+         either a discrete IPv6 IA_NA unicast address (a value of 128 bits,
+         equal to /128 prefix length) or a delegated prefix (IA_PD) and
          its associated length (such as 56 bits, equal to /56 prefix length)."
      ::= { docsSubmgt3CpeIpEntry 4 }
 
@@ -593,7 +593,7 @@ docsSubmgt3CpeIpType OBJECT-TYPE
                      'stb' Digital Set-top Box (STB).
                      'tea' T1 Emulation adapter (TEA)
                      'erouter' Embedded Router (eRouter)
-                     'dva' Digital Voice Adapter (DVA) 
+                     'dva' Digital Voice Adapter (DVA)
                      'sg'  Security Gateway (SG)
                      'card' CableCARD"
      ::= { docsSubmgt3CpeIpEntry 6 }
@@ -658,19 +658,19 @@ docsSubMgt3GrpUdcGroupIds OBJECT-TYPE
      STATUS      current
      DESCRIPTION
         "This attribute represents the filter group(s) associated
-        with the CM signaled 'Upstream Drop Classifier Group ID' 
+        with the CM signaled 'Upstream Drop Classifier Group ID'
        encodings during the registration process. UDC Group IDs are
-       integer values and this attribute reports them as decimal 
-       numbers that are space-separated. The zero-length string indicates 
-       that the CM didn't signal UDC Group IDs. 
-       This attribute provides two functions: 
-       - Communicate the CM the configured UDC Group ID(s), irrespective 
-       of the CM being provisioned to filter upstream traffic based 
-       on IP Filters or UDCs. 
+       integer values and this attribute reports them as decimal
+       numbers that are space-separated. The zero-length string indicates
+       that the CM didn't signal UDC Group IDs.
+       This attribute provides two functions:
+       - Communicate the CM the configured UDC Group ID(s), irrespective
+       of the CM being provisioned to filter upstream traffic based
+       on IP Filters or UDCs.
        - Optionally, and with regards to the CMTS, if the value of the
-       attribute UdcSentInReqRsp is 'true', indicates that the filtering 
+       attribute UdcSentInReqRsp is 'true', indicates that the filtering
        rules associated with the Subscriber Management Group ID(s) will
-       be sent during registration to the CM. It is vendor specific 
+       be sent during registration to the CM. It is vendor specific
        whether the CMTS updates individual CM UDCs after registration
        when rules are changed in the Grp object."
      DEFVAL { ''H }
@@ -681,19 +681,19 @@ docsSubMgt3GrpUdcSentInRegRsp OBJECT-TYPE
      MAX-ACCESS  read-write
      STATUS      current
      DESCRIPTION
-        "This attribute represents the CMTS upstream filtering 
-        status for this CM. The value 'true' indicates that the 
-        CMTS has sent UDCs to the CM during registration process. 
-        
+        "This attribute represents the CMTS upstream filtering
+        status for this CM. The value 'true' indicates that the
+        CMTS has sent UDCs to the CM during registration process.
+
         In order for a CMTS to send UDCs to a CM, the CMTS MAC Domain
-        needed to be enabled via the MAC Domain attribute 
-        SendUdcRulesEnabled and the CM had indicated the UDC capability 
-        support during the registration process. The value 'false' 
-        indicates that the CMTS was not enabled to sent UDCs to the 
-        CMs in the MAC Domain, or the CM does not advertised UDC 
-        support in its capabilities encodings, or both. Since the 
+        needed to be enabled via the MAC Domain attribute
+        SendUdcRulesEnabled and the CM had indicated the UDC capability
+        support during the registration process. The value 'false'
+        indicates that the CMTS was not enabled to sent UDCs to the
+        CMs in the MAC Domain, or the CM does not advertised UDC
+        support in its capabilities encodings, or both. Since the
         CMTS capability to sent UDCs to CMs during the registration
-        process is optional, the CMTS is not required to implement 
+        process is optional, the CMTS is not required to implement
         the value 'true'."
      DEFVAL { false }
      ::= { docsSubmgt3GrpEntry 2 }
@@ -896,11 +896,11 @@ docsSubmgt3FilterGrpTable OBJECT-TYPE
         the CM to the CMTS during registration or in their
         absence, default values configured in the CMTS.
         A Filter Group ID (GrpId) is a set of rules that correspond
-        to the expansion of a UDC Group ID into UDC individual 
-        classification rules.  The Filter Group Ids are generated 
-        whenever the CMTS is configured to send UDCs during the CM 
-        registration process. Implementation of L2 classification 
-        criteria is optional for the CMTS; LLC/MAC upstream and 
+        to the expansion of a UDC Group ID into UDC individual
+        classification rules.  The Filter Group Ids are generated
+        whenever the CMTS is configured to send UDCs during the CM
+        registration process. Implementation of L2 classification
+        criteria is optional for the CMTS; LLC/MAC upstream and
         downstream filter criteria can be ignored during the packet
         matching process."
      ::= { docsSubmgt3MibObjects 5}
@@ -913,8 +913,8 @@ docsSubmgt3FilterGrpEntry OBJECT-TYPE
          "The conceptual row of docsSubmgt3FilterGrpTable.
           The CMTS persists all instances of the FilterGrp object
           across reinitializations."
-     INDEX { 
-             docsSubmgt3FilterGrpGrpId, 
+     INDEX {
+             docsSubmgt3FilterGrpGrpId,
              docsSubmgt3FilterGrpRuleId
            }
      ::= { docsSubmgt3FilterGrpTable 1 }
@@ -1273,9 +1273,9 @@ docsSubmgt3FilterGrpEnetProtocolType OBJECT-TYPE
         contains an 802.1P/Q Tag header (i.e., EtherType
         0x8100), this attribute applies to the embedded EtherType
         field within the 802.1p/Q header.
-        The value 'mac' is only used for passing UDCs to CMs during 
-        Registration. The CMTS ignores filter rules that include 
-        the value of this attribute set to 'mac' for CMTS enforced 
+        The value 'mac' is only used for passing UDCs to CMs during
+        Registration. The CMTS ignores filter rules that include
+        the value of this attribute set to 'mac' for CMTS enforced
         upstream and downstream subscriber management filter group
         rules."
      REFERENCE
@@ -1373,7 +1373,7 @@ docsSubmgt3FilterGrpFlowLabel OBJECT-TYPE
         as part of the classifier and is not matched against packets."
      REFERENCE
         "DOCSIS 3.0 MAC and Upper Layer Protocols Interface
-        Specification CM-SP-MULPIv3.0-I26-150305, IPv6 Flow 
+        Specification CM-SP-MULPIv3.0-I26-150305, IPv6 Flow
         Label section in the Common Radio Frequency Interface
         Encodings Annex."
      ::= { docsSubmgt3FilterGrpEntry 27 }
@@ -1385,12 +1385,12 @@ docsSubmgt3FilterGrpCmInterfaceMask OBJECT-TYPE
      DESCRIPTION
         "This attribute represents a bit-mask of the CM in-bound
         interfaces to which this classifier applies.
-        This attribute only applies to upstream Drop Classifiers 
+        This attribute only applies to upstream Drop Classifiers
         being sent to CMs during the registration process."
      REFERENCE
         "DOCSIS 3.0 MAC and Upper Layer Protocols Interface
-        Specification CM-SP-MULPIv3.0-I26-150305, CM 
-        Interface Mask (CMIM) Encoding section in the Common 
+        Specification CM-SP-MULPIv3.0-I26-150305, CM
+        Interface Mask (CMIM) Encoding section in the Common
         Radio Frequency Interface Encodings Annex."
      ::= { docsSubmgt3FilterGrpEntry 28 }
 
@@ -1492,4 +1492,3 @@ docsSubmgt3Group OBJECT-GROUP
          "Group of objects implemented in the CMTS."
     ::= { docsSubmgt3MibGroups 1 }
 END
-

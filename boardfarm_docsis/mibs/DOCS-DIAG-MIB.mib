@@ -100,8 +100,8 @@ RegistrationDetailFlag ::=  TEXTUAL-CONVENTION
         DESCRIPTION
              "This data type defines an enumerated union of CM states
              used for the registration trigger detection. The named
-             bits associated with this type correspond to a subset 
-             of the names for the enumerations in CmtsCmRegState 
+             bits associated with this type correspond to a subset
+             of the names for the enumerations in CmtsCmRegState
              data type."
         SYNTAX BITS {
             other(0),
@@ -406,7 +406,7 @@ docsDiagLogEntry OBJECT-TYPE
             more triggers.
             There can be only one entry in this for a given Cable
             Modem."
-        INDEX { 
+        INDEX {
                 docsIf3CmtsCmRegStatusId
               }
         ::= { docsDiagLogTable 1 }
@@ -508,7 +508,7 @@ docsDiagLogDetailEntry OBJECT-TYPE
 
             There can be multiple entries in this table for a given
             cable modem, if more than one detail condition is enabled."
-        INDEX { 
+        INDEX {
                 docsIf3CmtsCmRegStatusId,
                 docsDiagLogDetailTypeValue
               }
@@ -681,4 +681,3 @@ docsDiagLogNotificationGroup NOTIFICATION-GROUP
             "CMTS is required to support objects in this group"
         ::= { docsDiagLogGroups 2 }
 END
-

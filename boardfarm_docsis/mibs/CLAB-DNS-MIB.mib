@@ -94,4 +94,3 @@ clabDNSGroup OBJECT-GROUP
     ::= { clabDNSMibGroups 1 }
 
 END
-

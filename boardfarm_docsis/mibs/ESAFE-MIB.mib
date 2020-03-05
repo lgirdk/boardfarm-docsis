@@ -32,12 +32,12 @@ esafeMib MODULE-IDENTITY
             "Licensed under the Apache License, Version 2.0 (the 'License');
             you may not use this file except in compliance with the License.
             You may obtain a copy of the License at:
- 
+
                 http://www.apache.org/licenses/LICENSE-2.0
- 
+
             Unless required by applicable law or agreed to in writing, software
             distributed under the License is distributed on an 'AS IS' BASIS,
-            WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or 
+            WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
             implied.
 
             See the License for the specific language governing permissions and
@@ -45,22 +45,22 @@ esafeMib MODULE-IDENTITY
 
             This MIB module provides the management objects necessary
             to configure functionality of eSAFE components of a device
-            implementing an eDOCSIS compliant cable modem and one or 
+            implementing an eDOCSIS compliant cable modem and one or
             more eSAFE elements.
             Copyright 1999-2017 Cable Television Laboratories, Inc.
             All rights reserved."
     REVISION "201709070000Z" -- September 7, 2017
     DESCRIPTION
-            "Revised per ESAFE-MIB-N-17.1800-1 to add 
-             eSTB IP Mode override information."             
+            "Revised per ESAFE-MIB-N-17.1800-1 to add
+             eSTB IP Mode override information."
     REVISION "201706150000Z" -- June 15, 2017
     DESCRIPTION
             "Revised per eDOCSIS-N-17.1744-1 to add Apache License
-             information." 
+             information."
     REVISION "201404030000Z" -- April 3, 2014
     DESCRIPTION
             "Revised version includes ECN
-             eDOCSIS-N-13.1128 and published as I27." 
+             eDOCSIS-N-13.1128 and published as I27."
     REVISION "201308080000Z" -- August 8, 2013
     DESCRIPTION
             "Revised version includes ECN
@@ -99,8 +99,8 @@ esafeProvisioningStatusTable OBJECT-TYPE
     STATUS      current
     DESCRIPTION
             "This table contains the current provisioning
-            status of each implemented eSAFE, and information 
-            about the last failure or exception condition in 
+            status of each implemented eSAFE, and information
+            about the last failure or exception condition in
             the eSAFE provisioning process, if applicable."
     ::= { esafeBase 1 }
 
@@ -149,7 +149,7 @@ esafeProvisioningStatusProgress OBJECT-TYPE
             esafeProvisioningStatusFailureFound and may also be
             extended by specific eSAFE MIB objects."
     REFERENCE
-            "CableHome PSDEV MIB Specification 
+            "CableHome PSDEV MIB Specification
              CH-SP-MIB-PSDEV-C01-060728, Section 4, cabhPsDevProvState
              object."
     ::={ esafeProvisioningStatusEntry 1 }
@@ -163,18 +163,18 @@ esafeProvisioningStatusFailureFound OBJECT-TYPE
             an error condition during the provisioning
             process. An eSAFE could start a looping process
             from a previous flow step after a failure,
-            therefore this value is retained until the 
+            therefore this value is retained until the
             flow step that initially failed eventually
             passes or is updated with another error
             condition.
 
-            The eSAFE device needs to reflect in the value of 
-            'esafePsProvisioningStatusFailureFound' any recognized 
-            errors even if it is still in the process of 
-            provisioning, i.e., when 
-            esafeProvisioningStatusProgress has a value of 
+            The eSAFE device needs to reflect in the value of
+            'esafePsProvisioningStatusFailureFound' any recognized
+            errors even if it is still in the process of
+            provisioning, i.e., when
+            esafeProvisioningStatusProgress has a value of
             inProgress(2).
-            Other eSAFE specifications provide the requirements for 
+            Other eSAFE specifications provide the requirements for
             those eSAFE devices with respect to this object."
     REFERENCE
             "PacketCable Provisioning specification,
@@ -189,20 +189,20 @@ esafeProvisioningStatusFailureFlow OBJECT-TYPE
     STATUS      current
     DESCRIPTION
             "If esafeProvisioningStatusFailureFound
-            is true(1) this object contains the 
+            is true(1) this object contains the
             label for the provisioning flow step
             in which the error condition was
-            encountered, otherwise an empty value 
+            encountered, otherwise an empty value
             is reported.
 
             The value of this object corresponds to
-            the provisioning sequence 'Flow Step' 
+            the provisioning sequence 'Flow Step'
             designator for the associated eSAFE, as
             defined in the eSAFE specification. For
             example, an ePS will report a value such as
             CHPSWMD-1, and an eMTA will report a value
             such as MTA-1.
-            Other eSAFE specifications provide the requirements for 
+            Other eSAFE specifications provide the requirements for
             those eSAFE devices with respect to this object."
     REFERENCE
             "PacketCable Provisioning specification,
@@ -217,17 +217,17 @@ esafeProvisioningStatusFailureEventID OBJECT-TYPE
     STATUS      current
     DESCRIPTION
             "If esafeProvisioningStatusFailureFound
-            is true(1) this object contains the 
+            is true(1) this object contains the
             eSAFE log error Event Identifier defined
             in the eSAFE specification, otherwise
             it returns a value '0'. For an eMTA type
             eSAFE, this object reports the PacketCable
             EventID value from the Provisioning Events
-            table, e.g., 65535. For an ePS type eSAFE, 
-            this object reports the EventID value from 
+            table, e.g., 65535. For an ePS type eSAFE,
+            this object reports the EventID value from
             the Defined Events for CableHome table, e.g.,
             68000100.
-            Other eSAFE specifications provide the requirements for 
+            Other eSAFE specifications provide the requirements for
             those eSAFE devices with respect to this object."
     REFERENCE
             "PacketCable Provisioning specification,
@@ -252,15 +252,15 @@ esafeProvisioningStatusFailureErrorText OBJECT-TYPE
             from the DNS server did not resolve
             the TFTP FQDN.' For an ePS type
             eSAFE this object reports the value
-            from the 'Event Text' column of the 
-            Defined Events for CableHome table, 
-            e.g., 'DHCP Failed - Discover sent, 
+            from the 'Event Text' column of the
+            Defined Events for CableHome table,
+            e.g., 'DHCP Failed - Discover sent,
             no offer received'.
-            Other eSAFE specifications provide the requirements for 
+            Other eSAFE specifications provide the requirements for
             those eSAFE devices with respect to this object."
     REFERENCE
             "PacketCable Provisioning specification,
-            PacketCable Management Event Mechanism specification; 
+            PacketCable Management Event Mechanism specification;
             CableHome specification, Appendix II Format and Content
             for Event, SYSLOG, and SNMP Trap."
     ::={ esafeProvisioningStatusEntry 5 }
@@ -284,8 +284,8 @@ esafeDevStatusTable OBJECT-TYPE
             eSAFE device. While this table MUST be implemented by all
             eDOCSIS devices, the support for reporting such information
             and the status conditions supported will be determined by
-            the corresponding eSAFE specifications. It is highly 
-            recommended that the eSAFE MIBs themselves have objects 
+            the corresponding eSAFE specifications. It is highly
+            recommended that the eSAFE MIBs themselves have objects
             to specify more detailed information."
     ::= { esafeBase 2 }
 
@@ -320,9 +320,9 @@ esafeDevServiceIntImpact OBJECT-TYPE
             interruption impact assessment of the corresponding eSAFE
             device as determined by the current status of the eSAFE
             device, in accordance with the directives provided in the
-            eSAFE specification. 
+            eSAFE specification.
 
-            If esafeDevServiceIntImpact is set to significant (1), it 
+            If esafeDevServiceIntImpact is set to significant (1), it
             indicates that the corresponding eSAFE device (as per the
             eSAFE specification) identifies a significant impact on the
             active services at the given point in time. This impact
@@ -338,13 +338,13 @@ esafeDevServiceIntImpact OBJECT-TYPE
             If esafeDevServiceIntImpact is unsupported(3), it indicates
             that the corresponding eSAFE device has no known interfaces
             to support this feature or the eSAFE specification does not
-            recommend this feature. 
+            recommend this feature.
 
             If the eSAFE specification specifies the use of this
             mechanism then it MUST define definitive states for the
             impacts (significant or none) and the value of
-            unsupported(3) MUST not be used by the eDOCSIS device 
-            for that eSAFE interface. 
+            unsupported(3) MUST not be used by the eDOCSIS device
+            for that eSAFE interface.
 
             However, if the corresponding eSAFE specification does not
             provide any directives then the value MUST be set to
@@ -372,18 +372,18 @@ esafeDevServiceIntImpactInfo OBJECT-TYPE
 
             Examples:
               For eMTA devices:
-                Lines 1 and 3 have active connections, Line 2 is not 
+                Lines 1 and 3 have active connections, Line 2 is not
                 provisioned.
                 <Value of the corresponding MIB object in the eMTA
                 MIBs, if applicable>
-                
+
               For other eSAFE devices:
                 Critical video streaming in progress, please wait for
                 5.30 minutes
                 <Value of the corresponding MIB object in the eSAFE
                 MIBs, if applicable>.
 
-            The device MUST report 'No Additional Information' in case 
+            The device MUST report 'No Additional Information' in case
             the associated  eSAFE vendor cannot obtain information from
             the eSAFE device."
 
@@ -402,23 +402,23 @@ esafePsCableHomeModeControl OBJECT-TYPE
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
-            "This object provides control over the mode of 
-            operation of the CableHome ePS eSAFE element 
-            of the eDOCSIS compliant device. 
+            "This object provides control over the mode of
+            operation of the CableHome ePS eSAFE element
+            of the eDOCSIS compliant device.
 
-            When this object is set to disabledMode(1), the 
+            When this object is set to disabledMode(1), the
             ePS eSAFE element is instructed to switch to
-            CableHome Disabled Mode operation. 
+            CableHome Disabled Mode operation.
 
-            When this object is set to provSystem(2), the ePS 
+            When this object is set to provSystem(2), the ePS
             eSAFE element restarts its provisioning process.
 
             When this object is set to dormantCHMode(3), the ePS
             eSAFE element is instructed to switch to CableHome
             Dormant Mode operation. In this mode the ePS restarts
-            its provisioning process omitting CableHome-specific 
-            DHCP Options 60 and 43 in the DHCP DISCOVER and 
-            DHCP REQUEST messages, acquires an IP address lease from 
+            its provisioning process omitting CableHome-specific
+            DHCP Options 60 and 43 in the DHCP DISCOVER and
+            DHCP REQUEST messages, acquires an IP address lease from
             the cable operator's DHCP server, and operates in unmanaged
             Dormant CableHome Mode regardless of the values of the file
             and siaddr fields or of the values of DHCP options that
@@ -428,7 +428,7 @@ esafePsCableHomeModeControl OBJECT-TYPE
             The value of this object MUST persist across cable modem
             resets."
     REFERENCE
-           "CableHome specifications, CableHome Operational 
+           "CableHome specifications, CableHome Operational
            Modes section."
     DEFVAL { dormantCHMode }
     ::= { esafePsMibObjects 1 }
@@ -442,24 +442,24 @@ esafePsCableHomeModeStatus OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-            "This object provides visibility to the current 
-            mode of operation of the CableHome ePS eSAFE 
-            element of the eDOCSIS compliant device. 
+            "This object provides visibility to the current
+            mode of operation of the CableHome ePS eSAFE
+            element of the eDOCSIS compliant device.
 
-            If the value of this object is disabledMode(1), the 
+            If the value of this object is disabledMode(1), the
             ePS eSAFE element is currently operating in CableHome
-            Disabled Mode. 
+            Disabled Mode.
 
-            If the value of this object is dormantCHMode(2), the 
+            If the value of this object is dormantCHMode(2), the
             ePS is currently operating in Dormant CableHome Mode.
 
-            If the value of this object is cableHomeMode(3), the ePS 
+            If the value of this object is cableHomeMode(3), the ePS
             is currently operating in CableHome mode."
     REFERENCE
             "CableHome specification, CableHome Operational Models
             section."
     ::= { esafePsMibObjects 2 }
-     
+
 --
 -- Objects that apply to an eCM with an eSTB type eSAFE.
 --
@@ -474,17 +474,17 @@ esafeEstbInitModeControl OBJECT-TYPE
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
-            "This object provides control over the initialization 
+            "This object provides control over the initialization
             mode of the DOCSIS eStb eSAFE element. Except
-            when set to honorEstbInitMode(4), the value of this 
-            object MUST override all Initialization Mode and 
-            Operation Mode encodings encapsulated in the eCM 
+            when set to honorEstbInitMode(4), the value of this
+            object MUST override all Initialization Mode and
+            Operation Mode encodings encapsulated in the eCM
             configuration file, e.g., TLV 217.1.
-            
+
             This object can only be set via an SNMP management
             Station.  This object cannot be included in the eCM
             configuration file.
-            
+
             When this object is set to ipv4Only(1), the eStb
             is instructed to switch to IPv4 Protocol Enabled Mode.
 
@@ -494,13 +494,13 @@ esafeEstbInitModeControl OBJECT-TYPE
             When this object is set to ipv4AndIpv6(3), the eStb
             is instructed to switch to Dual IP Protocol Enabled Mode.
 
-            When this object is set to honorEstbInitMode(4), the 
-            eRouter is instructed to honor the eStb Initialization 
-            Mode Encoding encapsulated in the eCM Config File under 
+            When this object is set to honorEstbInitMode(4), the
+            eRouter is instructed to honor the eStb Initialization
+            Mode Encoding encapsulated in the eCM Config File under
             TLV 217.
 
             The value of this object MUST persist across cable modem
-            resets."            
+            resets."
 
        REFERENCE
             "OpenCable Host Device 2.1 Core Functional Requirements
@@ -522,7 +522,7 @@ esafeErouterAdminMode OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-            "This object provides visibility to the eRouter mode of 
+            "This object provides visibility to the eRouter mode of
             operation as specified by TLV 202.1.
             If the value of this object is disabled(1), the
             eRouter was configured via TLV 202.1 in the cable modem
@@ -532,16 +532,16 @@ esafeErouterAdminMode OBJECT-TYPE
 
             If the value of this object is ipv4Only(2), the
             eRouter was configured via TLV 202.1 in the cable modem
-            configuration file to operate with an IPv4 network 
-            address and with the IPv4 stack operational and to 
-            operate without an IPv6 network address and to not 
+            configuration file to operate with an IPv4 network
+            address and with the IPv4 stack operational and to
+            operate without an IPv6 network address and to not
             run an IPv6 protocol stack.
 
             If the value of this object is ipv6Only(3), the
             eRouter was configured via TLV 202.1 in the cable modem
             configuration file to operate with an IPv6 network
             address and with the IPv6 stack operational and to
-            operate without an IPv4 network address and to not 
+            operate without an IPv4 network address and to not
             run an IPv4 protocol stack.
 
             If the value of this object is ipv4AndIpv6(4), the
@@ -549,7 +549,7 @@ esafeErouterAdminMode OBJECT-TYPE
             configuration file to operate with an IPv4 network
             address and an IPv6 network address and to run both
             IPv4 and IPv6 protocol stacks.
-	      
+
 	      If the value of the object is noTLV202dot1Present(5), the eRouter was not configured via TLV 202.1 in the cable modem configuration file."
     REFERENCE
             "DOCSIS IPv4 and IPv6 eRouter Specification,
@@ -571,28 +571,28 @@ esafeErouterOperMode OBJECT-TYPE
             mode of operation of the DOCSIS eRouter eSAFE
             element of the eDOCSIS compliant device.
 
-            If the value of this object is disabled(1), 
+            If the value of this object is disabled(1),
             the eRouter eSAFE element has been administratively
             Disabled. The eDOCSIS device will bridge traffic
             according to the configuration of the DOCSIS
             embedded cable modem (eCM)
 
-            If the value of this object is ipv4OnlyFwding(2), 
-            the eRouter eSAFE element is currently operating 
+            If the value of this object is ipv4OnlyFwding(2),
+            the eRouter eSAFE element is currently operating
             with the IPv4 protocol stack operational, is
             forwarding IPv4 traffic, and is not running an
             IPv6 protocol stack and not forwarding IPv6 traffic.
 
-            If the value of this object is ipv6OnlyFwding(3), 
-            the eRouter eSAFE element is currently operating 
+            If the value of this object is ipv6OnlyFwding(3),
+            the eRouter eSAFE element is currently operating
             with the IPv6 protocol stack operational, is
             forwarding IPv6 traffic, and is not running an
             IPv4 protocol stack and not forwarding IPv4 traffic.
 
-            If the value of this object is ipv4AndIpv6Fwding(4), 
-            the eRouter eSAFE element is currently operating 
+            If the value of this object is ipv4AndIpv6Fwding(4),
+            the eRouter eSAFE element is currently operating
             with both the IPv4 protocol stack and IPv6 protocol
-            stack operational, and is forwarding IPv4 and IPv6 
+            stack operational, and is forwarding IPv4 and IPv6
             traffic.
 
             If the value of this object is noIpv4AndNoIpv6Fwding(5),
@@ -625,11 +625,11 @@ esafeErouterInitModeControl OBJECT-TYPE
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
-            "This object provides control over the initialization 
+            "This object provides control over the initialization
             mode of the DOCSIS eRouter eSAFE element. Except
-            when set to honoreRouterInitMode(5), the value of this 
-            object MUST override all Initialization Mode and 
-            Operation Mode encodings encapsulated in the eCM 
+            when set to honoreRouterInitMode(5), the value of this
+            object MUST override all Initialization Mode and
+            Operation Mode encodings encapsulated in the eCM
             configuration file, e.g. TLV 202.1.
 
             This object can only be set via an SNMP management
@@ -637,11 +637,11 @@ esafeErouterInitModeControl OBJECT-TYPE
             configuration file.
 
             When this object is set to ipDisabled(1), the eRouter
-            is instructed to switch to IP Protocol Disabled Mode 
+            is instructed to switch to IP Protocol Disabled Mode
             and transparently bridge all traffic as described in
             the eRouter Initialization section of the CableLabs
             IPv4 and IPv6 eRouter Specification.
- 
+
             When this object is set to ipv4Only(2), the eRouter
             is instructed to switch to IPv4 Protocol Enabled Mode.
 
@@ -651,11 +651,11 @@ esafeErouterInitModeControl OBJECT-TYPE
             When this object is set to ipv4AndIpv6(4), the eRouter
             is instructed to switch to Dual IP Protocol Enabled Mode.
 
-            When this object is set to honoreRouterInitMode(5), the 
-            eRouter is instructed to honor the eRouter Initialization 
-            Mode Encoding encapsulated in the eCM Config File under 
-            TLV 202 as described in the Configuration of eRouter 
-            Operational Parameters section of the CableLabs eRouter 
+            When this object is set to honoreRouterInitMode(5), the
+            eRouter is instructed to honor the eRouter Initialization
+            Mode Encoding encapsulated in the eCM Config File under
+            TLV 202 as described in the Configuration of eRouter
+            Operational Parameters section of the CableLabs eRouter
             Specification.
 
             The value of this object MUST persist across cable modem
@@ -672,23 +672,23 @@ esafeErouterSoftReset OBJECT-TYPE
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
-            "This object provides a mechanism to soft reset the 
+            "This object provides a mechanism to soft reset the
             DOCSIS eRouter eSAFE element.
 
             This object can only be set via an SNMP management
             Station.  This object cannot be included in the eCM
             configuration file.
 
-            Setting this object to true(1) causes the DOCSIS 
+            Setting this object to true(1) causes the DOCSIS
             eRouter eSAFE element to perform a soft reset, without
             resetting the eCM. Reading this object always returns
             false(2).
 
-            When esafeErouterSoftReset is set to true(1), the 
+            When esafeErouterSoftReset is set to true(1), the
             eRouter performs a Soft Reset as described in Annex
             B.5 of [eRouter].
 
-            The value of esafeErouterSoftReset object MUST NOT 
+            The value of esafeErouterSoftReset object MUST NOT
             persist across cable modem reinitialization."
 
     REFERENCE
@@ -697,7 +697,7 @@ esafeErouterSoftReset OBJECT-TYPE
 ::= { esafeErouterMibObjects 5 }
 
 
--- Conformance information 
+-- Conformance information
 
 esafeMibConformance     OBJECT IDENTIFIER ::= { esafeMib 2 }
 esafeMibCompliances     OBJECT IDENTIFIER ::= { esafeMibConformance 1 }
@@ -723,7 +723,7 @@ MANDATORY-GROUPS {
 GROUP esafePsMibGroup
     DESCRIPTION
             "This group is implemented only by eDOCSIS devices
-            that implement an embedded Portal Services logical 
+            that implement an embedded Portal Services logical
             element (ePS) compliant with CableLabs
             CableHome specifications."
 
@@ -741,7 +741,7 @@ GROUP esafeStbMibGroup
             element compliant with CableLabs OpenCable Host Device
             specifications."
            ::= { esafeMibCompliances 1 }
-    
+
 -- eSAFE Base Group Declarations
 
 esafeBaseGroup OBJECT-GROUP
@@ -787,7 +787,7 @@ esafeErouterMibGroup OBJECT-GROUP
             "Group of embedded Router-specific objects
             in the eSAFE MIB."
     ::= { esafeMibGroups 3 }
-    
+
 -- eSTB MIB Group
 
 esafeStbMibGroup OBJECT-GROUP

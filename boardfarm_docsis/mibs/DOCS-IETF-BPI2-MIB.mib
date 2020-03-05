@@ -314,7 +314,7 @@ DocsBpkmDataAuthentAlg ::= TEXTUAL-CONVENTION
              "DOCSIS Baseline Privacy Plus Interface Specification,
         Sections 4.2.1.2 and 4.2.2.9."
         ::= { docsBpi2CmBaseEntry 6 }
-        
+
    docsBpi2CmAuthReset OBJECT-TYPE
         SYNTAX         TruthValue
         MAX-ACCESS     read-write
@@ -2514,7 +2514,7 @@ docsBpi2CmtsObjects OBJECT IDENTIFIER ::= { docsBpi2MIBObjects 2 }
         INDEX     { ifIndex, docsBpi2CmtsMulticastAuthSAId,
                docsBpi2CmtsMulticastAuthCmMacAddress }
         ::= { docsBpi2CmtsMulticastAuthTable 1 }
-        
+
    DocsBpi2CmtsMulticastAuthEntry ::= SEQUENCE
         {
         docsBpi2CmtsMulticastAuthSAId                DocsSAId,
@@ -3422,4 +3422,3 @@ OBJECT docsBpi2CmtsTEKDataAuthentAlg
    ::= { docsBpi2Groups 3 }
 
 END
-

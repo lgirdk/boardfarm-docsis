@@ -572,7 +572,7 @@ docsMcastCmtsGrpPhsCfgPhsMask OBJECT-TYPE
      REFERENCE
         "DOCSIS 3.0 MAC and Upper Layer Protocols Interface
          Specification CM-SP-MULPIv3.0-I01-060804,
-         Payload Header Suppression Encodings section and 
+         Payload Header Suppression Encodings section and
          Payload Header Suppression Mask (PHSM) in the Common
          Radio Frequency Interface Encodings Annex."
      ::= { docsMcastCmtsGrpPhsCfgEntry 3 }
@@ -1048,7 +1048,7 @@ docsMcastDsidPhsPhsVerify OBJECT-TYPE
         value is the same is the same as what is contained in the
         packet to be suppressed."
      ::= { docsMcastDsidPhsEntry 5 }
-     
+
 docsMcastStatsTable OBJECT-TYPE
      SYNTAX      SEQUENCE OF DocsMcastStatsEntry
      MAX-ACCESS  not-accessible
@@ -1094,7 +1094,7 @@ DocsMcastStatsEntry ::= SEQUENCE {
      docsMcastStatsDroppedPkts
                   Counter32,
      docsMcastStatsDroppedOctets
-                  Counter32            
+                  Counter32
      }
 
 docsMcastStatsGrpAddrType OBJECT-TYPE
@@ -1111,7 +1111,7 @@ docsMcastStatsGrpAddr OBJECT-TYPE
      MAX-ACCESS  not-accessible
      STATUS      current
      DESCRIPTION
-        "This attribute defines 'G' as the group address for a 
+        "This attribute defines 'G' as the group address for a
          particular (S,G) IP multicast session."
      ::= { docsMcastStatsEntry 2 }
 
@@ -1138,53 +1138,53 @@ docsMcastStatsSrcAddr OBJECT-TYPE
      MAX-ACCESS  not-accessible
      STATUS      current
      DESCRIPTION
-        "This attribute defines 'S' as the source address for a 
-         particular (S,G) IP multicast session. For the case of 
-         Any Source Multicast (ASM), this attribute uses a value 
+        "This attribute defines 'S' as the source address for a
+         particular (S,G) IP multicast session. For the case of
+         Any Source Multicast (ASM), this attribute uses a value
          of 0.0.0.0 for IPv4 or 0::/0 for IPv6."
-     ::= { docsMcastStatsEntry 5 }    
-     
+     ::= { docsMcastStatsEntry 5 }
+
 docsMcastStatsSrcPrefixLen OBJECT-TYPE
      SYNTAX      InetAddressPrefixLength
      MAX-ACCESS  not-accessible
      STATUS      current
      DESCRIPTION
-        "This attribute defines the source address prefix length 
+        "This attribute defines the source address prefix length
          of a particular (S,G) IP multicast session."
-     ::= { docsMcastStatsEntry 6 } 
-     
+     ::= { docsMcastStatsEntry 6 }
+
 docsMcastStatsDroppedPkts OBJECT-TYPE
      SYNTAX      Counter32
      MAX-ACCESS  read-only
      STATUS      current
      DESCRIPTION
-        "This attribute returns a count of the packets dropped by the 
-         CMTS Forwarder process for a particular IP multicast session 
-         prior to replication to the outbound interface(s) (e.g., MAC 
+        "This attribute returns a count of the packets dropped by the
+         CMTS Forwarder process for a particular IP multicast session
+         prior to replication to the outbound interface(s) (e.g., MAC
          domain interfaces). These packet drops can occur whenever there
-         are no replications for this IP multicast session, or where an 
-         IP multicast packet for the specific S,G is not forwarded to 
+         are no replications for this IP multicast session, or where an
+         IP multicast packet for the specific S,G is not forwarded to
          the outbound interface(s)."
-     ::= { docsMcastStatsEntry 7 }    
-     
+     ::= { docsMcastStatsEntry 7 }
+
 docsMcastStatsDroppedOctets OBJECT-TYPE
      SYNTAX      Counter32
      MAX-ACCESS  read-only
      STATUS      current
      DESCRIPTION
-        "This attribute returns a count of the octets for packets 
-         dropped by the CMTS Forwarder process for a particular IP 
-         multicast session prior to replication to the outbound 
+        "This attribute returns a count of the octets for packets
+         dropped by the CMTS Forwarder process for a particular IP
+         multicast session prior to replication to the outbound
          interface(s)."
-     ::= { docsMcastStatsEntry 8 } 
-     
+     ::= { docsMcastStatsEntry 8 }
+
 docsMcastCpeListTable OBJECT-TYPE
      SYNTAX      SEQUENCE OF DocsMcastCpeListEntry
      MAX-ACCESS  not-accessible
      STATUS      current
      DESCRIPTION
         "The table contains CPE information for the IP multicast session
-         identified by the combination of IP source and IP destination 
+         identified by the combination of IP source and IP destination
          group address (S,G), MAC Domain interface and CM MAC address."
      ::= { docsMcastMibObjects 9}
 
@@ -1230,7 +1230,7 @@ DocsMcastCpeListEntry ::= SEQUENCE {
      docsMcastCpeListCpeIpAddrType
                   InetAddressType,
      docsMcastCpeListCpeIpAddr
-                  InetAddress            
+                  InetAddress
      }
 
 docsMcastCpeListGrpAddrType OBJECT-TYPE
@@ -1247,7 +1247,7 @@ docsMcastCpeListGrpAddr OBJECT-TYPE
      MAX-ACCESS  not-accessible
      STATUS      current
      DESCRIPTION
-        "This attribute defines 'G' as the group address for a 
+        "This attribute defines 'G' as the group address for a
          particular (S,G) IP multicast session."
      ::= { docsMcastCpeListEntry 2 }
 
@@ -1274,21 +1274,21 @@ docsMcastCpeListSrcAddr OBJECT-TYPE
      MAX-ACCESS  not-accessible
      STATUS      current
      DESCRIPTION
-        "This attribute defines 'S' as the source address for a 
-         particular (S,G) IP multicast session. For the case of 
-         Any Source Multicast (ASM), this attribute uses a value 
+        "This attribute defines 'S' as the source address for a
+         particular (S,G) IP multicast session. For the case of
+         Any Source Multicast (ASM), this attribute uses a value
          of 0.0.0.0 for IPv4 or 0::/0 for IPv6. "
-     ::= { docsMcastCpeListEntry 5 }    
-     
+     ::= { docsMcastCpeListEntry 5 }
+
 docsMcastCpeListSrcPrefixLen OBJECT-TYPE
      SYNTAX      InetAddressPrefixLength
      MAX-ACCESS  not-accessible
      STATUS      current
      DESCRIPTION
-        "This attribute defines the source address prefix length 
+        "This attribute defines the source address prefix length
          of a particular (S,G) IP multicast session."
-     ::= { docsMcastCpeListEntry 6 } 
-     
+     ::= { docsMcastCpeListEntry 6 }
+
 docsMcastCpeListCmMacAddr OBJECT-TYPE
      SYNTAX      MacAddress
      MAX-ACCESS  not-accessible
@@ -1296,27 +1296,27 @@ docsMcastCpeListCmMacAddr OBJECT-TYPE
      DESCRIPTION
         "This attribute defines the CM MAC address of a particular
          (S,G) IP multicast session."
-     ::= { docsMcastCpeListEntry 7 } 
-     
+     ::= { docsMcastCpeListEntry 7 }
+
 docsMcastCpeListDsid OBJECT-TYPE
      SYNTAX      Dsid
      MAX-ACCESS  read-only
      STATUS      current
      DESCRIPTION
         "This attribute defines the Downstream Service ID (DSID) label
-         with which the CMTS labels all packets of a particular (S,G) 
+         with which the CMTS labels all packets of a particular (S,G)
          IP multicast session."
-     ::= { docsMcastCpeListEntry 8 }    
-     
+     ::= { docsMcastCpeListEntry 8 }
+
 docsMcastCpeListCpeMacAddr OBJECT-TYPE
      SYNTAX      MacAddress
      MAX-ACCESS  read-only
      STATUS      current
      DESCRIPTION
-        "This attribute returns the CPE MAC address for the (S,G) 
+        "This attribute returns the CPE MAC address for the (S,G)
          IP multicast session."
-     ::= { docsMcastCpeListEntry 9 } 
-     
+     ::= { docsMcastCpeListEntry 9 }
+
 docsMcastCpeListCpeIpAddrType OBJECT-TYPE
      SYNTAX      InetAddressType
      MAX-ACCESS  read-only
@@ -1325,23 +1325,23 @@ docsMcastCpeListCpeIpAddrType OBJECT-TYPE
         "This attribute indicates the address family of the address
          contained in docsMcastCpeListCpeIpAddr."
      ::= { docsMcastCpeListEntry 10 }
-     
+
 docsMcastCpeListCpeIpAddr OBJECT-TYPE
      SYNTAX      InetAddress
      MAX-ACCESS  read-only
      STATUS      current
      DESCRIPTION
-        "This attribute returns the CPE IP address for the (S,G) 
+        "This attribute returns the CPE IP address for the (S,G)
          IP multicast session."
-     ::= { docsMcastCpeListEntry 11 }                       
-                    
+     ::= { docsMcastCpeListEntry 11 }
+
 docsMcastBandwidthTable OBJECT-TYPE
      SYNTAX      SEQUENCE OF DocsMcastBandwidthEntry
      MAX-ACCESS  not-accessible
      STATUS      current
      DESCRIPTION
-        "The table contains the admitted aggregate bandwidth of IP 
-        Multicast sessions onto the different Downstream Channel 
+        "The table contains the admitted aggregate bandwidth of IP
+        Multicast sessions onto the different Downstream Channel
         Sets or MAC Domain Interfaces of a CMTS."
      ::= { docsMcastMibObjects 10 }
 
@@ -1355,10 +1355,10 @@ docsMcastBandwidthEntry OBJECT-TYPE
          The ifIndex key corresponds to the MAC Domain interface
          or DCS associated with the bandwidth data.
 
-         Note that for some vendors this CMTS cable interface will be a 
-         cable-mac interface.  For others, it will be a DOCSIS Downstream 
-         Channel Set.  In either case, this CMTS cable interface exists as 
-         a row entry in the ifTable (and therefore has an ifIndex which can 
+         Note that for some vendors this CMTS cable interface will be a
+         cable-mac interface.  For others, it will be a DOCSIS Downstream
+         Channel Set.  In either case, this CMTS cable interface exists as
+         a row entry in the ifTable (and therefore has an ifIndex which can
          be used as an index for this table)."
      INDEX {
              ifIndex
@@ -1376,9 +1376,9 @@ docsMcastBandwidthAdmittedAggrBW OBJECT-TYPE
      MAX-ACCESS  read-only
      STATUS      current
      DESCRIPTION
-        "This attribute represents the Admitted Multicast Aggregate 
-        Bandwidth which is defined as the sum of the Minimum Reserved 
-        Traffic Rates of each Group Service Flow that has been admitted 
+        "This attribute represents the Admitted Multicast Aggregate
+        Bandwidth which is defined as the sum of the Minimum Reserved
+        Traffic Rates of each Group Service Flow that has been admitted
         on a given CMTS cable interface."
      ::= { docsMcastBandwidthEntry 1 }
 
@@ -1387,7 +1387,7 @@ docsMcastBandwidthAdmittedAggrLowWater OBJECT-TYPE
      MAX-ACCESS  read-only
      STATUS      current
      DESCRIPTION
-        "This attribute represents the low watermark threshold for 
+        "This attribute represents the low watermark threshold for
         Admitted Multicast Aggregate Bandwidth events."
      ::= { docsMcastBandwidthEntry 2 }
 
@@ -1396,7 +1396,7 @@ docsMcastBandwidthAdmittedAggrHighWater OBJECT-TYPE
      MAX-ACCESS  read-only
      STATUS      current
      DESCRIPTION
-        "This attribute represents the high watermark threshold for 
+        "This attribute represents the high watermark threshold for
         Admitted Multicast Aggregate Bandwidth events."
      ::= { docsMcastBandwidthEntry 3 }
 

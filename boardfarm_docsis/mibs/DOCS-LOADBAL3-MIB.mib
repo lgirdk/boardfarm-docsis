@@ -37,7 +37,7 @@ docsLoadbal3Mib MODULE-IDENTITY
      ORGANIZATION    "Cable Television Laboratories, Inc."
      CONTACT-INFO
          "
-         Postal: Cable Television Laboratories, Inc. 
+         Postal: Cable Television Laboratories, Inc.
          858 Coal Creek Circle
          Louisville, Colorado 80027-9750
          U.S.A.
@@ -45,7 +45,7 @@ docsLoadbal3Mib MODULE-IDENTITY
          Fax:   +1 303-661-9199
          E-mail: mibs@cablelabs.com"
      DESCRIPTION
-        "This MIB module contains the management objects for 
+        "This MIB module contains the management objects for
          the DOCSIS 3.x CMTS Load Balancing operation.
          Copyright 1999-2016 Cable Television Laboratories, Inc.
          All rights reserved."
@@ -81,8 +81,8 @@ docsLoadbal3Mib MODULE-IDENTITY
         and published as I07"
      REVISION        "200712060000Z" -- December 6, 2007
      DESCRIPTION
-        "Initial version, published as part of the CableLabs 
-        OSSIv3.0 specification CM-SP-OSSIv3.0-I05-071206 via 
+        "Initial version, published as part of the CableLabs
+        OSSIv3.0 specification CM-SP-OSSIv3.0-I05-071206 via
         ECN OSSIv3.0-N-07.0522-7"
      ::= {  clabProjDocsis 22}
 
@@ -92,39 +92,39 @@ docsLoadbal3Mib MODULE-IDENTITY
 ChChgInitTechMap   ::=  TEXTUAL-CONVENTION
     STATUS  current
     DESCRIPTION
-        "This data type enumerates the allowed initialization 
-        techniques for Dynamic Channel Change (DCC) and Dynamic 
+        "This data type enumerates the allowed initialization
+        techniques for Dynamic Channel Change (DCC) and Dynamic
         Bonding Change (DBC) operations. The techniques are represented
         by the 5 most significant bits (MSB). Bits 0 through 4 map to
-        initialization techniques 0 through 4.  
-        
-        Each bit position represents the internal associated technique 
+        initialization techniques 0 through 4.
+
+        Each bit position represents the internal associated technique
         as described below:
 
         'reinitializeMac' Reinitialize the MAC
         'broadcastInitRanging'
-          Perform Broadcast initial 
-          ranging on new channel before 
+          Perform Broadcast initial
+          ranging on new channel before
           normal operation
         'unicastInitRanging'
           Perform unicast ranging on new
           channel before normal operation
         'initRanging'
-          Perform either broadcast or 
+          Perform either broadcast or
           unicast ranging on new channel before
           normal operation
         'direct'
-          Use the new channel(s) directly 
+          Use the new channel(s) directly
           without re-initializing or ranging
-        
-         Multiple bits may be set to 1 to allow the CMTS to select the 
-         most suitable technique in a proprietary manner. 
+
+         Multiple bits may be set to 1 to allow the CMTS to select the
+         most suitable technique in a proprietary manner.
          An empty value or a value with all bits in '0' means no channel
          changes allowed"
     REFERENCE
-        "DOCSIS 3.0 MAC and Uper Layer Protocol Specification, 
-        CM-SP-MULPIv3.0-I08-080522, Channel Assignment During 
-        Registration section."         
+        "DOCSIS 3.0 MAC and Uper Layer Protocol Specification,
+        CM-SP-MULPIv3.0-I08-080522, Channel Assignment During
+        Registration section."
     SYNTAX BITS {
         reinitializeMac(0),
         broadcastInitRanging(1),
@@ -152,7 +152,7 @@ docsLoadbal3SystemEnable OBJECT-TYPE
         However, even when Autonomous Load Balancing
         is disabled, the CMTS is required to assign load balancing
         parameters to CMs as provisioned in the configuration
-        file and/or RestrictCM object. 
+        file and/or RestrictCM object.
         This attribute value persists after system reinitialization.
         There might be cases where this attribute
         reports a failure and Load Balancing is enabled, for
@@ -214,11 +214,11 @@ docsLoadbal3ChgOverGroupForceUCC OBJECT-TYPE
         Request (UCC-REQ) section of MULPI. In some cases
         the CMTS may still use UCC commands even though this
         attribute value is 'false', for example in an upstream-only
-        change-over operation directed to a CM that the CMTS is 
+        change-over operation directed to a CM that the CMTS is
         aware is only capable of UCC, but the operator is not aware
         of the CM capabilities.  This attribute value is ignored when
-        the target CM for the change-over operation is in MRC mode, 
-        or the UsChSet attribute is the zero-length string, or the 
+        the target CM for the change-over operation is in MRC mode,
+        or the UsChSet attribute is the zero-length string, or the
         operation includes changes for downstream channels."
      REFERENCE
         "DOCSIS 3.0 MAC and Upper Layer Protocols Interface
@@ -236,7 +236,7 @@ docsLoadbal3ChgOverGroupdownFrequency OBJECT-TYPE
         to which the cable modem is instructed to move
         using a DCC request. The value zero indicates that
         this attribute is ignored during a commit operation."
-        
+
      DEFVAL { 0 }
      ::= { docsLoadbal3ChgOverGroup 4 }
 
@@ -273,8 +273,8 @@ docsLoadbal3ChgOverGroupRcpId OBJECT-TYPE
         "DOCSIS 3.0 MAC and Upper Layer Protocols Interface
          Specification CM-SP-MULPIv3.0-I08-080522  CM Receive Channel
          (RCP/RCC) Encodings section and  DOCSIS 3.0 Operations Support
-         System Interface Specification CM-SP-OSSIv3.0-I05-071206, 
-         RCC Status Objects 
+         System Interface Specification CM-SP-OSSIv3.0-I05-071206,
+         RCC Status Objects
          section."
      DEFVAL { '0000000000'H }
      ::= { docsLoadbal3ChgOverGroup 6 }
@@ -290,9 +290,9 @@ docsLoadbal3ChgOverGroupRccId OBJECT-TYPE
         the change-over operation."
      REFERENCE
         "DOCSIS 3.0 MAC and Upper Layer Protocols Interface
-         Specification CM-SP-MULPIv3.0-I08-080522,  CM Receive 
-         Channel (RCP/RCC) Encodings section and  DOCSIS 3.0 
-         Operations Support System Interface Specification 
+         Specification CM-SP-MULPIv3.0-I08-080522,  CM Receive
+         Channel (RCP/RCC) Encodings section and  DOCSIS 3.0
+         Operations Support System Interface Specification
          CM-SP-OSSIv3.0-I05-071206 RCC Status Objects section."
      DEFVAL { 0 }
      ::= { docsLoadbal3ChgOverGroup 7 }
@@ -322,14 +322,14 @@ docsLoadbal3ChgOverGroupServiceFlowInfo OBJECT-TYPE
         in the change-over operation. This is intended
         as an override to the normal assignment based on SF
         attributes.  This attribute is encoded as a series of
-        32-bit pairs as follows: 
+        32-bit pairs as follows:
         - The first four bytes correspond to the value of the Service
         Flow ID (attribute Id of the ServiceFlow object
-        of the DOCSIS QOS objects. 
+        of the DOCSIS QOS objects.
         - The last four bytes correspond to the value of the attribute
         ChSetId of the UsChSet or DsChSet object of the
-        CMTS Bonding Objects. 
-        
+        CMTS Bonding Objects.
+
         If this attribute does not include tuples for some of
         the CM's Service Flows, the CMTS determines the respective
         channels based on SF attributes. Service Flow
@@ -365,7 +365,7 @@ docsLoadbal3ChgOverGroupCommit OBJECT-TYPE
      DESCRIPTION
         "This attribute when set to 'true' triggers the change-over
         operation for Externally-Directed Load Balancing.
-        
+
         Setting this attribute to 'true' is known as a commit
         operation. A commit operation is considered successful
         if the CMTS considers that the entered information
@@ -376,22 +376,22 @@ docsLoadbal3ChgOverGroupCommit OBJECT-TYPE
         if the CMTS determines that there are invalid
         attributes values in the ChangeOver object such
         that the change-over operation cannot be initiated.
-        
+
         Some examples for a change-over that cannot be initiated are:
         - Attempt to send a DBC for MRC that does not fit the CM RCP.
-        - Attempt to send a DCC while a previous one is still in 
+        - Attempt to send a DCC while a previous one is still in
         progress.
         - Attempt to send a UCC to a channel ID that is not defined.
         After system initialization all ChangeOver object
-        parameters are set to default values. 
+        parameters are set to default values.
         After a successful commit operation all ChangeOver
         object parameters are set to default values with the
         exception of this attribute (commit) that is set to 'true'.
         An unsuccessful commit operation is rejected
         and this attribute reports false in subsequent value
         queries.
-       
-             
+
+
         After a successful commit operation, the CMTS initiates
         the change-over transaction using the most appropriate
         technique.  The potential techniques are:
@@ -408,7 +408,7 @@ docsLoadbal3ChgOverGroupCommit OBJECT-TYPE
         an RCC defined in the target MAC domain.  The upstream
         channel set may or may not be provided.  The only applicable
         Initialization Technique for this operation
-        is 'reinitializeMAC'.   
+        is 'reinitializeMAC'.
         - DBC - For change in the TCS and/or RCS on CMs operating
         in MRC mode."
      DEFVAL { false }
@@ -520,7 +520,7 @@ docsLoadbal3ChgOverStatusDownFrequency OBJECT-TYPE
         The value 0 indicates that the CMTS does not create a
         TLV for the downstream frequency in the DCC-REQ message.
         This object has no meaning when executing UCC operations."
-        
+
      ::= { docsLoadbal3ChgOverStatusEntry 4 }
 
 docsLoadbal3ChgOverStatusMdIfIndex OBJECT-TYPE
@@ -541,9 +541,9 @@ docsLoadbal3ChgOverStatusRcpId OBJECT-TYPE
         "This attribute represents the RCP-ID set in the MultipleChChgOver
         object commit operation, or all zeros
         RCP-ID.
-        The CMTS implements this object for CMs in 3.0 mode, but 
+        The CMTS implements this object for CMs in 3.0 mode, but
         it is not applicable for CMs in 3.1 mode."
-     REFERENCE 
+     REFERENCE
          "DOCSIS 3.1 MAC and Upper Layer Protocols Interface
          Specification CM-SP-MULPIv3.1, RCP-ID
          section in the Common TLV Encodings Annex."
@@ -556,7 +556,7 @@ docsLoadbal3ChgOverStatusRccId OBJECT-TYPE
      DESCRIPTION
         "This attribute represents the RCC Status Index set
         in the ChgOver3 object commit operation, or zero."
-        
+
      ::= { docsLoadbal3ChgOverStatusEntry 7 }
 
 docsLoadbal3ChgOverStatusUsChSet OBJECT-TYPE
@@ -637,22 +637,22 @@ docsLoadbal3ChgOverStatusValue OBJECT-TYPE
      DESCRIPTION
         "This attribute represents the status of the specified
         change-over operation. The enumerations are:
-        
+
         Change-over using  DCC message exchange:
         'modemDeparting'
         The cable modem has responded with a change-over response
         of either a DCC-RSP with a confirmation code of
-        depart(180) or a UCC-RSP. 
+        depart(180) or a UCC-RSP.
         'timeOutT13'
         Failure due to no DCC-RSP with confirmation code depart(180)
         received prior to expiration of the T13 timer.
-        
+
         'timeOutT15'
         T15 timer timed out prior to the arrival of a bandwidth
         request, RNG-REQ message, or DCC-RSP message with
         confirmation code of arrive(181) from the cable modem.
-        
-        Change-over using  DBC message exchange: 
+
+        Change-over using  DBC message exchange:
         'dbcTimeout'
         The number of DBC-REQ retries was exceeded and no DBC-RSP
         was received
@@ -663,20 +663,20 @@ docsLoadbal3ChgOverStatusValue OBJECT-TYPE
         'noOpNeed'
          A change-over operation was requested in which neither
         the DS and US channels where the CM is operational
-        changed. 
+        changed.
         'waitToSendMessage'
          The specified operation is active and CMTS is waiting
         to send the channel change message with channel info
-        to the cable modem. 
+        to the cable modem.
         'cmOperationRejected'
          Channel Change operation was rejected by the cable modem.
-        
+
         'cmtsOperationRejected'
         Channel Change operation was rejected by the Cable Modem
         Termination System.
         'rejectInit'
         Operation rejected due to unsupported initialization
-        tech requested. 
+        tech requested.
         'success'
         CMTS received an indication that the CM successfully
         completed the change-over operation. e.g., If an initialization
@@ -709,7 +709,7 @@ docsLoadbal3CmtsCmParamsTable OBJECT-TYPE
         selects the cable modem Load Balancing Group (GrpId
         attribute of this object) from multiple sources by
         following the rules and sequence described below:
-        
+
         The CMTS selects the assignment of the CM to a Load Balancing
         Group by determining first if the CM is in a Restricted
         Load Balancing Group or in its absence to the General
@@ -718,14 +718,14 @@ docsLoadbal3CmtsCmParamsTable OBJECT-TYPE
         Balancing group is achieved by first matching the
         CM in the RestrictCmCfg Object and if no match is found,
         by selecting the best match within the ResGrpCfg
-        object. 
+        object.
         The best match within the ResGrpCfg follows the MULPI
         requirements on precedences of the CM signaled TLVs:
         ServiceType ID and Load Balancing Group ID (for backward
         compatibility of provisioned Group IDs)."
      REFERENCE
-        "DOCSIS 3.0 MAC and Uper Layer Protocol Specification, 
-        CM-SP-MULPIv3.0-I08-080522, Channel Assignment During 
+        "DOCSIS 3.0 MAC and Uper Layer Protocol Specification,
+        CM-SP-MULPIv3.0-I08-080522, Channel Assignment During
         Registration section."
      ::= { docsLoadbal3MibObjects 4}
 
@@ -761,7 +761,7 @@ docsLoadbal3CmtsCmParamsProvGrpId OBJECT-TYPE
         "This attribute indicates the provisioned Load Balancing
         Group ID TLV the CM signaled to the CMTS during
         registration, or zero if not provisioned in the CM."
-        
+
      ::= { docsLoadbal3CmtsCmParamsEntry 1 }
 
 docsLoadbal3CmtsCmParamsCurrentGrpId OBJECT-TYPE
@@ -833,7 +833,7 @@ docsLoadbal3GeneralGrpDefaultsEnable OBJECT-TYPE
      DESCRIPTION
         "This attribute represents the default value for the
         Enable attribute of the GeneralLoadBalGrp object."
-        
+
      DEFVAL { true }
      ::= { docsLoadbal3GeneralGrpDefaults 1 }
 
@@ -844,7 +844,7 @@ docsLoadbal3GeneralGrpDefaultsPolicyId OBJECT-TYPE
      DESCRIPTION
         "This attribute represents the default value for the
         PolicyId attribute of the GeneralLoadBalGrp object."
-        
+
      DEFVAL { 0 }
      ::= { docsLoadbal3GeneralGrpDefaults 2 }
 
@@ -879,7 +879,7 @@ docsLoadbal3GeneralGrpCfgTable OBJECT-TYPE
         time a fiber node is associated to a MAC Domain an instance
         of this object is defined by the CMTS and populated
         with either the same values as the other fiber nodes
-        associated with the same MD-CM-SG (if any exist) or 
+        associated with the same MD-CM-SG (if any exist) or
         default values from the GeneralGrpDefaults
         object. Similarly when a fiber node is no longer paired
         with a MAC Domain the corresponding instance is
@@ -896,7 +896,7 @@ docsLoadbal3GeneralGrpCfgEntry OBJECT-TYPE
      INDEX { ifIndex,docsLoadbal3GeneralGrpCfgNodeName }
      ::= { docsLoadbal3GeneralGrpCfgTable 1 }
 
-DocsLoadbal3GeneralGrpCfgEntry ::= SEQUENCE { 
+DocsLoadbal3GeneralGrpCfgEntry ::= SEQUENCE {
      docsLoadbal3GeneralGrpCfgNodeName
                   NodeName,
      docsLoadbal3GeneralGrpCfgEnable
@@ -999,8 +999,8 @@ docsLoadbal3ResGrpCfgId OBJECT-TYPE
         ID TLV value when determining the CM Load Balancing
         Group assignment based on such TLV value."
      REFERENCE
-        "DOCSIS 3.0 MAC and Uper Layer Protocol Specification, 
-        CM-SP-MULPIv3.0-I08-080522, Channel Assignment During 
+        "DOCSIS 3.0 MAC and Uper Layer Protocol Specification,
+        CM-SP-MULPIv3.0-I08-080522, Channel Assignment During
         Registration section."
      ::= { docsLoadbal3ResGrpCfgEntry 1 }
 
@@ -1058,7 +1058,7 @@ docsLoadbal3ResGrpCfgInitTech OBJECT-TYPE
         "This attribute represents the initialization techniques
         that the CMTS can use to load balance cable modems
         in the Load Balancing Group."
-     DEFVAL {'F8'H }    
+     DEFVAL {'F8'H }
      ::= { docsLoadbal3ResGrpCfgEntry 6 }
 
 docsLoadbal3ResGrpCfgPolicyId OBJECT-TYPE
@@ -1073,13 +1073,13 @@ docsLoadbal3ResGrpCfgPolicyId OBJECT-TYPE
         The CMTS assigns this Policy ID value to a cable modem
         associated with the group ID when the cable modem
         does not signal a Policy ID during registration.
-        
+
          The Policy ID value is intended to be a numeric reference
         to an instance of  the Policy object. However, It is
         not required to have an existing or active policy instance
         in which case it indicates no policy is associated
         with the Load Balancing Group.
-         
+
          The Policy ID of value 0 is reserved to indicate no policy
         is associated with the load balancing group."
      DEFVAL { 0 }
@@ -1095,8 +1095,8 @@ docsLoadbal3ResGrpCfgServiceTypeId OBJECT-TYPE
         modem provisioned Service Type ID to determine
         the most appropriate Restricted Load Balancing Group."
      REFERENCE
-        "DOCSIS 3.0 MAC and Uper Layer Protocol Specification, 
-        CM-SP-MULPIv3.0-I08-080522, Channel Assignment During 
+        "DOCSIS 3.0 MAC and Uper Layer Protocol Specification,
+        CM-SP-MULPIv3.0-I08-080522, Channel Assignment During
         Registration section."
      ::= { docsLoadbal3ResGrpCfgEntry 8 }
 
@@ -1187,7 +1187,7 @@ docsLoadbal3GrpStatusMdIfIndex OBJECT-TYPE
         to indicate that vendor-specific mechanisms are
         used in load balancing operations. For example, to
         provide Load Balancing Groups across MAC domains."
-        
+
      ::= { docsLoadbal3GrpStatusEntry 3 }
 
 docsLoadbal3GrpStatusMdCmSgId OBJECT-TYPE
@@ -1202,7 +1202,7 @@ docsLoadbal3GrpStatusMdCmSgId OBJECT-TYPE
         Balancing Group. If there are vendor-specific Load
         Balancing Groups configuration ( e.g. MdIfIndex
         set to zero), this attribute value might not be meaningful."
-        
+
      ::= { docsLoadbal3GrpStatusEntry 4 }
 
 docsLoadbal3GrpStatusDsChList OBJECT-TYPE
@@ -1289,7 +1289,7 @@ docsLoadbal3RestrictCmCfgTable OBJECT-TYPE
         "This object describes the list of cable modems being
         statically provisioned at the CMTS to a Restricted
         Load Balancing Group.
-        When a CM registers it is either assigned to 
+        When a CM registers it is either assigned to
         "
      ::= { docsLoadbal3MibObjects 9}
 
@@ -1336,7 +1336,7 @@ docsLoadbal3RestrictCmCfgMacAddr OBJECT-TYPE
      DESCRIPTION
         "This attribute represents the Mac Address of the cable
         modem within the Restricted Load Balancing Group."
-        
+
      DEFVAL { '000000000000'H }
      ::= { docsLoadbal3RestrictCmCfgEntry 2 }
 
@@ -1353,7 +1353,7 @@ docsLoadbal3RestrictCmCfgMacAddrMask OBJECT-TYPE
         the cable modem MAC address with the MacAddrMAsk
         attribute and being compared with the bit-ANDed
         of attributes MacdAddr and MacAddrMask.
-        
+
         A cable modem MAC address look up is performed first with
         instances containing this attribute value not null,
         if several entries match, the largest consecutive
@@ -1371,7 +1371,7 @@ docsLoadbal3RestrictCmCfgGrpId OBJECT-TYPE
         the cable modem MAC address - MAC address mask combination.
         The value zero indicates that the instance
         is matched only against the ServiceTypeId value."
-        
+
      DEFVAL { 0 }
      ::= { docsLoadbal3RestrictCmCfgEntry 4 }
 
@@ -1386,7 +1386,7 @@ docsLoadbal3RestrictCmCfgServiceTypeId OBJECT-TYPE
         that the instance is matched only against the GrpId
         value, if both GrpId and this attribute are not present
         the instance is ignored for matching purposes."
-        
+
      DEFVAL { "" }
      ::= { docsLoadbal3RestrictCmCfgEntry 5 }
 
@@ -1396,7 +1396,7 @@ docsLoadbal3RestrictCmCfgStatus OBJECT-TYPE
      STATUS      current
      DESCRIPTION
         "Indicates the status of this conceptual object.
-         
+
          There is no restriction on setting columns in this table
         any time."
      ::= { docsLoadbal3RestrictCmCfgEntry 6 }
@@ -1461,7 +1461,7 @@ docsLoadbal3PolicyPtr OBJECT-TYPE
      DESCRIPTION
         "This attribute represents a reference to an instance
         in a rule or other policy object like BasicRule object."
-        
+
      ::= { docsLoadbal3PolicyEntry 3 }
 
 docsLoadbal3PolicyRowStatus OBJECT-TYPE
@@ -1552,7 +1552,7 @@ docsLoadbal3BasicRuleDisPeriod OBJECT-TYPE
         "This attribute disables load balancing until the
         time stated by this attribute when the attribute Enable
         is set to 'disablePeriod'. The time is defined in
-        seconds of the wall clock since midnight. 
+        seconds of the wall clock since midnight.
         "
      DEFVAL { 0 }
      ::= { docsLoadbal3BasicRuleEntry 4 }
@@ -1654,4 +1654,3 @@ docsLoadbal3Group OBJECT-GROUP
          "Group of objects implemented in"
     ::= { docsLoadbal3MibGroups 1 }
 END
-

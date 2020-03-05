@@ -101,4 +101,3 @@ class DocsisBootNone(DocsisBootStub):
 
     env_req = {"environment_def": {"board": {"eRouter_Provisioning_mode": "none"}}}
     cfg = "none"
-

@@ -32,12 +32,12 @@ clabTopoMib MODULE-IDENTITY
          "Licensed under the Apache License, Version 2.0 (the 'License');
          you may not use this file except in compliance with the License.
          You may obtain a copy of the License at:
- 
+
              http://www.apache.org/licenses/LICENSE-2.0
- 
+
          Unless required by applicable law or agreed to in writing, software
          distributed under the License is distributed on an 'AS IS' BASIS,
-         WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or 
+         WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
          implied.
 
          See the License for the specific language governing permissions and
@@ -79,7 +79,7 @@ NodeName ::= TEXTUAL-CONVENTION
         the name of a fiber node. Internationalization is supported
         by conforming to the SNMP textual convention SnmpAdminString.
         The US-ASCII control characters (0x00 - 0x1F), the DEL
-        Character (0x7F), and the double-quote mark (0x22) are 
+        Character (0x7F), and the double-quote mark (0x22) are
         prohibited within the syntax of this data type."
      REFERENCE
         "RFC 3411."
@@ -107,7 +107,7 @@ clabTopoFiberNodeCfgEntry OBJECT-TYPE
          "The conceptual row of clabTopoFiberNodeCfg.
          The CMTS persists all instances of FiberNodeCfg
          across reinitializations."
-     INDEX { 
+     INDEX {
              clabTopoFiberNodeCfgNodeName
            }
      ::= { clabTopoFiberNodeCfgTable 1 }
@@ -130,7 +130,7 @@ clabTopoFiberNodeCfgNodeName OBJECT-TYPE
         node."
      REFERENCE
         "DOCSIS 3.0 MAC and Upper Layer Protocols Interface
-         Specification CM-SP-MULPIv3.0-I01-060804, RF Topology 
+         Specification CM-SP-MULPIv3.0-I01-060804, RF Topology
          Configuration section."
      ::= { clabTopoFiberNodeCfgEntry 1 }
 
@@ -174,8 +174,8 @@ clabTopoChFnCfgEntry OBJECT-TYPE
          "The conceptual row of clabTopoChFnCfg.
           The CMTS persists all instances of ChFnCfg
           across reinitializations."
-     INDEX { 
-             clabTopoFiberNodeCfgNodeName, 
+     INDEX {
+             clabTopoFiberNodeCfgNodeName,
              clabTopoChFnCfgChIfIndex
            }
      ::= { clabTopoChFnCfgTable 1 }
@@ -236,4 +236,3 @@ clabTopoGroup OBJECT-GROUP
          "Group of objects implemented in the CMTS."
     ::= { clabTopoMibGroups 1 }
 END
-

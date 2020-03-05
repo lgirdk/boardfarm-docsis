@@ -2250,7 +2250,7 @@ docsQosParamSetGuaranteedGrantRate OBJECT-TYPE
         and accepted, the CMTS MUST enforce this parameter as described
         for the GGI enforcement.
         This attribute will also return 0 if DataRateUnitSetting
-        is enabled and the resulting value cannot be represented in 
+        is enabled and the resulting value cannot be represented in
         32 bits.  In which case, docsQosParamSetHCPeakTrafficRate should
         be utilized."
      REFERENCE
@@ -2284,7 +2284,7 @@ docsQosParamSetImmedAqmMinThreshold OBJECT-TYPE
         "This attribute provides provides the minimum threshold in
         microseconds of the ramp function used by the Immediate AQM
         algorithm and the Queue Protection algorithm. This attribute applies
-        only if the 'SF AQM Algorithm' used by the Service Flow 
+        only if the 'SF AQM Algorithm' used by the Service Flow
         is configured as ImmediateAqm. Otherwise, it returns a 0.
         The default is 475 microseconds."
      REFERENCE
@@ -2833,10 +2833,10 @@ docsQosServiceFlowSanctionedPkts OBJECT-TYPE
      DESCRIPTION
         "For outgoing service flows for which Low Latency DOCSIS is enabled,
          this attribute counts the number of Packet Data PDUs classified to
-         this service flow that were redirected from the Low Latency Service Flow 
+         this service flow that were redirected from the Low Latency Service Flow
          queue to the to the Classic Service Flow queue. '0' (zero) is reported
-         for all other service flows. '0' (zero) is reported for incoming 
-         service flows. This counter's last discontinuity is the 
+         for all other service flows. '0' (zero) is reported for incoming
+         service flows. This counter's last discontinuity is the
          ifCounterDiscontinuityTime of the associated MAC Domain interface index."
      REFERENCE
         "DOCSIS 3.1 MAC and Upper Layer Protocols Interface
@@ -4517,7 +4517,7 @@ docsQosServiceClassImmedAqmMinThreshold OBJECT-TYPE
         "This attribute provides provides the minimum threshold in
         microseconds of the ramp function used by the Immediate AQM
         algorithm and the Queue Protection algorithm. This attribute applies
-        only if the 'SF AQM Algorithm' used by the Service Flow 
+        only if the 'SF AQM Algorithm' used by the Service Flow
         is configured as ImmediateAqm. Otherwise, it returns a 0.
         The default is 475 microseconds."
      REFERENCE

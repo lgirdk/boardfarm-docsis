@@ -1,19 +1,19 @@
 DOCS-RPHY-PTP-MIB DEFINITIONS ::= BEGIN
 IMPORTS
-    MODULE-IDENTITY, 
-    OBJECT-TYPE, 
+    MODULE-IDENTITY,
+    OBJECT-TYPE,
     Unsigned32,
     Counter64,
     Integer32,
     TimeTicks
         FROM SNMPv2-SMI         -- RFC 2578
-    TruthValue, 
+    TruthValue,
     TimeStamp,
     DateAndTime,
     TEXTUAL-CONVENTION
-        FROM SNMPv2-TC 
-    OBJECT-GROUP, 
-    MODULE-COMPLIANCE 
+        FROM SNMPv2-TC
+    OBJECT-GROUP,
+    MODULE-COMPLIANCE
         FROM SNMPv2-CONF
     SnmpAdminString
         FROM SNMP-FRAMEWORK-MIB -- RFC 3411
@@ -25,41 +25,41 @@ IMPORTS
         FROM DOCS-RPHY-MIB;
 
 
-docsRphyPtpMib MODULE-IDENTITY 
+docsRphyPtpMib MODULE-IDENTITY
     LAST-UPDATED    "201906130000Z" -- June 13, 2019
-    ORGANIZATION    "Cable Television Laboratories, Inc" 
-    CONTACT-INFO 
+    ORGANIZATION    "Cable Television Laboratories, Inc"
+    CONTACT-INFO
         "
-         Postal: Cable Television Laboratories, Inc. 
-         400 Centennial Parkway 
-         Louisville, Colorado 80027-1266 
-         U.S.A. 
-         Phone: +1 303-661-9100 
-         Fax: +1 303-661-9199 
-         E-mail: mibs@cablelabs.com" 
-    DESCRIPTION 
+         Postal: Cable Television Laboratories, Inc.
+         400 Centennial Parkway
+         Louisville, Colorado 80027-1266
+         U.S.A.
+         Phone: +1 303-661-9100
+         Fax: +1 303-661-9199
+         E-mail: mibs@cablelabs.com"
+    DESCRIPTION
         "This MIB module contains the status and reporting objects
          for the Remote PHY CCAP Core and RPD PTP management.
          Copyright 2017-2019 Cable Television Laboratories, Inc.
          All rights reserved."
     REVISION "201906130000Z" -- June 13, 2019
-    DESCRIPTION 
-        "This version includes modifications 
+    DESCRIPTION
+        "This version includes modifications
          per ECN DOCS-RPHY-PTP-MIB-N-19.2023-1."
     REVISION "201901240000Z" -- January 24, 2019
-    DESCRIPTION 
-        "This version includes modifications 
+    DESCRIPTION
+        "This version includes modifications
          per ECN DOCS-RPHY-PTP-MIB-N-18.1986-2."
     REVISION "201804120000Z" -- April 12, 2018
-    DESCRIPTION 
-        "This version includes modifications 
-         per ECN DOCS-RPHY-PTP-MIB-N-18.1896-2." 
+    DESCRIPTION
+        "This version includes modifications
+         per ECN DOCS-RPHY-PTP-MIB-N-18.1896-2."
     REVISION "201708100000Z" -- August 10, 2017
-    DESCRIPTION 
-        "This version includes modifications 
-         per ECN DOCS-RPHY-PTP-MIB-N-17.1782-2."     
+    DESCRIPTION
+        "This version includes modifications
+         per ECN DOCS-RPHY-PTP-MIB-N-17.1782-2."
     REVISION "201704130000Z" -- April 13, 2017
-    DESCRIPTION 
+    DESCRIPTION
         "Initial version, created by R-OSSI-N-17.1721-3."
 ::= { clabProjDocsis 32 }
 
@@ -68,7 +68,7 @@ docsRphyPtpMib MODULE-IDENTITY
 -- Textual Conventions
 -- ---------------------------------------------------------
 
-                         
+
 -- ---------------------------------------------------------------------
 -- Main Groups
 -- ---------------------------------------------------------------------
@@ -79,7 +79,7 @@ docsRphyPtpConformance          OBJECT IDENTIFIER ::= { docsRphyPtpMib 2}
 docsRphyPtpRpdMibObjects        OBJECT IDENTIFIER ::= { docsRphyPtpObjects 1}
 docsRphyPtpCcapMibObjects       OBJECT IDENTIFIER ::= { docsRphyPtpObjects 2}
 
-docsRphyPtpCompliances          OBJECT IDENTIFIER ::= { docsRphyPtpConformance 1 } 
+docsRphyPtpCompliances          OBJECT IDENTIFIER ::= { docsRphyPtpConformance 1 }
 docsRphyPtpGroups               OBJECT IDENTIFIER ::= { docsRphyPtpConformance 2 }
 
 
@@ -97,74 +97,74 @@ docsRphyPtpGroups               OBJECT IDENTIFIER ::= { docsRphyPtpConformance 2
 
 docsRphyPtpCcapDefaultDataSet OBJECT IDENTIFIER ::= {docsRphyPtpCcapMibObjects 1}
 
-docsRphyPtpCcapDefaultDataSetTwoStepFlag     OBJECT-TYPE 
+docsRphyPtpCcapDefaultDataSetTwoStepFlag     OBJECT-TYPE
     SYNTAX      TruthValue
-    MAX-ACCESS  read-only 
+    MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "This attribute specifies whether the Two Step process is 
+        "This attribute specifies whether the Two Step process is
          used (i.e., the clock is a two-step clock)."
     ::= {docsRphyPtpCcapDefaultDataSet 1}
 
-docsRphyPtpCcapDefaultDataSetClockIdentity   OBJECT-TYPE 
+docsRphyPtpCcapDefaultDataSetClockIdentity   OBJECT-TYPE
     SYNTAX      OCTET STRING(SIZE(8))
-    MAX-ACCESS  read-only       
+    MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
         "This attribute specifies the default Dataset clock identity."
     ::= {docsRphyPtpCcapDefaultDataSet 2}
 
-docsRphyPtpCcapDefaultDataSetPriority1       OBJECT-TYPE 
+docsRphyPtpCcapDefaultDataSetPriority1       OBJECT-TYPE
     SYNTAX      Unsigned32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "This attribute specifies the default Dataset clock Priority1. 
+        "This attribute specifies the default Dataset clock Priority1.
           Lower values take precedence."
      ::= {docsRphyPtpCcapDefaultDataSet 3}
 
-docsRphyPtpCcapDefaultDataSetPriority2       OBJECT-TYPE 
+docsRphyPtpCcapDefaultDataSetPriority2       OBJECT-TYPE
     SYNTAX      Unsigned32
-    MAX-ACCESS  read-only      
+    MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "This attribute specifies the default Dataset clock Priority2. 
+        "This attribute specifies the default Dataset clock Priority2.
           Lower values take precedence."
      ::= {docsRphyPtpCcapDefaultDataSet 4}
 
-docsRphyPtpCcapDefaultDataSetSlaveOnly       OBJECT-TYPE 
+docsRphyPtpCcapDefaultDataSetSlaveOnly       OBJECT-TYPE
     SYNTAX      TruthValue
-    MAX-ACCESS  read-only      
+    MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
         "This attribute specifies whether the SlaveOnly flag is set."
      ::= {docsRphyPtpCcapDefaultDataSet 5}
 
-docsRphyPtpCcapDefaultDataSetQualityClass    OBJECT-TYPE 
+docsRphyPtpCcapDefaultDataSetQualityClass    OBJECT-TYPE
     SYNTAX      Unsigned32(0..255)
-    MAX-ACCESS  read-only      
+    MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "This attribute of an ordinary or boundary clock denotes the traceability 
-         of the time or frequency distributed by the grandmaster clock. 
-         See section 7.6.2.4 in [IEEE 1588]."    
+        "This attribute of an ordinary or boundary clock denotes the traceability
+         of the time or frequency distributed by the grandmaster clock.
+         See section 7.6.2.4 in [IEEE 1588]."
      ::= {docsRphyPtpCcapDefaultDataSet 6}
 
-docsRphyPtpCcapDefaultDataSetQualityAccuracy OBJECT-TYPE 
+docsRphyPtpCcapDefaultDataSetQualityAccuracy OBJECT-TYPE
     SYNTAX      Unsigned32
-    MAX-ACCESS  read-only      
+    MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
         "This attribute characterizes a clock for the purpose of the best master
          clock (BMC) algorithm. See section 7.6.2.5 in [IEEE 1588]."
      ::= {docsRphyPtpCcapDefaultDataSet 7}
 
-docsRphyPtpCcapDefaultDataSetQualityOffset   OBJECT-TYPE 
+docsRphyPtpCcapDefaultDataSetQualityOffset   OBJECT-TYPE
     SYNTAX      Unsigned32(0..65535)
-    MAX-ACCESS  read-only      
+    MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "This attribute is the offset, scaled, logarithmic representation of 
+        "This attribute is the offset, scaled, logarithmic representation of
          the clock variance. See Section 7.6.3.5 in [IEEE 1588]."
      ::= {docsRphyPtpCcapDefaultDataSet 8}
 
@@ -173,35 +173,35 @@ docsRphyPtpCcapDefaultDataSetQualityOffset   OBJECT-TYPE
 -- ---------------------------------------------------------------------
 docsRphyPtpCcapCurrentDataSet OBJECT IDENTIFIER ::= {docsRphyPtpCcapMibObjects 2}
 
-docsRphyPtpCcapCurrentDataSetStepsRemoved OBJECT-TYPE     
+docsRphyPtpCcapCurrentDataSetStepsRemoved OBJECT-TYPE
     SYNTAX      Unsigned32
     UNITS       "steps"
-    MAX-ACCESS  read-only      
+    MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "This attribute is the number of communication paths traversed between the 
+        "This attribute is the number of communication paths traversed between the
          local clock and the grandmaster clock. The initialization value is 0."
      ::= {docsRphyPtpCcapCurrentDataSet 1}
 
-docsRphyPtpCcapCurrentDataSetOffsetFromMaster OBJECT-TYPE 
+docsRphyPtpCcapCurrentDataSetOffsetFromMaster OBJECT-TYPE
     SYNTAX      Integer32
     UNITS       "Nanoseconds"
-    MAX-ACCESS  read-only      
+    MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
         "This attribute is an implementation-specific representation of the current
-         value of the time difference between a master and a slave as computed by 
+         value of the time difference between a master and a slave as computed by
          the slave."
      ::= {docsRphyPtpCcapCurrentDataSet 2}
 
-docsRphyPtpCcapCurrentDataSetMeanPathDelay OBJECT-TYPE    
+docsRphyPtpCcapCurrentDataSetMeanPathDelay OBJECT-TYPE
     SYNTAX      Unsigned32
     UNITS       "Nanoseconds"
-    MAX-ACCESS  read-only      
+    MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
         "This attribute is an implementation-specific representation of the current
-         value of the mean propagation time between a master and slave clock as 
+         value of the mean propagation time between a master and slave clock as
          computed by the slave. Zero means that the path delay is unavailable."
      ::= {docsRphyPtpCcapCurrentDataSet 3}
 
@@ -211,112 +211,112 @@ docsRphyPtpCcapCurrentDataSetMeanPathDelay OBJECT-TYPE
 
 docsRphyPtpCcapParentDataSet OBJECT IDENTIFIER ::= {docsRphyPtpCcapMibObjects 3}
 
-docsRphyPtpCcapParentDataSetParentClockId OBJECT-TYPE 
+docsRphyPtpCcapParentDataSetParentClockId OBJECT-TYPE
     SYNTAX      OCTET STRING(SIZE(8))
-    MAX-ACCESS  read-only      
+    MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
         "This attribute is the clock identifier of the clock port on the master that
          issues the Sync messages used in synchronizing this clock."
      ::= {docsRphyPtpCcapParentDataSet 1}
 
-docsRphyPtpCcapParentDataSetParentPortNumber OBJECT-TYPE 
+docsRphyPtpCcapParentDataSetParentPortNumber OBJECT-TYPE
     SYNTAX      Unsigned32
-    MAX-ACCESS  read-only      
+    MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
         "This attribute is the port number of the clock port on the master that issues
          the Sync messages used in synchronizing this clock."
      ::= {docsRphyPtpCcapParentDataSet 2}
 
-docsRphyPtpCcapParentDataSetParentStats OBJECT-TYPE 
+docsRphyPtpCcapParentDataSetParentStats OBJECT-TYPE
     SYNTAX      TruthValue
-    MAX-ACCESS  read-only      
+    MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "This attribute is set to True if the clock has a port in the slave state and 
-         the clock has computed statistically valid estimates of the ClockOffset 
-         Scaled Log Variance and the Clock PhaseChangeRate. If either the ClockOffset 
+        "This attribute is set to True if the clock has a port in the slave state and
+         the clock has computed statistically valid estimates of the ClockOffset
+         Scaled Log Variance and the Clock PhaseChangeRate. If either the ClockOffset
          Scaled Log Variance or the Clock PhaseChangeRate is not computed, then the
          CCAP core MUST set the value of ParentStats to false."
      ::= {docsRphyPtpCcapParentDataSet 3}
 
-docsRphyPtpCcapParentDataSetClockOffset OBJECT-TYPE 
+docsRphyPtpCcapParentDataSetClockOffset OBJECT-TYPE
     SYNTAX      Integer32
     UNITS       "Nanoseconds"
-    MAX-ACCESS  read-only      
+    MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "This attribute represents the value of the observed Parent Offset Scaled Log Variance, 
-         which is an estimate of the parent clock's PTP variance as observed by the slave clock. 
-         The computation of this value is optional, but if not computed, the value of parentStats 
+        "This attribute represents the value of the observed Parent Offset Scaled Log Variance,
+         which is an estimate of the parent clock's PTP variance as observed by the slave clock.
+         The computation of this value is optional, but if not computed, the value of parentStats
          is FALSE. The initialization value of ClockOffset is 0xFFFF."
      ::= {docsRphyPtpCcapParentDataSet 4}
 
-docsRphyPtpCcapParentDataSetPhaseChangeRate OBJECT-TYPE 
+docsRphyPtpCcapParentDataSetPhaseChangeRate OBJECT-TYPE
     SYNTAX      Integer32
     UNITS       "Nanoseconds"
-    MAX-ACCESS  read-only      
+    MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "This attribute represents the value of Phase Change Rate, which is an estimate 
-         of the parent clock's phase change rate as observed by the slave clock. If the 
-         estimate exceeds the capacity of its data type, this value is set to 0x7FFF FFFF. 
-         A positive sign indicates that the parent clock's phase change rate is greater 
-         than the rate of the slave clock. The computation of this value is optional, but 
+        "This attribute represents the value of Phase Change Rate, which is an estimate
+         of the parent clock's phase change rate as observed by the slave clock. If the
+         estimate exceeds the capacity of its data type, this value is set to 0x7FFF FFFF.
+         A positive sign indicates that the parent clock's phase change rate is greater
+         than the rate of the slave clock. The computation of this value is optional, but
          if not computed,the value of parentStats is FALSE."
      ::= {docsRphyPtpCcapParentDataSet 5}
 
-docsRphyPtpCcapParentDataSetGmClockIdentity OBJECT-TYPE 
+docsRphyPtpCcapParentDataSetGmClockIdentity OBJECT-TYPE
     SYNTAX      OCTET STRING(SIZE(8))
-    MAX-ACCESS  read-only      
+    MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
         "This attribute represents the clock Identity of the grandmaster clock."
      ::= {docsRphyPtpCcapParentDataSet 6}
 
-docsRphyPtpCcapParentDataSetGmPriority1 OBJECT-TYPE 
+docsRphyPtpCcapParentDataSetGmPriority1 OBJECT-TYPE
     SYNTAX      Unsigned32
-    MAX-ACCESS  read-only      
+    MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
         "This attribute represents the priority1 of the grandmaster clock. Lower values take precedence."
      ::= {docsRphyPtpCcapParentDataSet 7}
 
-docsRphyPtpCcapParentDataSetGmPriority2 OBJECT-TYPE 
+docsRphyPtpCcapParentDataSetGmPriority2 OBJECT-TYPE
     SYNTAX      Unsigned32
-    MAX-ACCESS  read-only      
+    MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
         "This attribute represents the priority2 of the grandmaster clock. Lower values take precedence."
      ::= {docsRphyPtpCcapParentDataSet 8}
 
-docsRphyPtpCcapParentDataSetGmQualityClass OBJECT-TYPE 
+docsRphyPtpCcapParentDataSetGmQualityClass OBJECT-TYPE
     SYNTAX      Unsigned32
-    MAX-ACCESS  read-only      
+    MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "This attribute is the clock class for the grandmaster clock. The clock class 
-         attribute of an ordinary or boundary clock denotes the 
-         traceability of the time or frequency distributed by the 
+        "This attribute is the clock class for the grandmaster clock. The clock class
+         attribute of an ordinary or boundary clock denotes the
+         traceability of the time or frequency distributed by the
          grandmaster clock. See section 7.6.2.4 in [IEEE 1588]."
      ::= {docsRphyPtpCcapParentDataSet 9}
 
-docsRphyPtpCcapParentDataSetGmQualityAccuracy OBJECT-TYPE 
+docsRphyPtpCcapParentDataSetGmQualityAccuracy OBJECT-TYPE
     SYNTAX      Unsigned32
-    MAX-ACCESS  read-only      
+    MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "This attribute characterizes the grandmaster clock for the purpose of the best 
+        "This attribute characterizes the grandmaster clock for the purpose of the best
          master clock (BMC) algorithm. See section 7.6.2.5 in [IEEE 1588]."
      ::= {docsRphyPtpCcapParentDataSet 10}
 
-docsRphyPtpCcapParentDataSetGmQualityOffset OBJECT-TYPE 
+docsRphyPtpCcapParentDataSetGmQualityOffset OBJECT-TYPE
     SYNTAX      Unsigned32
-    MAX-ACCESS  read-only      
+    MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "This attribute represents the offset, scaled, logarithmic representation of the 
+        "This attribute represents the offset, scaled, logarithmic representation of the
          grandmaster clock variance. See Section 7.6.3.5 in [IEEE 1588]."
      ::= {docsRphyPtpCcapParentDataSet 11}
 
@@ -340,7 +340,7 @@ docsRphyPtpCcapTimePropertiesCurrentUtcOffset OBJECT-TYPE
     MAX-ACCESS    read-only
     STATUS        current
     DESCRIPTION
-        "This attribute represents the offset between International Atomic Time (TAI) 
+        "This attribute represents the offset between International Atomic Time (TAI)
          and Universal Coordinated Time (UTC)."
     ::= {docsRphyPtpCcapTimeProperties 2}
 
@@ -349,9 +349,9 @@ docsRphyPtpCcapTimePropertiesLeap59 OBJECT-TYPE
     MAX-ACCESS    read-only
     STATUS        current
     DESCRIPTION
-        "This attribute represents whether or not there are 59 seconds 
-         in the last minute of the current UTC day for PTP systems 
-         whose epoch is the PTP epoch,; a TRUE value for Leap59 indicates 
+        "This attribute represents whether or not there are 59 seconds
+         in the last minute of the current UTC day for PTP systems
+         whose epoch is the PTP epoch,; a TRUE value for Leap59 indicates
          that the last minute of the current UTC day contains 59 seconds."
     ::= {docsRphyPtpCcapTimeProperties 3}
 
@@ -360,9 +360,9 @@ docsRphyPtpCcapTimePropertiesLeap61 OBJECT-TYPE
     MAX-ACCESS    read-only
     STATUS        current
     DESCRIPTION
-        "This attribute represents whether or not there are 61 seconds in the last 
-         minute of the current UTC day for PTP systems whose epoch is the PTP epoch; 
-         a TRUE value for Leap61 indicates that the last minute of the current UTC day 
+        "This attribute represents whether or not there are 61 seconds in the last
+         minute of the current UTC day for PTP systems whose epoch is the PTP epoch;
+         a TRUE value for Leap61 indicates that the last minute of the current UTC day
          contains 61 seconds."
     ::= {docsRphyPtpCcapTimeProperties 4 }
 
@@ -371,9 +371,9 @@ docsRphyPtpCcapTimePropertiesTimeTraceable OBJECT-TYPE
     MAX-ACCESS    read-only
     STATUS        current
     DESCRIPTION
-        "This attribute represents whether the timescale and the value of currentUtcOffset 
-        are traceable to a primary reference. TimeTraceable is TRUE if the timescale and the 
-        value of currentUtcOffset are traceable to a primary reference; otherwise, the value 
+        "This attribute represents whether the timescale and the value of currentUtcOffset
+        are traceable to a primary reference. TimeTraceable is TRUE if the timescale and the
+        value of currentUtcOffset are traceable to a primary reference; otherwise, the value
         is FALSE."
     ::= {docsRphyPtpCcapTimeProperties 5 }
 
@@ -382,8 +382,8 @@ docsRphyPtpCcapTimePropertiesFreqTraceable OBJECT-TYPE
     MAX-ACCESS    read-only
     STATUS        current
     DESCRIPTION
-        "This attribute represents whether the frequency determining the timescale is traceable 
-        to a primary reference. The value of FrequencyTraceable is TRUE if the frequency determining 
+        "This attribute represents whether the frequency determining the timescale is traceable
+        to a primary reference. The value of FrequencyTraceable is TRUE if the frequency determining
         the timescale is traceable to a primary reference; otherwise, the value is FALSE."
     DEFVAL { true }
     ::= {docsRphyPtpCcapTimeProperties 6}
@@ -401,8 +401,8 @@ docsRphyPtpCcapTimePropertiesTimeSource OBJECT-TYPE
     MAX-ACCESS    read-only
     STATUS        current
     DESCRIPTION
-        "This attribute represents the source of time used by the grandmaster clock. See Table 7 in [IEEE 1588]. 
-        If the time source of the grandmaster clock is unknown, the CCAP Core MUST set the TimeSource value to 
+        "This attribute represents the source of time used by the grandmaster clock. See Table 7 in [IEEE 1588].
+        If the time source of the grandmaster clock is unknown, the CCAP Core MUST set the TimeSource value to
         INTERNAL_OSCILLATOR (0xA0)."
     ::= {docsRphyPtpCcapTimeProperties 8}
 
@@ -416,7 +416,7 @@ docsRphyPtpCcapPortDataSetTable OBJECT-TYPE
     STATUS        current
     DESCRIPTION
         "See section 8.2.5 in [IEEE 1588] for details of the 1588 port dataset."
-     ::={docsRphyPtpCcapMibObjects 5} 
+     ::={docsRphyPtpCcapMibObjects 5}
 
 docsRphyPtpCcapPortDataSetEntry OBJECT-TYPE
     SYNTAX        DocsRphyPtpCcapPortDataSetEntry
@@ -439,9 +439,9 @@ docsRphyPtpCcapPortDataSetPortNumber OBJECT-TYPE
     MAX-ACCESS    not-accessible
     STATUS        current
     DESCRIPTION
-        "This key attribute is the port number of the local clock port. 
-        Port numbers 0 and 65,535 are reserved and cannot be used for real clock ports. 
-        See [IEEE 1588] for more information. When a PTP clock has N ports, 
+        "This key attribute is the port number of the local clock port.
+        Port numbers 0 and 65,535 are reserved and cannot be used for real clock ports.
+        See [IEEE 1588] for more information. When a PTP clock has N ports,
         the CCAP Core MUST set the port number to a value in the interval 1..N."
     ::= {docsRphyPtpCcapPortDataSetEntry 1}
 
@@ -450,7 +450,7 @@ docsRphyPtpCcapPortDataSetPortState OBJECT-TYPE
     MAX-ACCESS    read-only
     STATUS        current
     DESCRIPTION
-        "This attribute is the state of this PTP clock port. See Table 8 in [IEEE 1588]."    
+        "This attribute is the state of this PTP clock port. See Table 8 in [IEEE 1588]."
     ::= {docsRphyPtpCcapPortDataSetEntry 2}
 
 docsRphyPtpCcapPortDataSetMeanPathDelay OBJECT-TYPE
@@ -458,8 +458,8 @@ docsRphyPtpCcapPortDataSetMeanPathDelay OBJECT-TYPE
     MAX-ACCESS    read-only
     STATUS        current
     DESCRIPTION
-        "This attribute is an implementation-specific representation of the current 
-        value of the mean propagation time between a master and slave clock as computed 
+        "This attribute is an implementation-specific representation of the current
+        value of the mean propagation time between a master and slave clock as computed
         by the slave. Zero means that the path delay is unavailable."
     ::= {docsRphyPtpCcapPortDataSetEntry 3}
 
@@ -470,7 +470,7 @@ docsRphyPtpCcapPortDataSetMeanPathDelay OBJECT-TYPE
 docsRphyPtpCcapClockStatus OBJECT IDENTIFIER ::= {docsRphyPtpCcapMibObjects 6}
 
 docsRphyPtpCcapClockStatusClockState   OBJECT-TYPE
-    SYNTAX  INTEGER { 
+    SYNTAX  INTEGER {
                     freerun(1),
                     holdover(2),
                     acquiring(3),
@@ -480,22 +480,22 @@ docsRphyPtpCcapClockStatusClockState   OBJECT-TYPE
     MAX-ACCESS        read-only
     STATUS            current
     DESCRIPTION
-        "This attribute represents the current 
-         state of the clock. The ClockState 
-         is PhaseAligned when the RPD PTP port state is 
+        "This attribute represents the current
+         state of the clock. The ClockState
+         is PhaseAligned when the RPD PTP port state is
          'synchronized'; see the [R-PHY] PTP Process after
          softReset section. PTP port state values of 'free running'
-         and 'acquiring' equal the ClockState freerun and 
-         acquiring, respectively. The ClockState is holdover 
+         and 'acquiring' equal the ClockState freerun and
+         acquiring, respectively. The ClockState is holdover
          when the PTP port state is either 'holdover out of spec'
          or holdover within spec'; see the ExcessiveHolder attribute
-         for more information about these two PTP port states. 
-         The ClockState value freqLocked is unused for now, 
+         for more information about these two PTP port states.
+         The ClockState value freqLocked is unused for now,
          since the RPD does not currently support that PTP port state."
     ::= {docsRphyPtpCcapClockStatus 1 }
 
 docsRphyPtpCcapClockStatusLastStateChange OBJECT-TYPE
-    SYNTAX            TimeStamp        
+    SYNTAX            TimeStamp
     MAX-ACCESS        read-only
     STATUS            current
     DESCRIPTION
@@ -531,22 +531,22 @@ docsRphyPtpCcapClockStatusCounterDiscontinuityTime OBJECT-TYPE
          last reset to zero. If the RPD does not acquire time of day
          it can report an initial CounterDiscontinuityTime of Jan 1 1970. "
     ::= {docsRphyPtpCcapClockStatus 5 }
-        
+
 docsRphyPtpCcapClockStatusExcessiveHoldover OBJECT-TYPE
     SYNTAX            TruthValue
     MAX-ACCESS        read-only
     STATUS            current
     DESCRIPTION
-        "This attribute is false and the ClockState equals 
+        "This attribute is false and the ClockState equals
          holdover when the PTP port state is 'holdover with spec'
          as defined in [R-PHY]. This attribute is true and ClockState
-         is holdover when the PTP port state is 'holdover out of spec' 
+         is holdover when the PTP port state is 'holdover out of spec'
          as defined in [R-PHY]. This attribute has no meaning unless
          the ClockState attribute is set to 'holdover'."
     ::= {docsRphyPtpCcapClockStatus 6 }
 
 -- ---------------------------------------------------------
--- Port Status Table 
+-- Port Status Table
 -- ---------------------------------------------------------
 
 docsRphyPtpCcapCorePtpPortStatusTable OBJECT-TYPE
@@ -576,7 +576,7 @@ DocsRphyPtpCcapCorePtpPortStatusEntry ::= SEQUENCE
     }
 
 docsRphyPtpCcapCorePtpPortStatusPortNumber  OBJECT-TYPE
-    SYNTAX        Unsigned32 (0..65535)        
+    SYNTAX        Unsigned32 (0..65535)
     MAX-ACCESS    not-accessible
     STATUS        current
     DESCRIPTION
@@ -589,7 +589,7 @@ docsRphyPtpCcapCorePtpPortStatusPacketsSent OBJECT-TYPE
     MAX-ACCESS    read-only
     STATUS        current
     DESCRIPTION
-        "This attribute represents the number of PTP packets 
+        "This attribute represents the number of PTP packets
          sent for this clock port."
     ::= {docsRphyPtpCcapCorePtpPortStatusEntry 2 }
 
@@ -599,12 +599,12 @@ docsRphyPtpCcapCorePtpPortStatusPacketsReceived OBJECT-TYPE
     MAX-ACCESS    read-only
     STATUS            current
     DESCRIPTION
-        "This attribute represents the number of PTP packets 
+        "This attribute represents the number of PTP packets
          received for this clock port."
      ::= {docsRphyPtpCcapCorePtpPortStatusEntry 3 }
 
 docsRphyPtpCcapCorePtpPortStatusCounterDiscontinuityTime OBJECT-TYPE
-    SYNTAX        DateAndTime 
+    SYNTAX        DateAndTime
     MAX-ACCESS    read-only
     STATUS        current
     DESCRIPTION
@@ -627,12 +627,12 @@ docsRphyPtpCcapPortMasterClockStatusTable OBJECT-TYPE
     ::={docsRphyPtpCcapMibObjects 8 }
 
 docsRphyPtpCcapPortMasterClockStatusEntry OBJECT-TYPE
-    SYNTAX        DocsRphyPtpCcapPortMasterClockStatusEntry       
+    SYNTAX        DocsRphyPtpCcapPortMasterClockStatusEntry
     MAX-ACCESS    not-accessible
     STATUS        current
     DESCRIPTION
         "The conceptual row of docsRphyPtpCcapPortMasterClockStatusTable."
-    INDEX       {docsRphyPtpCcapCorePtpPortStatusPortNumber, 
+    INDEX       {docsRphyPtpCcapCorePtpPortStatusPortNumber,
                  docsRphyPtpCcapPortMasterClockStatusMasterPriority}
     ::= {docsRphyPtpCcapPortMasterClockStatusTable 1}
 
@@ -646,8 +646,8 @@ DocsRphyPtpCcapPortMasterClockStatusEntry ::= SEQUENCE
     docsRphyPtpCcapPortMasterClockStatusTwoStepFlag                    TruthValue,
     docsRphyPtpCcapPortMasterClockStatusIsBmc                          TruthValue,
     docsRphyPtpCcapPortMasterClockStatusIsMasterConnected              TruthValue,
-    docsRphyPtpCcapPortMasterClockStatusStatusDomain                   Unsigned32, 
-    docsRphyPtpCcapPortMasterClockStatusFreqOffset                     Unsigned32, 
+    docsRphyPtpCcapPortMasterClockStatusStatusDomain                   Unsigned32,
+    docsRphyPtpCcapPortMasterClockStatusFreqOffset                     Unsigned32,
     docsRphyPtpCcapPortMasterClockStatusCounterDiscontinuityTime       DateAndTime,
     docsRphyPtpCcapPortMasterClockStatusGmClockIdentity                OCTET STRING,
     docsRphyPtpCcapPortMasterClockStatusGmPriority1                    Integer32,
@@ -659,21 +659,21 @@ DocsRphyPtpCcapPortMasterClockStatusEntry ::= SEQUENCE
     }
 
 docsRphyPtpCcapPortMasterClockStatusMasterPriority OBJECT-TYPE
-    SYNTAX          Unsigned32 (1..5)    
+    SYNTAX          Unsigned32 (1..5)
     MAX-ACCESS      not-accessible
     STATUS          current
     DESCRIPTION
-        "This key attribute is the priority of the master clock configured for the PTP template 
+        "This key attribute is the priority of the master clock configured for the PTP template
          assigned to this PTP clock port. Low numbers are higher priority."
     ::= {docsRphyPtpCcapPortMasterClockStatusEntry 1 }
 
 docsRphyPtpCcapPortMasterClockStatusPacketsSent OBJECT-TYPE
     SYNTAX           Counter64
-    UNITS            "Packets" 
+    UNITS            "Packets"
     MAX-ACCESS       read-only
     STATUS           current
     DESCRIPTION
-        "This attribute represents the number of PTP packets 
+        "This attribute represents the number of PTP packets
          sent to this master for this slave clock port."
     ::= {docsRphyPtpCcapPortMasterClockStatusEntry 2 }
 
@@ -683,21 +683,21 @@ docsRphyPtpCcapPortMasterClockStatusPacketsReceived OBJECT-TYPE
     MAX-ACCESS       read-only
     STATUS           current
     DESCRIPTION
-        "This attribute represents the number of PTP packets 
+        "This attribute represents the number of PTP packets
          received from this master for this slave clock port."
     ::= {docsRphyPtpCcapPortMasterClockStatusEntry 3 }
 
 docsRphyPtpCcapPortMasterClockStatusMasterClockId OBJECT-TYPE
-    SYNTAX           OCTET STRING(SIZE(8)) 
+    SYNTAX           OCTET STRING(SIZE(8))
     MAX-ACCESS       read-only
     STATUS           current
     DESCRIPTION
         "This attribute specifies the clock identifier of this master clock.
-         This value is used in Best Master Clock algorithm and is populated 
-         from the Announce message received from the master clock. This value 
-         is set to ClockIdentity from the PtpDefaultDataset Object if no 
+         This value is used in Best Master Clock algorithm and is populated
+         from the Announce message received from the master clock. This value
+         is set to ClockIdentity from the PtpDefaultDataset Object if no
          announce messages have been received."
-    ::= {docsRphyPtpCcapPortMasterClockStatusEntry 4 } 
+    ::= {docsRphyPtpCcapPortMasterClockStatusEntry 4 }
 
 docsRphyPtpCcapPortMasterClockStatusMasterClockPortNumber OBJECT-TYPE
     SYNTAX           Unsigned32 (0..65535)
@@ -708,21 +708,21 @@ docsRphyPtpCcapPortMasterClockStatusMasterClockPortNumber OBJECT-TYPE
     ::= {docsRphyPtpCcapPortMasterClockStatusEntry 5 }
 
 docsRphyPtpCcapPortMasterClockStatusTwoStepFlag OBJECT-TYPE
-    SYNTAX           TruthValue 
+    SYNTAX           TruthValue
     MAX-ACCESS       read-only
     STATUS           current
     DESCRIPTION
-        "This attribute specifies whether the Two Step process is used (i.e., 
+        "This attribute specifies whether the Two Step process is used (i.e.,
          the clock is a two-step clock)."
     ::= {docsRphyPtpCcapPortMasterClockStatusEntry 6 }
 
 docsRphyPtpCcapPortMasterClockStatusIsBmc OBJECT-TYPE
-    SYNTAX           TruthValue     
+    SYNTAX           TruthValue
     MAX-ACCESS       read-only
     STATUS           current
    DESCRIPTION
-        "This attribute represents whether or not this master is the current 
-         Best Master Clock (i.e., the master clock currently in use for this 
+        "This attribute represents whether or not this master is the current
+         Best Master Clock (i.e., the master clock currently in use for this
          slave clock)."
     ::= {docsRphyPtpCcapPortMasterClockStatusEntry 7 }
 
@@ -731,14 +731,14 @@ docsRphyPtpCcapPortMasterClockStatusIsMasterConnected OBJECT-TYPE
     MAX-ACCESS       read-only
     STATUS           current
     DESCRIPTION
-        "This attribute is set to TRUE if a signaling session with the master 
-         is successfully established. When a slave node receives an announce 
-         and a sync message from the master, the CCAP Core SHOULD consider 
+        "This attribute is set to TRUE if a signaling session with the master
+         is successfully established. When a slave node receives an announce
+         and a sync message from the master, the CCAP Core SHOULD consider
          the session to be successfully established."
     ::= {docsRphyPtpCcapPortMasterClockStatusEntry 8 }
 
 docsRphyPtpCcapPortMasterClockStatusStatusDomain OBJECT-TYPE
-    SYNTAX           Unsigned32 
+    SYNTAX           Unsigned32
     MAX-ACCESS       read-only
     STATUS           current
     DESCRIPTION
@@ -751,12 +751,12 @@ docsRphyPtpCcapPortMasterClockStatusFreqOffset OBJECT-TYPE
     MAX-ACCESS       read-only
     STATUS           current
     DESCRIPTION
-        "This attribute specifies the frequency offset that the locking algorithm 
+        "This attribute specifies the frequency offset that the locking algorithm
         computed per master in the last 60 sec interval.  0xFFFFFFFF means offset unknown."
     ::= {docsRphyPtpCcapPortMasterClockStatusEntry 10 }
 
 docsRphyPtpCcapPortMasterClockStatusCounterDiscontinuityTime OBJECT-TYPE
-    SYNTAX           DateAndTime 
+    SYNTAX           DateAndTime
     MAX-ACCESS       read-only
     STATUS           current
     DESCRIPTION
@@ -773,8 +773,8 @@ docsRphyPtpCcapPortMasterClockStatusGmClockIdentity OBJECT-TYPE
     DESCRIPTION
         "This attribute represents the clock Identity of the grandmaster
          clock. This value is used in Best Master Clock algorithm and
-         is populated from the Announce message received from the 
-         master clock. This value is set to ClockIdentity from the 
+         is populated from the Announce message received from the
+         master clock. This value is set to ClockIdentity from the
          PtpDefaultDataset Object if no announce messages have been
          received."
     ::= { docsRphyPtpCcapPortMasterClockStatusEntry 12 }
@@ -811,13 +811,13 @@ docsRphyPtpCcapPortMasterClockStatusGmQualityClass OBJECT-TYPE
     STATUS           current
     DESCRIPTION
         "This attribute is the clock class for the grandmaster clock.
-         The clock class attribute of an ordinary or boundary clock 
+         The clock class attribute of an ordinary or boundary clock
          denotes the traceability of the time or frequency distributed
          by the grandmaster clock. See section 7.6.2.4 in [IEEE 1588].
          This value is used in Best Master Clock algorithm and is
          populated from the Announce message received from the master
-         clock. This value is set to QualityClass from the 
-         PtpDefaultDataset Object if no announce messages have 
+         clock. This value is set to QualityClass from the
+         PtpDefaultDataset Object if no announce messages have
          been received."
     ::= { docsRphyPtpCcapPortMasterClockStatusEntry 15 }
 
@@ -827,10 +827,10 @@ docsRphyPtpCcapPortMasterClockStatusGmQualityAccuracy OBJECT-TYPE
     STATUS           current
     DESCRIPTION
         "This attribute characterizes the grandmaster clock for the
-         purpose of the best master clock (BMC) algorithm. See 
-         section 7.6.2.5 in [IEEE 1588]. This value is used in 
-         Best Master Clock algorithm and is populated from the 
-         Announce message received from the master clock. This 
+         purpose of the best master clock (BMC) algorithm. See
+         section 7.6.2.5 in [IEEE 1588]. This value is used in
+         Best Master Clock algorithm and is populated from the
+         Announce message received from the master clock. This
          value is set to QualityAccuracy from the PtpDefaultDataset
          Object if no announce messages have been received."
     ::= { docsRphyPtpCcapPortMasterClockStatusEntry 16 }
@@ -841,10 +841,10 @@ docsRphyPtpCcapPortMasterClockStatusGmQualityOffset OBJECT-TYPE
     STATUS           current
     DESCRIPTION
         "This attribute represents the offset, scaled, logarithmic
-         representation of the grandmaster clock variance. 
-         See Section 7.6.3.5 in [IEEE 1588]. This value is used in 
-         Best Master Clock algorithm and is populated from the Announce 
-         message received from the master clock. This value is set to 
+         representation of the grandmaster clock variance.
+         See Section 7.6.3.5 in [IEEE 1588]. This value is used in
+         Best Master Clock algorithm and is populated from the Announce
+         message received from the master clock. This value is set to
          QualityOffset from the PtpDefaultDataset Object if no announce
          messages have been received."
     ::= { docsRphyPtpCcapPortMasterClockStatusEntry 17 }
@@ -857,12 +857,12 @@ docsRphyPtpCcapPortMasterClockStatusGmStepsRemoved OBJECT-TYPE
         "This attribute is the number of communication paths traversed
          between the local clock and the grandmaster clock. This value
          is used in Best Master Clock algorithm and is populated from
-         the Announce message received from the master clock. 
+         the Announce message received from the master clock.
          This value is set to zero if no announce messages have been received."
     ::= { docsRphyPtpCcapPortMasterClockStatusEntry 18 }
 -- ---------------------------------------------------------------------
 -- CCAP Core RPD Group Objects
--- ---------------------------------------------------------------------    
+-- ---------------------------------------------------------------------
 
 -- ---------------------------------------------------------------------
 -- RPD Current DataSet Table
@@ -873,7 +873,7 @@ docsRphyPtpRpdCurrentDataSetTable OBJECT-TYPE
     STATUS         current
     DESCRIPTION
         "See section 8.2.5 in [IEEE 1588] for details of the 1588 port dataset."
-     ::={docsRphyPtpRpdMibObjects 1} 
+     ::={docsRphyPtpRpdMibObjects 1}
 
 docsRphyPtpRpdCurrentDataSetEntry OBJECT-TYPE
     SYNTAX        DocsRphyPtpRpdCurrentDataSetEntry
@@ -891,35 +891,35 @@ DocsRphyPtpRpdCurrentDataSetEntry ::= SEQUENCE
     docsRphyPtpRpdCurrentDataSetMeanPathDelay       Unsigned32
     }
 
-docsRphyPtpRpdCurrentDataSetStepsRemoved OBJECT-TYPE     
+docsRphyPtpRpdCurrentDataSetStepsRemoved OBJECT-TYPE
     SYNTAX      Unsigned32
     UNITS       "steps"
-    MAX-ACCESS  read-only      
+    MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-    "This attribute is the number of communication paths traversed between the 
+    "This attribute is the number of communication paths traversed between the
      local clock and the grandmaster clock. The initialization value is 0."
      ::= {docsRphyPtpRpdCurrentDataSetEntry 1}
 
-docsRphyPtpRpdCurrentDataSetOffsetFromMaster OBJECT-TYPE 
+docsRphyPtpRpdCurrentDataSetOffsetFromMaster OBJECT-TYPE
     SYNTAX      Integer32
     UNITS       "Nanoseconds"
-    MAX-ACCESS  read-only      
+    MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
     "This attribute is an implementation-specific representation of the current
-     value of the time difference between a master and a slave as computed by 
+     value of the time difference between a master and a slave as computed by
      the slave."
      ::= {docsRphyPtpRpdCurrentDataSetEntry 2}
 
-docsRphyPtpRpdCurrentDataSetMeanPathDelay OBJECT-TYPE    
+docsRphyPtpRpdCurrentDataSetMeanPathDelay OBJECT-TYPE
     SYNTAX      Unsigned32
     UNITS       "Nanoseconds"
-    MAX-ACCESS  read-only      
+    MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
     "This attribute is an implementation-specific representation of the current
-     value of the mean propagation time between a master and slave clock as 
+     value of the mean propagation time between a master and slave clock as
      computed by the slave. Zero means that the path delay is unavailable."
      ::= {docsRphyPtpRpdCurrentDataSetEntry 3}
 
@@ -933,7 +933,7 @@ docsRphyPtpRpdClockStatusTable OBJECT-TYPE
     STATUS         current
     DESCRIPTION
         "See section 8.2.5 in [IEEE 1588] for details of the 1588 port dataset."
-    ::={docsRphyPtpRpdMibObjects 2} 
+    ::={docsRphyPtpRpdMibObjects 2}
 
 docsRphyPtpRpdClockStatusEntry OBJECT-TYPE
     SYNTAX        DocsRphyPtpRpdClockStatusEntry
@@ -954,7 +954,7 @@ DocsRphyPtpRpdClockStatusEntry ::= SEQUENCE
     }
 
 docsRphyPtpRpdClockStatusClockState   OBJECT-TYPE
-    SYNTAX  INTEGER { 
+    SYNTAX  INTEGER {
                     freerun(1),
                     holdover(2),
                     acquiring(3),
@@ -968,7 +968,7 @@ docsRphyPtpRpdClockStatusClockState   OBJECT-TYPE
     ::= {docsRphyPtpRpdClockStatusEntry 1 }
 
 docsRphyPtpRpdClockStatusLastStateChange OBJECT-TYPE
-    SYNTAX            TimeTicks        
+    SYNTAX            TimeTicks
     MAX-ACCESS        read-only
     STATUS            current
     DESCRIPTION
@@ -1001,8 +1001,8 @@ docsRphyPtpRpdClockStatusCounterDiscontinuityTime OBJECT-TYPE
         "This attribute reports the date and time at which any
          one or more of the counters in this group were created or
          last reset to zero. If the RPD does not acquire time of day
-         it can report an initial CounterDiscontinuityTime of Jan 1 1970. 
-         If the value returned by the RPD is the initial Epoch of Jan 1 1970, 
+         it can report an initial CounterDiscontinuityTime of Jan 1 1970.
+         If the value returned by the RPD is the initial Epoch of Jan 1 1970,
          the CCAP Core can convert this value to the real time of day based
          on a calculation using the RPD's reported sysUpTime."
     ::= {docsRphyPtpRpdClockStatusEntry 5 }
@@ -1017,7 +1017,7 @@ docsRphyPtpRpdPortDataSetTable OBJECT-TYPE
     STATUS         current
     DESCRIPTION
         "See section 8.2.5 in [IEEE 1588] for details of the 1588 port dataset."
-     ::={docsRphyPtpRpdMibObjects 3} 
+     ::={docsRphyPtpRpdMibObjects 3}
 
 docsRphyPtpRpdPortDataSetEntry OBJECT-TYPE
     SYNTAX        DocsRphyPtpRpdPortDataSetEntry
@@ -1040,11 +1040,11 @@ docsRphyPtpRpdPortDataSetPortNumber OBJECT-TYPE
     MAX-ACCESS    not-accessible
     STATUS        current
     DESCRIPTION
-        "This key attribute is the port number of the local clock port. 
-         Port numbers 0 and 65,535 are reserved and cannot be used for real clock ports. 
-         See [IEEE 1588] for more information. When a PTP clock has N ports, 
+        "This key attribute is the port number of the local clock port.
+         Port numbers 0 and 65,535 are reserved and cannot be used for real clock ports.
+         See [IEEE 1588] for more information. When a PTP clock has N ports,
          the CCAP Core MUST set the port number to a value in the interval 1..N."
-    
+
     ::= {docsRphyPtpRpdPortDataSetEntry 1}
 
 docsRphyPtpRpdPortDataSetPortState OBJECT-TYPE
@@ -1053,7 +1053,7 @@ docsRphyPtpRpdPortDataSetPortState OBJECT-TYPE
     STATUS        current
     DESCRIPTION
         "This attribute is the state of this PTP clock port. See Table 8 in [IEEE 1588]."
-    
+
     ::= {docsRphyPtpRpdPortDataSetEntry 2}
 
 docsRphyPtpRpdPortDataSetMeanPathDelay OBJECT-TYPE
@@ -1061,13 +1061,13 @@ docsRphyPtpRpdPortDataSetMeanPathDelay OBJECT-TYPE
     MAX-ACCESS    read-only
     STATUS        current
     DESCRIPTION
-        "This attribute is an implementation-specific representation of the current 
-         value of the mean propagation time between a master and slave clock as computed 
+        "This attribute is an implementation-specific representation of the current
+         value of the mean propagation time between a master and slave clock as computed
          by the slave. Zero means that the path delay is unavailable."
     ::= {docsRphyPtpRpdPortDataSetEntry 3}
 
 -- ---------------------------------------------------------
--- RPD Port Status Table 
+-- RPD Port Status Table
 -- ---------------------------------------------------------
 
 docsRphyPtpRpdPtpPortStatusTable OBJECT-TYPE
@@ -1075,7 +1075,7 @@ docsRphyPtpRpdPtpPortStatusTable OBJECT-TYPE
     MAX-ACCESS     not-accessible
     STATUS         current
     DESCRIPTION
-        "Port Ptp Status is an instantiation of the abstract 
+        "Port Ptp Status is an instantiation of the abstract
          class PtpPortStatus and inherits those common attributes"
     ::={docsRphyPtpRpdMibObjects 4 }
 
@@ -1104,17 +1104,17 @@ DocsRphyPtpRpdPtpPortStatusEntry ::= SEQUENCE
     }
 
 docsRphyPtpRpdPtpPortStatusRpdEnetPortIndex  OBJECT-TYPE
-    SYNTAX        Unsigned32 (0..255)        
+    SYNTAX        Unsigned32 (0..255)
     MAX-ACCESS    not-accessible
     STATUS        current
     DESCRIPTION
-        "This key attribute is the RPD's Ethernet port 
-         used for this PTP clock port. If not set, any RPD 
+        "This key attribute is the RPD's Ethernet port
+         used for this PTP clock port. If not set, any RPD
          Ethernet port may be used for this PTP clock port. "
     ::= {docsRphyPtpRpdPtpPortStatusEntry 1 }
 
 docsRphyPtpRpdPtpPortStatusRpdPtpPortIndex  OBJECT-TYPE
-    SYNTAX        Unsigned32 (0..255)        
+    SYNTAX        Unsigned32 (0..255)
     MAX-ACCESS    not-accessible
     STATUS        current
     DESCRIPTION
@@ -1127,7 +1127,7 @@ docsRphyPtpRpdPtpPortStatusPacketsSent OBJECT-TYPE
     MAX-ACCESS    read-only
     STATUS            current
     DESCRIPTION
-        "This attribute represents the number of PTP packets 
+        "This attribute represents the number of PTP packets
          sent for this clock port."
     ::= {docsRphyPtpRpdPtpPortStatusEntry 3 }
 
@@ -1148,8 +1148,8 @@ docsRphyPtpRpdPtpPortStatusCounterDiscontinuityTime OBJECT-TYPE
         "This attribute reports the date and time at which any
          one or more of the counters in this group were created or
          last reset to zero. If the RPD does not acquire time of day
-         it can report an initial CounterDiscontinuityTime of Jan 1 1970. 
-         If the value returned by the RPD is the initial Epoch of Jan 1 1970, 
+         it can report an initial CounterDiscontinuityTime of Jan 1 1970.
+         If the value returned by the RPD is the initial Epoch of Jan 1 1970,
          the CCAP Core can convert this value to the real time of day based
          on a calculation using the RPD's reported sysUpTime."
     ::= {docsRphyPtpRpdPtpPortStatusEntry 5 }
@@ -1167,7 +1167,7 @@ docsRphyPtpRpdPortMasterClockStatusTable OBJECT-TYPE
     ::={docsRphyPtpRpdMibObjects 5 }
 
 docsRphyPtpRpdPortMasterClockStatusEntry OBJECT-TYPE
-    SYNTAX            DocsRphyPtpRpdPortMasterClockStatusEntry       
+    SYNTAX            DocsRphyPtpRpdPortMasterClockStatusEntry
     MAX-ACCESS        not-accessible
     STATUS            current
     DESCRIPTION
@@ -1175,8 +1175,8 @@ docsRphyPtpRpdPortMasterClockStatusEntry OBJECT-TYPE
         INDEX       {
          docsRphyRpdDevInfoUniqueId,
          docsRphyPtpRpdPtpPortStatusRpdEnetPortIndex,
-         docsRphyPtpRpdPtpPortStatusRpdPtpPortIndex,               
-         docsRphyPtpRpdPortMasterClockStatusMasterPriority           
+         docsRphyPtpRpdPtpPortStatusRpdPtpPortIndex,
+         docsRphyPtpRpdPortMasterClockStatusMasterPriority
              }
     ::= {docsRphyPtpRpdPortMasterClockStatusTable 1}
 
@@ -1191,8 +1191,8 @@ DocsRphyPtpRpdPortMasterClockStatusEntry ::= SEQUENCE
     docsRphyPtpRpdPortMasterClockStatusTwoStepFlag                          TruthValue,
     docsRphyPtpRpdPortMasterClockStatusIsBmc                                TruthValue,
     docsRphyPtpRpdPortMasterClockStatusIsMasterConnected                    TruthValue,
-    docsRphyPtpRpdPortMasterClockStatusStatusDomain                         Unsigned32, 
-    docsRphyPtpRpdPortMasterClockStatusFreqOffset                           Unsigned32, 
+    docsRphyPtpRpdPortMasterClockStatusStatusDomain                         Unsigned32,
+    docsRphyPtpRpdPortMasterClockStatusFreqOffset                           Unsigned32,
     docsRphyPtpRpdPortMasterClockStatusCounterDiscontinuityTime             DateAndTime,
     docsRphyPtpRpdPortMasterClockStatusGmClockIdentity                      OCTET STRING,
     docsRphyPtpRpdPortMasterClockStatusGmPriority1                          Integer32,
@@ -1204,21 +1204,21 @@ DocsRphyPtpRpdPortMasterClockStatusEntry ::= SEQUENCE
         }
 
 docsRphyPtpRpdPortMasterClockStatusMasterPriority OBJECT-TYPE
-    SYNTAX          Unsigned32 (1..5)    
+    SYNTAX          Unsigned32 (1..5)
     MAX-ACCESS      not-accessible
     STATUS         current
     DESCRIPTION
-        "This key attribute is the priority of the master clock configured for the PTP template 
+        "This key attribute is the priority of the master clock configured for the PTP template
          assigned to this PTP clock port. Low numbers are higher priority."
     ::= {docsRphyPtpRpdPortMasterClockStatusEntry 1 }
 
 docsRphyPtpRpdPortMasterClockStatusPacketsSent OBJECT-TYPE
     SYNTAX           Counter64
-    UNITS            "Packets" 
+    UNITS            "Packets"
     MAX-ACCESS       read-only
     STATUS           current
     DESCRIPTION
-        "This attribute represents the number of PTP packets 
+        "This attribute represents the number of PTP packets
          sent to this master for this slave clock port."
     ::= {docsRphyPtpRpdPortMasterClockStatusEntry 2 }
 
@@ -1228,17 +1228,17 @@ docsRphyPtpRpdPortMasterClockStatusPacketsReceived OBJECT-TYPE
     MAX-ACCESS       read-only
     STATUS           current
     DESCRIPTION
-        "This attribute represents the number of PTP packets 
+        "This attribute represents the number of PTP packets
          received from this master for this slave clock port."
     ::= {docsRphyPtpRpdPortMasterClockStatusEntry 3 }
 
 docsRphyPtpRpdPortMasterClockStatusMasterClockId OBJECT-TYPE
-    SYNTAX           OCTET STRING(SIZE(8)) 
+    SYNTAX           OCTET STRING(SIZE(8))
     MAX-ACCESS       read-only
     STATUS           current
     DESCRIPTION
         "This attribute specifies the clock identifier of this master clock."
-    ::= {docsRphyPtpRpdPortMasterClockStatusEntry 4 } 
+    ::= {docsRphyPtpRpdPortMasterClockStatusEntry 4 }
 
 docsRphyPtpRpdPortMasterClockStatusMasterClockPortNumber OBJECT-TYPE
     SYNTAX           Unsigned32 (0..65535)
@@ -1249,7 +1249,7 @@ docsRphyPtpRpdPortMasterClockStatusMasterClockPortNumber OBJECT-TYPE
     ::= {docsRphyPtpRpdPortMasterClockStatusEntry 5 }
 
 docsRphyPtpRpdPortMasterClockStatusTwoStepFlag OBJECT-TYPE
-    SYNTAX           TruthValue 
+    SYNTAX           TruthValue
     MAX-ACCESS       read-only
     STATUS           current
     DESCRIPTION
@@ -1258,12 +1258,12 @@ docsRphyPtpRpdPortMasterClockStatusTwoStepFlag OBJECT-TYPE
     ::= {docsRphyPtpRpdPortMasterClockStatusEntry 6 }
 
 docsRphyPtpRpdPortMasterClockStatusIsBmc OBJECT-TYPE
-    SYNTAX           TruthValue     
+    SYNTAX           TruthValue
     MAX-ACCESS       read-only
     STATUS           current
     DESCRIPTION
         "This attribute represents whether or not this master is
-         the current Best Master Clock (i.e., the master clock 
+         the current Best Master Clock (i.e., the master clock
          currently in use for this slave clock)."
     ::= {docsRphyPtpRpdPortMasterClockStatusEntry 7 }
 
@@ -1273,14 +1273,14 @@ docsRphyPtpRpdPortMasterClockStatusIsMasterConnected OBJECT-TYPE
     STATUS           current
     DESCRIPTION
         "This attribute is set to TRUE if a signaling session with
-         the master is successfully established. When a slave node 
-         receives an announce and a sync message from the master, 
-         the CCAP Core SHOULD consider the session to be 
+         the master is successfully established. When a slave node
+         receives an announce and a sync message from the master,
+         the CCAP Core SHOULD consider the session to be
          successfully established."
     ::= {docsRphyPtpRpdPortMasterClockStatusEntry 8 }
 
 docsRphyPtpRpdPortMasterClockStatusStatusDomain OBJECT-TYPE
-    SYNTAX           Unsigned32 
+    SYNTAX           Unsigned32
     MAX-ACCESS       read-only
     STATUS           current
     DESCRIPTION
@@ -1293,7 +1293,7 @@ docsRphyPtpRpdPortMasterClockStatusFreqOffset OBJECT-TYPE
     MAX-ACCESS       read-only
     STATUS           current
     DESCRIPTION
-        "This attribute specifies the frequency offset that the locking algorithm 
+        "This attribute specifies the frequency offset that the locking algorithm
          computed per master in the last 60 sec interval.  0xFFFFFFFF means offset unknown."
     ::= {docsRphyPtpRpdPortMasterClockStatusEntry 10 }
 
@@ -1305,8 +1305,8 @@ docsRphyPtpRpdPortMasterClockStatusCounterDiscontinuityTime OBJECT-TYPE
         "This attribute reports the date and time at which any
          one or more of the counters in this group were created or
          last reset to zero. If the RPD does not acquire time of day
-         it can report an initial CounterDiscontinuityTime of Jan 1 1970. 
-         If the value returned by the RPD is the initial Epoch of Jan 1 1970, 
+         it can report an initial CounterDiscontinuityTime of Jan 1 1970.
+         If the value returned by the RPD is the initial Epoch of Jan 1 1970,
          the CCAP Core can convert this value to the real time of day based
          on a calculation using the RPD's reported sysUpTime."
     ::= {docsRphyPtpRpdPortMasterClockStatusEntry 11 }
@@ -1318,8 +1318,8 @@ docsRphyPtpRpdPortMasterClockStatusGmClockIdentity OBJECT-TYPE
     DESCRIPTION
         "This attribute represents the clock Identity of the grandmaster
          clock. This value is used in Best Master Clock algorithm and
-         is populated from the Announce message received from the 
-         master clock. This value is set to ClockIdentity from the 
+         is populated from the Announce message received from the
+         master clock. This value is set to ClockIdentity from the
          PtpDefaultDataset Object if no announce messages have been
          received."
     ::= { docsRphyPtpRpdPortMasterClockStatusEntry 12 }
@@ -1356,13 +1356,13 @@ docsRphyPtpRpdPortMasterClockStatusGmQualityClass OBJECT-TYPE
     STATUS           current
     DESCRIPTION
         "This attribute is the clock class for the grandmaster clock.
-         The clock class attribute of an ordinary or boundary clock 
+         The clock class attribute of an ordinary or boundary clock
          denotes the traceability of the time or frequency distributed
          by the grandmaster clock. See section 7.6.2.4 in [IEEE 1588].
          This value is used in Best Master Clock algorithm and is
          populated from the Announce message received from the master
-         clock. This value is set to QualityClass from the 
-         PtpDefaultDataset Object if no announce messages have 
+         clock. This value is set to QualityClass from the
+         PtpDefaultDataset Object if no announce messages have
          been received."
     ::= { docsRphyPtpRpdPortMasterClockStatusEntry 15 }
 
@@ -1372,10 +1372,10 @@ docsRphyPtpRpdPortMasterClockStatusGmQualityAccuracy OBJECT-TYPE
     STATUS           current
     DESCRIPTION
         "This attribute characterizes the grandmaster clock for the
-         purpose of the best master clock (BMC) algorithm. See 
-         section 7.6.2.5 in [IEEE 1588]. This value is used in 
-         Best Master Clock algorithm and is populated from the 
-         Announce message received from the master clock. This 
+         purpose of the best master clock (BMC) algorithm. See
+         section 7.6.2.5 in [IEEE 1588]. This value is used in
+         Best Master Clock algorithm and is populated from the
+         Announce message received from the master clock. This
          value is set to QualityAccuracy from the PtpDefaultDataset
          Object if no announce messages have been received."
     ::= { docsRphyPtpRpdPortMasterClockStatusEntry 16 }
@@ -1386,10 +1386,10 @@ docsRphyPtpRpdPortMasterClockStatusGmQualityOffset OBJECT-TYPE
     STATUS           current
     DESCRIPTION
         "This attribute represents the offset, scaled, logarithmic
-         representation of the grandmaster clock variance. 
-         See Section 7.6.3.5 in [IEEE 1588]. This value is used in 
-         Best Master Clock algorithm and is populated from the Announce 
-         message received from the master clock. This value is set to 
+         representation of the grandmaster clock variance.
+         See Section 7.6.3.5 in [IEEE 1588]. This value is used in
+         Best Master Clock algorithm and is populated from the Announce
+         message received from the master clock. This value is set to
          QualityOffset from the PtpDefaultDataset Object if no announce
          messages have been received."
     ::= { docsRphyPtpRpdPortMasterClockStatusEntry 17 }
@@ -1402,7 +1402,7 @@ docsRphyPtpRpdPortMasterClockStatusGmStepsRemoved OBJECT-TYPE
         "This attribute is the number of communication paths traversed
          between the local clock and the grandmaster clock. This value
          is used in Best Master Clock algorithm and is populated from
-         the Announce message received from the master clock. 
+         the Announce message received from the master clock.
          This value is set to zero if no announce messages have been received."
     ::= { docsRphyPtpRpdPortMasterClockStatusEntry 18 }
 
@@ -1420,7 +1420,7 @@ docsRphyPtpRpdSyncEClockStatusTable OBJECT-TYPE
     ::={docsRphyPtpRpdMibObjects 6 }
 
 docsRphyPtpRpdSyncEClockStatusEntry OBJECT-TYPE
-    SYNTAX          DocsRphyPtpRpdSyncEClockStatusEntry       
+    SYNTAX          DocsRphyPtpRpdSyncEClockStatusEntry
     MAX-ACCESS      not-accessible
     STATUS          current
     DESCRIPTION
@@ -1437,7 +1437,7 @@ DocsRphyPtpRpdSyncEClockStatusEntry ::= SEQUENCE
     }
 
 docsRphyPtpRpdSyncEClockStatusClockMode   OBJECT-TYPE
-    SYNTAX   INTEGER { 
+    SYNTAX   INTEGER {
                      locked(1),
                      acquiring(2),
                      holdover(3),
@@ -1454,7 +1454,7 @@ docsRphyPtpRpdSyncEClockStatusActivePortIndex   OBJECT-TYPE
     MAX-ACCESS        read-only
     STATUS            current
     DESCRIPTION
-        "This attribute is the active receive RPD Ethernet port 
+        "This attribute is the active receive RPD Ethernet port
          index for the SyncE clock. "
     ::= {docsRphyPtpRpdSyncEClockStatusEntry 2 }
 
@@ -1463,7 +1463,7 @@ docsRphyPtpRpdSyncEClockStatusLastModeChange   OBJECT-TYPE
     MAX-ACCESS        read-only
     STATUS            current
     DESCRIPTION
-        "This attribute is the time when the active SyncE 
+        "This attribute is the time when the active SyncE
          port last changed. "
     ::= {docsRphyPtpRpdSyncEClockStatusEntry 3 }
 
@@ -1472,7 +1472,7 @@ docsRphyPtpRpdSyncEClockStatusLastModeChange   OBJECT-TYPE
     MAX-ACCESS        read-only
     STATUS            current
     DESCRIPTION
-        "This attribute indicates whether the SyncE block 
+        "This attribute indicates whether the SyncE block
          is currently experiencing excessive holdover."
     ::= {docsRphyPtpRpdSyncEClockStatusEntry 4 }
 
@@ -1481,28 +1481,28 @@ docsRphyPtpRpdSyncEClockStatusLastModeChange   OBJECT-TYPE
 
 
 -- ---------------------------------------------------------
--- Conformance definitions 
+-- Conformance definitions
 -- ---------------------------------------------------------
 
-docsRphyPtpCompliance MODULE-COMPLIANCE 
-    STATUS current 
-    DESCRIPTION 
+docsRphyPtpCompliance MODULE-COMPLIANCE
+    STATUS current
+    DESCRIPTION
         "The compliance statement for CCAP Core and RPD PTP features."
 
 MODULE -- docsRphyPtpMib
-          
+
 -- conditionally mandatory groups
 
-GROUP docsRphyPtpRpdGroup 
+GROUP docsRphyPtpRpdGroup
     DESCRIPTION
         "Group of objects applicable to RPDs only.
          These objects are implemented on the CCAP Core
          but are derived from the RPD via the GCP protocol."
 
-GROUP docsRphyPtpCcapCoreGroup 
+GROUP docsRphyPtpCcapCoreGroup
     DESCRIPTION
         "Group of objects applicable to CCAP Core only."
-            
+
 -- conditionally optional groups
 
 
@@ -1535,8 +1535,8 @@ docsRphyPtpRpdGroup OBJECT-GROUP
         docsRphyPtpRpdPortMasterClockStatusTwoStepFlag,
         docsRphyPtpRpdPortMasterClockStatusIsBmc,
         docsRphyPtpRpdPortMasterClockStatusIsMasterConnected,
-        docsRphyPtpRpdPortMasterClockStatusStatusDomain, 
-        docsRphyPtpRpdPortMasterClockStatusFreqOffset, 
+        docsRphyPtpRpdPortMasterClockStatusStatusDomain,
+        docsRphyPtpRpdPortMasterClockStatusFreqOffset,
         docsRphyPtpRpdPortMasterClockStatusCounterDiscontinuityTime,
         docsRphyPtpRpdPortMasterClockStatusGmClockIdentity,
         docsRphyPtpRpdPortMasterClockStatusGmPriority1,
@@ -1548,12 +1548,12 @@ docsRphyPtpRpdGroup OBJECT-GROUP
         docsRphyPtpRpdSyncEClockStatusClockMode,
         docsRphyPtpRpdSyncEClockStatusActivePortIndex,
         docsRphyPtpRpdSyncEClockStatusLastModeChange,
-        docsRphyPtpRpdSyncEClockStatusExcessiveHoldover                 
+        docsRphyPtpRpdSyncEClockStatusExcessiveHoldover
         }
     STATUS      current
     DESCRIPTION
         "Group of objects implemented in CCAP Cores which
-         represent RPD managed objects derived via the GCP 
+         represent RPD managed objects derived via the GCP
          protocol."
     ::= { docsRphyPtpGroups 1 }
 
@@ -1596,14 +1596,14 @@ docsRphyPtpCcapCoreGroup OBJECT-GROUP
          docsRphyPtpCcapPortDataSetPortState,
          docsRphyPtpCcapPortDataSetMeanPathDelay,
 
-         docsRphyPtpCcapClockStatusClockState,          
-         docsRphyPtpCcapClockStatusLastStateChange,        
-         docsRphyPtpCcapClockStatusPacketsSent,        
-         docsRphyPtpCcapClockStatusPacketsReceived,             
+         docsRphyPtpCcapClockStatusClockState,
+         docsRphyPtpCcapClockStatusLastStateChange,
+         docsRphyPtpCcapClockStatusPacketsSent,
+         docsRphyPtpCcapClockStatusPacketsReceived,
          docsRphyPtpCcapClockStatusCounterDiscontinuityTime,
-         docsRphyPtpCcapClockStatusExcessiveHoldover,            
+         docsRphyPtpCcapClockStatusExcessiveHoldover,
 
-         docsRphyPtpCcapCorePtpPortStatusPacketsSent, 
+         docsRphyPtpCcapCorePtpPortStatusPacketsSent,
          docsRphyPtpCcapCorePtpPortStatusPacketsReceived,
          docsRphyPtpCcapCorePtpPortStatusCounterDiscontinuityTime,
 
@@ -1617,12 +1617,12 @@ docsRphyPtpCcapCoreGroup OBJECT-GROUP
          docsRphyPtpCcapPortMasterClockStatusStatusDomain,
          docsRphyPtpCcapPortMasterClockStatusFreqOffset,
          docsRphyPtpCcapPortMasterClockStatusCounterDiscontinuityTime,
-         docsRphyPtpCcapPortMasterClockStatusGmClockIdentity, 
-         docsRphyPtpCcapPortMasterClockStatusGmPriority1,         
-         docsRphyPtpCcapPortMasterClockStatusGmPriority2,         
-         docsRphyPtpCcapPortMasterClockStatusGmQualityClass,   
-         docsRphyPtpCcapPortMasterClockStatusGmQualityAccuracy,   
-         docsRphyPtpCcapPortMasterClockStatusGmQualityOffset,    
+         docsRphyPtpCcapPortMasterClockStatusGmClockIdentity,
+         docsRphyPtpCcapPortMasterClockStatusGmPriority1,
+         docsRphyPtpCcapPortMasterClockStatusGmPriority2,
+         docsRphyPtpCcapPortMasterClockStatusGmQualityClass,
+         docsRphyPtpCcapPortMasterClockStatusGmQualityAccuracy,
+         docsRphyPtpCcapPortMasterClockStatusGmQualityOffset,
          docsRphyPtpCcapPortMasterClockStatusGmStepsRemoved
         }
     STATUS      current

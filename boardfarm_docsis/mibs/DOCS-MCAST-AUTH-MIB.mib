@@ -98,7 +98,7 @@ docsMcastAuthCtrlDefProfileNameList OBJECT-TYPE
         Multicast Authorization Profiles."
      REFERENCE
         "DOCSIS 3.0 MAC and Upper Layer Protocols Interface
-         Specification CM-SP-MULPIv3.0-I01-060804, IP Multicast 
+         Specification CM-SP-MULPIv3.0-I01-060804, IP Multicast
          Profile Name Subtype section."
      DEFVAL { ''H }
      ::= { docsMcastAuthCtrl 2 }
@@ -134,7 +134,7 @@ docsMcastAuthCtrlDefMaxNumSess OBJECT-TYPE
         are permitted."
      REFERENCE
         "DOCSIS 3.0 MAC and Upper Layer Protocols Interface
-         Specification CM-SP-MULPIv3.0-I01-060804, Maximum Multicast 
+         Specification CM-SP-MULPIv3.0-I01-060804, Maximum Multicast
          Sessions section."
      DEFVAL { 0 }
      ::= { docsMcastAuthCtrl 4 }
@@ -218,8 +218,8 @@ docsMcastAuthCmtsCmStatusCfgListId OBJECT-TYPE
         registration."
      REFERENCE
         "DOCSIS 3.0 MAC and Upper Layer Protocols Interface
-         Specification CM-SP-MULPIv3.0-I01-060804,IP Multicast Join 
-         Authorization Static Session Rule Subtype section in the 
+         Specification CM-SP-MULPIv3.0-I01-060804,IP Multicast Join
+         Authorization Static Session Rule Subtype section in the
          Common Radio Frequency Interface Encodings Annex."
      ::= { docsMcastAuthCmtsCmStatusEntry 2 }
 
@@ -600,7 +600,7 @@ docsMcastAuthStaticSessRuleAction OBJECT-TYPE
         is denied."
      REFERENCE
         "DOCSIS 3.0 MAC and Upper Layer Protocols Interface
-         Specification CM-SP-MULPIv3.0-I01-060804, Authorization 
+         Specification CM-SP-MULPIv3.0-I01-060804, Authorization
          Action section in the Common Radio Frequency Interface
           Encodings Annex."
      ::= { docsMcastAuthStaticSessRuleEntry 9 }
@@ -659,7 +659,7 @@ docsMcastAuthProfilesDescription OBJECT-TYPE
         the Multicast Authorization Profile."
      REFERENCE
         "DOCSIS 3.0 MAC and Upper Layer Protocols Interface
-         Specification CM-SP-MULPIv3.0-I01-060804, IP Multicast 
+         Specification CM-SP-MULPIv3.0-I01-060804, IP Multicast
          Profile Name Subtype section."
      ::= { docsMcastAuthProfilesEntry 2 }
 
@@ -722,4 +722,3 @@ docsMcastAuthGroup OBJECT-GROUP
          "Group of objects implemented in the CMTS."
     ::= { docsMcastAuthMibGroups 1 }
 END
-

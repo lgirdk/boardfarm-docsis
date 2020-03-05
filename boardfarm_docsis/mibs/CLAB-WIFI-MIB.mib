@@ -1,58 +1,58 @@
 CLAB-WIFI-MIB DEFINITIONS ::= BEGIN
 
-IMPORTS 
-    MODULE-IDENTITY, 
-    OBJECT-TYPE, 
+IMPORTS
+    MODULE-IDENTITY,
+    OBJECT-TYPE,
     NOTIFICATION-TYPE,
     Unsigned32,
     Integer32,
     Counter32,
     Counter64
-                       FROM SNMPv2-SMI 
-    OBJECT-GROUP, 
+                       FROM SNMPv2-SMI
+    OBJECT-GROUP,
     MODULE-COMPLIANCE,
-    NOTIFICATION-GROUP 
-                       FROM SNMPv2-CONF 
-    SnmpAdminString 
+    NOTIFICATION-GROUP
+                       FROM SNMPv2-CONF
+    SnmpAdminString
                        FROM SNMP-FRAMEWORK-MIB
     MacAddress,
     DateAndTime,
     TruthValue,
     RowStatus,
     TEXTUAL-CONVENTION
-                       FROM SNMPv2-TC    
+                       FROM SNMPv2-TC
     InetAddressType,
     InetAddress,
     InetPortNumber
                        FROM INET-ADDRESS-MIB
-    InterfaceIndex 
+    InterfaceIndex
                        FROM IF-MIB
-                       
-    clabProjWireless 
+
+    clabProjWireless
                        FROM CLAB-DEF-MIB;
 
     clabWIFIMib MODULE-IDENTITY
 
     LAST-UPDATED  "201709070000Z" -- September 7, 2017
-  
-    ORGANIZATION "Cable Television Laboratories, Inc." 
-    CONTACT-INFO 
+
+    ORGANIZATION "Cable Television Laboratories, Inc."
+    CONTACT-INFO
             "Broadband Network Services
              Cable Television Laboratories, Inc.
              858 Coal Creek Circle,
-             Louisville, CO 80027, USA 
+             Louisville, CO 80027, USA
              Phone: +1 303-661-9100
              Email: mibs@cablelabs.com"
      DESCRIPTION
             "Licensed under the Apache License, Version 2.0 (the 'License');
              you may not use this file except in compliance with the License.
              You may obtain a copy of the License at:
- 
+
                  http://www.apache.org/licenses/LICENSE-2.0
- 
+
              Unless required by applicable law or agreed to in writing, software
              distributed under the License is distributed on an 'AS IS' BASIS,
-             WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or 
+             WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
              implied.
 
              See the License for the specific language governing permissions and
@@ -60,21 +60,21 @@ IMPORTS
 
              This MIB module contains the management objects
              for the Wi-Fi interface.
-             
+
              Copyright 1999-2017 Cable Television Laboratories, Inc.
              All rights reserved."
      REVISION "201709070000Z" -- September 7, 2017
-     DESCRIPTION 
+     DESCRIPTION
             "Updated per ECN CLAB-WIFI-MIB-N-17.0162-1 to correct
-             DomainName syntax." 
+             DomainName syntax."
      REVISION "201704130000Z" -- April 13, 2017
-     DESCRIPTION 
-            "Updated per ECN CLAB-WIFI-MIB-N-17.0159-1." 
+     DESCRIPTION
+            "Updated per ECN CLAB-WIFI-MIB-N-17.0159-1."
      REVISION "201608030000Z" -- August 3, 2016
-     DESCRIPTION 
-            "Updated per ECN WiFi-MGMT-N-16.0035-3." 
+     DESCRIPTION
+            "Updated per ECN WiFi-MGMT-N-16.0035-3."
      REVISION "201603300000Z" -- March 30, 2016
-     DESCRIPTION 
+     DESCRIPTION
             "Updated per ECN WiFi-MGMT-N-16.0034-1. Changes:
              1. Deprecated clabWIFIAccessPointPasspointVenueNamesTable,
                 clabWIFIAccessPointPasspointNAIRealmsTable and
@@ -86,43 +86,43 @@ IMPORTS
                 clabWIFIAccessPointPasspoint2OSUTable,
                 clabWIFIAccessPointPasspoint2OSUProviderNamesTable,
                 clabWIFIAccessPointPasspoint2OSUProviderIconsTable and
-                clabWIFIAccessPointPasspoint2OSUProviderServiceDescTable." 
+                clabWIFIAccessPointPasspoint2OSUProviderServiceDescTable."
      REVISION "201512020000Z" -- December 2, 2015
-     DESCRIPTION 
+     DESCRIPTION
             "Revised Version includes ECN
-             WiFi-MGMT-N-15.0030-1 " 
+             WiFi-MGMT-N-15.0030-1 "
      REVISION "201403110000Z" -- March 11, 2014
-     DESCRIPTION 
+     DESCRIPTION
             "Revised Version includes ECN
              WiFi-MGMT-N-14.0017-2
-             and published as part of WR-SP-WiFi-MGMT-I04-140311" 
+             and published as part of WR-SP-WiFi-MGMT-I04-140311"
      REVISION "201201060000Z" -- Jan 6, 2012
-     DESCRIPTION 
+     DESCRIPTION
             "Revised Version includes ECN
              WiFi-MGMT-N-11.0006-5
-             and published as part of WR-SP-WiFi-MGMT-I03-120216" 
+             and published as part of WR-SP-WiFi-MGMT-I03-120216"
      REVISION "201009270000Z" -- Sept 27, 2010
-     DESCRIPTION 
+     DESCRIPTION
             "Revised Version includes ECN
              WiFi-MGMT-N-11.0002-4
-             and published as part of WR-SP-WiFi-MGMT-I02-101006" 
+             and published as part of WR-SP-WiFi-MGMT-I02-101006"
      REVISION "201007290000Z" -- July 29, 2010
      DESCRIPTION
              "Initial version, published as part of the CableLabs
              Wi-Fi Provisioning Framework Specification
              WR-SP-WiFi-MGMT-I01-100729
              Copyright 2010 Cable Television Laboratories, Inc.
-             All rights reserved."   
-             
+             All rights reserved."
+
     ::= { clabProjWireless 1 }
-  
+
 -- Textual Conventions
 PktErrorRateType ::= TEXTUAL-CONVENTION
 			DISPLAY-HINT 	"d-9"
 			STATUS current
-			DESCRIPTION 
+			DESCRIPTION
 				"This data type represents a packet error rate in
-				 units of 10^-5 or a resolution of 0.000000001 
+				 units of 10^-5 or a resolution of 0.000000001
 				 precision."
 			SYNTAX Integer32
 
@@ -133,7 +133,7 @@ clabWIFIObjects OBJECT IDENTIFIER ::= { clabWIFIMib 1 }
 clabWIFIWiFi OBJECT IDENTIFIER ::= {clabWIFIObjects 1 }
 
 clabWIFIWiFiRadioNumberOfEntries    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -143,7 +143,7 @@ clabWIFIWiFiRadioNumberOfEntries    OBJECT-TYPE
     ::= {clabWIFIWiFi 1 }
 
 clabWIFIWiFiSSIDNumberOfEntries    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -153,7 +153,7 @@ clabWIFIWiFiSSIDNumberOfEntries    OBJECT-TYPE
     ::= {clabWIFIWiFi 2 }
 
 clabWIFIWiFiAccessPointNumberOfEntries    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -163,7 +163,7 @@ clabWIFIWiFiAccessPointNumberOfEntries    OBJECT-TYPE
     ::= {clabWIFIWiFi 3 }
 
 clabWIFIWiFiEndPointNumberOfEntries    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -173,27 +173,27 @@ clabWIFIWiFiEndPointNumberOfEntries    OBJECT-TYPE
     ::= {clabWIFIWiFi 4 }
 
 clabWIFISSIDSteeringEnabled    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
         "This object is defined as a CableLabs TR-181 extension to
-         Device.WiFi.  It enables support to steer a user device to 
+         Device.WiFi.  It enables support to steer a user device to
          a Private SSID when available."
     ::= {clabWIFIWiFi 5 }
 
 clabWIFICommitSettings    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
         "This attribute when set to 'true' flushes the WiFi settings in
-         non-volatile memory and reinitialize the WiFi system with the 
-         new set of values without reboot. This attribute reports a value 
-         'false' when WiFi attributes have been changed but the changes 
-         are not active (i.e. not flushed in non-volatile and not part 
-         of the active configuration). Systems that support immediate 
-         commit upon any attribute change will report this attribute as 
+         non-volatile memory and reinitialize the WiFi system with the
+         new set of values without reboot. This attribute reports a value
+         'false' when WiFi attributes have been changed but the changes
+         are not active (i.e. not flushed in non-volatile and not part
+         of the active configuration). Systems that support immediate
+         commit upon any attribute change will report this attribute as
          'true' always, and silently accepts sets to 'true'."
     ::= {clabWIFIWiFi 6 }
 
@@ -327,17 +327,17 @@ ClabWIFIRadioEntry ::= SEQUENCE {
                  INTEGER
     }
 clabWIFIRadioId    OBJECT-TYPE
-    SYNTAX      InterfaceIndex 
+    SYNTAX      InterfaceIndex
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "The key for a unique instance of this object. 
-        This value corresponds to the Interface Index 
+        "The key for a unique instance of this object.
+        This value corresponds to the Interface Index
         (i.e., ifIndex in SMIv2). "
     ::= {clabWIFIRadioEntry 1 }
 
 clabWIFIRadioEnable    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
@@ -385,7 +385,7 @@ clabWIFIRadioName    OBJECT-TYPE
     ::= {clabWIFIRadioEntry 5 }
 
 clabWIFIRadioLastChange    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     UNITS       "seconds"
     MAX-ACCESS  read-only
     STATUS      current
@@ -406,7 +406,7 @@ clabWIFIRadioLowerLayers    OBJECT-TYPE
     ::= {clabWIFIRadioEntry 7 }
 
 clabWIFIRadioUpstream    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -416,7 +416,7 @@ clabWIFIRadioUpstream    OBJECT-TYPE
     ::= {clabWIFIRadioEntry 8 }
 
 clabWIFIRadioMaxBitRate    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     UNITS       "Mbps"
     MAX-ACCESS  read-only
     STATUS      current
@@ -501,14 +501,14 @@ clabWIFIRadioChannel    OBJECT-TYPE
     STATUS      current
     DESCRIPTION
         "This object is defined in TR-181 Device.WiFi.Radio.{i}.Channel.
-         For 80MHz, 160MHz and 80+80MHz RF channels of 802.11ac, this 
+         For 80MHz, 160MHz and 80+80MHz RF channels of 802.11ac, this
          object indicates the Primary Channel of the RF channel."
     REFERENCE
         "TR-181 Device Data Model for TR-069."
     ::= {clabWIFIRadioEntry 16 }
 
 clabWIFIRadioAutoChannelSupported    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -518,7 +518,7 @@ clabWIFIRadioAutoChannelSupported    OBJECT-TYPE
     ::= {clabWIFIRadioEntry 17 }
 
 clabWIFIRadioAutoChannelEnable    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
@@ -528,7 +528,7 @@ clabWIFIRadioAutoChannelEnable    OBJECT-TYPE
     ::= {clabWIFIRadioEntry 18 }
 
 clabWIFIRadioAutoChannelRefreshPeriod    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     UNITS       "seconds"
     MAX-ACCESS  read-write
     STATUS      current
@@ -561,7 +561,7 @@ clabWIFIRadioExtensionChannel    OBJECT-TYPE
                            aboveControlChannel(1),
                            belowControlChannel(2),
                            auto(3)
-                         } 
+                         }
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
@@ -576,7 +576,7 @@ clabWIFIRadioGuardInterval    OBJECT-TYPE
                            n400nsec(1),
                            n800nsec(2),
                            auto(3)
-                         }  
+                         }
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
@@ -618,7 +618,7 @@ clabWIFIRadioTransmitPower    OBJECT-TYPE
     ::= {clabWIFIRadioEntry 25 }
 
 clabWIFIRadioIEEE80211hSupported    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -628,7 +628,7 @@ clabWIFIRadioIEEE80211hSupported    OBJECT-TYPE
     ::= {clabWIFIRadioEntry 26 }
 
 clabWIFIRadioIEEE80211hEnabled    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
@@ -638,7 +638,7 @@ clabWIFIRadioIEEE80211hEnabled    OBJECT-TYPE
     ::= {clabWIFIRadioEntry 27 }
 
 clabWIFIRadioRegulatoryDomain    OBJECT-TYPE
-    SYNTAX      SnmpAdminString 
+    SYNTAX      SnmpAdminString
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
@@ -648,7 +648,7 @@ clabWIFIRadioRegulatoryDomain    OBJECT-TYPE
     ::= {clabWIFIRadioEntry 28 }
 
 clabWIFIRadioNonContiguousChannel    OBJECT-TYPE
-    SYNTAX      Unsigned32 (1..255) 
+    SYNTAX      Unsigned32 (1..255)
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
@@ -657,22 +657,22 @@ clabWIFIRadioNonContiguousChannel    OBJECT-TYPE
     REFERENCE
         "IEEE 802.11ac standard."
     ::= {clabWIFIRadioEntry 29 }
-    
+
 clabWIFIRadioCarrierSenseThresholdInUse    OBJECT-TYPE
     SYNTAX      Integer32
-    UNITS       "dBm" 
+    UNITS       "dBm"
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
-        "This object is the RSSI signal level at which CS/CCA detects a 
-         busy condition. This attribute enables APs to increase minimum 
-         sensitivity to avoid detecting busy condition from 
+        "This object is the RSSI signal level at which CS/CCA detects a
+         busy condition. This attribute enables APs to increase minimum
+         sensitivity to avoid detecting busy condition from
          multiple/weak Wi-Fi sources in dense Wi-Fi environments."
     ::= {clabWIFIRadioEntry 30 }
 
 clabWIFIRadioCarrierSenseThresholdRange    OBJECT-TYPE
     SYNTAX      Integer32
-    UNITS       "dBm" 
+    UNITS       "dBm"
     MAX-ACCESS  read-only
     STATUS      deprecated
     DESCRIPTION
@@ -705,15 +705,15 @@ clabWIFIRadioFrameAggregationLevel    OBJECT-TYPE
     MAX-ACCESS  read-write
     STATUS      deprecated
     DESCRIPTION
-        "This object allows configuring the frame aggregation level 
-         depending on how dense the network is. For example, if the 
-         network is not congested, then a large number of frames can 
+        "This object allows configuring the frame aggregation level
+         depending on how dense the network is. For example, if the
+         network is not congested, then a large number of frames can
          be aggregated and sent."
     ::= {clabWIFIRadioEntry 34 }
 
 clabWIFIRadioThroughput    OBJECT-TYPE
     SYNTAX      Unsigned32
-    UNITS       "Mbps" 
+    UNITS       "Mbps"
     MAX-ACCESS  read-only
     STATUS      deprecated
     DESCRIPTION
@@ -725,7 +725,7 @@ clabWIFIRadioPktErrorRateSTA    OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      deprecated
     DESCRIPTION
-        "This object indicates the traffic quality (e.g., HTTP, TCP) 
+        "This object indicates the traffic quality (e.g., HTTP, TCP)
          of an STA."
     ::= {clabWIFIRadioEntry 36 }
 
@@ -758,7 +758,7 @@ clabWIFIRadioFragmentationThreshold    OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "This object is defined in TR-181   
+        "This object is defined in TR-181
          Device.WiFi.Radio.{i}.FragmentationThreshold."
     ::= {clabWIFIRadioEntry 40 }
 
@@ -808,7 +808,7 @@ clabWIFIRadioBasicDataTransmitRates    OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "This object is defined in TR-181 
+        "This object is defined in TR-181
          Device.WiFi.Radio.{i}.BasicDataTransmitRates."
     ::= {clabWIFIRadioEntry 46 }
 
@@ -817,7 +817,7 @@ clabWIFIRadioOperationalDataTransmitRates    OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "This object is defined in TR-181 
+        "This object is defined in TR-181
          Device.WiFi.Radio.{i}.OperationalDataTransmitRates."
     ::= {clabWIFIRadioEntry 47 }
 
@@ -832,7 +832,7 @@ clabWIFIRadioSupportedDataTransmitRates    OBJECT-TYPE
 
 clabWIFIRadioCarrierSenseThresholdRangeMin    OBJECT-TYPE
     SYNTAX      Integer32
-    UNITS       "dBm" 
+    UNITS       "dBm"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -841,7 +841,7 @@ clabWIFIRadioCarrierSenseThresholdRangeMin    OBJECT-TYPE
 
 clabWIFIRadioCarrierSenseThresholdRangeMax    OBJECT-TYPE
     SYNTAX      Integer32
-    UNITS       "dBm" 
+    UNITS       "dBm"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -918,25 +918,25 @@ ClabWIFIRadioStatsEntry ::= SEQUENCE {
     clabWIFIRadioStatsDiscardPacketsReceived
                  Counter32,
     clabWIFIRadioStatsPLCPErrorCount
-                 Counter32, 
+                 Counter32,
     clabWIFIRadioStatsFCSErrorCount
-                 Counter32, 
+                 Counter32,
     clabWIFIRadioStatsInvalidMACCount
-                 Counter32, 
+                 Counter32,
     clabWIFIRadioStatsPacketsOtherReceived
                  Counter32,
     clabWIFIRadioStatsNoise
                  Integer32,
-    clabWIFIRadioStatsFramesRetransmissionsSent 
-                 Counter64, 
-    clabWIFIRadioStatsFramesDuplicatedReceived  
+    clabWIFIRadioStatsFramesRetransmissionsSent
+                 Counter64,
+    clabWIFIRadioStatsFramesDuplicatedReceived
                  Counter64,
     clabWIFIRadioStatsChannelUtilization
-                 Unsigned32     
+                 Unsigned32
       }
 
 clabWIFIRadioStatsBytesSent    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -946,7 +946,7 @@ clabWIFIRadioStatsBytesSent    OBJECT-TYPE
     ::= {clabWIFIRadioStatsEntry 1 }
 
 clabWIFIRadioStatsBytesReceived    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -956,7 +956,7 @@ clabWIFIRadioStatsBytesReceived    OBJECT-TYPE
     ::= {clabWIFIRadioStatsEntry 2 }
 
 clabWIFIRadioStatsPacketsSent    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -966,7 +966,7 @@ clabWIFIRadioStatsPacketsSent    OBJECT-TYPE
     ::= {clabWIFIRadioStatsEntry 3 }
 
 clabWIFIRadioStatsPacketsReceived    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -976,7 +976,7 @@ clabWIFIRadioStatsPacketsReceived    OBJECT-TYPE
     ::= {clabWIFIRadioStatsEntry 4 }
 
 clabWIFIRadioStatsErrorsSent    OBJECT-TYPE
-    SYNTAX      Counter32 
+    SYNTAX      Counter32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -986,7 +986,7 @@ clabWIFIRadioStatsErrorsSent    OBJECT-TYPE
     ::= {clabWIFIRadioStatsEntry 5 }
 
 clabWIFIRadioStatsErrorsReceived    OBJECT-TYPE
-    SYNTAX      Counter32 
+    SYNTAX      Counter32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -996,7 +996,7 @@ clabWIFIRadioStatsErrorsReceived    OBJECT-TYPE
     ::= {clabWIFIRadioStatsEntry 6 }
 
 clabWIFIRadioStatsDiscardPacketsSent    OBJECT-TYPE
-    SYNTAX      Counter32 
+    SYNTAX      Counter32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1006,7 +1006,7 @@ clabWIFIRadioStatsDiscardPacketsSent    OBJECT-TYPE
     ::= {clabWIFIRadioStatsEntry 7 }
 
 clabWIFIRadioStatsDiscardPacketsReceived    OBJECT-TYPE
-    SYNTAX      Counter32 
+    SYNTAX      Counter32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1016,7 +1016,7 @@ clabWIFIRadioStatsDiscardPacketsReceived    OBJECT-TYPE
     ::= {clabWIFIRadioStatsEntry 8 }
 
 clabWIFIRadioStatsPLCPErrorCount   OBJECT-TYPE
-    SYNTAX      Counter32 
+    SYNTAX      Counter32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1027,7 +1027,7 @@ clabWIFIRadioStatsPLCPErrorCount   OBJECT-TYPE
     ::= {clabWIFIRadioStatsEntry 9 }
 
 clabWIFIRadioStatsFCSErrorCount   OBJECT-TYPE
-    SYNTAX      Counter32 
+    SYNTAX      Counter32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1038,7 +1038,7 @@ clabWIFIRadioStatsFCSErrorCount   OBJECT-TYPE
     ::= {clabWIFIRadioStatsEntry 10 }
 
 clabWIFIRadioStatsInvalidMACCount   OBJECT-TYPE
-    SYNTAX      Counter32 
+    SYNTAX      Counter32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1049,7 +1049,7 @@ clabWIFIRadioStatsInvalidMACCount   OBJECT-TYPE
     ::= {clabWIFIRadioStatsEntry 11 }
 
 clabWIFIRadioStatsPacketsOtherReceived   OBJECT-TYPE
-    SYNTAX      Counter32 
+    SYNTAX      Counter32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1060,38 +1060,38 @@ clabWIFIRadioStatsPacketsOtherReceived   OBJECT-TYPE
     ::= {clabWIFIRadioStatsEntry 12 }
 
 clabWIFIRadioStatsNoise    OBJECT-TYPE
-    SYNTAX      Integer32 
+    SYNTAX      Integer32
     UNITS       "dBm"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        " An indicator of average noise strength received at this radio, 
-          measured in dBm. This measurement of non-IEEE 802.11 noise power 
-          is made by sampling the channel when virtual carrier sense 
-          indicates idle and this radio is neither transmitting nor 
+        " An indicator of average noise strength received at this radio,
+          measured in dBm. This measurement of non-IEEE 802.11 noise power
+          is made by sampling the channel when virtual carrier sense
+          indicates idle and this radio is neither transmitting nor
           receiving a frame."
     ::= { clabWIFIRadioStatsEntry 13 }
 
 clabWIFIRadioStatsFramesRetransmissionsSent    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     UNITS       "frames"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        " The FramesRetransmissionsSent parameter indicates the total 
-          number of frames retransmitted out of the interface (marked 
+        " The FramesRetransmissionsSent parameter indicates the total
+          number of frames retransmitted out of the interface (marked
           as duplicated). The value of this counter MAY be reset to
           zero when the CPE is rebooted."
     ::= { clabWIFIRadioStatsEntry 14 }
 
 clabWIFIRadioStatsFramesDuplicatedReceived  OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     UNITS       "frames"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        " The FramesDuplicatedReceived indicated the total number of 
-          duplicated frames received on this interface. The value of 
+        " The FramesDuplicatedReceived indicated the total number of
+          duplicated frames received on this interface. The value of
           this counter MAY be reset to zero when the CPE is rebooted."
       ::= { clabWIFIRadioStatsEntry 15 }
 
@@ -1102,7 +1102,7 @@ clabWIFIRadioStatsChannelUtilization  OBJECT-TYPE
     STATUS      current
     DESCRIPTION
         " Report WIFI Radio Stats Channel Utilization. The fraction of
-          the time AP senses a busy channel or transmits frames. 
+          the time AP senses a busy channel or transmits frames.
           Provides visibility into channel capacity."
     ::= { clabWIFIRadioStatsEntry 16 }
 
@@ -1119,15 +1119,15 @@ clabWIFIRadioChannelWiFiDiagnosticsState OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "Indicates availability of WiFi SSID data."       
+        "Indicates availability of WiFi SSID data."
     ::= { clabWIFIRadioChannelWiFiDiagnostics 1 }
-    
+
 clabWIFIRadioChannelWiFiDiagnosticsLastRunTimestamp OBJECT-TYPE
     SYNTAX      DateAndTime
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "Timestamp when the last diagnostic was completed."     
+        "Timestamp when the last diagnostic was completed."
     ::= { clabWIFIRadioChannelWiFiDiagnostics 2 }
 
 clabWIFIRadioChannelWiFiDiagnosticsResultNumberOfEntries OBJECT-TYPE
@@ -1135,9 +1135,9 @@ clabWIFIRadioChannelWiFiDiagnosticsResultNumberOfEntries OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The number of entries in the clabWIFIRadioChannelWiFiDiagnosticsResultsTable."       
+        "The number of entries in the clabWIFIRadioChannelWiFiDiagnosticsResultsTable."
     ::= { clabWIFIRadioChannelWiFiDiagnostics 3 }
-    
+
 clabWIFIRadioChannelWiFiDiagnosticsResultsTable OBJECT-TYPE
     SYNTAX      SEQUENCE OF ClabWIFIRadioChannelWiFiDiagnosticsResultsEntry
     MAX-ACCESS  not-accessible
@@ -1170,16 +1170,16 @@ ClabWIFIRadioChannelWiFiDiagnosticsResultsEntry ::= SEQUENCE {
     clabWIFIRadioChannelWiFiDiagnosticsResultsNonWiFiClasses
                  SnmpAdminString,
     clabWIFIRadioChannelWiFiDiagnosticsResultsFrequencyBand
-                 INTEGER                                                 
+                 INTEGER
     }
 clabWIFIRadioChannelWiFiDiagnosticsResultsChannel OBJECT-TYPE
-    SYNTAX      Unsigned32  
+    SYNTAX      Unsigned32
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
         "Channel number for which the current row's statistics refers."
     ::= { clabWIFIRadioChannelWiFiDiagnosticsResultsEntry 1 }
-    
+
 clabWIFIRadioChannelWiFiDiagnosticsResultsBandwidth OBJECT-TYPE
     SYNTAX      INTEGER {
                          mhz20(1),
@@ -1191,33 +1191,33 @@ clabWIFIRadioChannelWiFiDiagnosticsResultsBandwidth OBJECT-TYPE
     STATUS      current
     DESCRIPTION
         "Indicates the bandwidth at which the channel is operating."
-    ::= { clabWIFIRadioChannelWiFiDiagnosticsResultsEntry 2 } 
+    ::= { clabWIFIRadioChannelWiFiDiagnosticsResultsEntry 2 }
 
 clabWIFIRadioChannelWiFiDiagnosticsResultsAvailableCapacity OBJECT-TYPE
     SYNTAX      Unsigned32 (1..100)
-    UNITS       "percentage" 
+    UNITS       "percentage"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
         "Percentage of total channel bandwidth available for use."
-    ::= { clabWIFIRadioChannelWiFiDiagnosticsResultsEntry 3 }  
-        
+    ::= { clabWIFIRadioChannelWiFiDiagnosticsResultsEntry 3 }
+
 clabWIFIRadioChannelWiFiDiagnosticsResultsNonWiFi OBJECT-TYPE
     SYNTAX      Unsigned32 (1..100)
-    UNITS       "percentage" 
+    UNITS       "percentage"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
         "Percentage of total channel bandwidth occupied by non-WiFi interface."
-    ::= { clabWIFIRadioChannelWiFiDiagnosticsResultsEntry 4 }  
-    
+    ::= { clabWIFIRadioChannelWiFiDiagnosticsResultsEntry 4 }
+
 clabWIFIRadioChannelWiFiDiagnosticsResultsNonWiFiClasses OBJECT-TYPE
     SYNTAX      SnmpAdminString
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "Comma-separated list of strings. Each list item is an 
-         enumeration of:  
+        "Comma-separated list of strings. Each list item is an
+         enumeration of:
          (Microwave, Bluetooth, Radar, Zigbee, etc)."
     ::= { clabWIFIRadioChannelWiFiDiagnosticsResultsEntry 5 }
 
@@ -1229,9 +1229,9 @@ clabWIFIRadioChannelWiFiDiagnosticsResultsFrequencyBand OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        " Indicates the frequency band at which the radio of this SSID 
+        " Indicates the frequency band at which the radio of this SSID
           instance is operating."
-    ::= { clabWIFIRadioChannelWiFiDiagnosticsResultsEntry 6 }   
+    ::= { clabWIFIRadioChannelWiFiDiagnosticsResultsEntry 6 }
 
 clabWIFINeighboringWiFiDiagnostics OBJECT IDENTIFIER
     ::= { clabWIFIObjects 21  }
@@ -1246,7 +1246,7 @@ clabWIFINeighboringWiFiDiagnosticsMode OBJECT-TYPE
     STATUS      current
     DESCRIPTION
         "This object allows the operator to initiate a single diagnostic
-         Execution (manual), set periodic diagnostic executions at specified 
+         Execution (manual), set periodic diagnostic executions at specified
          interval (interval), or stop a scheduled periodic diagnostic (stop)."
     ::= { clabWIFINeighboringWiFiDiagnostics 1 }
 
@@ -1255,7 +1255,7 @@ clabWIFINeighboringWiFiDiagnosticsInterval OBJECT-TYPE
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
- " The interval, in seconds, between channel scans when 
+ " The interval, in seconds, between channel scans when
    DiagnosticMode is set to 'Interval."
     ::= { clabWIFINeighboringWiFiDiagnostics 2 }
 
@@ -1275,20 +1275,20 @@ clabWIFINeighboringWiFiDiagnosticsState OBJECT-TYPE
     ::= { clabWIFINeighboringWiFiDiagnostics 3 }
 
 clabWIFINeighboringWiFiDiagnosticsTableClear OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
-     " Clears all entries in the clabWIFINeighborWiFiDiagnosticsResultsTable.  
+     " Clears all entries in the clabWIFINeighborWiFiDiagnosticsResultsTable.
        The agent will always return a value of false(2) when queried. "
     ::= { clabWIFINeighboringWiFiDiagnostics 4 }
 
 clabWIFINeighboringWiFiDiagnosticsTableMaxNumberOfEntries OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
-     " Sets a maximum number of rows in this table.  If a new row is to 
+     " Sets a maximum number of rows in this table.  If a new row is to
        be written that would exceed the this maximum, the device must first
        delete the oldest row in the table. "
     ::= { clabWIFINeighboringWiFiDiagnostics 5 }
@@ -1360,7 +1360,7 @@ ClabWIFINeighboringWiFiDiagnosticsResultEntry ::= SEQUENCE {
       }
 
 clabWIFINeighboringWiFiDiagnosticsResultIndex OBJECT-TYPE
-    SYNTAX      Unsigned32  
+    SYNTAX      Unsigned32
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
@@ -1428,7 +1428,7 @@ clabWIFINeighboringWiFiSignalStrength  OBJECT-TYPE
 
 clabWIFINeighboringWiFiSecurityModeEnabled  OBJECT-TYPE
     SYNTAX      INTEGER {
-                   none(1), 
+                   none(1),
                    wep(2),
                    wpa(3),
                    wpa2(4),
@@ -1449,7 +1449,7 @@ clabWIFINeighboringWiFiSecurityModeEnabled  OBJECT-TYPE
 
 clabWIFINeighboringWiFiEncryptionMode  OBJECT-TYPE
     SYNTAX      INTEGER {
-                    tkip(1), 
+                    tkip(1),
                     aes(2)
                         }
     MAX-ACCESS  read-only
@@ -1463,7 +1463,7 @@ clabWIFINeighboringWiFiEncryptionMode  OBJECT-TYPE
 
 clabWIFINeighboringWiFiOperatingFrequencyBand  OBJECT-TYPE
     SYNTAX      INTEGER {
-                      ghz24(1), 
+                      ghz24(1),
                       ghz5(2)
                         }
     MAX-ACCESS  read-only
@@ -1493,7 +1493,7 @@ clabWIFINeighboringWiFiSupportedStandards  OBJECT-TYPE
     ::= { clabWIFINeighboringWiFiDiagnosticsResultEntry 10 }
 
 clabWIFINeighboringWiFiOperatingStandards  OBJECT-TYPE
-    SYNTAX      SnmpAdminString 
+    SYNTAX      SnmpAdminString
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1523,7 +1523,7 @@ clabWIFINeighboringWiFiOperatingChannelBandwidth  OBJECT-TYPE
     ::= { clabWIFINeighboringWiFiDiagnosticsResultEntry 12 }
 
 clabWIFINeighboringWiFiBeaconPeriod  OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1534,7 +1534,7 @@ clabWIFINeighboringWiFiBeaconPeriod  OBJECT-TYPE
     ::= { clabWIFINeighboringWiFiDiagnosticsResultEntry 13 }
 
 clabWIFINeighboringWiFiNoise  OBJECT-TYPE
-    SYNTAX      Integer32 (-200..0) 
+    SYNTAX      Integer32 (-200..0)
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1545,7 +1545,7 @@ clabWIFINeighboringWiFiNoise  OBJECT-TYPE
     ::= { clabWIFINeighboringWiFiDiagnosticsResultEntry 14 }
 
 clabWIFINeighboringWiFiBasicDataTransferRates  OBJECT-TYPE
-    SYNTAX      OCTET STRING (SIZE(0..256)) 
+    SYNTAX      OCTET STRING (SIZE(0..256))
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1556,7 +1556,7 @@ clabWIFINeighboringWiFiBasicDataTransferRates  OBJECT-TYPE
     ::= { clabWIFINeighboringWiFiDiagnosticsResultEntry 15 }
 
 clabWIFINeighboringWiFiSupportedDataTransferRates  OBJECT-TYPE
-    SYNTAX      OCTET STRING (SIZE(0..256)) 
+    SYNTAX      OCTET STRING (SIZE(0..256))
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1567,7 +1567,7 @@ clabWIFINeighboringWiFiSupportedDataTransferRates  OBJECT-TYPE
     ::= { clabWIFINeighboringWiFiDiagnosticsResultEntry 16 }
 
 clabWIFINeighboringWiFiDTIMPeriod  OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1585,7 +1585,7 @@ clabWIFINeighboringWiFiSidebandPosition  OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        " The position of the sideband in case the bandwidth of 
+        " The position of the sideband in case the bandwidth of
           the measured service set is 40 MHz."
     REFERENCE
         "TR-181 Device Data Model for TR-069."
@@ -1600,7 +1600,7 @@ clabWIFINeighboringWiFiDiagnosticsLastRunTimestamp OBJECT-TYPE
     ::= { clabWIFINeighboringWiFiDiagnosticsResultEntry 19 }
 
 clabWIFINeighboringWiFiDiagnosticsNonContiguousChannel    OBJECT-TYPE
-    SYNTAX      Unsigned32 (1..255) 
+    SYNTAX      Unsigned32 (1..255)
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
@@ -1615,9 +1615,9 @@ clabWIFINeighboringWiFiDiagnosticsResultNumberOfEntries OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The number of entries in the clabWIFINeighboringWiFiDiagnosticsResultTable."       
+        "The number of entries in the clabWIFINeighboringWiFiDiagnosticsResultTable."
     ::= { clabWIFINeighboringWiFiDiagnostics 7 }
-    
+
 clabWIFISSIDTable OBJECT-TYPE
     SYNTAX      SEQUENCE OF ClabWIFISSIDEntry
     MAX-ACCESS  not-accessible
@@ -1664,22 +1664,22 @@ ClabWIFISSIDEntry ::= SEQUENCE {
                  RowStatus,
     clabWIFISSIDFragmentationEnable
                  TruthValue,
-    clabWIFISSIDPeriodicStatsNumberOfEntries 
+    clabWIFISSIDPeriodicStatsNumberOfEntries
                  Integer32
     }
 
 clabWIFISSIDId    OBJECT-TYPE
-    SYNTAX      InterfaceIndex 
+    SYNTAX      InterfaceIndex
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "The key for a unique instance of this object. 
-        This value corresponds to the Interface Index 
+        "The key for a unique instance of this object.
+        This value corresponds to the Interface Index
         (i.e., ifIndex in SMIv2). "
     ::= {clabWIFISSIDEntry 1 }
 
 clabWIFISSIDEnable    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
@@ -1707,7 +1707,7 @@ clabWIFISSIDStatus    OBJECT-TYPE
     ::= {clabWIFISSIDEntry 3 }
 
 clabWIFISSIDAlias    OBJECT-TYPE
-    SYNTAX      SnmpAdminString (SIZE(0..64)) 
+    SYNTAX      SnmpAdminString (SIZE(0..64))
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
@@ -1717,7 +1717,7 @@ clabWIFISSIDAlias    OBJECT-TYPE
     ::= {clabWIFISSIDEntry 4 }
 
 clabWIFISSIDName    OBJECT-TYPE
-    SYNTAX      SnmpAdminString (SIZE(0..64)) 
+    SYNTAX      SnmpAdminString (SIZE(0..64))
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1726,7 +1726,7 @@ clabWIFISSIDName    OBJECT-TYPE
         "TR-181 Device Data Model for TR-069."    ::= {clabWIFISSIDEntry 5 }
 
 clabWIFISSIDLastChange    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     UNITS       "seconds"
     MAX-ACCESS  read-only
     STATUS      current
@@ -1747,7 +1747,7 @@ clabWIFISSIDLowerLayers    OBJECT-TYPE
     ::= {clabWIFISSIDEntry 7 }
 
 clabWIFISSIDBSSID    OBJECT-TYPE
-    SYNTAX      MacAddress 
+    SYNTAX      MacAddress
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1757,7 +1757,7 @@ clabWIFISSIDBSSID    OBJECT-TYPE
     ::= {clabWIFISSIDEntry 8 }
 
 clabWIFISSIDMACAddress    OBJECT-TYPE
-    SYNTAX      MacAddress 
+    SYNTAX      MacAddress
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1777,7 +1777,7 @@ clabWIFISSIDSSID    OBJECT-TYPE
     ::= {clabWIFISSIDEntry 10 }
 
 clabWIFISSIDRowStatus    OBJECT-TYPE
-    SYNTAX      RowStatus 
+    SYNTAX      RowStatus
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
@@ -1785,17 +1785,17 @@ clabWIFISSIDRowStatus    OBJECT-TYPE
     ::= {clabWIFISSIDEntry 11 }
 
 clabWIFISSIDFragmentationEnable    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
-        "This attribute when set to 'true' will indicate that 
+        "This attribute when set to 'true' will indicate that
          fragmentation is enabled for this SSID.  When set to false,
          indicates fragmentation is disabled for this SSID."
     ::= {clabWIFISSIDEntry 12 }
 
 clabWIFISSIDPeriodicStatsNumberOfEntries    OBJECT-TYPE
-    SYNTAX      Integer32 
+    SYNTAX      Integer32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1869,7 +1869,7 @@ ClabWIFISSIDStatsEntry ::= SEQUENCE {
     }
 
 clabWIFISSIDStatsBytesSent    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1879,7 +1879,7 @@ clabWIFISSIDStatsBytesSent    OBJECT-TYPE
     ::= {clabWIFISSIDStatsEntry 1 }
 
 clabWIFISSIDStatsBytesReceived    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1889,7 +1889,7 @@ clabWIFISSIDStatsBytesReceived    OBJECT-TYPE
     ::= {clabWIFISSIDStatsEntry 2 }
 
 clabWIFISSIDStatsPacketsSent    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1899,7 +1899,7 @@ clabWIFISSIDStatsPacketsSent    OBJECT-TYPE
     ::= {clabWIFISSIDStatsEntry 3 }
 
 clabWIFISSIDStatsPacketsReceived    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1909,7 +1909,7 @@ clabWIFISSIDStatsPacketsReceived    OBJECT-TYPE
     ::= {clabWIFISSIDStatsEntry 4 }
 
 clabWIFISSIDStatsErrorsSent    OBJECT-TYPE
-    SYNTAX      Counter32 
+    SYNTAX      Counter32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1919,7 +1919,7 @@ clabWIFISSIDStatsErrorsSent    OBJECT-TYPE
     ::= {clabWIFISSIDStatsEntry 5 }
 
 clabWIFISSIDStatsErrorsReceived    OBJECT-TYPE
-    SYNTAX      Counter32 
+    SYNTAX      Counter32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1929,7 +1929,7 @@ clabWIFISSIDStatsErrorsReceived    OBJECT-TYPE
     ::= {clabWIFISSIDStatsEntry 6 }
 
 clabWIFISSIDStatsUnicastPacketsSent    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1939,7 +1939,7 @@ clabWIFISSIDStatsUnicastPacketsSent    OBJECT-TYPE
     ::= {clabWIFISSIDStatsEntry 7 }
 
 clabWIFISSIDStatsUnicastPacketsReceived    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1949,7 +1949,7 @@ clabWIFISSIDStatsUnicastPacketsReceived    OBJECT-TYPE
     ::= {clabWIFISSIDStatsEntry 8 }
 
 clabWIFISSIDStatsDiscardPacketsSent    OBJECT-TYPE
-    SYNTAX      Counter32 
+    SYNTAX      Counter32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1959,7 +1959,7 @@ clabWIFISSIDStatsDiscardPacketsSent    OBJECT-TYPE
     ::= {clabWIFISSIDStatsEntry 9 }
 
 clabWIFISSIDStatsDiscardPacketsReceived    OBJECT-TYPE
-    SYNTAX      Counter32 
+    SYNTAX      Counter32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1969,7 +1969,7 @@ clabWIFISSIDStatsDiscardPacketsReceived    OBJECT-TYPE
     ::= {clabWIFISSIDStatsEntry 10 }
 
 clabWIFISSIDStatsMulticastPacketsSent    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1979,7 +1979,7 @@ clabWIFISSIDStatsMulticastPacketsSent    OBJECT-TYPE
     ::= {clabWIFISSIDStatsEntry 11 }
 
 clabWIFISSIDStatsMulticastPacketsReceived    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1989,7 +1989,7 @@ clabWIFISSIDStatsMulticastPacketsReceived    OBJECT-TYPE
     ::= {clabWIFISSIDStatsEntry 12 }
 
 clabWIFISSIDStatsBroadcastPacketsSent    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1999,7 +1999,7 @@ clabWIFISSIDStatsBroadcastPacketsSent    OBJECT-TYPE
     ::= {clabWIFISSIDStatsEntry 13 }
 
 clabWIFISSIDStatsBroadcastPacketsReceived    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -2009,7 +2009,7 @@ clabWIFISSIDStatsBroadcastPacketsReceived    OBJECT-TYPE
     ::= {clabWIFISSIDStatsEntry 14 }
 
 clabWIFISSIDStatsUnknownProtoPacketsReceived    OBJECT-TYPE
-    SYNTAX      Counter32 
+    SYNTAX      Counter32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -2018,8 +2018,8 @@ clabWIFISSIDStatsUnknownProtoPacketsReceived    OBJECT-TYPE
         "TR-181 Device Data Model for TR-069."
     ::= {clabWIFISSIDStatsEntry 15 }
 
-clabWIFISSIDStatsRetransCount    OBJECT-TYPE     
-    SYNTAX      Counter32 
+clabWIFISSIDStatsRetransCount    OBJECT-TYPE
+    SYNTAX      Counter32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -2028,8 +2028,8 @@ clabWIFISSIDStatsRetransCount    OBJECT-TYPE
         "TR-181 Device Data Model for TR-069."
     ::= {clabWIFISSIDStatsEntry 16 }
 
-clabWIFISSIDStatsRetryCount    OBJECT-TYPE     
-    SYNTAX      Counter32 
+clabWIFISSIDStatsRetryCount    OBJECT-TYPE
+    SYNTAX      Counter32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -2038,8 +2038,8 @@ clabWIFISSIDStatsRetryCount    OBJECT-TYPE
         "TR-181 Device Data Model for TR-069."
     ::= {clabWIFISSIDStatsEntry 17 }
 
-clabWIFISSIDStatsMultipleRetryCount    OBJECT-TYPE     
-    SYNTAX      Counter32 
+clabWIFISSIDStatsMultipleRetryCount    OBJECT-TYPE
+    SYNTAX      Counter32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -2048,8 +2048,8 @@ clabWIFISSIDStatsMultipleRetryCount    OBJECT-TYPE
         "TR-181 Device Data Model for TR-069."
     ::= {clabWIFISSIDStatsEntry 18 }
 
-clabWIFISSIDStatsACKFailureCount    OBJECT-TYPE     
-    SYNTAX      Counter32 
+clabWIFISSIDStatsACKFailureCount    OBJECT-TYPE
+    SYNTAX      Counter32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -2058,8 +2058,8 @@ clabWIFISSIDStatsACKFailureCount    OBJECT-TYPE
         "TR-181 Device Data Model for TR-069."
     ::= {clabWIFISSIDStatsEntry 19 }
 
-clabWIFISSIDStatsAggregatedPacketCount    OBJECT-TYPE     
-    SYNTAX      Counter32 
+clabWIFISSIDStatsAggregatedPacketCount    OBJECT-TYPE
+    SYNTAX      Counter32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -2114,9 +2114,9 @@ ClabWIFIAccessPointEntry ::= SEQUENCE {
                  TruthValue,
     clabWIFIAccessPointAssociatedDeviceNumberOfEntries
                  Unsigned32,
-    clabWIFIAccessPointRowStatus 
+    clabWIFIAccessPointRowStatus
                  RowStatus,
-    clabWIFIAccessPointPublicAccessMode                 
+    clabWIFIAccessPointPublicAccessMode
                  TruthValue,
     clabWIFIAccessPointIsolationEnable
                  TruthValue,
@@ -2131,7 +2131,7 @@ ClabWIFIAccessPointEntry ::= SEQUENCE {
     clabWIFIAccessPointInterworkingServiceEnabled
                  TruthValue,
     clabWIFIAccessPointAccessControlFilterEnable
-                 TruthValue,		  
+                 TruthValue,
     clabWIFIAccessPointMACAddressControlEnable
                  TruthValue,
     clabWIFIAccessPointAllowedMACAddress
@@ -2151,7 +2151,7 @@ clabWIFIAccessPointId    OBJECT-TYPE
     ::= {clabWIFIAccessPointEntry 1 }
 
 clabWIFIAccessPointEnable    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
@@ -2186,7 +2186,7 @@ clabWIFIAccessPointAlias    OBJECT-TYPE
     ::= {clabWIFIAccessPointEntry 4 }
 
 clabWIFIAccessPointSSIDReference    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
@@ -2196,7 +2196,7 @@ clabWIFIAccessPointSSIDReference    OBJECT-TYPE
     ::= {clabWIFIAccessPointEntry 5 }
 
 clabWIFIAccessPointSSIDAdvertisementEnabled    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
@@ -2216,7 +2216,7 @@ clabWIFIAccessPointRetryLimit    OBJECT-TYPE
     ::= {clabWIFIAccessPointEntry 7 }
 
 clabWIFIAccessPointWMMCapability    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -2226,7 +2226,7 @@ clabWIFIAccessPointWMMCapability    OBJECT-TYPE
     ::= {clabWIFIAccessPointEntry 8 }
 
 clabWIFIAccessPointUAPSDCapability    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -2236,7 +2236,7 @@ clabWIFIAccessPointUAPSDCapability    OBJECT-TYPE
     ::= {clabWIFIAccessPointEntry 9 }
 
 clabWIFIAccessPointWMMEnable    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
@@ -2246,7 +2246,7 @@ clabWIFIAccessPointWMMEnable    OBJECT-TYPE
     ::= {clabWIFIAccessPointEntry 10 }
 
 clabWIFIAccessPointUAPSDEnable    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
@@ -2256,7 +2256,7 @@ clabWIFIAccessPointUAPSDEnable    OBJECT-TYPE
     ::= {clabWIFIAccessPointEntry 11 }
 
 clabWIFIAccessPointAssociatedDeviceNumberOfEntries    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -2266,20 +2266,20 @@ clabWIFIAccessPointAssociatedDeviceNumberOfEntries    OBJECT-TYPE
     ::= {clabWIFIAccessPointEntry 12 }
 
 clabWIFIAccessPointRowStatus    OBJECT-TYPE
-    SYNTAX      RowStatus 
+    SYNTAX      RowStatus
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
         "The status of this instance."
     ::= {clabWIFIAccessPointEntry 13 }
-    
+
 clabWIFIAccessPointPublicAccessMode    OBJECT-TYPE
     SYNTAX      TruthValue
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
         "Establishes SSID as Public if True(1).  The default
-         is False(2) (i.e., Private). "    
+         is False(2) (i.e., Private). "
     ::= { clabWIFIAccessPointEntry 14 }
 
 clabWIFIAccessPointIsolationEnable    OBJECT-TYPE
@@ -2287,12 +2287,12 @@ clabWIFIAccessPointIsolationEnable    OBJECT-TYPE
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
-        " Enables or disables device isolation. A value 
-          of true means that the devices connected to the 
-          Access Point are isolated from all other devices 
-          within the home network (as is typically the case 
-          for a Wireless Passpoint). This object is defined 
-          in TR-181 
+        " Enables or disables device isolation. A value
+          of true means that the devices connected to the
+          Access Point are isolated from all other devices
+          within the home network (as is typically the case
+          for a Wireless Passpoint). This object is defined
+          in TR-181
           Device.WiFi.AccessPoint{i}.IsolationEnable."
     ::= {clabWIFIAccessPointEntry 15 }
 
@@ -2301,9 +2301,9 @@ clabWIFIAccessPointMaxAssociatedDevices    OBJECT-TYPE
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
-        " The maximum number of devices that can simultaneously 
-          be connected to the access point. A value of 0 means 
-          that there is no specific limit. This object is defined 
+        " The maximum number of devices that can simultaneously
+          be connected to the access point. A value of 0 means
+          that there is no specific limit. This object is defined
           in TR-181 Device.WiFi.AccessPoint{i}. MaxAssociatedDevices."
     ::= {clabWIFIAccessPointEntry 16 }
 
@@ -2312,8 +2312,8 @@ clabWIFIAccessPointPasspointSupported    OBJECT-TYPE
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
-        " Passpoint2.0 is supported or not supported. This object is 
-          Defined as a CableLabs extension to TR-181 
+        " Passpoint2.0 is supported or not supported. This object is
+          Defined as a CableLabs extension to TR-181
           Device.WiFi.AccessPoint{i}.PasspointSupported."
     ::= {clabWIFIAccessPointEntry 17 }
 
@@ -2322,8 +2322,8 @@ clabWIFIAccessPointPasspointEnabled    OBJECT-TYPE
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
-        " Passpoint2.0 is enabled/disabled. This object is 
-          Defined as a CableLabs extension to TR-181 
+        " Passpoint2.0 is enabled/disabled. This object is
+          Defined as a CableLabs extension to TR-181
           Device.WiFi.AccessPoint{i}.PasspointEnabled."
     ::= {clabWIFIAccessPointEntry 18 }
 
@@ -2332,10 +2332,10 @@ clabWIFIAccessPointInterworkingCapability   OBJECT-TYPE
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
-        " Interworking Service is supported or not supported. 
-          If true, then indicates the access point supports 
-          interworking with external networks. This object is 
-          Defined as a CableLabs extension to TR-181 
+        " Interworking Service is supported or not supported.
+          If true, then indicates the access point supports
+          interworking with external networks. This object is
+          Defined as a CableLabs extension to TR-181
           Device.WiFi.AccessPoint{i}.InterWorkingServiceSupported."
     ::= {clabWIFIAccessPointEntry 19 }
 
@@ -2344,8 +2344,8 @@ clabWIFIAccessPointInterworkingServiceEnabled   OBJECT-TYPE
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
-        " Interworking Service is enabled/disabled. This object is 
-          Defined as a CableLabs extension to TR-181 
+        " Interworking Service is enabled/disabled. This object is
+          Defined as a CableLabs extension to TR-181
           Device.WiFi.AccessPoint{i}.InterworkingServiceEnabled."
     ::= {clabWIFIAccessPointEntry 20 }
 
@@ -2354,9 +2354,9 @@ clabWIFIAccessPointAccessControlFilterEnable   OBJECT-TYPE
     MAX-ACCESS  read-write
     STATUS      deprecated
     DESCRIPTION
-        " This attribute enables MAC filtering as a condition 
-          of AP access (i.e., allow/disallow). This object is 
-          Defined as a CableLabs extension to TR-181 
+        " This attribute enables MAC filtering as a condition
+          of AP access (i.e., allow/disallow). This object is
+          Defined as a CableLabs extension to TR-181
           Device.WiFi.AccessPoint{i}.AccessControlFilterEnabled."
     ::= {clabWIFIAccessPointEntry 21 }
 
@@ -2393,7 +2393,7 @@ clabWIFIAccessPointAssociatedDeviceCount   OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      deprecated
     DESCRIPTION
-        "Deprecated, as this object duplicates the previous defined 
+        "Deprecated, as this object duplicates the previous defined
          object clabWIFIAccessPointAssociatedDeviceNumberOfEntries.
          Total number of active devices associated at any point in time."
     ::= {clabWIFIAccessPointEntry 25 }
@@ -2505,7 +2505,7 @@ clabWIFIAccessPointSecurityModeEnabled    OBJECT-TYPE
     ::= {clabWIFIAccessPointSecurityEntry 2 }
 
 clabWIFIAccessPointSecurityWEPKey    OBJECT-TYPE
-    SYNTAX      OCTET STRING (SIZE (0 | 5 | 13)) 
+    SYNTAX      OCTET STRING (SIZE (0 | 5 | 13))
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
@@ -2515,7 +2515,7 @@ clabWIFIAccessPointSecurityWEPKey    OBJECT-TYPE
     ::= {clabWIFIAccessPointSecurityEntry 3 }
 
 clabWIFIAccessPointSecurityPreSharedKey    OBJECT-TYPE
-    SYNTAX      OCTET STRING (SIZE(0 | 32)) 
+    SYNTAX      OCTET STRING (SIZE(0 | 32))
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
@@ -2525,7 +2525,7 @@ clabWIFIAccessPointSecurityPreSharedKey    OBJECT-TYPE
     ::= {clabWIFIAccessPointSecurityEntry 4 }
 
 clabWIFIAccessPointSecurityKeyPassphrase    OBJECT-TYPE
-    SYNTAX      SnmpAdminString (SIZE(0..63))  
+    SYNTAX      SnmpAdminString (SIZE(0..63))
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
@@ -2535,7 +2535,7 @@ clabWIFIAccessPointSecurityKeyPassphrase    OBJECT-TYPE
     ::= {clabWIFIAccessPointSecurityEntry 5 }
 
 clabWIFIAccessPointSecurityRekeyingInterval    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     UNITS       "seconds"
     MAX-ACCESS  read-create
     STATUS      current
@@ -2547,7 +2547,7 @@ clabWIFIAccessPointSecurityRekeyingInterval    OBJECT-TYPE
     ::= {clabWIFIAccessPointSecurityEntry 6 }
 
 clabWIFIAccessPointSecurityRadiusServerIPAddrType    OBJECT-TYPE
-    SYNTAX      InetAddressType 
+    SYNTAX      InetAddressType
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
@@ -2557,7 +2557,7 @@ clabWIFIAccessPointSecurityRadiusServerIPAddrType    OBJECT-TYPE
     ::= {clabWIFIAccessPointSecurityEntry 7 }
 
 clabWIFIAccessPointSecurityRadiusServerIPAddr    OBJECT-TYPE
-    SYNTAX      InetAddress 
+    SYNTAX      InetAddress
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
@@ -2567,7 +2567,7 @@ clabWIFIAccessPointSecurityRadiusServerIPAddr    OBJECT-TYPE
     ::= {clabWIFIAccessPointSecurityEntry 8 }
 
 clabWIFIAccessPointSecurityRadiusServerPort    OBJECT-TYPE
-    SYNTAX      InetPortNumber 
+    SYNTAX      InetPortNumber
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
@@ -2578,7 +2578,7 @@ clabWIFIAccessPointSecurityRadiusServerPort    OBJECT-TYPE
     ::= {clabWIFIAccessPointSecurityEntry 9 }
 
 clabWIFIAccessPointSecurityRadiusSecret    OBJECT-TYPE
-    SYNTAX      SnmpAdminString 
+    SYNTAX      SnmpAdminString
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
@@ -2588,13 +2588,13 @@ clabWIFIAccessPointSecurityRadiusSecret    OBJECT-TYPE
     ::= {clabWIFIAccessPointSecurityEntry 10 }
 
 clabWIFIAccessPointSecurityRowstatus    OBJECT-TYPE
-    SYNTAX      RowStatus 
+    SYNTAX      RowStatus
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
         "The status of this instance."
     ::= {clabWIFIAccessPointSecurityEntry 11 }
-    
+
 clabWIFIAccessPointSecurityWEPKey2     OBJECT-TYPE
     SYNTAX    OCTET STRING (SIZE (0 | 5 | 13))
     MAX-ACCESS  read-create
@@ -2633,10 +2633,10 @@ clabWIFIAccessPointSecurityWEPPassPhrase     OBJECT-TYPE
     STATUS      current
     DESCRIPTION
         "This attribute defines a human readable password to derive
-        the WEP keys, following well-known key generation algorithm for 
+        the WEP keys, following well-known key generation algorithm for
         this purpose.
         When this attribute is a zero-length string, WEP keys are used
-        directly. Otherwise, the values of the WEP keys cannot be 
+        directly. Otherwise, the values of the WEP keys cannot be
         changed directly and an error on write is returned."
     ::= {clabWIFIAccessPointSecurityEntry 16 }
 
@@ -2650,7 +2650,7 @@ clabWIFIAccessPointSecurityWPAEncryption     OBJECT-TYPE
     DESCRIPTION
         "This attribute defines the encryption algorithm used for WPA."
  ::= {clabWIFIAccessPointSecurityEntry 17 }
- 
+
 clabWIFIAccessPointSecuritySecondaryRadiusServerIPAddrType    OBJECT-TYPE
     SYNTAX      InetAddressType
     MAX-ACCESS  read-create
@@ -2694,11 +2694,11 @@ clabWIFIAccessPointSecuritySecondaryRadiusSecret    OBJECT-TYPE
         "This object is defined in TR-181
          Device.WiFi.AccessPoint{i}.Security.SecondaryRadiusSecret."
     REFERENCE
-        "TR-181 Device Data Model for TR-069."    
+        "TR-181 Device Data Model for TR-069."
     ::= {clabWIFIAccessPointSecurityEntry 21 }
 
 clabWIFIAccessPointSecurityEnableManagementFrameProtection    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
@@ -2706,7 +2706,7 @@ clabWIFIAccessPointSecurityEnableManagementFrameProtection    OBJECT-TYPE
     ::= { clabWIFIAccessPointSecurityEntry 22 }
 
 clabWIFIAccessPointSecurityReset    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
@@ -2715,9 +2715,9 @@ clabWIFIAccessPointSecurityReset    OBJECT-TYPE
     REFERENCE
         "TR-181 Device Data Model for TR-069."
     ::= { clabWIFIAccessPointSecurityEntry 23 }
-    
+
 clabWIFIAccessPointRadiusRetries    OBJECT-TYPE
-    SYNTAX      Integer32 
+    SYNTAX      Integer32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -2725,7 +2725,7 @@ clabWIFIAccessPointRadiusRetries    OBJECT-TYPE
     ::= { clabWIFIAccessPointSecurityEntry 24 }
 
 clabWIFIAccessPointSecurityLanRoutingEnabled    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
@@ -2777,7 +2777,7 @@ ClabWIFIAccessPointWPSEntry ::= SEQUENCE {
 }
 
 clabWIFIAccessPointWPSEnable    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
@@ -2821,7 +2821,7 @@ clabWIFIAccessPointWPSRowStatus    OBJECT-TYPE
     STATUS      current
     DESCRIPTION
         "The status of this instance."
-    ::= {clabWIFIAccessPointWPSEntry 4 } 
+    ::= {clabWIFIAccessPointWPSEntry 4 }
 
 clabWIFIAccessPointWPSSetWPSMethod    OBJECT-TYPE
     SYNTAX      INTEGER {
@@ -2840,32 +2840,32 @@ clabWIFIAccessPointWPSSetWPSMethod    OBJECT-TYPE
     STATUS      deprecated
     DESCRIPTION
         "This object is defined as an CableLabs Extension to TR-181
-         Device.WiFi.AccessPoint{i}.WPS.  The value must be selected 
-         from the clabWIFIAccessPointWPSConfigMethodsSupported list 
+         Device.WiFi.AccessPoint{i}.WPS.  The value must be selected
+         from the clabWIFIAccessPointWPSConfigMethodsSupported list
          above."
     REFERENCE
         "TR-181 Device Data Model for TR-069."
     ::= {clabWIFIAccessPointWPSEntry 5 }
- 
+
 clabWIFIAccessPointWPSAPPin    OBJECT-TYPE
-    SYNTAX      SnmpAdminString 
+    SYNTAX      SnmpAdminString
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        " This object is defined as an CableLabs Extension to 
-          TR-181 Device.WiFi.AccessPoint{i}.WPS.  The value 
+        " This object is defined as an CableLabs Extension to
+          TR-181 Device.WiFi.AccessPoint{i}.WPS.  The value
           returned is the factory default PIN."
     REFERENCE
         "TR-181 Device Data Model for TR-069."
     ::= {clabWIFIAccessPointWPSEntry 6 }
 
 clabWIFIAccessPointWPSSetWPSClientPin    OBJECT-TYPE
-    SYNTAX      SnmpAdminString 
+    SYNTAX      SnmpAdminString
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
-        " This object is defined as an CableLabs Extension to 
-          TR-181 Device.WiFi.AccessPoint{i}.WPS.  The value 
+        " This object is defined as an CableLabs Extension to
+          TR-181 Device.WiFi.AccessPoint{i}.WPS.  The value
           returned is the factory default PIN."
     REFERENCE
         "TR-181 Device Data Model for TR-069."
@@ -2899,8 +2899,8 @@ clabWIFIAccessPointWPSSetWPSMethods    OBJECT-TYPE
     STATUS      current
     DESCRIPTION
         "This object is defined as an CableLabs Extension to TR-181
-         Device.WiFi.AccessPoint{i}.WPS.  The value must be selected 
-         from the clabWIFIAccessPointWPSConfigMethodsSupported list 
+         Device.WiFi.AccessPoint{i}.WPS.  The value must be selected
+         from the clabWIFIAccessPointWPSConfigMethodsSupported list
          above."
     REFERENCE
         "TR-181 Device Data Model for TR-069."
@@ -2954,22 +2954,22 @@ ClabWIFIAssociatedDeviceEntry ::= SEQUENCE {
     clabWIFIAssociatedDeviceSecurityMode
                  INTEGER,
     clabWIFIAssociatedDeviceEncryptionAlgorithm
-                 INTEGER, 
+                 INTEGER,
     clabWIFIAssociatedDeviceAssociationState
-                 INTEGER                 
+                 INTEGER
     }
 
 clabWIFIAssociatedDeviceId    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "The key for a unique instance of this object. There is one 
+        "The key for a unique instance of this object. There is one
         instance for each unique Associated device MAC Address."
     ::= {clabWIFIAssociatedDeviceEntry 1 }
 
 clabWIFIAssociatedDeviceMACAddress    OBJECT-TYPE
-    SYNTAX      MacAddress 
+    SYNTAX      MacAddress
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -2979,7 +2979,7 @@ clabWIFIAssociatedDeviceMACAddress    OBJECT-TYPE
     ::= {clabWIFIAssociatedDeviceEntry 2 }
 
 clabWIFIAssociatedDeviceAuthenticationState    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -2989,7 +2989,7 @@ clabWIFIAssociatedDeviceAuthenticationState    OBJECT-TYPE
     ::= {clabWIFIAssociatedDeviceEntry 3 }
 
 clabWIFIAssociatedDeviceLastDataDownlinkRate    OBJECT-TYPE
-    SYNTAX      Unsigned32 (1000..600000) 
+    SYNTAX      Unsigned32 (1000..600000)
     UNITS       "kbps"
     MAX-ACCESS  read-only
     STATUS      current
@@ -3000,7 +3000,7 @@ clabWIFIAssociatedDeviceLastDataDownlinkRate    OBJECT-TYPE
     ::= {clabWIFIAssociatedDeviceEntry 4 }
 
 clabWIFIAssociatedDeviceLastDataUplinkRate    OBJECT-TYPE
-    SYNTAX      Unsigned32 (1000..600000) 
+    SYNTAX      Unsigned32 (1000..600000)
     UNITS       "kbps"
     MAX-ACCESS  read-only
     STATUS      current
@@ -3033,7 +3033,7 @@ clabWIFIAssociatedDeviceRetransmissions    OBJECT-TYPE
     ::= {clabWIFIAssociatedDeviceEntry 7 }
 
 clabWIFIAssociatedDeviceActive    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -3043,18 +3043,18 @@ clabWIFIAssociatedDeviceActive    OBJECT-TYPE
     ::= {clabWIFIAssociatedDeviceEntry 8 }
 
 clabWIFIAssociatedDeviceMaxPacketRetryCount    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     UNITS       "packets"
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
-        "This object indicates the number of packets to be retransmitted 
+        "This object indicates the number of packets to be retransmitted
          to have an upper limit."
     ::= {clabWIFIAssociatedDeviceEntry 9 }
 
 clabWIFIAssociatedDeviceStationCount    OBJECT-TYPE
     SYNTAX      Counter32
-    UNITS       "stations" 
+    UNITS       "stations"
     MAX-ACCESS  read-only
     STATUS      deprecated
     DESCRIPTION
@@ -3063,7 +3063,7 @@ clabWIFIAssociatedDeviceStationCount    OBJECT-TYPE
     ::= {clabWIFIAssociatedDeviceEntry 10 }
 
 clabWIFIAssociatedDeviceMaxNumOfStations    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     UNITS       "stations"
     MAX-ACCESS  read-write
     STATUS      deprecated
@@ -3082,7 +3082,7 @@ clabWIFIAssociatedDeviceSecurityMode    OBJECT-TYPE
                              wpaWPA2Personal(6),
                              wpaEnterprise(7),
                              wpa2Enterprise(8),
-                             wpaWpa2Enterprise(9)                         
+                             wpaWpa2Enterprise(9)
                          }
 
     MAX-ACCESS  read-only
@@ -3095,7 +3095,7 @@ clabWIFIAssociatedDeviceEncryptionAlgorithm    OBJECT-TYPE
     SYNTAX      INTEGER  {
                           unknown(1),
                           tkip(2),
-                          aes(3)                         
+                          aes(3)
                          }
     MAX-ACCESS  read-only
     STATUS      deprecated
@@ -3112,12 +3112,12 @@ SYNTAX      INTEGER  {
                       forcedDisassociationNetMode(5),
                       forcedDisassociationSnr(6),
                       other(7)
-                     } 
+                     }
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "This object reports the status of any known devices that are or 
-         have been associated if the CPE tracks device history after 
+        "This object reports the status of any known devices that are or
+         have been associated if the CPE tracks device history after
          disassociation."
     ::= {clabWIFIAssociatedDeviceEntry 14 }
 
@@ -3127,7 +3127,7 @@ clabWIFIDataRateStatsTable OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      deprecated
     DESCRIPTION
-        "This object contains statistics for each speed rate of 
+        "This object contains statistics for each speed rate of
         an 802.11 LAN interface."
     ::= {clabWIFIObjects 10 }
 
@@ -3156,60 +3156,60 @@ ClabWIFIDataRateStatsEntry ::= SEQUENCE {
       }
 
 clabWIFIDataRateStatsRate    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     UNITS       "Mbps"
     MAX-ACCESS  not-accessible
     STATUS      deprecated
     DESCRIPTION
-        "This key represents the data speed for the statistics 
+        "This key represents the data speed for the statistics
         collected. the value is reported in integer units of Mbps."
     ::= {clabWIFIDataRateStatsEntry 1 }
 
 clabWIFIDataRateStatsFramesSent    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     UNITS       "frames"
     MAX-ACCESS  read-only
     STATUS      deprecated
     DESCRIPTION
-        "The FramesSent Parameter indicates the total number of frames 
+        "The FramesSent Parameter indicates the total number of frames
         transmitted out of the interface (not marked as duplicated).
 The value of this counter MAY be reset to zero when the CPE is rebooted."
     ::= {clabWIFIDataRateStatsEntry 2 }
 
 clabWIFIDataRateStatsFramesRetransmissionsSent    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     UNITS       "frames"
     MAX-ACCESS  read-only
     STATUS      deprecated
     DESCRIPTION
-        "The FramesRetransmissionsSent parameter indicates the total 
-        number of frames retransmitted out of the interface (marked 
+        "The FramesRetransmissionsSent parameter indicates the total
+        number of frames retransmitted out of the interface (marked
         as duplicated).
-        The value of this counter MAY be reset to zero when the CPE 
+        The value of this counter MAY be reset to zero when the CPE
         is rebooted."
     ::= {clabWIFIDataRateStatsEntry 3 }
 
 clabWIFIDataRateStatsFramesReceived    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     UNITS       "frames"
     MAX-ACCESS  read-only
     STATUS      deprecated
     DESCRIPTION
-        "The FramesReceived parameter indicates the total number of 
+        "The FramesReceived parameter indicates the total number of
         frames received on this interface (not marked as duplicated).
-        The value of this counter MAY be reset to zero when the CPE is 
+        The value of this counter MAY be reset to zero when the CPE is
         rebooted."
     ::= {clabWIFIDataRateStatsEntry 4 }
 
 clabWIFIDataRateStatsFramesDuplicatedReceived    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     UNITS       "frames"
     MAX-ACCESS  read-only
     STATUS      deprecated
     DESCRIPTION
-        "The FramesDuplicatedReceived indicates the total number of 
+        "The FramesDuplicatedReceived indicates the total number of
         duplicated frames received on this interface.
-        The value of this counter MAY be reset to zero when the CPE 
+        The value of this counter MAY be reset to zero when the CPE
         is rebooted."
     ::= {clabWIFIDataRateStatsEntry 5 }
 
@@ -3218,10 +3218,10 @@ clabWIFIPeriodicStatsTable OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This object contains periodic statistics for an 802.11 SSID 
-        on a CPE device. Note that these statistics refer to the link 
-        layer, not to the physical layer. This object does not include 
-        the total byte and packet statistics, which are, for 
+        "This object contains periodic statistics for an 802.11 SSID
+        on a CPE device. Note that these statistics refer to the link
+        layer, not to the physical layer. This object does not include
+        the total byte and packet statistics, which are, for
         historical reasons, in the parent object."
     ::= {clabWIFIObjects 11 }
 
@@ -3232,8 +3232,8 @@ clabWIFIPeriodicStatsEntry    OBJECT-TYPE
     DESCRIPTION
         "The Conceptual row of clabWIFIPeriodicStatsTable."
     INDEX {
-            clabWIFISSIDId, 
-            clabWIFIPeriodicStatsInterval, 
+            clabWIFISSIDId,
+            clabWIFIPeriodicStatsInterval,
             clabWIFIPeriodicStatsId
           }
     ::= {clabWIFIPeriodicStatsTable 1 }
@@ -3282,133 +3282,133 @@ clabWIFIPeriodicStatsInterval    OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This key indicates the Interval where the measurements were 
+        "This key indicates the Interval where the measurements were
         Accumulated.
         The interval of measurements is synchronized with the wall clock.
-        The total number of intervals is based on a 24 hour period. 
-        At an interval of 15 minutes 96 intervals (1..96)  are defined, 
-        at 30 minutes, 48 intervals (1..48) and 24 intervals (1..24) 
+        The total number of intervals is based on a 24 hour period.
+        At an interval of 15 minutes 96 intervals (1..96)  are defined,
+        at 30 minutes, 48 intervals (1..48) and 24 intervals (1..24)
         for 1 hour measurement interval.
-        Devices with  no capabilities to report measurements per interval 
-        will report the value 0 for the interval attribute of the unique 
+        Devices with  no capabilities to report measurements per interval
+        will report the value 0 for the interval attribute of the unique
         statistics  instance."
     ::= {clabWIFIPeriodicStatsEntry 1 }
 
 clabWIFIPeriodicStatsId    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "The Id key represents a unique identifier for a client 
+        "The Id key represents a unique identifier for a client
         Mac address in a given statistics measurement interval."
     ::= {clabWIFIPeriodicStatsEntry 2 }
 
 clabWIFIPeriodicStatsDeviceMACAddress    OBJECT-TYPE
-    SYNTAX      MacAddress 
+    SYNTAX      MacAddress
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The DeviceMACAddress represents the MAC address of an 
+        "The DeviceMACAddress represents the MAC address of an
         associated client device."
     ::= {clabWIFIPeriodicStatsEntry 3 }
 
 clabWIFIPeriodicStatsFramesSent    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     UNITS       "frames"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "FrameSent is the total number of frames transmitted out of 
+        "FrameSent is the total number of frames transmitted out of
         the interface.
-        For conventional 802.11 MAC (a,b,g) this counter corresponds 
+        For conventional 802.11 MAC (a,b,g) this counter corresponds
         to the total of MSDUs (MAC Service Data Unit) being transmitted.
-        For High Throughput transmissions this corresponds to the 
+        For High Throughput transmissions this corresponds to the
         A-MSDU (Aggregation MSDU)
-        The value of this counter MAY be reset to zero when the 
+        The value of this counter MAY be reset to zero when the
         CPE is rebooted."
     ::= {clabWIFIPeriodicStatsEntry 4 }
 
 clabWIFIPeriodicStatsDataFramesSentAck    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     UNITS       "frames"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "DataFramesSentAck is the total number of MSDU frames marked 
+        "DataFramesSentAck is the total number of MSDU frames marked
         as duplicates and non duplicates acknowledged.
-        The value of this counter MAY be reset to zero when the CPE 
+        The value of this counter MAY be reset to zero when the CPE
         is rebooted."
     ::= {clabWIFIPeriodicStatsEntry 5 }
 
 clabWIFIPeriodicStatsDataFramesSentNoAck    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     UNITS       "frames"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "DataFramesSentNoAck is the total number of MSDU frames 
-        retransmitted out of the interface (i.e., marked as duplicate 
-        and non-duplicate) and not acknowledged but not including 
+        "DataFramesSentNoAck is the total number of MSDU frames
+        retransmitted out of the interface (i.e., marked as duplicate
+        and non-duplicate) and not acknowledged but not including
         those defined in dataFramesLost.
-        The value of this counter MAY be reset to zero when the 
+        The value of this counter MAY be reset to zero when the
         CPE is rebooted."
     ::= {clabWIFIPeriodicStatsEntry 6 }
 
 clabWIFIPeriodicStatsDataFramesLost    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     UNITS       "frames"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "DataFramesLost is the total number of MSDU frames retransmitted 
-        out of the interface that where not acknowledged and discarded 
+        "DataFramesLost is the total number of MSDU frames retransmitted
+        out of the interface that where not acknowledged and discarded
         for reaching max number of retransmissions.
-        The value of this counter MAY be reset to zero when the CPE 
+        The value of this counter MAY be reset to zero when the CPE
         is rebooted."
     ::= {clabWIFIPeriodicStatsEntry 7 }
 
 clabWIFIPeriodicStatsFramesReceived    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     UNITS       "frames"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "FramesReceived is the total number of frames received by the 
+        "FramesReceived is the total number of frames received by the
         interface.
-        For conventional 802.11 MAC (a,b,g) this counter corresponds to the 
+        For conventional 802.11 MAC (a,b,g) this counter corresponds to the
         total of MSDUs (MAC Service Data Unit) being transmitted.
-        For High Throughput transmissions (n) this corresponds to A-MSDUs 
+        For High Throughput transmissions (n) this corresponds to A-MSDUs
         (Aggregation MSDU) and MSDUs.
-        The value of this counter MAY be reset to zero when the CPE 
+        The value of this counter MAY be reset to zero when the CPE
         is rebooted."
     ::= {clabWIFIPeriodicStatsEntry 8 }
 
 clabWIFIPeriodicStatsDataFramesReceived    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     UNITS       "frames"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "DataFramesReceived is the total number of MSDU frames 
+        "DataFramesReceived is the total number of MSDU frames
         received and  marked as non-duplicates.
-        The value of this counter MAY be reset to zero when the CPE 
+        The value of this counter MAY be reset to zero when the CPE
         is rebooted."
     ::= {clabWIFIPeriodicStatsEntry 9 }
 
 clabWIFIPeriodicStatsDataFramesDuplicateReceived    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     UNITS       "frames"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "DataFramesDuplicateReceived is the total number of duplicated 
+        "DataFramesDuplicateReceived is the total number of duplicated
         frames received on this interface.
-        The value of this counter MAY be reset to zero when the 
+        The value of this counter MAY be reset to zero when the
         CPE is rebooted."
     ::= {clabWIFIPeriodicStatsEntry 10 }
 
 clabWIFIPeriodicStatsProbesReceived    OBJECT-TYPE
-    SYNTAX      Counter32 
+    SYNTAX      Counter32
     UNITS       "probes"
     MAX-ACCESS  read-only
     STATUS      current
@@ -3417,7 +3417,7 @@ clabWIFIPeriodicStatsProbesReceived    OBJECT-TYPE
     ::= {clabWIFIPeriodicStatsEntry 11 }
 
 clabWIFIPeriodicStatsProbesRejected    OBJECT-TYPE
-    SYNTAX      Counter32 
+    SYNTAX      Counter32
     UNITS       "probes"
     MAX-ACCESS  read-only
     STATUS      current
@@ -3426,61 +3426,61 @@ clabWIFIPeriodicStatsProbesRejected    OBJECT-TYPE
     ::= {clabWIFIPeriodicStatsEntry 12 }
 
 clabWIFIPeriodicStatsRSSI    OBJECT-TYPE
-    SYNTAX      Integer32 
+    SYNTAX      Integer32
     UNITS       "dBm"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The Received Signal Strength indicator is the energy observed 
+        "The Received Signal Strength indicator is the energy observed
         at the antenna receiver for a current transmission."
     ::= {clabWIFIPeriodicStatsEntry 13 }
 
 clabWIFIPeriodicStatsSNR    OBJECT-TYPE
-    SYNTAX      Integer32 
+    SYNTAX      Integer32
     UNITS       "dB"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The signal to Noise Ratio (SNR) parameter represents the strength 
+        "The signal to Noise Ratio (SNR) parameter represents the strength
         of the signal compared to received noise."
     ::= {clabWIFIPeriodicStatsEntry 14 }
 
 clabWIFIPeriodicStatsDisassociations    OBJECT-TYPE
-    SYNTAX      Counter32 
+    SYNTAX      Counter32
     UNITS       "disassociations"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "Disassociations represents the total number of client 
+        "Disassociations represents the total number of client
         disassociations."
     ::= {clabWIFIPeriodicStatsEntry 15 }
 
 clabWIFIPeriodicStatsAuthenticationFailures    OBJECT-TYPE
-    SYNTAX      Counter32 
+    SYNTAX      Counter32
     UNITS       "authenticationfailures"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "AuthenticationFailures indicates the total number of 
+        "AuthenticationFailures indicates the total number of
         authentication failures."
     ::= {clabWIFIPeriodicStatsEntry 16 }
 
 clabWIFIPeriodicStatsLastTimeAssociation    OBJECT-TYPE
-    SYNTAX      DateAndTime 
+    SYNTAX      DateAndTime
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The LastTimeAssociation parameter represents the last 
+        "The LastTimeAssociation parameter represents the last
         time the client was associated."
     ::= {clabWIFIPeriodicStatsEntry 17 }
 
 clabWIFIPeriodicStatsLastTimeDisassociation    OBJECT-TYPE
-    SYNTAX      DateAndTime 
+    SYNTAX      DateAndTime
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "LastTimeDisassociation parameter represents the last time 
-        the client disassociate from the interface. 
+        "LastTimeDisassociation parameter represents the last time
+        the client disassociate from the interface.
 The all zeros value indicates the client is currently associated. "
     ::= {clabWIFIPeriodicStatsEntry 18 }
 
@@ -3489,7 +3489,7 @@ clabWIFISSIDPolicyTable OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "The SSIDPolicy object defines the configuration of policies, 
+        "The SSIDPolicy object defines the configuration of policies,
         behaviors and event thresholds controlled per SSID."
     ::= {clabWIFIObjects 12 }
 
@@ -3532,46 +3532,46 @@ ClabWIFISSIDPolicyEntry ::= SEQUENCE {
     clabWIFISSIDPolicyBeaconMcsLevelInUse
                  SnmpAdminString,
     clabWIFISSIDPolicyBeaconMcsLevelsSupported
-                 SnmpAdminString             
+                 SnmpAdminString
       }
 
 clabWIFISSIDPolicyBlockAfterAttempts    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
-        "The BlockAfterAttempts parameter indicates the maximum number 
-        of attempts a client is allowed to attempt registration before 
-        being denied access. Exceeding this value generates one event. 
-        Events from same client should not reoccur more than once an 
+        "The BlockAfterAttempts parameter indicates the maximum number
+        of attempts a client is allowed to attempt registration before
+        being denied access. Exceeding this value generates one event.
+        Events from same client should not reoccur more than once an
         hour.
         The value zero indicates no connection attempts restrictions."
     DEFVAL      { 0 }
     ::= {clabWIFISSIDPolicyEntry 1 }
 
 clabWIFISSIDPolicyAllocatedBandwidth    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     UNITS       "Mbps"
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
-        "The AllocatedBandwidth parameter indicates the maximum 
-        bandwidth reserved for a particular interface. 
+        "The AllocatedBandwidth parameter indicates the maximum
+        bandwidth reserved for a particular interface.
 The value zero indicates no limit."
     DEFVAL      { 0 }
     ::= {clabWIFISSIDPolicyEntry 2 }
 
 clabWIFISSIDPolicyAuthenticationFailures    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
-        "The AuthenticationFailures parameter indicates the number of 
-        Authenticationfailures a station simultaneously produces to 
+        "The AuthenticationFailures parameter indicates the number of
+        Authenticationfailures a station simultaneously produces to
         generate the event.
-        Events from same client should not reoccur more than once an 
+        Events from same client should not reoccur more than once an
         hour.
-        The value 0 indicates no threshold and events of this type are 
+        The value 0 indicates no threshold and events of this type are
         not generated."
     DEFVAL      { 0 }
     ::= {clabWIFISSIDPolicyEntry 3 }
@@ -3581,131 +3581,131 @@ clabWIFISSIDPolicyNonAuthenticatedTraffic    OBJECT-TYPE
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
-        "The NonAuthenticatedTraffic parameter represents the number 
-        of non-authenticated messages received from a station to generate 
-        an event. Events from same client should not reoccur more 
+        "The NonAuthenticatedTraffic parameter represents the number
+        of non-authenticated messages received from a station to generate
+        an event. Events from same client should not reoccur more
         than once an hour.
-        The value 0 indicates no threshold and events of this type are 
+        The value 0 indicates no threshold and events of this type are
         not generated."
     DEFVAL      { 0 }
     ::= {clabWIFISSIDPolicyEntry 4 }
 
 clabWIFISSIDPolicyAssociationFailures    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
-        "The AssociationFailures indicates the number of simultaneous 
-        association failures from a station to generate an event. 
-        Events from same client should not reoccur more than once an 
+        "The AssociationFailures indicates the number of simultaneous
+        association failures from a station to generate an event.
+        Events from same client should not reoccur more than once an
         hour.
-        The value 0 indicates no threshold and events of this type are 
+        The value 0 indicates no threshold and events of this type are
         not generated."
     DEFVAL      { 0 }
     ::= {clabWIFISSIDPolicyEntry 5 }
 
 clabWIFISSIDPolicyStatsInterval    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     UNITS       "minutes"
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
-        "The StatsInterval parameter indicates the interval value to 
+        "The StatsInterval parameter indicates the interval value to
         collect per-interval statistics.
 
-        The value 0 indicates no interval and values reported are 
+        The value 0 indicates no interval and values reported are
         snapshots at the time of the request. "
     DEFVAL      { 0 }
     ::= {clabWIFISSIDPolicyEntry 6 }
 
 clabWIFISSIDPolicySNRThreshold    OBJECT-TYPE
-    SYNTAX      Integer32 
+    SYNTAX      Integer32
     UNITS       "dB"
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
-        "The SNR parameter indicates the threshold to report SNR. 
-        The value -100 indicates no threshold, and events of this 
+        "The SNR parameter indicates the threshold to report SNR.
+        The value -100 indicates no threshold, and events of this
         type are not generated."
     DEFVAL      { -100 }
     ::= {clabWIFISSIDPolicyEntry 7 }
 
 clabWIFISSIDPolicyANPIThreshold    OBJECT-TYPE
-    SYNTAX      Integer32 
+    SYNTAX      Integer32
     UNITS       "dBm"
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
-        "The ANPI parameter indicates the threshold to report the 
-        Average Noise plus Interference. The value -100 indicates no 
+        "The ANPI parameter indicates the threshold to report the
+        Average Noise plus Interference. The value -100 indicates no
         threshold, and events of this type are not generated."
     DEFVAL      { -100 }
     ::= {clabWIFISSIDPolicyEntry 8 }
 
 clabWIFISSIDPolicyLowReceivedPowerThreshold    OBJECT-TYPE
-    SYNTAX      Integer32 
+    SYNTAX      Integer32
     UNITS       "dBm"
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
-        "The LowReceivedPowerThreshold parameter indicates the power 
-        level threshold to generate an event whenever the station 
-        received power is below the threshold. The value -100 indicates 
+        "The LowReceivedPowerThreshold parameter indicates the power
+        level threshold to generate an event whenever the station
+        received power is below the threshold. The value -100 indicates
         no threshold is set, and events of this type are not generated."
     DEFVAL      { -100 }
     ::= {clabWIFISSIDPolicyEntry 9 }
 
 clabWIFISSIDPolicyLowPowerDeniedAccessThreshold    OBJECT-TYPE
-    SYNTAX      Integer32 
+    SYNTAX      Integer32
     UNITS       "dBm"
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
-        "The LowPowerDeniedAccessThreshold parameter indicates the 
-        power level threshold to deny client association whenever the 
-        station received power is below the threshold. The value -100 
-        indicates no threshold, and events of this type are not 
+        "The LowPowerDeniedAccessThreshold parameter indicates the
+        power level threshold to deny client association whenever the
+        station received power is below the threshold. The value -100
+        indicates no threshold, and events of this type are not
         generated."
     DEFVAL      { -100 }
     ::= {clabWIFISSIDPolicyEntry 10 }
 
 clabWIFISSIDPolicyLowPowerDisassociationThreshold    OBJECT-TYPE
-    SYNTAX      Integer32 
+    SYNTAX      Integer32
     UNITS       "dBm"
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
-        "The LowerPowerDissasociationThreshold parameter indicates 
-        the threshold to report Disassociation due to low power. 
-        The Wi-Fi GW should refuse associations when the power level 
-        is below this RSSI level. The value -100 indicates no 
+        "The LowerPowerDissasociationThreshold parameter indicates
+        the threshold to report Disassociation due to low power.
+        The Wi-Fi GW should refuse associations when the power level
+        is below this RSSI level. The value -100 indicates no
         threshold, and events of this type are not generated."
     DEFVAL      { -100 }
     ::= {clabWIFISSIDPolicyEntry 11 }
-    
+
 clabWIFISSIDPolicyRowStatus    OBJECT-TYPE
-    SYNTAX      RowStatus 
+    SYNTAX      RowStatus
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
         "The status of this instance."
-    ::= {clabWIFISSIDPolicyEntry 12 }     
+    ::= {clabWIFISSIDPolicyEntry 12 }
 
 clabWIFISSIDPolicyBeaconMcsLevelInUse    OBJECT-TYPE
-    SYNTAX      SnmpAdminString 
+    SYNTAX      SnmpAdminString
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
-        "The BeaconMcsLevelInUse parameter specifies the beacon MCS to 
+        "The BeaconMcsLevelInUse parameter specifies the beacon MCS to
          be used."
     ::= {clabWIFISSIDPolicyEntry 13 }
 
 clabWIFISSIDPolicyBeaconMcsLevelsSupported    OBJECT-TYPE
-    SYNTAX      SnmpAdminString 
+    SYNTAX      SnmpAdminString
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The BeaconMcsLevelsSupported parameter specifies all the beacon MCSs 
+        "The BeaconMcsLevelsSupported parameter specifies all the beacon MCSs
          supported."
     ::= {clabWIFISSIDPolicyEntry 14 }
 
@@ -3715,10 +3715,10 @@ clabWIFIClientSessionsTable OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "The ClientSessions object represents the current 
-        and closed sessions (association connections). 
-        When the maximum number of instances is reached, the oldest 
-        closed session instance is replaced by a newly created client 
+        "The ClientSessions object represents the current
+        and closed sessions (association connections).
+        When the maximum number of instances is reached, the oldest
+        closed session instance is replaced by a newly created client
         association."
     ::= {clabWIFIObjects 13 }
 
@@ -3749,7 +3749,7 @@ ClabWIFIClientSessionsEntry ::= SEQUENCE {
       }
 
 clabWIFIClientSessionsId    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
@@ -3757,40 +3757,40 @@ clabWIFIClientSessionsId    OBJECT-TYPE
     ::= {clabWIFIClientSessionsEntry 1 }
 
 clabWIFIClientSessionsDeviceMACAddress    OBJECT-TYPE
-    SYNTAX      MacAddress 
+    SYNTAX      MacAddress
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The DeviceMACAddress parameter indicates the MAC address 
+        "The DeviceMACAddress parameter indicates the MAC address
         of an associated client device."
     ::= {clabWIFIClientSessionsEntry 2 }
 
 clabWIFIClientSessionsStart    OBJECT-TYPE
-    SYNTAX      DateAndTime 
+    SYNTAX      DateAndTime
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The Start parameter indicates the time when the session 
+        "The Start parameter indicates the time when the session
         started."
     ::= {clabWIFIClientSessionsEntry 3 }
 
 clabWIFIClientSessionsStop    OBJECT-TYPE
-    SYNTAX      DateAndTime 
+    SYNTAX      DateAndTime
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The Stop parameter indicates the time when the session ended. 
+        "The Stop parameter indicates the time when the session ended.
         If the session us current the value reported is all zeros."
     ::= {clabWIFIClientSessionsEntry 4 }
 
 clabWIFIClientSessionsTerminationCode    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The TerminationCode parameter indicates the Reason Code or the 
-        Status Code that lead to ending the association of the station. 
-        Reason code and Status code overlaps. The context of the type of 
+        "The TerminationCode parameter indicates the Reason Code or the
+        Status Code that lead to ending the association of the station.
+        Reason code and Status code overlaps. The context of the type of
         termination is provided by the TerminationMeaning attribute.
         The value zero indicates the session is active."
     ::= {clabWIFIClientSessionsEntry 5 }
@@ -3800,9 +3800,9 @@ clabWIFIClientSessionsTerminationMeaning    OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The TerminationMeaning parameter indicates the meaning of the 
-        Reason Code or Status Code for the ended session.  
-        The zero-length string is used when the instance corresponds 
+        "The TerminationMeaning parameter indicates the meaning of the
+        Reason Code or Status Code for the ended session.
+        The zero-length string is used when the instance corresponds
         to an active session."
     ::= {clabWIFIClientSessionsEntry 6 }
 
@@ -3811,9 +3811,9 @@ clabWIFIClientStatsTable OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "The ClientStats object contains accumulative statistics 
+        "The ClientStats object contains accumulative statistics
         for each client station.
-        A station is reported only after is associated for the 
+        A station is reported only after is associated for the
         first time. "
     ::= {clabWIFIObjects 14 }
 
@@ -3824,8 +3824,8 @@ clabWIFIClientStatsEntry    OBJECT-TYPE
     DESCRIPTION
         "The Conceptual row of clabWIFIClientStatsTable."
     INDEX {
-            clabWIFIAccessPointId, 
-            clabWIFIClientStatsInterval, 
+            clabWIFIAccessPointId,
+            clabWIFIClientStatsInterval,
             clabWIFIClientStatsId
           }
     ::= {clabWIFIClientStatsTable 1 }
@@ -3878,20 +3878,20 @@ clabWIFIClientStatsInterval    OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "The Interval parameter indicate the measurements were 
+        "The Interval parameter indicate the measurements were
         accumulated.
-        The interval of measurements is synchronized with the 
+        The interval of measurements is synchronized with the
         wall clock
-        The total number of intervals is based on a 24 hour period. 
-        At an interval of 15 minutes 96 intervals (1..96)  are defined, 
-        at 30 minutes, 48 intervals (1..48) and 24 intervals (1..24) 
+        The total number of intervals is based on a 24 hour period.
+        At an interval of 15 minutes 96 intervals (1..96)  are defined,
+        at 30 minutes, 48 intervals (1..48) and 24 intervals (1..24)
         for 1 hour measurement interval.
-        Devices with  no capable to report measurements per interval 
+        Devices with  no capable to report measurements per interval
         will report the value 0 for the interval attribute."
     ::= {clabWIFIClientStatsEntry 1 }
 
 clabWIFIClientStatsId    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
@@ -3899,193 +3899,193 @@ clabWIFIClientStatsId    OBJECT-TYPE
     ::= {clabWIFIClientStatsEntry 2 }
 
 clabWIFIClientStatsDeviceMACAddress    OBJECT-TYPE
-    SYNTAX      MacAddress 
+    SYNTAX      MacAddress
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The DeviceMACAddress parameter indicates the MAC address of 
+        "The DeviceMACAddress parameter indicates the MAC address of
         an associated client device."
     ::= {clabWIFIClientStatsEntry 3 }
 
 clabWIFIClientStatsFramesSent    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     UNITS       "frames"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The FramesSent parameter indicates the total number of frames 
+        "The FramesSent parameter indicates the total number of frames
         transmitted out of the interface.
-        For conventional 802.11 MAC (a,b,g) this counter corresponds 
+        For conventional 802.11 MAC (a,b,g) this counter corresponds
         to the total of MSDUs (MAC Service Data Unit) being transmitted.
-        For High Throughput transmissions this corresponds to the 
+        For High Throughput transmissions this corresponds to the
         A-MSDU (Aggregation MSDU)
-        The value of this counter MAY be reset to zero when the CPE 
+        The value of this counter MAY be reset to zero when the CPE
         is rebooted."
     ::= {clabWIFIClientStatsEntry 4 }
 
 clabWIFIClientStatsDataFramesSentAck    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     UNITS       "frames"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The DataFramesSentAck parameter indicates the total number of 
+        "The DataFramesSentAck parameter indicates the total number of
         MSDU frames marked as duplicates and non duplicates acknowledged.
-        The value of this counter MAY be reset to zero when the CPE is 
+        The value of this counter MAY be reset to zero when the CPE is
         rebooted."
     ::= {clabWIFIClientStatsEntry 5 }
 
 clabWIFIClientStatsDataFramesSentNoAck    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     UNITS       "frames"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The DataFramesSentNoAck parameter indicates the total number of 
-        MSDU frames retransmitted out of the interface 
-        (i.e., marked as duplicate and non-duplicate) and not acknowledged 
+        "The DataFramesSentNoAck parameter indicates the total number of
+        MSDU frames retransmitted out of the interface
+        (i.e., marked as duplicate and non-duplicate) and not acknowledged
         but not including those defined in dataFramesLost.
-        The value of this counter MAY be reset to zero when the CPE is 
+        The value of this counter MAY be reset to zero when the CPE is
         rebooted."
     ::= {clabWIFIClientStatsEntry 6 }
 
 clabWIFIClientStatsDataFramesLost    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     UNITS       "frames"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The DataFramesLost parameter indicates the total number of 
-        MSDU frames retransmitted out of the interface that where not 
-        acknowledged and discarded for reaching max number of 
+        "The DataFramesLost parameter indicates the total number of
+        MSDU frames retransmitted out of the interface that where not
+        acknowledged and discarded for reaching max number of
         retransmissions.
-        The value of this counter MAY be reset to zero when the CPE is 
+        The value of this counter MAY be reset to zero when the CPE is
         rebooted."
     ::= {clabWIFIClientStatsEntry 7 }
 
 clabWIFIClientStatsFramesReceived    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     UNITS       "frames"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The FramesReceived parameter indicates the total number of 
+        "The FramesReceived parameter indicates the total number of
         frames received by the interface.
-        For conventional 802.11 MAC (a,b,g) this counter corresponds 
+        For conventional 802.11 MAC (a,b,g) this counter corresponds
         to the total of MSDUs (MAC Service Data Unit) being transmitted.
-        For High Throughput transmissions (n) this corresponds to 
+        For High Throughput transmissions (n) this corresponds to
         A-MSDUs (Aggregation MSDU) and MSDUs.
-        The value of this counter MAY be reset to zero when the 
+        The value of this counter MAY be reset to zero when the
         CPE is rebooted."
     ::= {clabWIFIClientStatsEntry 8 }
 
 clabWIFIClientStatsDataFramesReceived    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     UNITS       "frames"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The DataFramesReceived parameter indicates the total number 
+        "The DataFramesReceived parameter indicates the total number
         of MSDU frames received and  marked as non-duplicates.
-        The value of this counter MAY be reset to zero when the CPE 
+        The value of this counter MAY be reset to zero when the CPE
         is rebooted."
     ::= {clabWIFIClientStatsEntry 9 }
 
 clabWIFIClientStatsDataFramesDuplicateReceived    OBJECT-TYPE
-    SYNTAX      Counter64 
+    SYNTAX      Counter64
     UNITS       "frames"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The DataFramesDuplicateReceived parameter indicates the total 
+        "The DataFramesDuplicateReceived parameter indicates the total
         number of duplicated frames received on this interface.
-        The value of this counter MAY be reset to zero when the 
+        The value of this counter MAY be reset to zero when the
         CPE is rebooted."
     ::= {clabWIFIClientStatsEntry 10 }
 
 clabWIFIClientStatsProbesReceived    OBJECT-TYPE
-    SYNTAX      Counter32 
+    SYNTAX      Counter32
     UNITS       "probes"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The ProbesReceived parameter indicates the Total number of 
+        "The ProbesReceived parameter indicates the Total number of
         probes received."
     ::= {clabWIFIClientStatsEntry 11 }
 
 clabWIFIClientStatsProbesRejected    OBJECT-TYPE
-    SYNTAX      Counter32 
+    SYNTAX      Counter32
     UNITS       "probes"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The ProbesRejected parameter indicates the total number of 
+        "The ProbesRejected parameter indicates the total number of
         probes rejected."
     ::= {clabWIFIClientStatsEntry 12 }
 
 clabWIFIClientStatsRSSI    OBJECT-TYPE
-    SYNTAX      Integer32 
+    SYNTAX      Integer32
     UNITS       "dBm"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The Received Signal Strength Indicator, RSSI, parameter is the 
-        energy observed at the antenna receiver for a current 
+        "The Received Signal Strength Indicator, RSSI, parameter is the
+        energy observed at the antenna receiver for a current
         transmission."
     ::= {clabWIFIClientStatsEntry 13 }
 
 clabWIFIClientStatsSNR    OBJECT-TYPE
-    SYNTAX      Integer32 
+    SYNTAX      Integer32
     UNITS       "dB"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The signal to Noise Ratio (SNR) parameter indicates the signal 
+        "The signal to Noise Ratio (SNR) parameter indicates the signal
         strength received from a client compared to the noise received."
     ::= {clabWIFIClientStatsEntry 14 }
 
 clabWIFIClientStatsDisassociations    OBJECT-TYPE
-    SYNTAX      Counter32 
+    SYNTAX      Counter32
     UNITS       "disassociations"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The Disassociations parameter indicates the total number of 
+        "The Disassociations parameter indicates the total number of
         client disassociations."
     ::= {clabWIFIClientStatsEntry 15 }
 
 clabWIFIClientStatsAuthenticationFailures    OBJECT-TYPE
-    SYNTAX      Counter32 
+    SYNTAX      Counter32
     UNITS       "authenticationfailures"
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The AuthenticationFailures parameter indicates the total 
+        "The AuthenticationFailures parameter indicates the total
         number of authentication failures."
     ::= {clabWIFIClientStatsEntry 16 }
 
 clabWIFIClientStatsLastTimeAssociation    OBJECT-TYPE
-    SYNTAX      DateAndTime 
+    SYNTAX      DateAndTime
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The LastTimeAssociation parameter indicates the Last time 
+        "The LastTimeAssociation parameter indicates the Last time
         the client was associated."
     ::= {clabWIFIClientStatsEntry 17 }
 
 clabWIFIClientStatsLastTimeDisassociation    OBJECT-TYPE
-    SYNTAX      DateAndTime 
+    SYNTAX      DateAndTime
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The  LastTimeDisassociation parameter indicates the last time 
-        the client disassociate from the interface. 
-        The all zeros value indicates the client is currently 
+        "The  LastTimeDisassociation parameter indicates the last time
+        the client disassociate from the interface.
+        The all zeros value indicates the client is currently
         associated. "
     ::= {clabWIFIClientStatsEntry 18 }
 
 clabWIFIClientStatsThroughput    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -4093,11 +4093,11 @@ clabWIFIClientStatsThroughput    OBJECT-TYPE
     ::= {clabWIFIClientStatsEntry 19 }
 
 clabWIFIClientStatsPktErrorRatePerSTA    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        " This object indicates the traffic quality (e.g., HTTP, TCP) 
+        " This object indicates the traffic quality (e.g., HTTP, TCP)
          of a STA."
     ::= {clabWIFIClientStatsEntry 20 }
 
@@ -4108,8 +4108,8 @@ clabWIFIRadiusClientTable OBJECT-TYPE
     STATUS      current
     DESCRIPTION
         "This object is the extension of Radius Client operation
-        for the Access Point 802.1x Authenticator for WPA Enterprise. 
-        An instance is relevant when the attribute 
+        for the Access Point 802.1x Authenticator for WPA Enterprise.
+        An instance is relevant when the attribute
         AccessPointSecurity.ModeEnabled is 'WPA-Enterprise' or
         'WPA2-Enterprise' or 'WPA-WPA2-Enterprise'."
     ::= {clabWIFIObjects 15 }
@@ -4153,98 +4153,98 @@ clabWIFIRadiusClientNASIdentifier    OBJECT-TYPE
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
-        "The NAS-Identifier parameter corresponds to the Radius 
+        "The NAS-Identifier parameter corresponds to the Radius
         attribute NAS-Identifier used in Access request messages.
         The device always sends the Radius parameter NAS-IP-Address
-        and will send the NAS-Identifier parameter when this 
-        attribute is set to other than the zero-length string. 
-        The NAS-Identifier attribute can be used as a hint to 
-        indicate the authentication server the SSID domain where 
-        the WiFi endpoint tries to authenticate, i.e., 
-        when more than one SSID domains are using the same 
+        and will send the NAS-Identifier parameter when this
+        attribute is set to other than the zero-length string.
+        The NAS-Identifier attribute can be used as a hint to
+        indicate the authentication server the SSID domain where
+        the WiFi endpoint tries to authenticate, i.e.,
+        when more than one SSID domains are using the same
         Radius server instance."
     ::= {clabWIFIRadiusClientEntry 1 }
 
 clabWIFIRadiusClientLocationPolicy    OBJECT-TYPE
-    SYNTAX      OCTET STRING (SIZE(0..64)) 
+    SYNTAX      OCTET STRING (SIZE(0..64))
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
-        "The LocationPolicy  corresponds to the string value of the 
+        "The LocationPolicy  corresponds to the string value of the
         Radius Basic-Location-Policy-Rules attribute per RFC 5580"
     ::= {clabWIFIRadiusClientEntry 2 }
 
 clabWIFIRadiusClientOperatorName    OBJECT-TYPE
-    SYNTAX      SnmpAdminString (SIZE(0..32)) 
+    SYNTAX      SnmpAdminString (SIZE(0..32))
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
-        "The OperatorName parameter corresponds to the string value of the 
+        "The OperatorName parameter corresponds to the string value of the
         Radius Operator-Name attribute per RFC 5580."
     ::= {clabWIFIRadiusClientEntry 3 }
 
 clabWIFIRadiusClientLocationInformation    OBJECT-TYPE
-    SYNTAX      OCTET STRING (SIZE(0..253)) 
+    SYNTAX      OCTET STRING (SIZE(0..253))
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
-        "The LocationInformation parameter corresponds to the string 
-        value of the Radius Location-Information  attribute per 
+        "The LocationInformation parameter corresponds to the string
+        value of the Radius Location-Information  attribute per
         RFC 5580."
     ::= {clabWIFIRadiusClientEntry 4 }
 
 clabWIFIRadiusClientLocationData    OBJECT-TYPE
-    SYNTAX      OCTET STRING (SIZE(0..253)) 
+    SYNTAX      OCTET STRING (SIZE(0..253))
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
-        "The Location Data parameter corresponds to the string value of 
+        "The Location Data parameter corresponds to the string value of
         the Radius LocationData attribute per RFC 5580."
     ::= {clabWIFIRadiusClientEntry 5 }
 
 clabWIFIRadiusClientUsageReports    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
-        "The UsageReports parameter indicates whether the client send 
+        "The UsageReports parameter indicates whether the client send
         usage data 'true' or not 'false'."
     DEFVAL      { false }
     ::= {clabWIFIRadiusClientEntry 6 }
 
 clabWIFIRadiusClientIntervalInterimReport    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
-        "The IntervalInterimReport parameter indicates whether the client 
+        "The IntervalInterimReport parameter indicates whether the client
         send Interim reports at time intervals 'true' or not 'false'."
     DEFVAL      { false }
     ::= {clabWIFIRadiusClientEntry 7 }
 
 clabWIFIRadiusClientAPTransitionReport    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
-        "A 'true' value for the APTransitionReport parameter indicates the 
-        client sends Interim reports when the stations transitions to a 
+        "A 'true' value for the APTransitionReport parameter indicates the
+        client sends Interim reports when the stations transitions to a
         different Access point."
     DEFVAL      { false }
     ::= {clabWIFIRadiusClientEntry 8 }
 
 clabWIFIRadiusClientGigawordReport    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
-        "A 'true' value for Gigaword Report indicates the client sends 
+        "A 'true' value for Gigaword Report indicates the client sends
         Interim reports when the 32-bit counters rollover"
     DEFVAL      { false }
     ::= {clabWIFIRadiusClientEntry 9 }
 
 clabWIFIRadiusClientRowStatus    OBJECT-TYPE
-    SYNTAX      RowStatus 
+    SYNTAX      RowStatus
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
@@ -4255,24 +4255,24 @@ clabWIFIWIFICommitSettings OBJECT IDENTIFIER
     ::= {clabWIFIObjects 16 }
 
 clabWIFIWIFICommitSettingsValue    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-write
     STATUS      deprecated
     DESCRIPTION
         "This attribute when set to 'true' flushes the WiFi settings in
-        non-volatile memory and reinitialize the WiFi system with the 
-        new set of values without reboot. 
+        non-volatile memory and reinitialize the WiFi system with the
+        new set of values without reboot.
 
         This attribute reports a value 'false' when WiFi attributes have
         been changed but the changes are not active (i.e.,. not flushed
-        in non-volatile and not part of the active configuration).  
+        in non-volatile and not part of the active configuration).
 
-        Systems that support immediate commit upon any attribute change 
-        will report this attribute as 'true' always, and silently 
+        Systems that support immediate commit upon any attribute change
+        will report this attribute as 'true' always, and silently
         accepts sets to 'true'."
 
-    ::= {clabWIFIWIFICommitSettings 1 } 
-    
+    ::= {clabWIFIWIFICommitSettings 1 }
+
 clabWIFIApNeighborStatsTable OBJECT-TYPE
     SYNTAX      SEQUENCE OF ClabWIFIApNeighborStatsEntry
     MAX-ACCESS  not-accessible
@@ -4310,38 +4310,38 @@ clabWIFIApNeighborStatsSSID    OBJECT-TYPE
     STATUS      deprecated
     DESCRIPTION
         "The attribute indicates the current SSID of the neighbor."
-    ::= {clabWIFIApNeighborStatsEntry 1 }  
-    
+    ::= {clabWIFIApNeighborStatsEntry 1 }
+
 clabWIFIApNeighborStatsCurrentChannel    OBJECT-TYPE
     SYNTAX      Unsigned32 (1..255)
     MAX-ACCESS  read-only
     STATUS      deprecated
     DESCRIPTION
-        "The attribute indicates the current channel being used by the 
+        "The attribute indicates the current channel being used by the
          neighboring AP."
     ::= {clabWIFIApNeighborStatsEntry 2 }
-    
+
 clabWIFIApNeighborStatsCurrentBandwidth    OBJECT-TYPE
     SYNTAX      Unsigned32 (20 | 40 | 80 | 160)
     UNITS       "MHz"
     MAX-ACCESS  read-only
     STATUS      deprecated
     DESCRIPTION
-        "The attribute indicates the current bandwidth in which the 
+        "The attribute indicates the current bandwidth in which the
          neighboring AP is operating."
-    ::= {clabWIFIApNeighborStatsEntry 3 }  
-    
+    ::= {clabWIFIApNeighborStatsEntry 3 }
+
 clabWIFIApNeighborStatsRSSI    OBJECT-TYPE
-    SYNTAX      Integer32 
+    SYNTAX      Integer32
     UNITS       "dBm"
     MAX-ACCESS  read-only
     STATUS      deprecated
     DESCRIPTION
         "The attribute indicates the signal strength at which packets
-         from the neighboring AP are received at the measuring AP, in 
+         from the neighboring AP are received at the measuring AP, in
          terms of dBm."
-    ::= {clabWIFIApNeighborStatsEntry 4 } 
-    
+    ::= {clabWIFIApNeighborStatsEntry 4 }
+
 clabWIFIAccessPointAccessControlFilter OBJECT IDENTIFIER
     ::= { clabWIFIObjects 18 }
 
@@ -4350,9 +4350,9 @@ clabWIFIAccessPointClearAccessControlFilterTable OBJECT-TYPE
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
-        "Writing true to this object clears the clabWIFIAccessPointAccessControlFilterTable 
+        "Writing true to this object clears the clabWIFIAccessPointAccessControlFilterTable
          of all entries. Reading this object always return false"
-    ::= { clabWIFIAccessPointAccessControlFilter 1 } 
+    ::= { clabWIFIAccessPointAccessControlFilter 1 }
 
 clabWIFIAccessPointAccessControlFilterAccessAllow OBJECT-TYPE
     SYNTAX      TruthValue
@@ -4396,14 +4396,14 @@ clabWIFIAccessPointAccessControlFilterIndex OBJECT-TYPE
     STATUS      current
     DESCRIPTION
         "Secondary index to allow multiple MACs associated with same AP."
-    ::= { clabWIFIAccessPointAccessControlFilterEntry    1 }  
+    ::= { clabWIFIAccessPointAccessControlFilterEntry    1 }
 
 clabWIFIAccessPointAccessControlFilterMACAddress OBJECT-TYPE
     SYNTAX      MacAddress
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "STA MAC to be filtered. The value of 
+        "STA MAC to be filtered. The value of
          clabWIFIAccessPointAccessControlFilterAccessAllow
          indicates whether the MAC is allowed or not allowed."
     ::= { clabWIFIAccessPointAccessControlFilterEntry    2 }
@@ -4424,7 +4424,7 @@ clabWIFIAccessPointInterworkingServiceTable OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This table This object is used to configure the Passpoint parameters 
+        "This table This object is used to configure the Passpoint parameters
          for each Access Point."
     ::= { clabWIFIAccessPointPasspoint 1 }
 
@@ -4438,7 +4438,7 @@ clabWIFIAccessPointInterworkingServiceEntry    OBJECT-TYPE
             clabWIFIAccessPointId
                       }
     ::= { clabWIFIAccessPointInterworkingServiceTable 1 }
-	
+
 ClabWIFIAccessPointInterworkingServiceEntry ::= SEQUENCE {
     clabWIFIAccessPointInterworkingServiceInternet
                  TruthValue,
@@ -4450,17 +4450,17 @@ ClabWIFIAccessPointInterworkingServiceEntry ::= SEQUENCE {
                  OCTET STRING,
     clabWIFIAccessPointInterworkingServiceVenueTypeCode
                  OCTET STRING
-    }  
+    }
 
 clabWIFIAccessPointInterworkingServiceInternet OBJECT-TYPE
     SYNTAX      TruthValue
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
-        " Set to true if the network provides connectivity to the Internet; 
-          otherwise it is set to false indicating that it is unspecified 
-          whether the network provides connectivity to the Internet." 
-    ::= { clabWIFIAccessPointInterworkingServiceEntry 1 }      
+        " Set to true if the network provides connectivity to the Internet;
+          otherwise it is set to false indicating that it is unspecified
+          whether the network provides connectivity to the Internet."
+    ::= { clabWIFIAccessPointInterworkingServiceEntry 1 }
 
 clabWIFIAccessPointInterworkingServiceHESSID OBJECT-TYPE
     SYNTAX      MacAddress
@@ -4468,69 +4468,69 @@ clabWIFIAccessPointInterworkingServiceHESSID OBJECT-TYPE
     STATUS      current
     DESCRIPTION
         " MACAddress] Homogeneous Extended Service Set Identifier (HESSID)
-          The HESSID is a globally unique identifier that in conjunction 
-          with the WLAN-SSID, may be used to provide network identification 
+          The HESSID is a globally unique identifier that in conjunction
+          with the WLAN-SSID, may be used to provide network identification
           for a subscription service provider network AP."
     ::= { clabWIFIAccessPointInterworkingServiceEntry 2 }
 
 clabWIFIAccessPointInterworkingServiceAccessNetworkType OBJECT-TYPE
-    SYNTAX      OCTET STRING  (SIZE(1)) 
+    SYNTAX      OCTET STRING  (SIZE(1))
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
         " Access Network Type value to be included in the Interworking IE in
-          the beacons. (refer 8.4.2.94 of IEEE Std 802.11-2012). Possible 
+          the beacons. (refer 8.4.2.94 of IEEE Std 802.11-2012). Possible
           values are:
                         0 - Private network
-                        1 - Private network with guest access 
-                        2 - Chargeable public network 
-                        3 - Free public network 
+                        1 - Private network with guest access
+                        2 - Chargeable public network
+                        3 - Free public network
                         4 - Personal device network
-                        5 - Emergency services only network 
-                        6-13 - Reserved 
+                        5 - Emergency services only network
+                        6-13 - Reserved
                         14 - Test or experimental
                         15 - Wildcard
           Note enumeration was not possible (i.e., cannot enumerate with 0)"
-    ::= { clabWIFIAccessPointInterworkingServiceEntry 3 }      
+    ::= { clabWIFIAccessPointInterworkingServiceEntry 3 }
 
 clabWIFIAccessPointInterworkingServiceVenueGroupCode OBJECT-TYPE
-    SYNTAX      OCTET STRING  (SIZE(1)) 
+    SYNTAX      OCTET STRING  (SIZE(1))
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        " Indicates the Venue Group of the Venue Info Field (refer 8.4.1.34 
+        " Indicates the Venue Group of the Venue Info Field (refer 8.4.1.34
           of IEEE Std 802.11-2012) where the access point is installed:
                         0 - Unspecified
-                        1 - Assembly 
-                        2 - Business 
-                        3 - Educational 
+                        1 - Assembly
+                        2 - Business
+                        3 - Educational
                         4 - Factory and Industrial
                         5 - Institutional
                         7 - Residential
                         8 - Storage
                         9 - Utility and Maintenance
-                        10 - Vehicular                      
+                        10 - Vehicular
                         11 - Outdoor
-                        12-255 Reserved 
+                        12-255 Reserved
           Note enumeration was not possible (i.e., cannot enumerate with 0)"
-    ::= { clabWIFIAccessPointInterworkingServiceEntry 4 }      
+    ::= { clabWIFIAccessPointInterworkingServiceEntry 4 }
 
 clabWIFIAccessPointInterworkingServiceVenueTypeCode OBJECT-TYPE
-    SYNTAX      OCTET STRING  (SIZE(1)) 
+    SYNTAX      OCTET STRING  (SIZE(1))
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        " Indicates the Venue Type of the Venue Info Field (refer 8.4.1.34 of 
-          IEEE Std 802.11-2012) where the access point is installed. The 
+        " Indicates the Venue Type of the Venue Info Field (refer 8.4.1.34 of
+          IEEE Std 802.11-2012) where the access point is installed. The
           possible values are listed in the referanced standard."
-    ::= { clabWIFIAccessPointInterworkingServiceEntry  5 }      
+    ::= { clabWIFIAccessPointInterworkingServiceEntry  5 }
 
 clabWIFIAccessPointPasspointTable OBJECT-TYPE
     SYNTAX      SEQUENCE OF ClabWIFIAccessPointPasspointEntry
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This table This object is used to configure the Passpoint parameters 
+        "This table This object is used to configure the Passpoint parameters
          for each Access Point."
     ::= { clabWIFIAccessPointPasspoint 2 }
 
@@ -4544,7 +4544,7 @@ clabWIFIAccessPointPasspointEntry    OBJECT-TYPE
             clabWIFIAccessPointId
                       }
     ::= { clabWIFIAccessPointPasspointTable 1 }
-	
+
 ClabWIFIAccessPointPasspointEntry ::= SEQUENCE {
     clabWIFIAccessPointPasspointCapabilityList
                  OCTET STRING,
@@ -4564,18 +4564,18 @@ ClabWIFIAccessPointPasspointEntry ::= SEQUENCE {
                  OCTET STRING,
     clabWIFIAccessPointPasspointManagementFrameProtectionEnable
                  TruthValue,
-    clabWIFIAccessPointPasspointCapabilities 
+    clabWIFIAccessPointPasspointCapabilities
                  BITS
     }
 
 clabWIFIAccessPointPasspointCapabilityList OBJECT-TYPE
-    SYNTAX      OCTET STRING (SIZE(1..255)) 
+    SYNTAX      OCTET STRING (SIZE(1..255))
     MAX-ACCESS  read-only
     STATUS      deprecated
     DESCRIPTION
-        "HS Capability List drawn from the following table in exact order. 
+        "HS Capability List drawn from the following table in exact order.
                HS Query list (1)
-               HS Capability list (2)  
+               HS Capability list (2)
                Operator Friendly Name (3)
                WAN Metrics (4)
                Connection Capability (5)
@@ -4588,7 +4588,7 @@ clabWIFIAccessPointPasspointCapabilityList OBJECT-TYPE
          Each Octet corresponds to a capability by realitve position as follows.
                0-not supported
                1-supported"
-    ::= { clabWIFIAccessPointPasspointEntry 1 }     
+    ::= { clabWIFIAccessPointPasspointEntry 1 }
 
 clabWIFIAccessPointPasspointOnlineSignupSupported OBJECT-TYPE
     SYNTAX      TruthValue
@@ -4603,8 +4603,8 @@ clabWIFIAccessPointPasspointDGAFEnable OBJECT-TYPE
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
-        "'True' Indicates Downstream Forwarding of Group-Addressed 
-         Frames (DGAF) is supported.  'False' indicates no support 
+        "'True' Indicates Downstream Forwarding of Group-Addressed
+         Frames (DGAF) is supported.  'False' indicates no support
          For DGAF"
     ::= { clabWIFIAccessPointPasspointEntry 3 }
 
@@ -4631,7 +4631,7 @@ clabWIFIAccessPointPasspointASRAEnable OBJECT-TYPE
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
-        "'True' enables Additional Step Required for Access. 
+        "'True' enables Additional Step Required for Access.
          'False' disables'.  "
     ::= { clabWIFIAccessPointPasspointEntry 6 }
 
@@ -4640,16 +4640,16 @@ clabWIFIAccessPointPasspointANQPDomainID OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        " ANQP Domain ID is a 16-bit field included in Beacon and Probe 
+        " ANQP Domain ID is a 16-bit field included in Beacon and Probe
           response frames transmitted by the AP.
 
-          All APs in the same ESS sharing a common, nonzero value of 
+          All APs in the same ESS sharing a common, nonzero value of
           ANQP Domain ID shall have identical ANQP information for the ANQP
           elements and Hotspot 2.0 vendor-specific ANQP elements.
 
-          APs having their ANQP Domain ID field set to a value of zero have 
-          unique ANQP information in one or more of their ANQP elements or 
-          Hotspot 2.0 vendor-specific ANQP elements, or have not been 
+          APs having their ANQP Domain ID field set to a value of zero have
+          unique ANQP information in one or more of their ANQP elements or
+          Hotspot 2.0 vendor-specific ANQP elements, or have not been
           implemented with means of knowing whether their ANQP information is unique.
 
           APs having their ANQP Domain ID field set to -1 should not include ANQP
@@ -4690,9 +4690,9 @@ clabWIFIAccessPointPasspointCapabilities OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "HS Capability List drawn from the following table. 
+        "HS Capability List drawn from the following table.
                HS Query list
-               HS Capability list  
+               HS Capability list
                Operator Friendly Name
                WAN Metrics
                Connection Capability
@@ -4705,7 +4705,7 @@ clabWIFIAccessPointPasspointCapabilities OBJECT-TYPE
          Each bit corresponds to a capability follows.
                0-not supported
                1-supported"
-    ::= { clabWIFIAccessPointPasspointEntry 10 }     
+    ::= { clabWIFIAccessPointPasspointEntry 10 }
 
 clabWIFIAccessPointPasspointVenueNamesTable OBJECT-TYPE
     SYNTAX      SEQUENCE OF ClabWIFIAccessPointPasspointVenueNamesEntry
@@ -4733,7 +4733,7 @@ ClabWIFIAccessPointPasspointVenueNamesEntry ::= SEQUENCE {
         clabWIFIAccessPointPasspointVenueNameCountryCode
                  OCTET STRING,
         clabWIFIAccessPointPasspointVenueName
-                 OCTET STRING 
+                 OCTET STRING
     }
 
 clabWIFIAccessPointPasspointVenueNameIndex OBJECT-TYPE
@@ -4743,7 +4743,7 @@ clabWIFIAccessPointPasspointVenueNameIndex OBJECT-TYPE
     DESCRIPTION
         "Venue name country code."
     ::= { clabWIFIAccessPointPasspointVenueNamesEntry 1 }
- 
+
 clabWIFIAccessPointPasspointVenueNameCountryCode OBJECT-TYPE
     SYNTAX      OCTET STRING (SIZE(3|5))
     MAX-ACCESS  read-only
@@ -4751,15 +4751,15 @@ clabWIFIAccessPointPasspointVenueNameCountryCode OBJECT-TYPE
     DESCRIPTION
         "Venue name country code."
     ::= { clabWIFIAccessPointPasspointVenueNamesEntry 2 }
- 
+
 clabWIFIAccessPointPasspointVenueName OBJECT-TYPE
-    SYNTAX      OCTET STRING (SIZE(1..255)) 
+    SYNTAX      OCTET STRING (SIZE(1..255))
     MAX-ACCESS  read-only
     STATUS      deprecated
     DESCRIPTION
-        "Indicates the Venue Name where the access point is installed.  
-         This additional meta data about the venue is included in the 
-         Venue Name ANQP-element. This parameter accepts UTF-8 encoded 
+        "Indicates the Venue Name where the access point is installed.
+         This additional meta data about the venue is included in the
+         Venue Name ANQP-element. This parameter accepts UTF-8 encoded
          string represented as hexBinary string. "
     ::= { clabWIFIAccessPointPasspointVenueNamesEntry 3 }
 
@@ -4783,14 +4783,14 @@ clabWIFIAccessPointPasspointOperatorNamesEntry    OBJECT-TYPE
             clabWIFIAccessPointPasspointOperatorNameIndex
                       }
     ::= { clabWIFIAccessPointPasspointOperatorNamesTable 1 }
-	
+
 ClabWIFIAccessPointPasspointOperatorNamesEntry ::= SEQUENCE {
         clabWIFIAccessPointPasspointOperatorNameIndex
-                 Unsigned32,        
+                 Unsigned32,
         clabWIFIAccessPointPasspointOperatorNameCountryCode
                  OCTET STRING,
         clabWIFIAccessPointPasspointOperatorName
-                 OCTET STRING 
+                 OCTET STRING
     }
 
 clabWIFIAccessPointPasspointOperatorNameIndex OBJECT-TYPE
@@ -4808,14 +4808,14 @@ clabWIFIAccessPointPasspointOperatorNameCountryCode OBJECT-TYPE
     DESCRIPTION
         "Venue name country code."
     ::= { clabWIFIAccessPointPasspointOperatorNamesEntry 2 }
- 
+
 clabWIFIAccessPointPasspointOperatorName OBJECT-TYPE
-    SYNTAX      OCTET STRING (SIZE(1..255)) 
+    SYNTAX      OCTET STRING (SIZE(1..255))
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        " Indicates the Operator Friendly Name of the entity operating 
-          the IEEE 802.11 AN i.e. the Passpoint Operator. This parameter 
+        " Indicates the Operator Friendly Name of the entity operating
+          the IEEE 802.11 AN i.e. the Passpoint Operator. This parameter
           accepts UTF-8 encoded string represented as hexBinary string. "
     ::= { clabWIFIAccessPointPasspointOperatorNamesEntry 3 }
 
@@ -4824,10 +4824,10 @@ clabWIFIAccessPointPasspointConsortiumTable OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        " A table of Consortium OIs (Organization Identifiers)which are 
-         to be transmitted in an ANQP Roaming Consortium ANQP-element. 
-         Each entry of this table corresponds to a roaming consortium or single 
-         SSP. The first three entries of this table are transmitted in Beacon 
+        " A table of Consortium OIs (Organization Identifiers)which are
+         to be transmitted in an ANQP Roaming Consortium ANQP-element.
+         Each entry of this table corresponds to a roaming consortium or single
+         SSP. The first three entries of this table are transmitted in Beacon
          and Probe response frames."
     ::= { clabWIFIAccessPointPasspoint 5 }
 
@@ -4842,12 +4842,12 @@ clabWIFIAccessPointPasspointConsortiumEntry    OBJECT-TYPE
             clabWIFIAccessPointPasspointConsortiumIndex
                       }
     ::= { clabWIFIAccessPointPasspointConsortiumTable 1 }
-	
+
 ClabWIFIAccessPointPasspointConsortiumEntry ::= SEQUENCE {
         clabWIFIAccessPointPasspointConsortiumIndex
-                 Unsigned32,        
+                 Unsigned32,
         clabWIFIAccessPointPasspointConsortiumOI
-                 OCTET STRING 
+                 OCTET STRING
     }
 
 clabWIFIAccessPointPasspointConsortiumIndex OBJECT-TYPE
@@ -4863,9 +4863,9 @@ clabWIFIAccessPointPasspointConsortiumOI OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        " The Organization Identifier field is 3 octets in length if 
-          the organizationally unique identifier is an OUI, or 5 octets 
-          in length if the organizationally unique identifier is 36 bits 
+        " The Organization Identifier field is 3 octets in length if
+          the organizationally unique identifier is an OUI, or 5 octets
+          in length if the organizationally unique identifier is 36 bits
           in length. See 802.11-2012 for more information. "
     ::= { clabWIFIAccessPointPasspointConsortiumEntry 2 }
 
@@ -4874,7 +4874,7 @@ clabWIFIAccessPointPasspointDomainNamesTable OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      deprecated
     DESCRIPTION
-        "This table A table of Domain Names of the entity operating the 
+        "This table A table of Domain Names of the entity operating the
          IEEE 802.11 access network."
     ::= { clabWIFIAccessPointPasspoint 6 }
 
@@ -4889,12 +4889,12 @@ clabWIFIAccessPointPasspointDomainNamesEntry    OBJECT-TYPE
             clabWIFIAccessPointPasspointDomainNamesIndex
                       }
     ::= { clabWIFIAccessPointPasspointDomainNamesTable 1 }
-	
+
 ClabWIFIAccessPointPasspointDomainNamesEntry ::= SEQUENCE {
         clabWIFIAccessPointPasspointDomainNamesIndex
-                 Unsigned32,        
+                 Unsigned32,
         clabWIFIAccessPointPasspointDomainNamesDomainName
-                 OCTET STRING 
+                 OCTET STRING
     }
 
 clabWIFIAccessPointPasspointDomainNamesIndex OBJECT-TYPE
@@ -4910,19 +4910,19 @@ clabWIFIAccessPointPasspointDomainNamesDomainName OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        " This attribute represents the Domain Name field is 
-          of variable length and contains a domain name 
-          compliant with the 'Preferred Name Syntax' as 
+        " This attribute represents the Domain Name field is
+          of variable length and contains a domain name
+          compliant with the 'Preferred Name Syntax' as
           defined in RFC 1035."
     ::= { clabWIFIAccessPointPasspointDomainNamesEntry 2 }
-  
+
 clabWIFIAccessPointPasspointThreeGPPNetworkTable OBJECT-TYPE
     SYNTAX      SEQUENCE OF ClabWIFIAccessPointPasspointThreeGPPNetworkEntry
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
         " A table of 3GPP Cellular Networks. The table contains Mobile Country
-          Code (MCC) and Mobile Network Code (MNC) of the cellular networks 
+          Code (MCC) and Mobile Network Code (MNC) of the cellular networks
           that the access point supports."
     ::= { clabWIFIAccessPointPasspoint 7 }
 
@@ -4937,14 +4937,14 @@ clabWIFIAccessPointPasspointThreeGPPNetworkEntry    OBJECT-TYPE
             clabWIFIAccessPointPasspointThreeGPPNetworkIndex
                       }
     ::= { clabWIFIAccessPointPasspointThreeGPPNetworkTable 1 }
-	
+
 ClabWIFIAccessPointPasspointThreeGPPNetworkEntry ::= SEQUENCE {
         clabWIFIAccessPointPasspointThreeGPPNetworkIndex
-                 Unsigned32,        
+                 Unsigned32,
         clabWIFIAccessPointPasspointThreeGPPNetworkMNC
                  OCTET STRING,
         clabWIFIAccessPointPasspointThreeGPPNetworkMCC
-                 OCTET STRING 
+                 OCTET STRING
     }
 
 clabWIFIAccessPointPasspointThreeGPPNetworkIndex OBJECT-TYPE
@@ -4954,7 +4954,7 @@ clabWIFIAccessPointPasspointThreeGPPNetworkIndex OBJECT-TYPE
     DESCRIPTION
         "Venue name country code."
     ::= { clabWIFIAccessPointPasspointThreeGPPNetworkEntry 1 }
- 
+
 clabWIFIAccessPointPasspointThreeGPPNetworkMNC OBJECT-TYPE
     SYNTAX      OCTET STRING (SIZE(2|3))
     MAX-ACCESS  read-only
@@ -4976,9 +4976,9 @@ clabWIFIAccessPointPasspointNAIRealmsTable OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      deprecated
     DESCRIPTION
-        "NAI Realms corresponding to SSPs for other entities accessible 
-         via this AP.  This object is defined in 
-         TR-181 Device.WiFi.AP.{i}.X_CableLabs_Passpoint_NAIRealm.{i} and 
+        "NAI Realms corresponding to SSPs for other entities accessible
+         via this AP.  This object is defined in
+         TR-181 Device.WiFi.AP.{i}.X_CableLabs_Passpoint_NAIRealm.{i} and
          its children."
     ::= { clabWIFIAccessPointPasspoint 8 }
 
@@ -4990,18 +4990,18 @@ clabWIFIAccessPointPasspointNAIRealmsEntry    OBJECT-TYPE
         "The conceptual row of clabWIFIAccessPointPasspointNAIRealms Table."
     INDEX {
             clabWIFIAccessPointId,
-            clabWIFIAccessPointPasspointNAIRealmsIndex, 
+            clabWIFIAccessPointPasspointNAIRealmsIndex,
             clabWIFIAccessPointPasspointNAIRealmsEapMethodsIndex,
             clabWIFIAccessPointPasspointNAIRealmsEapMethodsAuthParmIndex
            }
     ::= { clabWIFIAccessPointPasspointNAIRealmsTable 1 }
-	
+
 ClabWIFIAccessPointPasspointNAIRealmsEntry ::= SEQUENCE {
         clabWIFIAccessPointPasspointNAIRealmsIndex
                  Unsigned32,
         clabWIFIAccessPointPasspointNAIRealmsEapMethodsIndex
                  Unsigned32,
-        clabWIFIAccessPointPasspointNAIRealmsEapMethodsAuthParmIndex        
+        clabWIFIAccessPointPasspointNAIRealmsEapMethodsAuthParmIndex
                  Unsigned32,
         clabWIFIAccessPointPasspointNAIRealmsEncodingType
                  INTEGER,
@@ -5009,7 +5009,7 @@ ClabWIFIAccessPointPasspointNAIRealmsEntry ::= SEQUENCE {
                  OCTET STRING,
         clabWIFIAccessPointPasspointNAIRealmsEapMethod
                  INTEGER,
-        clabWIFIAccessPointPasspointNAIRealmsEapAuthParametersID 
+        clabWIFIAccessPointPasspointNAIRealmsEapAuthParametersID
                  OCTET STRING,
         clabWIFIAccessPointPasspointNAIRealmsEapAuthParametersValue
                  OCTET STRING
@@ -5028,7 +5028,7 @@ clabWIFIAccessPointPasspointNAIRealmsEapMethodsIndex OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      deprecated
     DESCRIPTION
-        "A unique index number for each EAP Method associated 
+        "A unique index number for each EAP Method associated
           with an NAI Realm."
     ::= { clabWIFIAccessPointPasspointNAIRealmsEntry 2 }
 
@@ -5049,12 +5049,12 @@ clabWIFIAccessPointPasspointNAIRealmsEncodingType OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      deprecated
     DESCRIPTION
-        " Indicates NAI Realm Encoding Type used to encode NAI Realm 
-          ANQP Element. A value of 1 indicates that the NAI Realm in 
-          the NAI Realm subfield is formatted in accordance with IETF 
-          RFC4282. A value of 2 indicates that it is a UTF-8 formatted 
+        " Indicates NAI Realm Encoding Type used to encode NAI Realm
+          ANQP Element. A value of 1 indicates that the NAI Realm in
+          the NAI Realm subfield is formatted in accordance with IETF
+          RFC4282. A value of 2 indicates that it is a UTF-8 formatted
           character string."
-    ::= { clabWIFIAccessPointPasspointNAIRealmsEntry 4 }   
+    ::= { clabWIFIAccessPointPasspointNAIRealmsEntry 4 }
 
 clabWIFIAccessPointPasspointNAIRealms OBJECT-TYPE
     SYNTAX      OCTET STRING (SIZE(1..252))
@@ -5062,7 +5062,7 @@ clabWIFIAccessPointPasspointNAIRealms OBJECT-TYPE
     STATUS      deprecated
     DESCRIPTION
         " NAI Realm Name."
-    ::= { clabWIFIAccessPointPasspointNAIRealmsEntry 5 }   
+    ::= { clabWIFIAccessPointPasspointNAIRealmsEntry 5 }
 
 clabWIFIAccessPointPasspointNAIRealmsEapMethod OBJECT-TYPE
     SYNTAX      INTEGER {
@@ -5076,7 +5076,7 @@ clabWIFIAccessPointPasspointNAIRealmsEapMethod OBJECT-TYPE
     STATUS      deprecated
     DESCRIPTION
         "EAP Method type that the NAI Realm supports."
-    ::= { clabWIFIAccessPointPasspointNAIRealmsEntry 11 } 
+    ::= { clabWIFIAccessPointPasspointNAIRealmsEntry 11 }
 
 clabWIFIAccessPointPasspointNAIRealmsEapAuthParametersID OBJECT-TYPE
     SYNTAX      OCTET STRING
@@ -5099,10 +5099,10 @@ clabWIFIAccessPointPasspointOSUTable OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      deprecated
     DESCRIPTION
-        "This table contains information regarding the Online Sign Up (OSU) 
+        "This table contains information regarding the Online Sign Up (OSU)
          Service that is advertised via OSU Provider List element in beacon
          and probe frames. Refer section 4.8 of WFA HS2.0.  This object is
-         defined in TR-181 Device.WiFi.AP.{i}.X_CableLabs_Passpoint_OS and 
+         defined in TR-181 Device.WiFi.AP.{i}.X_CableLabs_Passpoint_OS and
          its children."
     ::= { clabWIFIAccessPointPasspoint 9 }
 
@@ -5114,12 +5114,12 @@ clabWIFIAccessPointPasspointOSUEntry    OBJECT-TYPE
         "The conceptual row of clabWIFIAccessPointPasspointOSUTable."
     INDEX {
             clabWIFIAccessPointId,
-            clabWIFIAccessPointPasspointOSUProviderIndex, 
+            clabWIFIAccessPointPasspointOSUProviderIndex,
             clabWIFIAccessPointPasspointOSUProviderNamesIndex,
             clabWIFIAccessPointPasspointOSUProviderIconsIndex
            }
     ::= { clabWIFIAccessPointPasspointOSUTable 1 }
-	
+
     ClabWIFIAccessPointPasspointOSUEntry ::= SEQUENCE {
         clabWIFIAccessPointPasspointOSUProviderIndex
                  Unsigned32,
@@ -5133,7 +5133,7 @@ clabWIFIAccessPointPasspointOSUEntry    OBJECT-TYPE
                  SnmpAdminString,
         clabWIFIAccessPointPasspointOSUProviderNAI
                  OCTET STRING,
-        clabWIFIAccessPointPasspointOSUProviderNamesLanguageCode 
+        clabWIFIAccessPointPasspointOSUProviderNamesLanguageCode
                  Unsigned32,
         clabWIFIAccessPointPasspointOSUProviderNamesFriendlyName
                  OCTET STRING,
@@ -5193,10 +5193,10 @@ clabWIFIAccessPointPasspointOSUProviderServerURI OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      deprecated
     DESCRIPTION
-        " The URI of the OSU Server that is used for OSU with the 
-          Service Provider indicated in the Names table. It is 
+        " The URI of the OSU Server that is used for OSU with the
+          Service Provider indicated in the Names table. It is
           formatted in accordance with the IETF RFC 3986."
-    ::= { clabWIFIAccessPointPasspointOSUEntry 5 }   
+    ::= { clabWIFIAccessPointPasspointOSUEntry 5 }
 
 clabWIFIAccessPointPasspointOSUProviderNAI OBJECT-TYPE
     SYNTAX      OCTET STRING (SIZE(1..253))
@@ -5204,38 +5204,38 @@ clabWIFIAccessPointPasspointOSUProviderNAI OBJECT-TYPE
     STATUS      deprecated
     DESCRIPTION
         " Contains the NAI that is used for OSU with the Service
-          Provider Name. OSUNAI is formatted in accordance with 
+          Provider Name. OSUNAI is formatted in accordance with
           IETF RFC 4282."
-    ::= { clabWIFIAccessPointPasspointOSUEntry 6 }   
+    ::= { clabWIFIAccessPointPasspointOSUEntry 6 }
 
 clabWIFIAccessPointPasspointOSUProviderNamesLanguageCode OBJECT-TYPE
     SYNTAX      Unsigned32 (2 | 3)
     MAX-ACCESS  read-only
     STATUS      deprecated
     DESCRIPTION
-        "A 2 or 3 octet ISO-14962-1997 encoded string field that 
-         defines the language used in the OSU Provider Friendly 
+        "A 2 or 3 octet ISO-14962-1997 encoded string field that
+         defines the language used in the OSU Provider Friendly
          Name field. The code value is selected from ISO-639."
-    ::= { clabWIFIAccessPointPasspointOSUEntry 7 } 
+    ::= { clabWIFIAccessPointPasspointOSUEntry 7 }
 
 clabWIFIAccessPointPasspointOSUProviderNamesFriendlyName OBJECT-TYPE
     SYNTAX      OCTET STRING (SIZE(1..504))
     MAX-ACCESS  read-only
     STATUS      deprecated
     DESCRIPTION
-        "Indicates the UTF-8 encoded (represented as hexBinary) OSU 
-         Provider Friendly Name in the human language identified by 
-         the language code. This parameter accepts UTF-8 encoded 
+        "Indicates the UTF-8 encoded (represented as hexBinary) OSU
+         Provider Friendly Name in the human language identified by
+         the language code. This parameter accepts UTF-8 encoded
          string represented as hexBinary string."
     ::= { clabWIFIAccessPointPasspointOSUEntry 8 }
- 
+
 clabWIFIAccessPointPasspointOSUProviderIconFileName OBJECT-TYPE
     SYNTAX      OCTET STRING (SIZE(1..255))
     MAX-ACCESS  read-only
     STATUS      deprecated
     DESCRIPTION
-        "The IconFilename is a UTF-8 encoded field whose value 
-         contains the filename of the Icon having the metadata 
+        "The IconFilename is a UTF-8 encoded field whose value
+         contains the filename of the Icon having the metadata
          provided in this icon instance."
     ::= { clabWIFIAccessPointPasspointOSUEntry 9 }
 
@@ -5244,9 +5244,9 @@ clabWIFIAccessPointPasspointOSUProviderIconType OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      deprecated
     DESCRIPTION
-        " The IconType is the MIME media type of the binary icon 
-          file named by the IconFilename. The IconType field is 
-          formatted in accordance with RFC 6838 and its value is 
+        " The IconType is the MIME media type of the binary icon
+          file named by the IconFilename. The IconType field is
+          formatted in accordance with RFC 6838 and its value is
           selected from the IANA MIME Media Types registered at
           http://www.iana.org/assignments/media-types/index.html."
     ::= { clabWIFIAccessPointPasspointOSUEntry 10 }
@@ -5256,7 +5256,7 @@ clabWIFIAccessPointPasspointOSUProviderIconWidth  OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      deprecated
     DESCRIPTION
-        " Width in pixel of the OSU Provider icon named by the 
+        " Width in pixel of the OSU Provider icon named by the
           IconFilename."
     ::= { clabWIFIAccessPointPasspointOSUEntry 11 }
 
@@ -5265,7 +5265,7 @@ clabWIFIAccessPointPasspointOSUProviderIconHeight OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      deprecated
     DESCRIPTION
-        " Height in pixel of the OSU Provider icon named by the 
+        " Height in pixel of the OSU Provider icon named by the
           IconFilename."
     ::= { clabWIFIAccessPointPasspointOSUEntry 12 }
 
@@ -5274,10 +5274,10 @@ clabWIFIAccessPointPasspointOSUProviderIconLanguageCode OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      deprecated
     DESCRIPTION
-        " A 2 or 3 octet ISO-14962-1997 encoded string field that 
-          defines the language used in the Icon file if any. The 
-          code value is selected from ISO-639. If there is no 
-          linguistic content to the icon/logo, the LanguageCode is 
+        " A 2 or 3 octet ISO-14962-1997 encoded string field that
+          defines the language used in the Icon file if any. The
+          code value is selected from ISO-639. If there is no
+          linguistic content to the icon/logo, the LanguageCode is
           set to 'zxx'."
     ::= { clabWIFIAccessPointPasspointOSUEntry 13 }
 
@@ -5286,8 +5286,8 @@ clabWIFIAccessPointPasspointOSUProviderServiceDescLanguageCode OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      deprecated
     DESCRIPTION
-        " A 2 or 3 octet ISO-14962-1997 encoded string field that 
-          defines the language used in the OSU Provider Friendly 
+        " A 2 or 3 octet ISO-14962-1997 encoded string field that
+          defines the language used in the OSU Provider Friendly
           Name field. The code value is selected from ISO-639."
     ::= { clabWIFIAccessPointPasspointOSUEntry 14 }
 
@@ -5296,7 +5296,7 @@ clabWIFIAccessPointPasspointOSUProviderServiceDescription OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      deprecated
     DESCRIPTION
-        " Indicates the UTF-8 encoded (represented as hexBinary) 
+        " Indicates the UTF-8 encoded (represented as hexBinary)
           string containing the ServiceProviders description of the
           service offering."
     ::= { clabWIFIAccessPointPasspointOSUEntry 15 }
@@ -5306,8 +5306,8 @@ clabWIFIAccessPointPasspointOSUProviderMethodsList OBJECT-TYPE
     MAX-ACCESS  read-write
     STATUS      deprecated
     DESCRIPTION
-        " A comma separated list of OSU Method values represented as integers. 
-          The methods are listed in the ServiceProvider's preferred order 
+        " A comma separated list of OSU Method values represented as integers.
+          The methods are listed in the ServiceProvider's preferred order
           with the most-preferred method first. Possible values (integers)
           are selected from Table 10 of WFA HS2.0.
 
@@ -5325,7 +5325,7 @@ clabWIFIAccessPointPasspoint2VenueNamesTable OBJECT-TYPE
         "This table is used to configure the Passpoint venue names
          with country code for each."
     ::= { clabWIFIAccessPointPasspoint 10 }
-	
+
 clabWIFIAccessPointPasspoint2VenueNamesEntry    OBJECT-TYPE
     SYNTAX      ClabWIFIAccessPointPasspoint2VenueNamesEntry
     MAX-ACCESS  not-accessible
@@ -5344,7 +5344,7 @@ ClabWIFIAccessPointPasspoint2VenueNamesEntry ::= SEQUENCE {
         clabWIFIAccessPointPasspoint2VenueNameCountryCode
                  SnmpAdminString,
         clabWIFIAccessPointPasspoint2VenueName
-                 SnmpAdminString 
+                 SnmpAdminString
     }
 
 clabWIFIAccessPointPasspoint2VenueNameIndex OBJECT-TYPE
@@ -5354,7 +5354,7 @@ clabWIFIAccessPointPasspoint2VenueNameIndex OBJECT-TYPE
     DESCRIPTION
         "Venue name country code."
     ::= { clabWIFIAccessPointPasspoint2VenueNamesEntry 1 }
- 
+
 clabWIFIAccessPointPasspoint2VenueNameCountryCode OBJECT-TYPE
     SYNTAX      SnmpAdminString (SIZE(3|5))
     MAX-ACCESS  read-only
@@ -5362,15 +5362,15 @@ clabWIFIAccessPointPasspoint2VenueNameCountryCode OBJECT-TYPE
     DESCRIPTION
         "Venue name country code."
     ::= { clabWIFIAccessPointPasspoint2VenueNamesEntry 2 }
- 
+
 clabWIFIAccessPointPasspoint2VenueName OBJECT-TYPE
-    SYNTAX      SnmpAdminString (SIZE(1..255)) 
+    SYNTAX      SnmpAdminString (SIZE(1..255))
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "Indicates the Venue Name where the access point is installed.  
-         This additional meta data about the venue is included in the 
-         Venue Name ANQP-element. This parameter accepts UTF-8 encoded 
+        "Indicates the Venue Name where the access point is installed.
+         This additional meta data about the venue is included in the
+         Venue Name ANQP-element. This parameter accepts UTF-8 encoded
          string represented as hexBinary string. "
     ::= { clabWIFIAccessPointPasspoint2VenueNamesEntry 3 }
 
@@ -5379,12 +5379,12 @@ clabWIFIAccessPointPasspoint2NAIRealmsTable OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "NAI Realms corresponding to SSPs for other entities accessible 
-         via this AP.  This object is defined in 
-         TR-181 Device.WiFi.AP.{i}.X_CableLabs_Passpoint_NAIRealm.{i} and 
+        "NAI Realms corresponding to SSPs for other entities accessible
+         via this AP.  This object is defined in
+         TR-181 Device.WiFi.AP.{i}.X_CableLabs_Passpoint_NAIRealm.{i} and
          its children."
     ::= { clabWIFIAccessPointPasspoint 11 }
-	
+
 clabWIFIAccessPointPasspoint2NAIRealmsEntry    OBJECT-TYPE
     SYNTAX      ClabWIFIAccessPointPasspoint2NAIRealmsEntry
     MAX-ACCESS  not-accessible
@@ -5396,7 +5396,7 @@ clabWIFIAccessPointPasspoint2NAIRealmsEntry    OBJECT-TYPE
             clabWIFIAccessPointPasspoint2NAIRealmsIndex
            }
     ::= { clabWIFIAccessPointPasspoint2NAIRealmsTable 1 }
-	
+
 ClabWIFIAccessPointPasspoint2NAIRealmsEntry ::= SEQUENCE {
         clabWIFIAccessPointPasspoint2NAIRealmsIndex
                  Unsigned32,
@@ -5422,12 +5422,12 @@ clabWIFIAccessPointPasspoint2NAIRealmsEncodingType OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        " Indicates NAI Realm Encoding Type used to encode NAI Realm 
-          ANQP Element. A value of 1 indicates that the NAI Realm in 
-          the NAI Realm subfield is formatted in accordance with IETF 
-          RFC4282. A value of 2 indicates that it is a UTF-8 formatted 
+        " Indicates NAI Realm Encoding Type used to encode NAI Realm
+          ANQP Element. A value of 1 indicates that the NAI Realm in
+          the NAI Realm subfield is formatted in accordance with IETF
+          RFC4282. A value of 2 indicates that it is a UTF-8 formatted
           character string."
-    ::= { clabWIFIAccessPointPasspoint2NAIRealmsEntry 2 }   
+    ::= { clabWIFIAccessPointPasspoint2NAIRealmsEntry 2 }
 
 clabWIFIAccessPointPasspoint2NAIRealms OBJECT-TYPE
     SYNTAX      SnmpAdminString (SIZE(1..252))
@@ -5435,7 +5435,7 @@ clabWIFIAccessPointPasspoint2NAIRealms OBJECT-TYPE
     STATUS      current
     DESCRIPTION
         " NAI Realm Name."
-    ::= { clabWIFIAccessPointPasspoint2NAIRealmsEntry 3 }   
+    ::= { clabWIFIAccessPointPasspoint2NAIRealmsEntry 3 }
 
 clabWIFIAccessPointPasspoint2NAIRealmsEapMethodsTable OBJECT-TYPE
     SYNTAX      SEQUENCE OF ClabWIFIAccessPointPasspoint2NAIRealmsEapMethodsEntry
@@ -5472,7 +5472,7 @@ clabWIFIAccessPointPasspoint2NAIRealmsEapMethodsIndex OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "A unique index number for each EAP Method associated 
+        "A unique index number for each EAP Method associated
           with an NAI Realm."
     ::= { clabWIFIAccessPointPasspoint2NAIRealmsEapMethodsEntry 1 }
 
@@ -5488,7 +5488,7 @@ clabWIFIAccessPointPasspoint2NAIRealmsEapMethod OBJECT-TYPE
     STATUS      current
     DESCRIPTION
         "EAP Method type that the NAI Realm supports."
-    ::= { clabWIFIAccessPointPasspoint2NAIRealmsEapMethodsEntry 2 } 
+    ::= { clabWIFIAccessPointPasspoint2NAIRealmsEapMethodsEntry 2 }
 
 clabWIFIAccessPointPasspoint2NAIRealmsEapMethodsAuthTable OBJECT-TYPE
     SYNTAX      SEQUENCE OF ClabWIFIAccessPointPasspoint2NAIRealmsEapMethodsAuthEntry
@@ -5517,7 +5517,7 @@ clabWIFIAccessPointPasspoint2NAIRealmsEapMethodsAuthEntry    OBJECT-TYPE
 ClabWIFIAccessPointPasspoint2NAIRealmsEapMethodsAuthEntry ::= SEQUENCE {
         clabWIFIAccessPointPasspoint2NAIRealmsEapMethodsAuthParmIndex
                  Unsigned32,
-        clabWIFIAccessPointPasspoint2NAIRealmsEapAuthParametersID 
+        clabWIFIAccessPointPasspoint2NAIRealmsEapAuthParametersID
                  OCTET STRING,
         clabWIFIAccessPointPasspoint2NAIRealmsEapAuthParametersValue
                  OCTET STRING
@@ -5553,13 +5553,13 @@ clabWIFIAccessPointPasspoint2OSUTable OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
-        "This table contains information regarding the Online Sign Up (OSU) 
+        "This table contains information regarding the Online Sign Up (OSU)
          Service that is advertised via OSU Provider List element in beacon
          and probe frames. Refer section 4.8 of WFA HS2.0.  This object is
-         defined in TR-181 Device.WiFi.AP.{i}.X_CableLabs_Passpoint_OS and 
+         defined in TR-181 Device.WiFi.AP.{i}.X_CableLabs_Passpoint_OS and
          its children."
     ::= { clabWIFIAccessPointPasspoint 14 }
-	
+
 clabWIFIAccessPointPasspoint2OSUEntry    OBJECT-TYPE
     SYNTAX      ClabWIFIAccessPointPasspoint2OSUEntry
     MAX-ACCESS  not-accessible
@@ -5571,7 +5571,7 @@ clabWIFIAccessPointPasspoint2OSUEntry    OBJECT-TYPE
             clabWIFIAccessPointPasspoint2OSUProviderIndex
            }
     ::= { clabWIFIAccessPointPasspoint2OSUTable 1 }
-	
+
 ClabWIFIAccessPointPasspoint2OSUEntry ::= SEQUENCE {
         clabWIFIAccessPointPasspoint2OSUProviderIndex
                  Unsigned32,
@@ -5596,10 +5596,10 @@ clabWIFIAccessPointPasspoint2OSUProviderServerURI OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        " The URI of the OSU Server that is used for OSU with the 
-          Service Provider indicated in the Names table. It is 
+        " The URI of the OSU Server that is used for OSU with the
+          Service Provider indicated in the Names table. It is
           formatted in accordance with the IETF RFC 3986."
-    ::= { clabWIFIAccessPointPasspoint2OSUEntry 2 }   
+    ::= { clabWIFIAccessPointPasspoint2OSUEntry 2 }
 
 clabWIFIAccessPointPasspoint2OSUProviderNAI OBJECT-TYPE
     SYNTAX      SnmpAdminString (SIZE(1..253))
@@ -5607,17 +5607,17 @@ clabWIFIAccessPointPasspoint2OSUProviderNAI OBJECT-TYPE
     STATUS      current
     DESCRIPTION
         " Contains the NAI that is used for OSU with the Service
-          Provider Name. OSUNAI is formatted in accordance with 
+          Provider Name. OSUNAI is formatted in accordance with
           IETF RFC 4282."
-    ::= { clabWIFIAccessPointPasspoint2OSUEntry 3 }   
+    ::= { clabWIFIAccessPointPasspoint2OSUEntry 3 }
 
 clabWIFIAccessPointPasspoint2OSUProviderMethodsList OBJECT-TYPE
     SYNTAX      OCTET STRING (SIZE(0..255))
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
-        " A comma separated list of OSU Method values represented as integers. 
-          The methods are listed in the ServiceProvider's preferred order 
+        " A comma separated list of OSU Method values represented as integers.
+          The methods are listed in the ServiceProvider's preferred order
           with the most-preferred method first. Possible values (integers)
           are selected from Table 10 of WFA HS2.0.
 
@@ -5645,7 +5645,7 @@ clabWIFIAccessPointPasspoint2OSUProviderNamesEntry    OBJECT-TYPE
         "The conceptual row of clabWIFIAccessPointPasspoint2OSUProviderNames Table."
     INDEX {
             clabWIFIAccessPointId,
-			clabWIFIAccessPointPasspoint2OSUProviderIndex, 
+			clabWIFIAccessPointPasspoint2OSUProviderIndex,
             clabWIFIAccessPointPasspoint2OSUProviderNamesIndex
           }
     ::= {clabWIFIAccessPointPasspoint2OSUProviderNamesTable 1 }
@@ -5653,7 +5653,7 @@ clabWIFIAccessPointPasspoint2OSUProviderNamesEntry    OBJECT-TYPE
 ClabWIFIAccessPointPasspoint2OSUProviderNamesEntry ::= SEQUENCE {
         clabWIFIAccessPointPasspoint2OSUProviderNamesIndex
                  Unsigned32,
-        clabWIFIAccessPointPasspoint2OSUProviderNamesLanguageCode 
+        clabWIFIAccessPointPasspoint2OSUProviderNamesLanguageCode
                  Unsigned32,
         clabWIFIAccessPointPasspoint2OSUProviderNamesFriendlyName
                  SnmpAdminString
@@ -5672,19 +5672,19 @@ clabWIFIAccessPointPasspoint2OSUProviderNamesLanguageCode OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "A 2 or 3 octet ISO-14962-1997 encoded string field that 
-         defines the language used in the OSU Provider Friendly 
+        "A 2 or 3 octet ISO-14962-1997 encoded string field that
+         defines the language used in the OSU Provider Friendly
          Name field. The code value is selected from ISO-639."
-    ::= { clabWIFIAccessPointPasspoint2OSUProviderNamesEntry 2 } 
+    ::= { clabWIFIAccessPointPasspoint2OSUProviderNamesEntry 2 }
 
 clabWIFIAccessPointPasspoint2OSUProviderNamesFriendlyName OBJECT-TYPE
     SYNTAX      SnmpAdminString (SIZE(1..504))
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "Indicates the UTF-8 encoded (represented as hexBinary) OSU 
-         Provider Friendly Name in the human language identified by 
-         the language code. This parameter accepts UTF-8 encoded 
+        "Indicates the UTF-8 encoded (represented as hexBinary) OSU
+         Provider Friendly Name in the human language identified by
+         the language code. This parameter accepts UTF-8 encoded
          string represented as hexBinary string."
     ::= { clabWIFIAccessPointPasspoint2OSUProviderNamesEntry 3 }
 
@@ -5739,8 +5739,8 @@ clabWIFIAccessPointPasspoint2OSUProviderIconFileName OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "The IconFilename is a UTF-8 encoded field whose value 
-         contains the filename of the Icon having the metadata 
+        "The IconFilename is a UTF-8 encoded field whose value
+         contains the filename of the Icon having the metadata
          provided in this icon instance."
     ::= { clabWIFIAccessPointPasspoint2OSUProviderIconsEntry 2 }
 
@@ -5749,9 +5749,9 @@ clabWIFIAccessPointPasspoint2OSUProviderIconType OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        " The IconType is the MIME media type of the binary icon 
-          file named by the IconFilename. The IconType field is 
-          formatted in accordance with RFC 6838 and its value is 
+        " The IconType is the MIME media type of the binary icon
+          file named by the IconFilename. The IconType field is
+          formatted in accordance with RFC 6838 and its value is
           selected from the IANA MIME Media Types registered at
           http://www.iana.org/assignments/media-types/index.html."
     ::= { clabWIFIAccessPointPasspoint2OSUProviderIconsEntry 3 }
@@ -5761,7 +5761,7 @@ clabWIFIAccessPointPasspoint2OSUProviderIconWidth  OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        " Width in pixel of the OSU Provider icon named by the 
+        " Width in pixel of the OSU Provider icon named by the
           IconFilename."
     ::= { clabWIFIAccessPointPasspoint2OSUProviderIconsEntry 4 }
 
@@ -5770,7 +5770,7 @@ clabWIFIAccessPointPasspoint2OSUProviderIconHeight OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        " Height in pixel of the OSU Provider icon named by the 
+        " Height in pixel of the OSU Provider icon named by the
           IconFilename."
     ::= { clabWIFIAccessPointPasspoint2OSUProviderIconsEntry 5 }
 
@@ -5779,10 +5779,10 @@ clabWIFIAccessPointPasspoint2OSUProviderIconLanguageCode OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        " A 2 or 3 octet ISO-14962-1997 encoded string field that 
-          defines the language used in the Icon file if any. The 
-          code value is selected from ISO-639. If there is no 
-          linguistic content to the icon/logo, the LanguageCode is 
+        " A 2 or 3 octet ISO-14962-1997 encoded string field that
+          defines the language used in the Icon file if any. The
+          code value is selected from ISO-639. If there is no
+          linguistic content to the icon/logo, the LanguageCode is
           set to 'zxx'."
     ::= { clabWIFIAccessPointPasspoint2OSUProviderIconsEntry 6 }
 
@@ -5832,8 +5832,8 @@ clabWIFIAccessPointPasspoint2OSUProviderServiceDescLanguageCode OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        " A 2 or 3 octet ISO-14962-1997 encoded string field that 
-          defines the language used in the OSU Provider Friendly 
+        " A 2 or 3 octet ISO-14962-1997 encoded string field that
+          defines the language used in the OSU Provider Friendly
           Name field. The code value is selected from ISO-639."
     ::= { clabWIFIAccessPointPasspoint2OSUProviderServiceDescEntry 2 }
 
@@ -5842,7 +5842,7 @@ clabWIFIAccessPointPasspoint2OSUProviderServiceDescription OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        " Indicates the UTF-8 encoded (represented as hexBinary) 
+        " Indicates the UTF-8 encoded (represented as hexBinary)
           string containing the ServiceProviders description of the
           service offering."
     ::= { clabWIFIAccessPointPasspoint2OSUProviderServiceDescEntry 3 }
@@ -5931,18 +5931,18 @@ clabWIFIAccessPointAccountingEntry    OBJECT-TYPE
             clabWIFIAccessPointId
                       }
     ::= { clabWIFIAccessPointAccountingTable 1 }
-	
+
 ClabWIFIAccessPointAccountingEntry ::= SEQUENCE {
         clabWIFIAccessPointAccountingEnable
-                 TruthValue, 
+                 TruthValue,
         clabWIFIAccessPointAccountingServerIPAddrType
                  InetAddressType,
         clabWIFIAccessPointAccountingServerIPAddr
                  InetAddress,
         clabWIFIAccessPointAccountingSecondaryServerIPAddrType
-                 InetAddressType,                 
+                 InetAddressType,
         clabWIFIAccessPointAccountingSecondaryServerIPAddr
-                 InetAddress,                 
+                 InetAddress,
         clabWIFIAccessPointAccountingServerPort
                  InetPortNumber,
         clabWIFIAccessPointAccountingSecondaryServerPort
@@ -5954,7 +5954,7 @@ ClabWIFIAccessPointAccountingEntry ::= SEQUENCE {
         clabWIFIAccessPointAccountingInterimInterval
                  Unsigned32,
         clabWIFIAccessPointAccountingRowStatus
-                 RowStatus        
+                 RowStatus
     }
 
 clabWIFIAccessPointAccountingEnable     OBJECT-TYPE
@@ -5968,7 +5968,7 @@ clabWIFIAccessPointAccountingEnable     OBJECT-TYPE
     ::= { clabWIFIAccessPointAccountingEntry 1 }
 
 clabWIFIAccessPointAccountingServerIPAddrType    OBJECT-TYPE
-    SYNTAX      InetAddressType 
+    SYNTAX      InetAddressType
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
@@ -5978,7 +5978,7 @@ clabWIFIAccessPointAccountingServerIPAddrType    OBJECT-TYPE
     ::= {clabWIFIAccessPointAccountingEntry 2 }
 
 clabWIFIAccessPointAccountingServerIPAddr    OBJECT-TYPE
-    SYNTAX      InetAddress 
+    SYNTAX      InetAddress
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
@@ -5988,7 +5988,7 @@ clabWIFIAccessPointAccountingServerIPAddr    OBJECT-TYPE
     ::= {clabWIFIAccessPointAccountingEntry 3 }
 
 clabWIFIAccessPointAccountingSecondaryServerIPAddrType    OBJECT-TYPE
-    SYNTAX      InetAddressType 
+    SYNTAX      InetAddressType
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
@@ -5998,7 +5998,7 @@ clabWIFIAccessPointAccountingSecondaryServerIPAddrType    OBJECT-TYPE
     ::= {clabWIFIAccessPointAccountingEntry 4 }
 
 clabWIFIAccessPointAccountingSecondaryServerIPAddr    OBJECT-TYPE
-    SYNTAX      InetAddress 
+    SYNTAX      InetAddress
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
@@ -6008,7 +6008,7 @@ clabWIFIAccessPointAccountingSecondaryServerIPAddr    OBJECT-TYPE
     ::= {clabWIFIAccessPointAccountingEntry 5 }
 
 clabWIFIAccessPointAccountingServerPort    OBJECT-TYPE
-    SYNTAX      InetPortNumber 
+    SYNTAX      InetPortNumber
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
@@ -6019,7 +6019,7 @@ clabWIFIAccessPointAccountingServerPort    OBJECT-TYPE
     ::= {clabWIFIAccessPointAccountingEntry 6 }
 
 clabWIFIAccessPointAccountingSecondaryServerPort    OBJECT-TYPE
-    SYNTAX      InetPortNumber 
+    SYNTAX      InetPortNumber
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
@@ -6030,7 +6030,7 @@ clabWIFIAccessPointAccountingSecondaryServerPort    OBJECT-TYPE
     ::= {clabWIFIAccessPointAccountingEntry 7 }
 
 clabWIFIAccessPointAccountingSecret    OBJECT-TYPE
-    SYNTAX      SnmpAdminString 
+    SYNTAX      SnmpAdminString
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
@@ -6040,7 +6040,7 @@ clabWIFIAccessPointAccountingSecret    OBJECT-TYPE
     ::= {clabWIFIAccessPointAccountingEntry 8 }
 
 clabWIFIAccessPointAccountingSecondarySecret    OBJECT-TYPE
-    SYNTAX      SnmpAdminString 
+    SYNTAX      SnmpAdminString
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
@@ -6050,7 +6050,7 @@ clabWIFIAccessPointAccountingSecondarySecret    OBJECT-TYPE
     ::= {clabWIFIAccessPointAccountingEntry 9 }
 
 clabWIFIAccessPointAccountingInterimInterval    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     UNITS       "seconds"
     MAX-ACCESS  read-write
     STATUS      current
@@ -6061,12 +6061,12 @@ clabWIFIAccessPointAccountingInterimInterval    OBJECT-TYPE
     ::= {clabWIFIAccessPointAccountingEntry 10 }
 
 clabWIFIAccessPointAccountingRowStatus    OBJECT-TYPE
-    SYNTAX      RowStatus 
+    SYNTAX      RowStatus
     MAX-ACCESS  read-create
     STATUS      current
     DESCRIPTION
         "The status of this instance."
-    ::= {clabWIFIAccessPointAccountingEntry 11 }  
+    ::= {clabWIFIAccessPointAccountingEntry 11 }
 
 clabWIFIAccessPointACTable OBJECT-TYPE
     SYNTAX      SEQUENCE OF ClabWIFIAccessPointACEntry
@@ -6088,14 +6088,14 @@ clabWIFIAccessPointACEntry    OBJECT-TYPE
             clabWIFIAccessPointId
                       }
     ::= { clabWIFIAccessPointACTable 1 }
-	
+
 ClabWIFIAccessPointACEntry ::= SEQUENCE {
         clabWIFIAccessPointACAccessCategory
                  INTEGER,
         clabWIFIAccessPointACAlias
                  OCTET STRING,
         clabWIFIAccessPointACAIFSN
-                 Unsigned32,                
+                 Unsigned32,
         clabWIFIAccessPointACECWMin
                  Unsigned32,
         clabWIFIAccessPointACECWMax
@@ -6136,7 +6136,7 @@ clabWIFIAccessPointACAlias    OBJECT-TYPE
     ::= {clabWIFIAccessPointACEntry 2 }
 
 clabWIFIAccessPointACAIFSN    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     MAX-ACCESS  read-write
     STATUS      deprecated
     DESCRIPTION
@@ -6146,7 +6146,7 @@ clabWIFIAccessPointACAIFSN    OBJECT-TYPE
     ::= {clabWIFIAccessPointACEntry 3 }
 
 clabWIFIAccessPointACECWMin    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     MAX-ACCESS  read-write
     STATUS      deprecated
     DESCRIPTION
@@ -6156,7 +6156,7 @@ clabWIFIAccessPointACECWMin    OBJECT-TYPE
     ::= {clabWIFIAccessPointACEntry 4 }
 
 clabWIFIAccessPointACECWMax    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     MAX-ACCESS  read-write
     STATUS      deprecated
     DESCRIPTION
@@ -6166,7 +6166,7 @@ clabWIFIAccessPointACECWMax    OBJECT-TYPE
     ::= {clabWIFIAccessPointACEntry 5 }
 
 clabWIFIAccessPointACTxOpMax    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     MAX-ACCESS  read-write
     STATUS      deprecated
     DESCRIPTION
@@ -6176,7 +6176,7 @@ clabWIFIAccessPointACTxOpMax    OBJECT-TYPE
     ::= {clabWIFIAccessPointACEntry 6 }
 
 clabWIFIAccessPointACAckPolicy    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-write
     STATUS      deprecated
     DESCRIPTION
@@ -6225,14 +6225,14 @@ clabWIFIAccessPointACStatsEntry    OBJECT-TYPE
             clabWIFIAccessPointId
           }
     ::= { clabWIFIAccessPointACStatsTable 1 }
-	
+
 ClabWIFIAccessPointACStatsEntry ::= SEQUENCE {
         clabWIFIAccessPointACStatsBytesSent
                  Counter64,
         clabWIFIAccessPointACStatsBytesReceived
                  Counter64,
         clabWIFIAccessPointACStatsPacketsSent
-                 Counter64,               
+                 Counter64,
         clabWIFIAccessPointACStatsPacketsReceived
                  Counter64,
         clabWIFIAccessPointACStatsErrorsSent
@@ -6250,7 +6250,7 @@ ClabWIFIAccessPointACStatsEntry ::= SEQUENCE {
     }
 
 clabWIFIAccessPointACStatsBytesSent     OBJECT-TYPE
-    SYNTAX      Counter64   
+    SYNTAX      Counter64
     MAX-ACCESS  read-only
     STATUS      deprecated
     DESCRIPTION
@@ -6370,7 +6370,7 @@ clabWIFIAccessPointAC2Entry    OBJECT-TYPE
             clabWIFIAccessPointAC2Index
                       }
     ::= { clabWIFIAccessPointAC2Table 1 }
-	
+
 ClabWIFIAccessPointAC2Entry ::= SEQUENCE {
         clabWIFIAccessPointAC2Index
                  Unsigned32,
@@ -6379,7 +6379,7 @@ ClabWIFIAccessPointAC2Entry ::= SEQUENCE {
         clabWIFIAccessPointAC2Alias
                  SnmpAdminString,
         clabWIFIAccessPointAC2AIFSN
-                 Unsigned32,                
+                 Unsigned32,
         clabWIFIAccessPointAC2ECWMin
                  Unsigned32,
         clabWIFIAccessPointAC2ECWMax
@@ -6395,7 +6395,7 @@ ClabWIFIAccessPointAC2Entry ::= SEQUENCE {
     }
 
 clabWIFIAccessPointAC2Index    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
@@ -6468,7 +6468,7 @@ clabWIFIAccessPointAC2TxOpMax    OBJECT-TYPE
     ::= {clabWIFIAccessPointAC2Entry 7 }
 
 clabWIFIAccessPointAC2AckPolicy    OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
@@ -6518,7 +6518,7 @@ clabWIFIAccessPointAC2StatsEntry    OBJECT-TYPE
             clabWIFIAccessPointAC2StatsIndex
           }
     ::= { clabWIFIAccessPointAC2StatsTable 1 }
-	
+
 ClabWIFIAccessPointAC2StatsEntry ::= SEQUENCE {
         clabWIFIAccessPointAC2StatsIndex
                  Unsigned32,
@@ -6527,7 +6527,7 @@ ClabWIFIAccessPointAC2StatsEntry ::= SEQUENCE {
         clabWIFIAccessPointAC2StatsBytesReceived
                  Counter64,
         clabWIFIAccessPointAC2StatsPacketsSent
-                 Counter64,               
+                 Counter64,
         clabWIFIAccessPointAC2StatsPacketsReceived
                  Counter64,
         clabWIFIAccessPointAC2StatsErrorsSent
@@ -6545,7 +6545,7 @@ ClabWIFIAccessPointAC2StatsEntry ::= SEQUENCE {
     }
 
 clabWIFIAccessPointAC2StatsIndex    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
@@ -6553,7 +6553,7 @@ clabWIFIAccessPointAC2StatsIndex    OBJECT-TYPE
     ::= {clabWIFIAccessPointAC2StatsEntry 1 }
 
 clabWIFIAccessPointAC2StatsBytesSent     OBJECT-TYPE
-    SYNTAX      Counter64   
+    SYNTAX      Counter64
     MAX-ACCESS  read-only
     STATUS current
     DESCRIPTION
@@ -6652,7 +6652,7 @@ clabWIFIAccessPointAC2StatsOutQLenHistogram   OBJECT-TYPE
         "TR-181 Device Data Model for TR-069."
     ::= {clabWIFIAccessPointAC2StatsEntry 11 }
 
-clabWIFIAccessPointRadiusSettingsObjects OBJECT IDENTIFIER 
+clabWIFIAccessPointRadiusSettingsObjects OBJECT IDENTIFIER
     ::= { clabWIFIObjects 26 }
 
 clabWIFIAccessPointRadiusSettingsRadiusServerRetries    OBJECT-TYPE
@@ -6664,7 +6664,7 @@ clabWIFIAccessPointRadiusSettingsRadiusServerRetries    OBJECT-TYPE
     ::= { clabWIFIAccessPointRadiusSettingsObjects 1 }
 
 clabWIFIAccessPointRadiusSettingsRadiusServerRequestTimeout    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     UNITS       "seconds"
     MAX-ACCESS  read-write
     STATUS      current
@@ -6674,7 +6674,7 @@ clabWIFIAccessPointRadiusSettingsRadiusServerRequestTimeout    OBJECT-TYPE
     ::= { clabWIFIAccessPointRadiusSettingsObjects 2 }
 
 clabWIFIAccessPointRadiusSettingsPMKLifetime    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     UNITS       "seconds"
     MAX-ACCESS  read-write
     STATUS      current
@@ -6683,7 +6683,7 @@ clabWIFIAccessPointRadiusSettingsPMKLifetime    OBJECT-TYPE
     ::= { clabWIFIAccessPointRadiusSettingsObjects 3 }
 
 clabWIFIAccessPointRadiusSettingsPMKCachingEnable   OBJECT-TYPE
-    SYNTAX      TruthValue 
+    SYNTAX      TruthValue
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
@@ -6696,7 +6696,7 @@ clabWIFIAccessPointRadiusSettingsPMKCachingInterval   OBJECT-TYPE
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
-        "Time interval after which the PMKSA (Pairwise Master Key Security Association) 
+        "Time interval after which the PMKSA (Pairwise Master Key Security Association)
          cache is purged."
     ::= { clabWIFIAccessPointRadiusSettingsObjects 5 }
 
@@ -6705,9 +6705,9 @@ clabWIFIAccessPointRadiusSettingsMaxAuthenticationAttempts    OBJECT-TYPE
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
-        "Indicates the number of times a client can unsuccessfully attempt 
-         to login within incorrect credentials. When this limit is reached, 
-         the client is blacklisted and not allowed to attempt to login to 
+        "Indicates the number of times a client can unsuccessfully attempt
+         to login within incorrect credentials. When this limit is reached,
+         the client is blacklisted and not allowed to attempt to login to
          the network. Setting this parameter to 0 (zero) disables the
          blacklisting feature.."
     ::= { clabWIFIAccessPointRadiusSettingsObjects 6 }
@@ -6736,12 +6736,12 @@ clabWIFIAccessPointRadiusSettingsQuietPeriodAfterFailedAuth  OBJECT-TYPE
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
-        "The enforced quiet period (time interval) following a failed authentication attempt. 
+        "The enforced quiet period (time interval) following a failed authentication attempt.
          A value of 0 (zero) disables quiet period."
     ::= { clabWIFIAccessPointRadiusSettingsObjects 9 }
 
 clabWIFIWIFIEventNotif NOTIFICATION-TYPE
-    OBJECTS     { 
+    OBJECTS     {
                   clabWIFIWIFIEventNotifText,
                   clabWIFIWIFIEventNotifEventId,
                   clabWIFIWIFIEventNotifTimeStamp }
@@ -6750,8 +6750,8 @@ clabWIFIWIFIEventNotif NOTIFICATION-TYPE
         "This object represents the Wi-Fi GW notification."
   ::= {clabWIFINotifications 1 }
 
-clabWIFIWIFIEventNotifgroup OBJECT IDENTIFIER 
-  ::= { clabWIFINotifications 2} 
+clabWIFIWIFIEventNotifgroup OBJECT IDENTIFIER
+  ::= { clabWIFINotifications 2}
 
 
 clabWIFIWIFIEventNotifText    OBJECT-TYPE
@@ -6763,7 +6763,7 @@ clabWIFIWIFIEventNotifText    OBJECT-TYPE
     ::= {clabWIFIWIFIEventNotifgroup 1 }
 
 clabWIFIWIFIEventNotifEventId    OBJECT-TYPE
-    SYNTAX      Unsigned32 
+    SYNTAX      Unsigned32
     MAX-ACCESS  accessible-for-notify
     STATUS      current
     DESCRIPTION
@@ -6775,7 +6775,7 @@ clabWIFIWIFIEventNotifTimeStamp    OBJECT-TYPE
     MAX-ACCESS  accessible-for-notify
     STATUS      current
     DESCRIPTION
-        "Date and Time when the event was generated. (not the time when 
+        "Date and Time when the event was generated. (not the time when
         the event was dispatched)."
     ::= {clabWIFIWIFIEventNotifgroup 3 }
 
@@ -6926,11 +6926,11 @@ clabWIFIGroup OBJECT-GROUP
               clabWIFISSIDStatsBroadcastPacketsSent,
               clabWIFISSIDStatsBroadcastPacketsReceived,
               clabWIFISSIDStatsUnknownProtoPacketsReceived,
-              clabWIFISSIDStatsRetransCount,     
-              clabWIFISSIDStatsRetryCount,     
-              clabWIFISSIDStatsMultipleRetryCount,     
-              clabWIFISSIDStatsACKFailureCount,     
-              clabWIFISSIDStatsAggregatedPacketCount,     
+              clabWIFISSIDStatsRetransCount,
+              clabWIFISSIDStatsRetryCount,
+              clabWIFISSIDStatsMultipleRetryCount,
+              clabWIFISSIDStatsACKFailureCount,
+              clabWIFISSIDStatsAggregatedPacketCount,
               clabWIFIAccessPointEnable,
               clabWIFIAccessPointStatus,
               clabWIFIAccessPointAlias,

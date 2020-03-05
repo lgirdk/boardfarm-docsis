@@ -22,7 +22,7 @@ IMPORTS
       pktcNcsEndPntConfigEntry
             FROM PKTC-EXCENTIS-SIG-MIB;
 
-pktcEclEnSigMib  MODULE-IDENTITY 
+pktcEclEnSigMib  MODULE-IDENTITY
       LAST-UPDATED    "200906150000Z" -- 15 June 2009
       ORGANIZATION    "Cable Television Laboratories, Inc "
       CONTACT-INFO
@@ -36,19 +36,19 @@ pktcEclEnSigMib  MODULE-IDENTITY
             E-mail: mibs@cablelabs.com"
 
       DESCRIPTION
-            "This MIB module enhances the basic management 
-            objects defined for PacketCable Signaling 
-            protocols by the MIB group pktcSigMib. 
+            "This MIB module enhances the basic management
+            objects defined for PacketCable Signaling
+            protocols by the MIB group pktcSigMib.
 
             Acknowledgements:
-            Rodney Osborne - Arris Interactive 
+            Rodney Osborne - Arris Interactive
             Eugene Nechamkin - Broadcom Corporation
             Satish Kumar - Texas Instruments
             Jean-Francois Mule - CableLabs
 
             Copyright 1999-2009 Cable Television Laboratories, Inc.
             All rights reserved."
-      
+
       REVISION "200906150000Z" -- 15 June 2009
 
       DESCRIPTION
@@ -72,59 +72,59 @@ pktcEclEnSigMib  MODULE-IDENTITY
 
 --
 -- Enhanced MIB Objects and Divisions.
--- 
-pktcEnSigMibObjects            OBJECT IDENTIFIER 
+--
+pktcEnSigMibObjects            OBJECT IDENTIFIER
                                             ::= { pktcEclEnSigMib 1 }
-pktcEnSigDevConfigObjects      OBJECT IDENTIFIER 
+pktcEnSigDevConfigObjects      OBJECT IDENTIFIER
                                             ::= { pktcEnSigMibObjects 1 }
-pktcEnNcsEndPntConfigObjects   OBJECT IDENTIFIER 
+pktcEnNcsEndPntConfigObjects   OBJECT IDENTIFIER
                                             ::= { pktcEnSigMibObjects 2 }
-pktcEnSigEndPntConfigObjects   OBJECT IDENTIFIER 
+pktcEnSigEndPntConfigObjects   OBJECT IDENTIFIER
                                             ::= { pktcEnSigMibObjects 3 }
-pktcEnDcsEndPntConfigObjects   OBJECT IDENTIFIER 
+pktcEnDcsEndPntConfigObjects   OBJECT IDENTIFIER
                                             ::= { pktcEnSigMibObjects 4 }
 
 --
 -- Enhanced Notification groups.
--- 
-pktcEnSigNotificationPrefix    OBJECT IDENTIFIER  
+--
+pktcEnSigNotificationPrefix    OBJECT IDENTIFIER
                                             ::= { pktcEclEnSigMib 2 }
-pktcEnSigNotification          OBJECT IDENTIFIER       
+pktcEnSigNotification          OBJECT IDENTIFIER
                                             ::= { pktcEnSigNotificationPrefix 0 }
-pktcEnSigConformance           OBJECT IDENTIFIER 
+pktcEnSigConformance           OBJECT IDENTIFIER
                                             ::= { pktcEclEnSigMib 3 }
-pktcEnSigCompliances           OBJECT IDENTIFIER       
+pktcEnSigCompliances           OBJECT IDENTIFIER
                                             ::= { pktcEnSigConformance 1 }
-pktcEnSigGroups                OBJECT IDENTIFIER 
+pktcEnSigGroups                OBJECT IDENTIFIER
                                              ::= { pktcEnSigConformance 2 }
 
-pktcEnNcsMinimumDtmfPlayout  OBJECT-TYPE      
+pktcEnNcsMinimumDtmfPlayout  OBJECT-TYPE
        SYNTAX Unsigned32 (0 | 40..100)
        UNITS "milliseconds"
-       MAX-ACCESS   read-write       
-       STATUS current      
-       DESCRIPTION  
-           "This object defines the minimum playout time for 
-            the DTMF digit when IETF RFC 2833 DTMF Relay is used 
-            for the egress gateway. 
-            If the value set via this pktcEnNcsMinimumDtmfPlayout 
+       MAX-ACCESS   read-write
+       STATUS current
+       DESCRIPTION
+           "This object defines the minimum playout time for
+            the DTMF digit when IETF RFC 2833 DTMF Relay is used
+            for the egress gateway.
+            If the value set via this pktcEnNcsMinimumDtmfPlayout
             object is different from that specified in RFC2833 packet,
             then the MTA MUST use the maximum of the two values.
             For example:
-            If the RFC 2833 packet specifies 23ms and if the object 
-            pktcEnNcsMinimumDtmfPlayout is set to 40ms then 
+            If the RFC 2833 packet specifies 23ms and if the object
+            pktcEnNcsMinimumDtmfPlayout is set to 40ms then
             the egress gateway must use a value of 40ms.
-            Similarly if the RFC 2833 packet specifies 
-            60 ms and if the object pktcEnNcsMinimumDtmfPlayout 
-            is set to 40ms then the egress gateway must use a 
+            Similarly if the RFC 2833 packet specifies
+            60 ms and if the object pktcEnNcsMinimumDtmfPlayout
+            is set to 40ms then the egress gateway must use a
             value of 60 ms."
        REFERENCE
             "PacketCable(tm) Codec Specification"
-       DEFVAL  {0}               
+       DEFVAL  {0}
        ::= { pktcEnSigDevConfigObjects 1}
 
 --
---    The following table enhances the NCS End Point Config Table 
+--    The following table enhances the NCS End Point Config Table
 --    (pktcNcsEndPntConfigTable) defined in pktSigMib.
 --
 --
@@ -132,7 +132,7 @@ pktcEnNcsEndPntConfigTable  OBJECT-TYPE
        SYNTAX        SEQUENCE OF PktcEnNcsEndPntConfigEntry
        MAX-ACCESS    not-accessible
        STATUS        current
-       DESCRIPTION  
+       DESCRIPTION
             "This table augments pktcNcsEndPntConfigTable."
       ::=  { pktcEnNcsEndPntConfigObjects 1 }
 
@@ -140,13 +140,13 @@ pktcEnNcsEndPntConfigEntry  OBJECT-TYPE
        SYNTAX        PktcEnNcsEndPntConfigEntry
        MAX-ACCESS    not-accessible
        STATUS        current
-       DESCRIPTION   
-            "An enhancement to pktcNcEndPntConfigTable - where each 
+       DESCRIPTION
+            "An enhancement to pktcNcEndPntConfigTable - where each
              entry describes endpoint characteristics."
       AUGMENTS { pktcNcsEndPntConfigEntry }
       ::=  { pktcEnNcsEndPntConfigTable 1 }
 
-PktcEnNcsEndPntConfigEntry  ::= 
+PktcEnNcsEndPntConfigEntry  ::=
        SEQUENCE {
                 pktcEnNcsEndPntQuarantineState  INTEGER,
                 pktcEnNcsEndPntHookState  INTEGER,
@@ -154,60 +154,60 @@ PktcEnNcsEndPntConfigEntry  ::=
                 pktcEnNcsEndPntStatusReportCtrl INTEGER
         }
 
-pktcEnNcsEndPntQuarantineState  OBJECT-TYPE    
+pktcEnNcsEndPntQuarantineState  OBJECT-TYPE
        SYNTAX INTEGER {
-           normal           (1), 
+           normal           (1),
            notification     (2),
            lockstep         (3),
            extendedlockstep (4)
        }
-       MAX-ACCESS   read-only    
-       STATUS       current    
+       MAX-ACCESS   read-only
+       STATUS       current
        DESCRIPTION
             "This object reflects the state of the Endpoint.
-             When the endpoint is in notification, lockstep or 
-             values 'extended lockstep' states, the E-MTA MUST report 
+             When the endpoint is in notification, lockstep or
+             values 'extended lockstep' states, the E-MTA MUST report
              the of notification(2), lockstep(3) or extendedlockstep(
              4),respectively. Else, the endpoint MUST report a value of
-           of normal(1). 
-          'Extended Lockstep' is defined as the state when the 
+           of normal(1).
+          'Extended Lockstep' is defined as the state when the
            E-MTA is in the lockstep state for longer than 2 minutes.
            For more description about the states refer
-           to the PacketCable Network Based Call signaling 
+           to the PacketCable Network Based Call signaling
            specification."
        REFERENCE
             "PacketCable(tm) Network-Based Call Signaling Protocol
              Specification,"
       ::= { pktcEnNcsEndPntConfigEntry 1 }
 
-pktcEnNcsEndPntHookState  OBJECT-TYPE      
-       SYNTAX INTEGER {  
-                  onHook                (1),   
-                  onHookPlusNCSActivity (2), 
+pktcEnNcsEndPntHookState  OBJECT-TYPE
+       SYNTAX INTEGER {
+                  onHook                (1),
+                  onHookPlusNCSActivity (2),
                   offHook               (3)
-                }      
-       MAX-ACCESS   read-only      
-       STATUS  current      
-       DESCRIPTION  
-           "This object reflects the 'hook state' and 'NCS Activity' 
+                }
+       MAX-ACCESS   read-only
+       STATUS  current
+       DESCRIPTION
+           "This object reflects the 'hook state' and 'NCS Activity'
             of an endpoint.
-            'NCS Activity', by definition includes: an active 
-             timeout signal, active brief signal or existence of 
+            'NCS Activity', by definition includes: an active
+             timeout signal, active brief signal or existence of
              an NCS connection.
-             The onHook(1) state indicates that the endpoint is 
-             'on hook' and the absence of 'NCS Activity' on that 
-             endpoint. 
-             The onHookPlusNCSActivity(2) indicates that the endpoint 
-             is 'on hook' and the presence of 'NCS Activity' on that 
+             The onHook(1) state indicates that the endpoint is
+             'on hook' and the absence of 'NCS Activity' on that
              endpoint.
-             The offHook(3) state indicates that the endpoint is 
+             The onHookPlusNCSActivity(2) indicates that the endpoint
+             is 'on hook' and the presence of 'NCS Activity' on that
+             endpoint.
+             The offHook(3) state indicates that the endpoint is
              'off hook'."
        REFERENCE
             "PacketCable(tm) Network-Based Call Signaling Protocol Specification"
        ::= { pktcEnNcsEndPntConfigEntry 2 }
 
 pktcEnNcsEndPntFaxDetection     OBJECT-TYPE
-      SYNTAX TruthValue 
+      SYNTAX TruthValue
       MAX-ACCESS  read-create
       STATUS      current
       DESCRIPTION
@@ -215,19 +215,19 @@ pktcEnNcsEndPntFaxDetection     OBJECT-TYPE
             the distinctive fax calling tone (CNG) detection feature
             on an MTA endpoint with reference to the analog interface[po1].
             When set to true, the MTA MUST enable the detection
-            of CNG tones on the specific endpoint. 
-            When set to false, the MTA MUST disable the detection 
+            of CNG tones on the specific endpoint.
+            When set to false, the MTA MUST disable the detection
             of CNG tones on the specific endpoint.
             If a connection already exists on the endpoint when this
-            MIB Object is modified, then the setting needs to take 
+            MIB Object is modified, then the setting needs to take
             effect on the next connection."
 
        DEFVAL {false}
-      ::= { pktcEnNcsEndPntConfigEntry 3}   
+      ::= { pktcEnNcsEndPntConfigEntry 3}
 
 pktcEnNcsEndPntStatusReportCtrl     OBJECT-TYPE
-           SYNTAX INTEGER {  
-                 unsupported               (1),   
+           SYNTAX INTEGER {
+                 unsupported               (1),
                  reportActualStatus        (2),
                  reportEndPointAsActive    (3)
            }
@@ -235,25 +235,25 @@ pktcEnNcsEndPntStatusReportCtrl     OBJECT-TYPE
        STATUS      deprecated
        DESCRIPTION
            "This MIB object is being used to control
-            the Endpoint Status Reporting, if the feature is 
+            the Endpoint Status Reporting, if the feature is
             supported by the MTA and is configurable.
-            The term 'Endpoint Status Reporting' refers to any 
+            The term 'Endpoint Status Reporting' refers to any
             information that the MTA may provide to External
             Systems for use in a particular reporting mechanism
             (Ex: Home Alarm Systems). The definition of the External
-            Systems and reporting mechanism are beyond the scope 
+            Systems and reporting mechanism are beyond the scope
             of this definition (In the example of Home Alarm Systems,
-            this MIB Object will allow Management Stations to 
-            temporarily disable outage reporting on an EndPoint 
+            this MIB Object will allow Management Stations to
+            temporarily disable outage reporting on an EndPoint
             during planned downtime).
             If supported, the MTA MUST:
             - reflect the actual Endpoint status when the value
-              is set to 'reportActualStatus(2)'  
+              is set to 'reportActualStatus(2)'
              - reflect the EndPoint status as being active when the
-              value is set to 'reportEndPointAsActive(3)', 
+              value is set to 'reportEndPointAsActive(3)',
               irrespective of the actual status.
-            If unsupported, the MTA MUST set this value to 
-            'unsupported(1)' and reject any attempt to set 
+            If unsupported, the MTA MUST set this value to
+            'unsupported(1)' and reject any attempt to set
             this MIB object using SNMP SET to any other value."
       ::= { pktcEnNcsEndPntConfigEntry 4}
 
@@ -262,10 +262,10 @@ pktcEnEndPntInfoTable  OBJECT-TYPE
        SYNTAX        SEQUENCE OF PktcEnEndPntInfoEntry
        MAX-ACCESS    not-accessible
        STATUS        current
-       DESCRIPTION  
+       DESCRIPTION
            "This table includes any additional information
-            associated with PacketCable EndPoints. 
-            The number of entries in this table represents the 
+            associated with PacketCable EndPoints.
+            The number of entries in this table represents the
             number of available PacketCable EndPoints."
       ::=  { pktcEnNcsEndPntConfigObjects 2 }
 
@@ -274,16 +274,16 @@ pktcEnEndPntInfoEntry  OBJECT-TYPE
       SYNTAX        PktcEnEndPntInfoEntry
       MAX-ACCESS    not-accessible
       STATUS        current
-      DESCRIPTION   
-           "An entry in this table MUST be created for each 
+      DESCRIPTION
+           "An entry in this table MUST be created for each
             PacketCable EndPoint.
-            The index needs to be the corresponding index in the ifTable 
+            The index needs to be the corresponding index in the ifTable
             for the associated PacketCable EndPoint."
       INDEX { ifIndex }
       ::=  { pktcEnEndPntInfoTable 1 }
 
 -- ECL: row name changed to pktcEnEndPntInfoEntry due to warning 13
-PktcEnEndPntInfoEntry  ::= 
+PktcEnEndPntInfoEntry  ::=
         SEQUENCE {
                 pktcEnEndPntFgnPotSupport   BITS,
                 pktcEnEndPntFgnPotDescr     SnmpAdminString,
@@ -301,11 +301,11 @@ pktcEnEndPntFgnPotSupport OBJECT-TYPE
        MAX-ACCESS read-only
        STATUS current
        DESCRIPTION
-           "This MIB object indicates the capabilities of the MTA to 
-            detect various conditions related to the presence of 
-            foreign potential on an endpoint. 
+           "This MIB object indicates the capabilities of the MTA to
+            detect various conditions related to the presence of
+            foreign potential on an endpoint.
             The MTA MUST set a value of '1' for each bit corresponding
-            to a supported functionality and a value of '0' for each 
+            to a supported functionality and a value of '0' for each
             bit corresponding to an unsupported functionality."
 -- ECL: row name changed to pktcEnEndPntInfoEntry due to warning 13
        ::= {  pktcEnEndPntInfoEntry 1 }
@@ -315,9 +315,9 @@ pktcEnEndPntFgnPotDescr OBJECT-TYPE
        MAX-ACCESS read-only
        STATUS current
        DESCRIPTION
-           "This MIB object provides information related to the 
-            various tests for each detection mechanism supported by 
-            the MTA. While the actual contents are vendor-specific, 
+           "This MIB object provides information related to the
+            various tests for each detection mechanism supported by
+            the MTA. While the actual contents are vendor-specific,
             the recommended format is:
             [<Capability>:<Test References>:<Other Info>]...
            Example:
@@ -335,20 +335,20 @@ pktcEnEndPntClrFgnPotTsts    OBJECT-TYPE
        MAX-ACCESS     read-write
        STATUS         current
        DESCRIPTION
-           "This MIB object is used to clear the current test 
-            results of supported conditions indicated by 
+           "This MIB object is used to clear the current test
+            results of supported conditions indicated by
             'pktcEnEndPntFgnPotSupport'.
-            Setting a bit to a value of '1' clears the corresponding 
+            Setting a bit to a value of '1' clears the corresponding
             results in the MIB Object 'pktcEnEndPntFgnTestResults' and
-            the validity as indicated  by the MIB object 
+            the validity as indicated  by the MIB object
             'pktcEnEndPntFgnTestValidity' for the supported
-            conditions only (i.e, the MTA MUST set the corresponding 
-            bits to a value of '0' in the indicated tables). 
-            If an SNMP SET attempts to set a bit corresponding to an 
+            conditions only (i.e, the MTA MUST set the corresponding
+            bits to a value of '0' in the indicated tables).
+            If an SNMP SET attempts to set a bit corresponding to an
             unsupported condition to a value of '1', then the MTA MUST
-            reject the entire SNMP SET and report an 'inconsistent 
+            reject the entire SNMP SET and report an 'inconsistent
             value' error.
-           For all unsupported scenarios, the corresponding bits MUST 
+           For all unsupported scenarios, the corresponding bits MUST
             be set to a value of '0'.
             Whenever one or more tests are enabled by the MIB Object
            'pktcEnEndPntRunFgnPotTests', the MTA MUST also reset the
@@ -367,27 +367,27 @@ pktcEnEndPntRunFgnPotTsts    OBJECT-TYPE
            "This MIB object is used to initiate one or more test cases
             associated with a supported foreign potential detection.
             Thus, whenever one or more BITS corresponding to supported
-            foreign scenario potential detection mechanisms are set to 
-            a value of '1', the MTA MUST enable those tests. 
+            foreign scenario potential detection mechanisms are set to
+            a value of '1', the MTA MUST enable those tests.
             Once the tests are executed, the MTA MUST:
             - set the corresponding bit to a value of '0'
-            - update the corresponding BITS in the MIB Objects 
+            - update the corresponding BITS in the MIB Objects
             'pktcEnEndPntFgnTestValidity' and
             'pktcEnEndPntFgnTestResults'.
-            If an SNMP SET attempts to set a bit corresponding to an 
+            If an SNMP SET attempts to set a bit corresponding to an
             unsupported condition to a value of '1', then the MTA MUST
             reject the entire SNMP SET and report an 'inconsistent
             value' error.
-            Whenever a test is being run on an EndPoint the MTA MUST 
-            set the corresponding 'ifOperStatus' MIB Object to a 
-            value of 'testing(3)' for the whole duration of the test. 
-            When the test is completed, the MTA MUST set the 
+            Whenever a test is being run on an EndPoint the MTA MUST
+            set the corresponding 'ifOperStatus' MIB Object to a
+            value of 'testing(3)' for the whole duration of the test.
+            When the test is completed, the MTA MUST set the
             ifOperStatus to the value corresponding to the current
             state of the line.
 
            Note: Whenever multiple tests are run, the ordering of the
                  tests or the results is vendor dependent and need not
-                 necessarily follow the ordering of BITS in this MIB 
+                 necessarily follow the ordering of BITS in this MIB
                  Object."
 -- ECL: row name changed to pktcEnEndPntInfoEntry due to warning 13
       ::= { pktcEnEndPntInfoEntry 4}
@@ -400,16 +400,16 @@ pktcEnEndPntFgnTestValidity  OBJECT-TYPE
        MAX-ACCESS     read-only
        STATUS         current
        DESCRIPTION
-           "This MIB object is used to indicate the validity of the 
+           "This MIB object is used to indicate the validity of the
             corresponding test cases that were initiated using the MIB
             Object 'pktcEnEndPntRunFgnPotTests'.
             An MTA MUST:
             - return a value of '1' if the tests were run successfully
               and the results are valid.
-            - return a value of '0' if a particular test was not 
+            - return a value of '0' if a particular test was not
               initiated or if the tests could not be run successfully
               and hence the results are invalid.
-           Note: The MTA MUST set all the BITS to '0' as soon as one 
+           Note: The MTA MUST set all the BITS to '0' as soon as one
                   or more test cases are initiated."
 -- ECL: row name changed to pktcEnEndPntInfoEntry due to warning 13
       ::= { pktcEnEndPntInfoEntry 5}
@@ -422,17 +422,17 @@ pktcEnEndPntFgnTestResults OBJECT-TYPE
        MAX-ACCESS     read-only
        STATUS         current
        DESCRIPTION
-           "This MIB object is used to indicate the results of the 
-            corresponding test cases that were initiated using the MIB 
+           "This MIB object is used to indicate the results of the
+            corresponding test cases that were initiated using the MIB
             Object 'pktcEnEndPntRunFgnPotTests'.
             An MTA MUST:
             - set the corresponding bit to a value of '1' if the tests
               indicated the presence of a foreign potential as per the
               associated test case.
             - set the corresponding bit to a value of '0' if the tests
-              indicated the absence of a foreign potential as per the 
+              indicated the absence of a foreign potential as per the
               associated test case.
-           Note: The MTA MUST set all the BITS to '0' as soon as one or 
+           Note: The MTA MUST set all the BITS to '0' as soon as one or
                  more test cases are initiated."
 -- ECL: row name changed to pktcEnEndPntInfoEntry due to warning 13
        ::= { pktcEnEndPntInfoEntry 6 }
@@ -442,9 +442,9 @@ pktcEnNcsEndPntLVMgmtTable OBJECT-TYPE
        SYNTAX        SEQUENCE OF PktcEnNcsEndPntLVMgmtEntry
        MAX-ACCESS    not-accessible
        STATUS        current
-       DESCRIPTION  
+       DESCRIPTION
 	   "This MIB table contains the MIB Objects used for
-            managing loop voltage on an MTA. An MTA MUST 
+            managing loop voltage on an MTA. An MTA MUST
             implement the defined MIB Objects and the associated
             functionality."
        ::= { pktcEnNcsEndPntConfigObjects 3 }
@@ -455,7 +455,7 @@ pktcEnNcsEndPntLVMgmtEntry OBJECT-TYPE
        SYNTAX        PktcEnNcsEndPntLVMgmtEntry
        MAX-ACCESS    not-accessible
        STATUS        current
-       DESCRIPTION   
+       DESCRIPTION
 	   "Each entry in this MIB table consists of the
             loop voltage management policy for the specified
             index. The MTA MUST use the ifIndex with a value of '1'
@@ -473,22 +473,22 @@ pktcEnNcsEndPntLVMgmtEntry OBJECT-TYPE
        ::=  { pktcEnNcsEndPntLVMgmtTable 1 }
 
 -- ECL: alias changed from PktcEnNcsEndPntLVMgmtTableEntry due to warning 13
-PktcEnNcsEndPntLVMgmtEntry  ::= 
+PktcEnNcsEndPntLVMgmtEntry  ::=
         SEQUENCE {
                 pktcEnNcsEndPntLVMgmtPolicy       INTEGER,
                 pktcEnNcsEndPntLVMgmtResetTimer   Unsigned32,
                 pktcEnNcsEndPntLVMgmtMaintTimer   Unsigned32
         }
 
-pktcEnNcsEndPntLVMgmtPolicy  OBJECT-TYPE 
-       SYNTAX INTEGER { 
-           voltageAtAllTimes(1), 
-           voltageUnlessRFQAMAbsent(2), 
-           voltageBasedOnServiceOrTimers(3), 
+pktcEnNcsEndPntLVMgmtPolicy  OBJECT-TYPE
+       SYNTAX INTEGER {
+           voltageAtAllTimes(1),
+           voltageUnlessRFQAMAbsent(2),
+           voltageBasedOnServiceOrTimers(3),
            voltageBasedOnService(4)
-       } 
-       MAX-ACCESS read-write 
-       STATUS     current 
+       }
+       MAX-ACCESS read-write
+       STATUS     current
        DESCRIPTION
            "This MIB Object allows the Service Provider to choose
             a suitable policy for Loop Voltage behavior on MTAs.
@@ -545,142 +545,142 @@ pktcEnNcsEndPntLVMgmtPolicy  OBJECT-TYPE
               on previously provisioned lines, unless overridden
               by a policy or the provisioning process specifies
               otherwise
-            This policy is similar to Policy 1, except for the 
-            ability to recognize events like cable cuts (due to 
+            This policy is similar to Policy 1, except for the
+            ability to recognize events like cable cuts (due to
             malicious activities, or otherwise).
 
             The following requirements apply to policies 3 and 4:
-            - upon the onset of a re-initialization due to a soft reset 
-              the MTA MUST continue to maintain the existing policy and 
-              state on provisioned lines, unless overridden by a policy 
+            - upon the onset of a re-initialization due to a soft reset
+              the MTA MUST continue to maintain the existing policy and
+              state on provisioned lines, unless overridden by a policy
               or the provisioning process specifies otherwise
-            - once the provisioning process is completed with the value 
-              of the MIB Object pktcMtaDevProvisioningState set to a 
-              value of 'pass(1)', 'passWithWarnings(4)' or 
+            - once the provisioning process is completed with the value
+              of the MIB Object pktcMtaDevProvisioningState set to a
+              value of 'pass(1)', 'passWithWarnings(4)' or
               'passWithIncompleteParsing(5)', the MTA MUST apply the
               chosen policy to all the provisioned lines
 
-            When this MIB Object is set to a value of 
-            'voltageBasedOnServiceOrTimers', - indicating Policy 3 - 
-            the MTA MUST adhere to the requirements that follow 
-            at any given point in time: 
+            When this MIB Object is set to a value of
+            'voltageBasedOnServiceOrTimers', - indicating Policy 3 -
+            the MTA MUST adhere to the requirements that follow
+            at any given point in time:
 
-            - when the timer defined by 
-              pktcEnNcsEndPntLVMgmtResetTimer has 
-              a non-zero value, the MTA MUST apply loop idle voltage 
+            - when the timer defined by
+              pktcEnNcsEndPntLVMgmtResetTimer has
+              a non-zero value, the MTA MUST apply loop idle voltage
               under all circumstances (similar to policy 1).
               Refer to the definition of the MIB Object for the
               persistence and timer requirements.
 
-            - when the timer defined by 
-              pktcEnNcsEndPntLVMgmtMaintTimer has 
-              a non-zero value, the MTA MUST maintain a line's loop 
-              idle voltage state that was in effect prior to the timer 
-              being set to a non-zero value. Refer to the definition 
-              of the MIB Object defining the timer for the persistence 
+            - when the timer defined by
+              pktcEnNcsEndPntLVMgmtMaintTimer has
+              a non-zero value, the MTA MUST maintain a line's loop
+              idle voltage state that was in effect prior to the timer
+              being set to a non-zero value. Refer to the definition
+              of the MIB Object defining the timer for the persistence
               and timer requirements.
 
-            - When the timers defined by 
-              pktcEnNcsEndPntLVMgmtMaintTimer and 
-              pktcEnNcsEndPntLVMgmtResetTimer have 
+            - When the timers defined by
+              pktcEnNcsEndPntLVMgmtMaintTimer and
+              pktcEnNcsEndPntLVMgmtResetTimer have
               expired (both have a value of zero), then:
-              = the MTA MUST apply loop voltage if the provisioning 
-                process is completed with the value of 
-                pktcMtaDevProvisioningState set to a value of 
-                than 'pass(1)', 'passWithWarnings(4)' or 
-                'passWithIncompleteParsing(5)' 
-              = During a T4 timeout (note: the timers have expired), 
+              = the MTA MUST apply loop voltage if the provisioning
+                process is completed with the value of
+                pktcMtaDevProvisioningState set to a value of
+                than 'pass(1)', 'passWithWarnings(4)' or
+                'passWithIncompleteParsing(5)'
+              = During a T4 timeout (note: the timers have expired),
                 the E-MTA MUST remove loop idle voltage on all lines
- 
-            - When both the timers are active (i.e., they both have 
-              non-zero values), then the timer defined by the MIB 
+
+            - When both the timers are active (i.e., they both have
+              non-zero values), then the timer defined by the MIB
               Object pktcEnNcsEndPntLVMgmtMaintTimer takes precedence
 
-            - if none of the above cases apply, the MTA MUST remove 
+            - if none of the above cases apply, the MTA MUST remove
               loop idle voltage on all lines
-                     
-            When the MIB Object is set to a value of 
-            'voltageBasedOnService', - indicating Policy 4 - the 
+
+            When the MIB Object is set to a value of
+            'voltageBasedOnService', - indicating Policy 4 - the
             following conditions apply at any given point in time:
 
-            - the MTA MUST apply loop idle voltage to all 
-              the provisioned lines if the value of the MIB Object 
-              'pktcMtaDevProvisioningState' is set to a 
-              value of 'pass(1)', 'passWithWarnings(4)' 
-              or 'passWithIncompleteParsing(5)' 
+            - the MTA MUST apply loop idle voltage to all
+              the provisioned lines if the value of the MIB Object
+              'pktcMtaDevProvisioningState' is set to a
+              value of 'pass(1)', 'passWithWarnings(4)'
+              or 'passWithIncompleteParsing(5)'
 
-            - in all other cases, the MTA 
+            - in all other cases, the MTA
               MUST remove loop idle voltage on all lines."
        REFERENCE "PacketCable 1.5 Device Provisioning specification [1]"
-       DEFVAL { voltageBasedOnService } 
+       DEFVAL { voltageBasedOnService }
 -- ECL: row name changed from PktcEnNcsEndPntLVMgmtTableEntry due to warning 13
-       ::= { pktcEnNcsEndPntLVMgmtEntry 1 }	
+       ::= { pktcEnNcsEndPntLVMgmtEntry 1 }
 
-pktcEnNcsEndPntLVMgmtResetTimer OBJECT-TYPE 
+pktcEnNcsEndPntLVMgmtResetTimer OBJECT-TYPE
        SYNTAX     Unsigned32 (0..1440)
-       UNITS      "minutes" 
-       MAX-ACCESS read-write 
-       STATUS     current 
-       DESCRIPTION 
-           "This MIB Object specifies the time duration allowed for 
-            an MTA to successfully provision and is only applicable when 
-            the MIB Object pktcEnNcsEndPntLVMgmtPolicy is 
+       UNITS      "minutes"
+       MAX-ACCESS read-write
+       STATUS     current
+       DESCRIPTION
+           "This MIB Object specifies the time duration allowed for
+            an MTA to successfully provision and is only applicable when
+            the MIB Object pktcEnNcsEndPntLVMgmtPolicy is
             set to a value of 'voltageBasedOnServiceOrTimers'.
             In all other cases, the MTA MUST:
             - return a value of '0' upon any retrieval requests
-            - return an error of 'inconsistentValue' upon any 
+            - return an error of 'inconsistentValue' upon any
               modification requests
 
-            The value contained by this MIB Object is a countdown timer 
-            and the MTA MUST start counting down the configured value 
-            only upon a hard reboot, a soft reset or a T4 timeout. Once 
-            this timer has reached a value of zero, the MTA MUST retain 
-            the value (of zero) until successfully configured otherwise. 
-            The MTA MUST use a change in the value of this MIB Object 
+            The value contained by this MIB Object is a countdown timer
+            and the MTA MUST start counting down the configured value
+            only upon a hard reboot, a soft reset or a T4 timeout. Once
+            this timer has reached a value of zero, the MTA MUST retain
+            the value (of zero) until successfully configured otherwise.
+            The MTA MUST use a change in the value of this MIB Object
             only on the next hard reboot, soft reset or T4 timeout.
 
             The MTA MUST persist the last configured value (i.e., not
             the countdown value) of this MIB Object across hard reboots
-            and soft resets. 
-     
-            Refer to the MIB Object pktcEnNcsEndPntLVMgmtPolicy for 
+            and soft resets.
+
+            Refer to the MIB Object pktcEnNcsEndPntLVMgmtPolicy for
             usage within 'voltageBasedOnServiceOrTimers'."
-       DEFVAL { 5 } 
+       DEFVAL { 5 }
 -- ECL: row name changed from PktcEnNcsEndPntLVMgmtTableEntry due to warning 13
-       ::= { pktcEnNcsEndPntLVMgmtEntry 2 }	
+       ::= { pktcEnNcsEndPntLVMgmtEntry 2 }
 
 pktcEnNcsEndPntLVMgmtMaintTimer OBJECT-TYPE
        SYNTAX     Unsigned32 (0..1440)
        UNITS      "minutes"
        MAX-ACCESS read-write
        STATUS     current
-       DESCRIPTION 
+       DESCRIPTION
            "This MIB Object allows the operator to specify the time that
-            loop voltage condition will be maintained, irrespective of 
-            the changes to the MTA. It is only applicable when the MIB 
-            Object pktcEnNcsEndPntLVMgmtPolicy is set to a 
-            value of 'voltageBasedOnServiceOrTimers'. In all 
+            loop voltage condition will be maintained, irrespective of
+            the changes to the MTA. It is only applicable when the MIB
+            Object pktcEnNcsEndPntLVMgmtPolicy is set to a
+            value of 'voltageBasedOnServiceOrTimers'. In all
             other cases, the MTA MUST:
             - return a value of '0' upon any retrieval requests
-            - return an error of 'inconsistentValue' upon any 
+            - return an error of 'inconsistentValue' upon any
               modification requests
 
-            The value contained in this MIB Object is a countdown timer 
-            and the MTA MUST start counting down the value immediately 
-            after a successful configuration to a non-zero value. Once 
-            this timer has reached a value of zero, the MTA MUST retain 
+            The value contained in this MIB Object is a countdown timer
+            and the MTA MUST start counting down the value immediately
+            after a successful configuration to a non-zero value. Once
+            this timer has reached a value of zero, the MTA MUST retain
             the value (of zero) until successfully configured otherwise.
- 
+
             The MTA MUST retain the value of this MIB Object (i.e., the
-            countdown value) across soft resets. The MTA MUST reset the 
-            value of this MIB Object (to its default value) during a 
+            countdown value) across soft resets. The MTA MUST reset the
+            value of this MIB Object (to its default value) during a
             hard reboot of the MTA.
 
-            Refer to the MIB Object pktcEnNcsEndPntLVMgmtPolicy for 
+            Refer to the MIB Object pktcEnNcsEndPntLVMgmtPolicy for
             information about applicability and usage."
        DEFVAL { 0 }
 -- ECL: row name changed from PktcEnNcsEndPntLVMgmtTableEntry due to warning 13
-       ::= { pktcEnNcsEndPntLVMgmtEntry 3 }	
+       ::= { pktcEnNcsEndPntLVMgmtEntry 3 }
 
 --
 -- Compliance statements
@@ -688,7 +688,7 @@ pktcEnNcsEndPntLVMgmtMaintTimer OBJECT-TYPE
 pktcEnSigBasicCompliance  MODULE-COMPLIANCE
        STATUS     current
        DESCRIPTION
-           "The compliance statement for devices that implement 
+           "The compliance statement for devices that implement
             PacketCable defined Signaling on an MTA."
 
       MODULE  -- PKTC-ECL-EN-SIG-MIB
@@ -700,19 +700,19 @@ MANDATORY-GROUPS {
         pktcEnSigGroup
       }
        GROUP pktcEnNcsGroup
-       DESCRIPTION 
-           "This group is mandatory for any MTA implementing 
+       DESCRIPTION
+           "This group is mandatory for any MTA implementing
             PacketCable signaling."
 
-       GROUP pktcEnNcsLVMgmtGroup 
+       GROUP pktcEnNcsLVMgmtGroup
        DESCRIPTION
-           "This group is mandatory for any MTA implementing 
+           "This group is mandatory for any MTA implementing
             PacketCable signaling."
 
        ::={ pktcEnSigCompliances 1 }
 
 --
--- Conformance group for common Signaling. 
+-- Conformance group for common Signaling.
 --
 pktcEnSigGroup OBJECT-GROUP
        OBJECTS {
@@ -722,10 +722,10 @@ pktcEnSigGroup OBJECT-GROUP
        DESCRIPTION
            "Enhanced group of objects for the common portion of the
             PacketCable Signaling MIB."
-       ::= { pktcEnSigGroups 1 } 
+       ::= { pktcEnSigGroups 1 }
 
 --
--- Conformance group for NCS Signaling. 
+-- Conformance group for NCS Signaling.
 --
 pktcEnNcsGroup OBJECT-GROUP
        OBJECTS {
@@ -757,10 +757,10 @@ pktcEnNcsLVMgmtGroup OBJECT-GROUP
        }
        STATUS current
        DESCRIPTION
-           "Enhanced group of objects for the loop voltage 
+           "Enhanced group of objects for the loop voltage
             Management of PacketCable MTAs based on Signaling
             and configured policies."
-       ::= { pktcEnSigGroups 3 } 
+       ::= { pktcEnSigGroups 3 }
 
 pktcEnNcsDeprecatedGroup OBJECT-GROUP
        OBJECTS {
@@ -768,8 +768,8 @@ pktcEnNcsDeprecatedGroup OBJECT-GROUP
        }
        STATUS deprecated
        DESCRIPTION
-           "This contains a list of deprecated Extension 
+           "This contains a list of deprecated Extension
             Signaling MIB Objects."
-       ::= { pktcEnSigGroups 4 } 
- 
+       ::= { pktcEnSigGroups 4 }
+
 END

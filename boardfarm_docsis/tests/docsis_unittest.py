@@ -43,4 +43,3 @@ class selftest_snmpv2(rootfs_boot.RootFSBootTest):
             finally:
                 value_2 = snmp_v2(wan, ip, mib, value=value_1)
                 print("snmpset on mib: %s\nvalue: %s" % (mib, value_2))
-

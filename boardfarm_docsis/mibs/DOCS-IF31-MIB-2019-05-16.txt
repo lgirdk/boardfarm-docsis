@@ -514,9 +514,9 @@ docsIf31RxChStatusTable OBJECT-TYPE
          of the statically-configured and dynamically-created
          Receive Channels within an RCC.
          This table provides the ability for the CM to report its receive
-         channel configuration and is applicable for cases where a 
+         channel configuration and is applicable for cases where a
          DOCSIS 3.1 CM registers with a DOCSIS 3.1 CCAP.
-         Pre-DOCSIS 3.1, this table provides the ability for the CCAP to report a 
+         Pre-DOCSIS 3.1, this table provides the ability for the CCAP to report a
          DOCSIS 3.0 CM receive channel configuration and is applicable
          for cases where a DOCSIS 3.0 CM registers with a DOCSIS 3.1 CCAP."
      ::= { docsIf31MibObjects 2 }
@@ -2616,8 +2616,8 @@ docsIf31CmSystemCfgStateDiplexerCapability OBJECT-TYPE
          the value sent in the Registration Request as a bit mask.
          Example:
          CM supports Switchable Upstream Diplexer configurations as follows:
-         Bit #0: Upstream Frequency Range up to 42 MHz 
-         Bit #2: Upstream Frequency Range up to 85 MHz 
+         Bit #0: Upstream Frequency Range up to 42 MHz
+         Bit #2: Upstream Frequency Range up to 85 MHz
          The Integer value set for the DiplexerCapability in this case would equal 5."
     REFERENCE
         "DOCSIS 3.1 MAC and Upper Layer Protocols Interface
@@ -2653,10 +2653,10 @@ docsIf31CmSystemCfgStateDiplexerDsLowerCapability  OBJECT-TYPE
          Request. The Integer value represents the value sent
          in the Registration Request as a bit mask.
          Example:
-         CM supports Switchable Downstream Diplexer Lower Band Edge 
+         CM supports Switchable Downstream Diplexer Lower Band Edge
          configurations as follows:
-         Bit #0: Downstream Frequency Range starting from 108 MHz 
-         Bit #1: Downstream Frequency Range starting from 258 MHz 
+         Bit #0: Downstream Frequency Range starting from 108 MHz
+         Bit #1: Downstream Frequency Range starting from 258 MHz
         The Integer value set for the DiplexerDsLowerCapability in this case would be 3."
     REFERENCE
         "DOCSIS 3.1 MAC and Upper Layer Protocols Interface
@@ -2694,10 +2694,10 @@ docsIf31CmSystemCfgStateDiplexerDsUpperCapability OBJECT-TYPE
          represents the value sent in the Registration
          Request as a bit mask.
          Example:
-         CM supports only a single configuration for the 
+         CM supports only a single configuration for the
          DiplexerDsUpperCapability
-         Bit #0: Downstream Frequency Range up to 1218 MHz 
-         The Integer values set for the DiplexerDsUpperCapability 
+         Bit #0: Downstream Frequency Range up to 1218 MHz
+         The Integer values set for the DiplexerDsUpperCapability
          in this case would be 1."
     REFERENCE
         "DOCSIS 3.1 MAC and Upper Layer Protocols Interface
@@ -4326,7 +4326,7 @@ docsIf31CmtsCmFdxStatusTable OBJECT-TYPE
      DESCRIPTION
          "This table defines status information of an FDX-capable
           CM (either FDX-L or FDX), as reported by the CMTS. An entry
-          is created in this table when a CM registers and reports 
+          is created in this table when a CM registers and reports
           it is FDX capable."
      ::= { docsIf31MibObjects 32 }
 
@@ -4342,7 +4342,7 @@ docsIf31CmtsCmFdxStatusEntry OBJECT-TYPE
 DocsIf31CmtsCmFdxStatusEntry ::= SEQUENCE {
      docsIf31CmtsCmFdxStatusFdxStatus          INTEGER
      }
-	 
+
 docsIf31CmtsCmFdxStatusFdxStatus OBJECT-TYPE
      SYNTAX      INTEGER {
                          preFdxInit(1),

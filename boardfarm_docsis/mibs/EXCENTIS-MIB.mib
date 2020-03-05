@@ -6,10 +6,10 @@ IMPORTS
        FROM SNMPv2-SMI;
 
 excentis MODULE-IDENTITY
-   LAST-UPDATED "200611150000Z" 
+   LAST-UPDATED "200611150000Z"
    ORGANIZATION "Excentis"
    CONTACT-INFO
-       "Wim De Ketelaere 
+       "Wim De Ketelaere
         Gildestraat 8
         B-9000 Ghent
         Belgium

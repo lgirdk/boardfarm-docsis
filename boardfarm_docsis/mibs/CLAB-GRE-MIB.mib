@@ -36,9 +36,9 @@ clabGREMib MODULE-IDENTITY
          "Licensed under the Apache License, Version 2.0 (the 'License');
          you may not use this file except in compliance with the License.
          You may obtain a copy of the License at:
- 
+
              http://www.apache.org/licenses/LICENSE-2.0
- 
+
          Unless required by applicable law or agreed to in writing, software
          distributed under the License is distributed on an 'AS IS' BASIS,
          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
@@ -380,12 +380,12 @@ clabGRETunnnelRemoteEndpointConnectivityState OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "Comma-separated list (up to 4 items) of strings. Each item 
+        "Comma-separated list (up to 4 items) of strings. Each item
          corresponds to one item in the RemoteEndpoints list, and contains
          one of the following strings: 'Reachable' indicates that the
-         corresponding remote endpoint is responding to any configured 
-         KeepAlive messages. 'Unreachable' indicates that the remote 
-         endpoint has failed to adequately respond to the most recent 
+         corresponding remote endpoint is responding to any configured
+         KeepAlive messages. 'Unreachable' indicates that the remote
+         endpoint has failed to adequately respond to the most recent
          KeepAlive attempt. 'NotInUse' indicates that the remote endpoint
          has not been used. 'NoKeepAlives' indicates that the KeepAlive
          policy is set to 'none'."
@@ -1184,4 +1184,3 @@ clabGREGroup OBJECT-GROUP
     ::= { clabGREMibGroups 1 }
 
 END
-

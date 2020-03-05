@@ -60,7 +60,7 @@ docsIfDocsisOperMode OBJECT-TYPE
        STATUS       current
        DESCRIPTION
            "Indication whether the device has registered as a 1.0 or 1.1.
-            For CMTS and unregistered CM, it is always the same as 
+            For CMTS and unregistered CM, it is always the same as
             docsDocsisCapability."
        ::= { docsIfExtMib 2 }
 

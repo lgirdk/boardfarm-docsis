@@ -424,7 +424,7 @@ docsPnmCcapBulkDataControlPnmTestSelector OBJECT-TYPE
                        usOfdmaRxMerPerSubcarrier(5),
                        upstreamHistogram(6),
                        usOfdmaRxPower(7),
-                       usTriggeredSpectrumCapture(8),   
+                       usTriggeredSpectrumCapture(8),
                        latencyRpt(9)
                         }
      MAX-ACCESS  read-write
@@ -2817,7 +2817,7 @@ docsPnmCmDsOfdmModProfTable OBJECT-TYPE
         This table will have a row for each ifIndex for the modem."
      REFERENCE
         "DOCSIS 3.1 Cable Modem Operations Support System Interface
-         Specification CM-SP-CM-OSSIv3.1, Proactive Network Maintenance 
+         Specification CM-SP-CM-OSSIv3.1, Proactive Network Maintenance
          Information Model, CmDsOfdmModulationProfile."
      ::= { docsPnmCmObjects 11}
 
@@ -2993,7 +2993,7 @@ docsIf3CmSpectrumAnalysisCtrlCmdFileEnable OBJECT-TYPE
         "
      REFERENCE
       "DOCSIS 3.1 Cable Modem Operations Support System Interface
-        Specification CM-SP-CM-OSSIv3.1,  Proactive Network Maintenance 
+        Specification CM-SP-CM-OSSIv3.1,  Proactive Network Maintenance
         Information Model section."
      DEFVAL { false }
      ::= { docsIf3CmSpectrumAnalysisCtrlCmd 10 }
@@ -3008,7 +3008,7 @@ docsIf3CmSpectrumAnalysisCtrlCmdMeasStatus OBJECT-TYPE
         is ready for transfer. "
     REFERENCE
       "DOCSIS 3.1 Cable Modem Operations Support System Interface
-        Specification CM-SP-CM-OSSIv3.1,  Proactive Network Maintenance 
+        Specification CM-SP-CM-OSSIv3.1,  Proactive Network Maintenance
         Information Model section."
      ::= { docsIf3CmSpectrumAnalysisCtrlCmd 11 }
 
@@ -3062,7 +3062,7 @@ docsIf3CmSpectrumAnalysisCtrlCmdFileName OBJECT-TYPE
         "
     REFERENCE
       "DOCSIS 3.1 Cable Modem Operations Support System Interface
-        Specification CM-SP-CM-OSSIv3.1,  Proactive Network Maintenance 
+        Specification CM-SP-CM-OSSIv3.1,  Proactive Network Maintenance
         Information Model section."
      DEFVAL { "" }
      ::= { docsIf3CmSpectrumAnalysisCtrlCmd 12 }
@@ -5847,21 +5847,21 @@ docsPnmCmtsUtscCfgLogicalChIfIndex OBJECT-TYPE
      DESCRIPTION
         "For SC-QAM upstream channels, this attribute is the interface
          index of the logical upstream channel (ifIndex 205) to which the
-         sample capture trigger applies, when TriggerMode is miniSlotCount, 
-         sid, idleSid, quietProbeSymbol, and burstIuc. 
-        
+         sample capture trigger applies, when TriggerMode is miniSlotCount,
+         sid, idleSid, quietProbeSymbol, and burstIuc.
+
         For OFDMA upstream channels this attribute is the interface index
         of the physical OFDMA upstream channel (ifIndex 278) to which the
         sample capture trigger applies, when TriggerMode is miniSlotCount,
         sid, idleSid, quietProbeSymbol, and burstIuc.
-		
+
         The value 0 means the CCAP is triggering on something specific
         to the upstream RF port, not a specific channel.
 
-         When the value of LogicalChannelIndex is the ifIndex of a	
-         physical or logical channel and upstream triggered spectrum	 			
-         sample capture is initiated, the CCAP MUST trigger on the	 			 	
-         assigned trigger mode event for the physical or logical channel                       	
+         When the value of LogicalChannelIndex is the ifIndex of a
+         physical or logical channel and upstream triggered spectrum
+         sample capture is initiated, the CCAP MUST trigger on the
+         assigned trigger mode event for the physical or logical channel
          indicated by the value of LogicalChannelIndex."
      ::= { docsPnmCmtsUtscCfgEntry 2 }
 
@@ -6598,7 +6598,7 @@ docsPnmCmtsUtscResultOutput OBJECT-TYPE
          CM-SP-CCAP-OSSIv3.1, Upstream Triggered Spectrum Capture section,
          UsTriggeredSpectrumCaptureFile Object definition."
      ::= { docsPnmCmtsUtscResultEntry 5 }
-	 
+
 docsPnmCmtsUtscResultCalibrationConstantK OBJECT-TYPE
 	 SYNTAX      Unsigned32 (0..65535)
 	 UNITS       "HundredthsdB"
@@ -6629,10 +6629,10 @@ docsCmLatencyRptCfgTable OBJECT-TYPE
      MAX-ACCESS  not-accessible
      STATUS      current
      DESCRIPTION
-        "This table provides configuration of the CM upstream latency 
-          reporting. This enables the creation of latency report files 
-         which consist of a series of latency measurements on a per 
-         Service Flow basis over a provisioned period of time. 
+        "This table provides configuration of the CM upstream latency
+          reporting. This enables the creation of latency report files
+         which consist of a series of latency measurements on a per
+         Service Flow basis over a provisioned period of time.
 
         This table will have a row for each ifIndex for the modem."
      REFERENCE
@@ -6684,15 +6684,15 @@ docsCmLatencyRptCfgNumSnapshots OBJECT-TYPE
      DESCRIPTION
         "This attribute represents the number of Snapshots batched into a file.
         The total duration represented by the file is the product of the
-        SnapshotDuration and NumSnapshots. Two examples follow. 
-                  -  If SnapshotDuration is set to 1 second, and NumSnapshots is set to 
-                      10, when enabled, the CM returns the latency data samples recorded 
-                      once per second over the next 10-sec period. 
+        SnapshotDuration and NumSnapshots. Two examples follow.
+                  -  If SnapshotDuration is set to 1 second, and NumSnapshots is set to
+                      10, when enabled, the CM returns the latency data samples recorded
+                      once per second over the next 10-sec period.
                   -  If SnapshotDuration is set to 300 seconds (5 mins), and NumSnapshots
                       is set to 288, when enabled, the CM returns the latency data samples
-                      recorded once per 5-minute interval over the next 24-hour period. 
+                      recorded once per 5-minute interval over the next 24-hour period.
           Certain combinations of SnapshotDuration and NumSnapshots could result
-          in an excessive file generation rate. The CM MAY reject CmLatencyRpt 
+          in an excessive file generation rate. The CM MAY reject CmLatencyRpt
           attribute settings which cause an excessive processing load."
      REFERENCE
          "DOCSIS 3.1 Cable Modem Operations Support System Interface
@@ -6708,16 +6708,16 @@ docsCmLatencyRptCfgNumFiles OBJECT-TYPE
         "This attribute represents the number of file uploads to be performed
           as defined below:
           0                 File Generation Disabled
-          1 .. 254        Number of files to generate. Counts down from this value to zero    
+          1 .. 254        Number of files to generate. Counts down from this value to zero
         The CM generates a latency report file when this value is set to a
         non-zero value.
         255                 Unlimited File Generation
 
-       The CM MUST start generating a latency report file when this value is 
-       set to a non-zero value. The CM MUST close the current latency report 
-       file and decrement NumFiles by 1, when the SnapshotDuration * 
-       NumSnapshots period is complete. The CM MUST close the current 
-       latency report file and discontinue file generation if the NumFiles 
+       The CM MUST start generating a latency report file when this value is
+       set to a non-zero value. The CM MUST close the current latency report
+       file and decrement NumFiles by 1, when the SnapshotDuration *
+       NumSnapshots period is complete. The CM MUST close the current
+       latency report file and discontinue file generation if the NumFiles
        attribute is set to zero or decrements to zero."
      REFERENCE
          "DOCSIS 3.1 Cable Modem Operations Support System Interface
@@ -6780,8 +6780,8 @@ docsCmtsLatencyRptCfgTable OBJECT-TYPE
      STATUS      current
      DESCRIPTION
         "This table provides configuration attributes for CMTS downstream latency
-        reporting. This enables the creation of latency report files which consist 
-        of a series of latency measurements on a per Service Flow basis 
+        reporting. This enables the creation of latency report files which consist
+        of a series of latency measurements on a per Service Flow basis
         over a provisioned period of time.
 
         This table will have a row for each ifIndex and each modem."
@@ -6894,7 +6894,7 @@ docsCmtsLatencyRptCfgMeasStatus OBJECT-TYPE
      ::= { docsCmtsLatencyRptCfgEntry 5 }
 
 docsCmtsLatencyRptCfgFileName  OBJECT-TYPE
-     SYNTAX      SnmpAdminString 
+     SYNTAX      SnmpAdminString
      MAX-ACCESS  read-write
      STATUS      current
      DESCRIPTION
@@ -6910,11 +6910,11 @@ docsCmtsLatencyRptCfgFileName  OBJECT-TYPE
         be used as the filename prefix as described below.
 
         The CMTS MUST store the test results in a file with a name consisting
-        of the FileName plus the CM MAC Address plus the 'epoch time'. 
-       The epoch time (also known as 'unix time') is defined as the number 
-       of seconds that have elapsed since midnight Coordinated Universal Time 
-       (UTC), Thursday, 1 January 1970. 
-		
+        of the FileName plus the CM MAC Address plus the 'epoch time'.
+       The epoch time (also known as 'unix time') is defined as the number
+       of seconds that have elapsed since midnight Coordinated Universal Time
+       (UTC), Thursday, 1 January 1970.
+
        Hence, the format would be:
              DsLatencySum_<CM MAC address>_<epoch>
              For example: DSLatencySum_0010181A2D11_1403405123 "

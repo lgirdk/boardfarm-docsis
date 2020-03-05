@@ -27,8 +27,8 @@ pktcEclEnMtaMib MODULE-IDENTITY
             E-mail: mibs@cablelabs.com"
 
       DESCRIPTION
-            "This MIB module enhances the basic management objects 
-             defined for the PacketCable MTA Device device by 
+            "This MIB module enhances the basic management objects
+             defined for the PacketCable MTA Device device by
              the MIB group pktcMtaMib.
 
             Acknowledgements:
@@ -57,7 +57,7 @@ pktcEnMtaDevSecurity      OBJECT IDENTIFIER ::= { pktcEnMtaMibObjects 3 }
 
 --
 --  Enhanced notification group.
--- 
+--
 pktcEnMtaNotificationPrefix OBJECT IDENTIFIER ::= { pktcEclEnMtaMib 2 }
 pktcEnMtaNotification OBJECT IDENTIFIER       ::= { pktcEnMtaNotificationPrefix 0 }
 pktcEnMtaConformance  OBJECT IDENTIFIER       ::= { pktcEclEnMtaMib 3 }
@@ -75,11 +75,11 @@ pktcEnMtaDevMltplGrantsPerInterval     OBJECT-TYPE
       MAX-ACCESS  read-only
       STATUS      current
       DESCRIPTION
-            " This object is used to control the Multiple grants functionality 
-              on a PacketCable MTA. 
-              To indicate enabling of this functionality, a value of 
+            " This object is used to control the Multiple grants functionality
+              on a PacketCable MTA.
+              To indicate enabling of this functionality, a value of
               enablemgpifunctionality(1) is used.
-              To indicate disabling of this functionality, a value of 
+              To indicate disabling of this functionality, a value of
               disablemgpifunctionality(2) is used."
       DEFVAL  {disablemgpifunctionality}
       ::= { pktcEnMtaDevBase 1}
@@ -90,7 +90,7 @@ pktcEnMtaDevMltplGrantsPerInterval     OBJECT-TYPE
 pktcEnMtaBasicCompliance MODULE-COMPLIANCE
       STATUS     current
       DESCRIPTION
-            "The compliance statement for devices that implement 
+            "The compliance statement for devices that implement
             MTA feature."
       MODULE   --PKTC-ECL-EN-MTA-MIB
 
@@ -103,11 +103,11 @@ pktcEnMtaBasicCompliance MODULE-COMPLIANCE
       ::= { pktcEnMtaCompliances 3 }
 
 pktcEnMtaGroup OBJECT-GROUP
-      OBJECTS {            
-        pktcEnMtaDevMltplGrantsPerInterval 
+      OBJECTS {
+        pktcEnMtaDevMltplGrantsPerInterval
       }
       STATUS    current
       DESCRIPTION
             "Group of Enhanced objects for the PacketCable MTA MIB."
-      ::= { pktcEnMtaGroups 1 } 
+      ::= { pktcEnMtaGroups 1 }
 END

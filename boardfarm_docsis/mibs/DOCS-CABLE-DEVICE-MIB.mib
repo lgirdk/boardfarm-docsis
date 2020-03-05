@@ -1272,7 +1272,7 @@ docsDevEvCounts OBJECT-TYPE
              row and increments by 1 for each subsequent duplicate
              event."
         ::= { docsDevEventEntry 4 }
-        
+
 docsDevEvLevel OBJECT-TYPE
         SYNTAX INTEGER {
             emergency(1),
@@ -1457,7 +1457,7 @@ DocsDevFilterLLCEntry ::= SEQUENCE {
             docsDevFilterLLCProtocol            Integer32,
             docsDevFilterLLCMatches             Counter32
         }
-        
+
 docsDevFilterLLCIndex OBJECT-TYPE
         SYNTAX      Integer32 (1..2147483647)
         MAX-ACCESS  not-accessible
@@ -1466,7 +1466,7 @@ docsDevFilterLLCIndex OBJECT-TYPE
             "Index used for the identification of filters (note that
              LLC filter order is irrelevant)."
         ::= { docsDevFilterLLCEntry 1 }
-        
+
 docsDevFilterLLCStatus OBJECT-TYPE
         SYNTAX      RowStatus
         MAX-ACCESS  read-create
@@ -2716,88 +2716,88 @@ docsDevCmCompliance MODULE-COMPLIANCE
 --          DESCRIPTION
 --              "Support for createAndWait and notInService is not
 --               required."
--- 
+--
 -- OBJECT diffServClfrStatus  == same as RFC 3289
 --          SYNTAX RowStatus { active(1) }
 --          WRITE-SYNTAX RowStatus { createAndGo(4), destroy(6) }
 --          DESCRIPTION
 --              "Support for createAndWait and notInService is not
 --               required."
--- 
+--
 -- OBJECT diffServClfrElementStatus  == same as RFC 3289
 --          SYNTAX RowStatus { active(1) }
 --          WRITE-SYNTAX RowStatus { createAndGo(4), destroy(6) }
 --          DESCRIPTION
 --              "Support for createAndWait and notInService is not
 --               required."
--- 
+--
 -- OBJECT diffServMultiFieldClfrAddrType
 --          SYNTAX  InetAddressType { ipv4(1) }
 --          DESCRIPTION
 --              "An implementation is only required to support IPv4
 --               addresses."
--- 
+--
 -- OBJECT diffServMultiFieldClfrSrcAddr
 --          SYNTAX  InetAddress (SIZE(4))
 --          DESCRIPTION
 --              "An implementation is only required to support IPv4
 --               addresses."
--- 
+--
 -- OBJECT diffServMultiFieldClfrDstAddr
 --          SYNTAX  InetAddress (SIZE(4))
 --          DESCRIPTION
 --              "An implementation is only required to support IPv4
 --               addresses."
--- 
+--
 -- OBJECT diffServAlgDropStatus  == same as RFC 3289
 --          SYNTAX RowStatus { active(1) }
 --          WRITE-SYNTAX RowStatus { createAndGo(4), destroy(6) }
 --          DESCRIPTION
 --              "Support for createAndWait and notInService is not
 --               required."
--- 
+--
 -- OBJECT diffServDataPathStorage
 --          SYNTAX StorageType { volatile(2) }
 --          DESCRIPTION
 --              "An implementation is only required to support
 --               volatile storage."
--- 
+--
 -- OBJECT diffServClfrStorage
 --          SYNTAX StorageType { volatile(2) }
 --          DESCRIPTION
 --              "An implementation is only required to support
 --               volatile storage."
--- 
+--
 -- OBJECT diffServClfrElementStorage
 --          SYNTAX StorageType { volatile(2) }
 --          DESCRIPTION
 --              "An implementation is only required to support
 --               volatile storage."
--- 
+--
 -- OBJECT diffServMultiFieldClfrStorage
 --          SYNTAX StorageType { volatile(2) }
 --          DESCRIPTION
 --              "An implementation is only required to support
 --               volatile storage."
--- 
+--
 -- OBJECT diffServActionStorage
 --          SYNTAX StorageType { volatile(2) }
 --          DESCRIPTION
 --              "An implementation is only required to support
 --               volatile storage."
--- 
+--
 -- OBJECT diffServCountActStorage
 --          SYNTAX StorageType { volatile(2) }
 --          DESCRIPTION
 --              "An implementation is only required to support
 --               volatile storage."
--- 
+--
 -- OBJECT diffServAlgDropStorage
 --          SYNTAX StorageType { volatile(2) }
 --          DESCRIPTION
 --              "An implementation is only required to support
 --               volatile storage."
--- 
+--
 -- OBJECT diffServAlgDropType
 --          SYNTAX  INTEGER { alwaysDrop(5) }
 --          DESCRIPTION
@@ -3152,4 +3152,3 @@ docsDevInetCpeGroup OBJECT-GROUP
         ::= { docsDevGroupsV2 8 }
 
 END
-
