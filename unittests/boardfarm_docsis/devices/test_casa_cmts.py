@@ -4,7 +4,6 @@
 import re
 
 import pytest
-from mock import Mock
 
 from boardfarm.lib.regexlib import ValidIpv4AddressRegex
 from boardfarm_docsis.devices.casa_cmts import CasaCMTS
@@ -38,9 +37,9 @@ out_str_no_ip = '''show cable modem 342c.c454.2ed2
                           ("80:CE:62:1A:52:9C", "80ce.621a.529c"),
                           ("ff:ff:ff:ff:ff:ff", "ffff.ffff.ffff"),
                           ("11:11:11:11:11:11", "1111.1111.1111")])
-def test_get_cm_mac_cmts_format_pass(test_input, expected):
+def test_get_cm_mac_cmts_format_pass(mocker, test_input, expected):
     """Tests the mac address conversion function"""
-    self = Mock()
+    self = mocker.Mock()
     assert CasaCMTS.get_cm_mac_cmts_format(self, test_input) == expected
 
 
