@@ -1128,50 +1128,60 @@ class ArrisCMTS(base_cmts.BaseCmts):
 
     @ArrisCMTSDecorators.connect_and_run
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
-    def get_qos_parameter(self, cm_mac, traffic_priority=1):
+    def get_qos_parameter(self, cm_mac):
         """To get the qos related parameters of CM
-        Example output format : {'DS': {'Maximum Sustained rate': '0', 'Maximum Burst': '128000',  ....},
-                                 'US': {'Maximum Sustained rate': '0', 'Maximum Burst': '128000', 'IP ToS Overwrite [AND-msk, OR-mask]': ['0x00', '0x00'], ...}}
+        Example output format : {'DS':  [{'Sfid': '1' ..},
+                                         {'Sfid': '2' ..}
+                                 'US': [{{'Sfid': '1' ..},
+                                  'Maximum Burst': '128000',
+                                  'IP ToS Overwrite [AND-msk, OR-mask]':
+                                  ['0x00', '0x00'], ...},
+                                  {'Sfid': '1' ..}}
+        The units for measuring are
+        1) Peak rate, Maximum Sustained rate,
+           Minimum Reserved rate -- bits/sec
+        2) Maximum Burst, Minimum Packet Size -- bytes
+        3) Admitted Qos Timeout, Maximum Latency -- seconds
+        4) Current Throughput -- [bits/sec, packets/sec]
 
         :param cm_mac: mac address of the cable modem
         :type cm_mac: string
-        :param traffic_priority: the traffic priority of service flow to be used to filter, defaults to 1.
-        :type traffic_priority: int
         :return: containing the qos related parameters.
         :rtype: dictionary
         """
         self.sendline('no pagination')
         self.expect(self.prompt)
-        qos_dict = {}
+        qos_dict = {"US": [], "DS": []}
         self.sendline("show cable modem qos %s verbose" % (cm_mac))
         self.expect(self.prompt)
         service_flows = re.split(r"\n\s*\n", self.before)[1:-1]
+        strip_units = ['bits/sec', 'bytes', 'seconds', 'packets/sec', 'usecs']
         for service_flow in service_flows:
-            service_flow_list = [i for i in service_flow.split("\n") if i]
-            matching = [
-                s for s in service_flow_list if "Traffic Priority" in s
-            ]
+            service_flow_list = [i for i in service_flow.splitlines() if i]
             qos_dict_flow = {}
-            if (traffic_priority == int(matching[0].split(":")[1].strip())):
-                for service in service_flow_list:
-                    service = re.sub(' +', ' ', service)
-                    if "scheduling type" in service.lower():
-                        qos_dict_flow[service.split(
-                            ":")[0].strip()] = service.split(":")[1].strip()
-                    elif not ("ip tos"
-                              or "current throughput") in service.lower():
-                        qos_dict_flow[service.split(":")[0].strip(
-                        )] = service.split(":")[1].strip().split(" ")[0]
-                    else:
-                        qos_dict_flow[service.split(":")[0].strip()] = [
-                            service.split(":")[1].strip().split(" ")[0][:-1],
-                            service.split(":")[1].strip().split(" ")[1]
-                        ]
-            if (bool(qos_dict_flow)):
-                if "US" in qos_dict_flow.get('Direction'):
-                    qos_dict["US"] = qos_dict_flow
+            for service in service_flow_list:
+                service = service.split(":")
+                key, value = [i.strip() for i in service]
+                for i in strip_units:
+                    value = value.replace(i, '').strip()
+
+
+#                 qos_dict_flow[key] = value.split(',')
+                if "scheduling type" in key:
+                    qos_dict_flow[key] = value
+                elif "ip tos" not in key.lower() and\
+                      "current throughput" not in key.lower():
+                    qos_dict_flow[key] = value
                 else:
-                    qos_dict["DS"] = qos_dict_flow
+                    qos_dict_flow[key] = [
+                        value.split(" ")[0].replace(',', ''),
+                        value.split(" ")[1].replace(',', '')
+                    ]
+            if bool(qos_dict_flow):
+                if "US" in qos_dict_flow.get('Direction'):
+                    qos_dict["US"].append(qos_dict_flow)
+                else:
+                    qos_dict["DS"].append(qos_dict_flow)
         return qos_dict
 
     @ArrisCMTSDecorators.connect_and_run

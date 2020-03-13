@@ -1113,70 +1113,86 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         return self.before.split(",")[0].split(":")[1].strip().lower()
 
-    def get_qos_parameter(self, cm_mac, traffic_priority=1):
+    def get_qos_parameter(self, cm_mac):
         """To get the qos related parameters of CM
-        Example output format : {'DS': {'Maximum Sustained rate': '0', 'Maximum Burst': '128000',  ....},
-                                 'US': {'Maximum Sustained rate': '0', 'Maximum Burst': '128000', 'IP ToS Overwrite [AND-msk, OR-mask]': ['0x00', '0x00'], ...}}
+        Example output format : {'DS':  [{'Sfid': '1' ..},
+                                         {'Sfid': '2' ..}
+                                 'US': [{{'Sfid': '1' ..},
+                                  'Maximum Burst': '128000',
+                                  'IP ToS Overwrite [AND-msk, OR-mask]':
+                                  ['0x00', '0x00'], ...},
+                                  {'Sfid': '1' ..}}
+        The units for measuring are
+        1) Maximum Sustained rate, Minimum Reserved rate -- bits/sec
+        2) Maximum Burst, Minimum Packet Size, Maximum Concatenated Burst,
+            Bytes received, Packet dropped -- bytes
+        3) Admitted Qos Timeout, Active QoS Timeout -- seconds
+        4) Current Throughput -- [bits/sec, packets/sec]
 
         :param cm_mac: mac address of the cable modem
         :type cm_mac: string
-        :param traffic_priority: the traffic priority of service flow to be used to filter, defaults to 1.
-        :type traffic_priority: int
         :return: containing the qos related parameters.
         :rtype: dictionary
         """
-        qos_dict = {}
+        qos_dict = {"US": [], "DS": []}
         service_flow_direction = ["US", "DS"]
         for value in service_flow_direction:
             self.sendline("show cable modem %s qos | include %s" %
                           (cm_mac, value))
             self.expect(self.prompt)
-            qos_dict[value] = {
-                "sfid": self.before.split("\n")[-2].split(" ")[0].strip()
-            }
-
-        #mapping of the ouput stream to the US/DS and using the index.
+            for ele in self.before.split("\n"):
+                if re.search(r'([\d]+)[\s]+' + value, ele):
+                    stream_id = re.search(r'([\d]+)[\s]+' + value,
+                                          ele).groups(0)[0]
+                    qos_dict[value].append(stream_id)
+        # mapping of the ouput stream to the US/DS and using the index.
         self.sendline("show cable modem %s qos verbose" % (cm_mac))
         self.expect(self.prompt)
-        service_flows = re.split(r"\n\s*\n", self.before)[1:-1]
+        service_flows = re.split(r"\n\s*\n",
+                                 "\n".join(self.before.split("\n")[3:]))[:-1]
+        strip_units = ['kbps', '(bytes)', 'bytes', 'seconds', 'packets/sec']
         for service_flow in service_flows:
-            service_flow_list = [i for i in service_flow.split("\n") if i]
-            matching = [
-                s for s in service_flow_list if "Traffic Priority" in s
-            ]
+            service_flow_list = [i for i in service_flow.splitlines() if i]
             qos_dict_flow = {}
-            if (traffic_priority == int(matching[0].split(":")[1].strip())):
-                for service in service_flow_list:
-                    service = re.sub(' +', ' ', service)
-                    if "scheduling type" in service.lower():
-                        qos_dict_flow[service.split(
-                            ":")[0].strip()] = service.split(":")[1].strip()
-                    elif not ("ip tos"
-                              or "current throughput") in service.lower():
-                        qos_dict_flow[service.split(":")[0].strip(
-                        )] = service.split(":")[1].strip().split(" ")[0]
+            for service in service_flow_list:
+                service = service.split(":")
+                key, value = [i.strip() for i in service]
+                for i in strip_units:
+                    value = value.replace(i, '').strip()
+
+
+#                 qos_dict_flow[key] = value.split(',')
+                if "scheduling type" in key.lower():
+                    qos_dict_flow[key] = value
+                elif ("ip tos" not in key.lower()
+                      and "current throughput" not in key.lower()):
+                    # this is to replace Mimimum with Minimum typo on casa cmts
+                    # and convert unit of measure like kbpc to bitespersecond.
+                    if "mimimum reserved rate" in key.lower():
+                        key = "Minimum Reserved rate"
+                    if ("Minimum Reserved rate" in key
+                            or "Maximum Sustained rate" in key):
+                        qos_dict_flow[key] = int(value) * 1000
                     else:
-                        qos_dict_flow[service.split(":")[0].strip()] = [
-                            service.split(":")[1].strip().split(" ")[0][:-1],
-                            service.split(":")[1].strip().split(" ")[1]
+                        qos_dict_flow[key] = value
+                else:
+                    # convert unit of measure from kbpc to bitespersecond.
+                    if "current throughput" in key.lower():
+                        qos_dict_flow[key] = [
+                            int(value.split(" ")[0]) * 1000,
+                            value.split(" ")[1].replace(',', '')
                         ]
-            if (bool(qos_dict_flow)):
-                if qos_dict["US"].get("sfid") == qos_dict_flow.get('Sfid'):
-                    qos_dict["US"] = qos_dict_flow
-                elif qos_dict["DS"].get("sfid") == qos_dict_flow.get('Sfid'):
-                    qos_dict["DS"] = qos_dict_flow
-        #this is to replace Mimimum with Minimum typo on casa cmts and convert to unit of measure like kbpc to bitespersecond.
-        for value in service_flow_direction:
-            if "Mimimum Reserved rate" in qos_dict[value]:
-                qos_dict[value].update({
-                    "Minimum Reserved rate":
-                    int(qos_dict[value]["Mimimum Reserved rate"]) * 1000
-                })
-                del qos_dict[value]["Mimimum Reserved rate"]
-            for val in ["Minimum Reserved rate", "Maximum Sustained rate"]:
-                if val in qos_dict[value]:
-                    qos_dict[value].update(
-                        {val: int(qos_dict[value][val]) * 1000})
+                    else:
+                        qos_dict_flow[key] = [
+                            value.split(" ")[0].replace(',', ''),
+                            value.split(" ")[1]
+                        ]
+            if qos_dict_flow.get('Sfid') in qos_dict["US"]:
+                qos_dict["US"].remove(qos_dict_flow.get('Sfid'))
+                qos_dict["US"].append(qos_dict_flow)
+            elif qos_dict_flow.get('Sfid') in qos_dict["DS"]:
+                qos_dict["DS"].remove(qos_dict_flow.get('Sfid'))
+                qos_dict["DS"].append(qos_dict_flow)
         return qos_dict
 
     def get_upstream(self, cm_mac):
