@@ -34,13 +34,42 @@ class ArrisCMTS(base_cmts.BaseCmts):
                 return function(*args)
             return wrapper
 
+        # this is only suppose to run with instance methods
+        @classmethod
+        def connect_and_run(cls, func):
+            def wrapper(*args, **kwargs):
+                instance = args[0]
+                exc_to_raise = None
+
+                # to ensure we don't connect/disconnect in case of nested
+                # API calls
+                check = [func.__name__, instance.connlock][bool(instance.connlock)]
+                if check == func.__name__:
+                    instance.connect()
+                    instance.connlock = check
+
+                try:
+                    output = func(*args, **kwargs)
+                except Exception as e:
+                    exc_to_raise = e
+
+                if func.__name__ == instance.connlock:
+                    instance.logout()
+                    instance.connlock = None
+                    instance.pid = None
+
+                if exc_to_raise:
+                    raise exc_to_raise
+                return output
+            return wrapper
+
     def __init__(self,
                  *args,
                  **kwargs):
         """Constructor method
         """
-        conn_cmd = kwargs.get('conn_cmd', None)
-        connection_type = kwargs.get('connection_type', 'local_serial')
+        self.conn_cmd = kwargs.get('conn_cmd', None)
+        self.connection_type = kwargs.get('connection_type', 'local_serial')
         self.username = kwargs.get('username', 'boardfarm')
         self.password = kwargs.get('password', 'boardfarm')
         self.password_admin = kwargs.get('password_admin', 'boardfarm')
@@ -48,22 +77,27 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.mac_domain = kwargs.get('mac_domain', None)
         self.channel_bonding = kwargs.get('channel_bonding', 32) # 24x8 : total 32
 
-        if conn_cmd is None:
+        self.connlock = None
+        if self.conn_cmd is None:
             # TODO: try to parse from ipaddr, etc
             raise Exception("No command specified to connect to Arris CMTS")
 
-        self.connection = connection_decider.connection(connection_type, device = self, conn_cmd = conn_cmd, ssh_password = self.ssh_password)
-        self.connection.connect()
-        self.connect()
-        self.logfile_read = sys.stdout
 
+        self.logfile_read = sys.stdout
         self.name = kwargs.get('name', self.model)
+
+
+    @ArrisCMTSDecorators.connect_and_run
+    def interact(self):
+        super(ArrisCMTS, self).interact()
 
     def connect(self):
         """This method is used to connect cmts, login to the cmts based on the connection type available
 
         :raises Exception: Unable to get prompt on ARRIS device
         """
+        self.connection = connection_decider.connection(self.connection_type, device = self, conn_cmd = self.conn_cmd, ssh_password = self.ssh_password)
+        self.connection.connect()
         try:
             try:
                 self.expect_exact("Escape character is '^]'.", timeout = 5)
@@ -96,13 +130,18 @@ class ArrisCMTS(base_cmts.BaseCmts):
             return
         except:
             raise Exception("Unable to get prompt on Arris device")
+        finally:
+            self.close()
+            self.pid = None
 
     def logout(self):
         """Logout of the CMTS device
         """
         self.sendline('exit')
         self.sendline('exit')
+        self.close()
 
+    @ArrisCMTSDecorators.connect_and_run
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
     def check_online(self, cmmac):
         """Check the CM status from CMTS function checks the encrytion mode and returns True if online
@@ -126,6 +165,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
                 r = 'Offline'
         return r
 
+    @ArrisCMTSDecorators.connect_and_run
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
     def clear_offline(self, cmmac):
         """Clear the CM entry from cmts which is offline -clear cable modem <mac> delete
@@ -140,6 +180,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.sendline('configure')
         self.expect(self.prompt)
 
+    @ArrisCMTSDecorators.connect_and_run
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
     def clear_cm_reset(self, cmmac):
         """Reset the CM from cmts using cli -clear cable modem <mac> reset
@@ -161,6 +202,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         else:
             print("CM reset is initiated.")
 
+    @ArrisCMTSDecorators.connect_and_run
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
     def get_mtaip(self, cmmac, mtamac):
         """Get the MTA IP from CMTS
@@ -182,6 +224,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         return output
 
+    @ArrisCMTSDecorators.connect_and_run
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
     def get_ip_from_regexp(self, cmmac, ip_regexpr):
         """Gets an ip address according to a regexpr (helper function)
@@ -226,6 +269,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         """
         return self.get_ip_from_regexp(cmmac, AllValidIpv6AddressesRegex)
 
+    @ArrisCMTSDecorators.connect_and_run
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
     def get_cm_mac_domain(self, cm_mac):
         """Get the Mac-domain of Cable modem
@@ -242,6 +286,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         return mac_domain
 
+    @ArrisCMTSDecorators.connect_and_run
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
     def check_PartialService(self, cmmac):
         """Check the cable modem is in partial service
@@ -259,6 +304,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
             output = 0
         return output
 
+    @ArrisCMTSDecorators.connect_and_run
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
     def DUT_chnl_lock(self, cm_mac):
         """Check the CM channel locks based on cmts type
@@ -282,6 +328,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
             upstream = int(re.findall(r'(\d+x\d+)',bonded_impared_status)[1].split("x")[1])
         return [upstream,downstream]
 
+    @ArrisCMTSDecorators.connect_and_run
     def save_running_config_to_local(self, filename):
         """save the running config to startup
         """
@@ -295,6 +342,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         f.write(self.after)
         f.close()
 
+    @ArrisCMTSDecorators.connect_and_run
     def save_running_to_startup_config(self):
         """Copy running config to local machine
         """
@@ -305,6 +353,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.sendline('config')
         self.expect(self.prompt)
 
+    @ArrisCMTSDecorators.connect_and_run
     def get_qam_module(self):
         """Get the module of the qam
 
@@ -315,6 +364,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         return  self.before.split("\n",1)[1]
 
+    @ArrisCMTSDecorators.connect_and_run
     def get_ups_module(self):
         """Get the upstream module of the qam
 
@@ -326,6 +376,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         results = list(map(int, re.findall(r'(\d+)    CAM ', self.before)))
         return results
 
+    @ArrisCMTSDecorators.connect_and_run
     def set_iface_ipaddr(self, iface, ipaddr):
         """This function is to set an ip address to an interface on cmts
 
@@ -348,6 +399,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.sendline('exit')
         self.expect(self.prompt)
 
+    @ArrisCMTSDecorators.connect_and_run
     def set_iface_ipv6addr(self, iface, ipaddr):
         """Configure ipv6 address
 
@@ -365,6 +417,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.sendline('exit')
         self.expect(self.prompt)
 
+    @ArrisCMTSDecorators.connect_and_run
     def unset_iface_ipaddr(self, iface):
         """This function is to unset an ipv4 address of an interface on cmts
 
@@ -378,6 +431,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.sendline('exit')
         self.expect(self.prompt)
 
+    @ArrisCMTSDecorators.connect_and_run
     def unset_iface_ipv6addr(self, iface):
         """This function is to unset an ipv6 address of an interface on cmts
 
@@ -391,6 +445,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.sendline('exit')
         self.expect(self.prompt)
 
+    @ArrisCMTSDecorators.connect_and_run
     def del_file(self, f):
         """delete file on cmts
 
@@ -402,6 +457,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.sendline('delete %s' % f)
         self.expect(self.prompt)
 
+    @ArrisCMTSDecorators.connect_and_run
     def check_docsis_mac_ip_provisioning_mode(self, index):
         """
         Get the provisioning mode of the cable modem from CMTS
@@ -423,6 +479,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
             result = "bridge"
         return result
 
+    @ArrisCMTSDecorators.connect_and_run
     def modify_docsis_mac_ip_provisioning_mode(self, index, ip_pvmode = 'dual-stack'):
         """Change the ip provsioning mode
 
@@ -448,6 +505,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         else:
             print("An error occured while setting the ip provision mode.")
 
+    @ArrisCMTSDecorators.connect_and_run
     def add_route(self, ipaddr, gw):
         """This function is to add route
 
@@ -472,6 +530,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         else:
             print("The route is not available on cmts.")
 
+    @ArrisCMTSDecorators.connect_and_run
     def add_route6(self, net, gw):
         """This function is to add route6
 
@@ -491,6 +550,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         else:
             print("The route is not available on cmts.")
 
+    @ArrisCMTSDecorators.connect_and_run
     def del_route(self, ipaddr, gw):
         """This function is to delete route
 
@@ -516,6 +576,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         else:
             print("The route is not available on cmts.")
 
+    @ArrisCMTSDecorators.connect_and_run
     def del_route6(self, net, gw):
         """This function is to delete ipv6 route
 
@@ -535,6 +596,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         else:
             print("The route is not available on cmts.")
 
+    @ArrisCMTSDecorators.connect_and_run
     def add_ip_bundle(self, index, helper_ip, ipaddr, secondary_ips = []):
         """This function is to add ip bundle to a cable mac
 
@@ -579,6 +641,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         else:
             print("An error occured while setting the ip bundle.")
 
+    @ArrisCMTSDecorators.connect_and_run
     def add_ipv6_bundle_addrs(self, index, helper_ip, ip, secondary_ips = []):
         """This function is to add ipv6 bundle to a cable mac
 
@@ -606,6 +669,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         else:
             print("An error occured while setting the ipv6 bundle.")
 
+    @ArrisCMTSDecorators.connect_and_run
     def set_iface_qam(self, index, sub, annex, interleave, power):
         """Configure the qam interface with annex, interleave and power
 
@@ -629,6 +693,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.sendline('exit')
         self.expect(self.prompt)
 
+    @ArrisCMTSDecorators.connect_and_run
     def wait_for_ready(self):
         """Check the cmts status
         """
@@ -640,6 +705,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
             self.expect(pexpect.TIMEOUT, timeout = 5)
             self.sendline('show linecard status')
 
+    @ArrisCMTSDecorators.connect_and_run
     def set_iface_qam_freq(self, index, sub, channel, freq):
         """Configure the qam interface with channel and frequency
 
@@ -661,6 +727,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.sendline('exit')
         self.expect(self.prompt)
 
+    @ArrisCMTSDecorators.connect_and_run
     def add_service_group(self, index, qam_idx, qam_sub, qam_channels, ups_idx, ups_channels):
         """Add a service group
 
@@ -679,6 +746,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         """
         print("Service group is auto configured in ARRIS once mac domain is created.")
 
+    @ArrisCMTSDecorators.connect_and_run
     def mirror_traffic(self, macaddr = ""):
         """Send the mirror traffic
 
@@ -687,11 +755,13 @@ class ArrisCMTS(base_cmts.BaseCmts):
         """
         print("Mirror traffic feature is not supported in ARRIS unless we use lawful intercept functionality.")
 
+    @ArrisCMTSDecorators.connect_and_run
     def unmirror_traffic(self):
         """stop mirroring the traffic
         """
         print("Unmirror traffic feature is not supported in ARRIS unless we use lawful intercept functionality.")
 
+    @ArrisCMTSDecorators.connect_and_run
     def run_tcpdump(self, time, iface = 'any', opts = ""):
         """tcpdump capture on the cmts interface
 
@@ -704,6 +774,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         """
         print("TCPDUMP feature is not supported in ARRIS.")
 
+    @ArrisCMTSDecorators.connect_and_run
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
     def is_cm_bridged(self, mac, offset = 2):
         """This function is to check if the modem is in bridge mode
@@ -723,6 +794,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         else:
             return True
 
+    @ArrisCMTSDecorators.connect_and_run
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
     def get_ertr_ipv4(self, mac, offset = 2):
         """Getting erouter ipv4 from CMTS
@@ -745,6 +817,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         else:
             return None
 
+    @ArrisCMTSDecorators.connect_and_run
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
     def get_ertr_ipv6(self, mac, offset = 2):
         """Getting erouter ipv6 from CMTS
@@ -767,6 +840,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         else:
             return None
 
+    @ArrisCMTSDecorators.connect_and_run
     def get_center_freq(self, mac_domain = None):
         """This function is to return the center frequency of cmts
 
@@ -790,6 +864,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         freq_list = map(int, freq_list)
         return str(min(freq_list))
 
+    @ArrisCMTSDecorators.connect_and_run
     def set_iface_upstream(self, ups_idx, ups_ch, freq, width, power):
         """Configure the interface for upstream
 
@@ -820,6 +895,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.sendline('exit')
         self.expect(self.prompt)
 
+    @ArrisCMTSDecorators.connect_and_run
     def get_cm_bundle(self, mac_domain):
         """Get the bundle id from cable modem
 
@@ -836,6 +912,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         return bundle
 
+    @ArrisCMTSDecorators.connect_and_run
     def get_cmts_ip_bundle(self, cm_mac, gw_ip=None):
         """Get CMTS bundle IP
 
@@ -861,6 +938,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
             assert 0, "ERROR: Failed to get the CMTS bundle IP"
         return cmts_ip
 
+    @ArrisCMTSDecorators.connect_and_run
     def reset(self):
         """Delete the startup config and Reboot the CMTS
         """
@@ -869,6 +947,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.sendline('reload')
         self.expect(self.prompt)
 
+    @ArrisCMTSDecorators.connect_and_run
     def add_service_class(self, index, name, max_rate, max_burst, max_tr_burst = None, downstream = False):
         """Add a service class
 
@@ -891,6 +970,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
             self.sendline('qos-sc name %s dir 1' % name)
             self.expect(self.prompt)
 
+    @ArrisCMTSDecorators.connect_and_run
     def add_iface_docsis_mac(self, index, ip_bundle, qam_idx, qam_ch, ups_idx, ups_ch, qam_sub = None, prov_mode = None):
         """configure docsis-mac domain
 
@@ -955,6 +1035,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
             self.sendline('interface cable-upstream %s/%s no shutdown'% (qam_idx, ch))
             self.expect(self.prompt)
 
+    @ArrisCMTSDecorators.connect_and_run
     def get_cmts_type(self):
         """This function is to get the product type on cmts
 
@@ -971,6 +1052,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         return output.strip().lower()
 
+    @ArrisCMTSDecorators.connect_and_run
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
     def get_qos_parameter(self, cm_mac, traffic_priority = 1):
         """To get the qos related parameters of CM
@@ -1010,6 +1092,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
                     qos_dict["DS"] = qos_dict_flow
         return qos_dict
 
+    @ArrisCMTSDecorators.connect_and_run
     def ping(self, ping_ip, ping_count=5, timeout=10):
         """This function to ping the device from cmts
         :param ping_ip: device ip which needs to be verified
