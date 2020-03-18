@@ -129,17 +129,18 @@ class ArrisCMTS(base_cmts.BaseCmts):
             self.expect(self.prompt)
             return
         except:
-            raise Exception("Unable to get prompt on Arris device")
-        finally:
             self.close()
             self.pid = None
+            raise Exception("Unable to get prompt on Arris device")
 
     def logout(self):
         """Logout of the CMTS device
         """
-        self.sendline('exit')
-        self.sendline('exit')
-        self.close()
+        try:
+            self.sendline('exit')
+            self.sendline('exit')
+        except:
+            self.close()
 
     @ArrisCMTSDecorators.connect_and_run
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
