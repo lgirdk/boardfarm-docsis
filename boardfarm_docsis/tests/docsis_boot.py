@@ -4,7 +4,7 @@ from boardfarm.tests import rootfs_boot
 from boardfarm_docsis.exceptions import BftProvEnvMismatch
 from boardfarm.lib.common import run_once
 
-from debtcollector import removals
+from debtcollector import removals, deprecate
 import warnings
 
 warnings.simplefilter("always", UserWarning)
@@ -19,6 +19,18 @@ class DocsisBootStub(rootfs_boot.RootFSBootTest):
     ertr_mode = {}
     country = 'NL'  #default
     voice = False
+
+    def __init__(self, *args, **kw):
+        # check DocsisBoottype and Enviornment config
+        self.check_bootmode()
+
+        super(DocsisBootStub, self).__init__(*args, **kw)
+
+    def check_bootmode(self):
+        if not isinstance(self, DocsisBootFromEnv):
+            deprecate("Warning!",
+                      message="Use DocisisBootFromEnv to boot with MAX config, and set BFT_ARGS to the required environment.",
+                      category=UserWarning)
 
     @run_once
     def runTest(self):
