@@ -1,4 +1,3 @@
-
 import boardfarm_docsis.lib.booting
 from boardfarm.tests import rootfs_boot
 from boardfarm_docsis.exceptions import BftProvEnvMismatch
@@ -28,9 +27,11 @@ class DocsisBootStub(rootfs_boot.RootFSBootTest):
 
     def check_bootmode(self):
         if not isinstance(self, DocsisBootFromEnv):
-            deprecate("Warning!",
-                      message="Use DocisisBootFromEnv to boot with MAX config, and set BFT_ARGS to the required environment.",
-                      category=UserWarning)
+            deprecate(
+                "Warning!",
+                message=
+                "Use DocisisBootFromEnv to boot with MAX config, and set BFT_ARGS to the required environment.",
+                category=UserWarning)
 
     @run_once
     def runTest(self):
