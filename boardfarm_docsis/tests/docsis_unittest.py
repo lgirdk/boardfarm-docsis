@@ -44,3 +44,15 @@ class selftest_snmpv2(rootfs_boot.RootFSBootTest):
             finally:
                 value_2 = snmp_v2(wan, ip, mib, value=value_1)
                 print("snmpset on mib: %s\nvalue: %s" % (mib, value_2))
+
+
+class selftest_check_online(rootfs_boot.RootFSBootTest):
+    """This test should not throw ANY exceptions (This is for the Arris cmts
+    class way of connecting)"""
+    def runTest(self):
+        v = self.dev.cmts.check_online(self.dev.board.get_cm_mac_addr())
+        if v is True:
+            print("CM is online")
+        else:
+            print("cmts.check_online returned: {}".format(v))
+        # no need to verify, we just don't want exceptions
