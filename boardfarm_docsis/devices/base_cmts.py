@@ -1,5 +1,5 @@
-
 from boardfarm.devices import base
+
 
 class BaseCmts(base.BaseDevice):
     """Connects to and configures  CMTS common methods API
@@ -210,7 +210,9 @@ class BaseCmts(base.BaseDevice):
         """
         raise Exception("Not implemented!")
 
-    def modify_docsis_mac_ip_provisioning_mode(self, index, ip_pvmode = 'dual-stack'):
+    def modify_docsis_mac_ip_provisioning_mode(self,
+                                               index,
+                                               ip_pvmode='dual-stack'):
         """Change the ip provsioning mode
 
         :param index: mac domain of the cable modem configured
@@ -221,7 +223,7 @@ class BaseCmts(base.BaseDevice):
         """
         raise Exception("Not implemented!")
 
-    def get_ertr_ipv4(self, mac, offset = 2):
+    def get_ertr_ipv4(self, mac, offset=2):
         """Getting erouter ipv4 from CMTS
 
         :param mac: mac address of the cable modem
@@ -231,7 +233,7 @@ class BaseCmts(base.BaseDevice):
         """
         raise Exception("Not implemented!")
 
-    def get_ertr_ipv6(self, mac, offset = 2):
+    def get_ertr_ipv6(self, mac, offset=2):
         """Getting erouter ipv6 from CMTS
 
         :param mac: mac address of the cable modem
@@ -241,7 +243,7 @@ class BaseCmts(base.BaseDevice):
         """
         raise Exception("Not implemented!")
 
-    def get_center_freq(self, mac_domain = None):
+    def get_center_freq(self, mac_domain=None):
         """This function is to return the center frequency of cmts
 
         :param mac_domain: Mac Domain of the cable modem defaults to None
@@ -312,7 +314,7 @@ class BaseCmts(base.BaseDevice):
         """
         raise Exception("Not implemented!")
 
-    def add_ip_bundle(self, index, helper_ip, ipaddr, secondary_ips = []):
+    def add_ip_bundle(self, index, helper_ip, ipaddr, secondary_ips=[]):
         """This function is to add ip bundle to a cable mac
 
         :param index: cable mac index,
@@ -327,7 +329,7 @@ class BaseCmts(base.BaseDevice):
         """
         raise Exception("Not implemented!")
 
-    def add_ipv6_bundle_addrs(self, index, helper_ip, ip, secondary_ips = []):
+    def add_ipv6_bundle_addrs(self, index, helper_ip, ip, secondary_ips=[]):
         """This function is to add ipv6 bundle to a cable mac
 
         :param index: cable mac index
@@ -415,7 +417,7 @@ class BaseCmts(base.BaseDevice):
         """
         raise Exception("Not implemented!")
 
-    def is_cm_bridged(self, mac, offset = 2):
+    def is_cm_bridged(self, mac, offset=2):
         """This function is to check if the modem is in bridge mode
 
         :param mac: Mac address of the modem,
@@ -435,7 +437,13 @@ class BaseCmts(base.BaseDevice):
         """
         raise Exception("Not implemented!")
 
-    def add_service_class(self, index, name, max_rate, max_burst, max_tr_burst = None, downstream = False):
+    def add_service_class(self,
+                          index,
+                          name,
+                          max_rate,
+                          max_burst,
+                          max_tr_burst=None,
+                          downstream=False):
         """Add a service class
 
         :param index: service class number
@@ -454,7 +462,15 @@ class BaseCmts(base.BaseDevice):
         """
         raise Exception("Not implemented!")
 
-    def add_iface_docsis_mac(self, index, ip_bundle, qam_idx, qam_ch, ups_idx, ups_ch, qam_sub = None, prov_mode = None):
+    def add_iface_docsis_mac(self,
+                             index,
+                             ip_bundle,
+                             qam_idx,
+                             qam_ch,
+                             ups_idx,
+                             ups_ch,
+                             qam_sub=None,
+                             prov_mode=None):
         """configure docsis-mac domain
 
         :param index: docsis mac index
@@ -484,7 +500,8 @@ class BaseCmts(base.BaseDevice):
         """
         raise Exception("Not implemented!")
 
-    def add_service_group(self, index, qam_idx, qam_sub, qam_channels, ups_idx, ups_channels):
+    def add_service_group(self, index, qam_idx, qam_sub, qam_channels, ups_idx,
+                          ups_channels):
         """Add a service group
 
         :param index: service group number
@@ -503,7 +520,7 @@ class BaseCmts(base.BaseDevice):
         """
         raise Exception("Not implemented!")
 
-    def mirror_traffic(self, macaddr = ""):
+    def mirror_traffic(self, macaddr=""):
         """Send the mirror traffic
 
         :param macaddr: mac address of the device if avaliable, defaults to empty string ""
@@ -519,7 +536,7 @@ class BaseCmts(base.BaseDevice):
         """
         raise Exception("Not implemented!")
 
-    def run_tcpdump(self, time, iface = 'any', opts = ""):
+    def run_tcpdump(self, time, iface='any', opts=""):
         """tcpdump capture on the cmts interface
 
         :param time: timeout to wait till gets prompt
@@ -553,7 +570,7 @@ class BaseCmts(base.BaseDevice):
             return None
         # the mac cmts syntax format example is 3843.7d80.0ac0
         tmp = mac.replace(':', '')
-        mac_cmts_format = tmp[:4]+"."+tmp[4:8]+"."+tmp[8:]
+        mac_cmts_format = tmp[:4] + "." + tmp[4:8] + "." + tmp[8:]
         return mac_cmts_format.lower()
 
     def get_downstream_qam(self, cm_mac):

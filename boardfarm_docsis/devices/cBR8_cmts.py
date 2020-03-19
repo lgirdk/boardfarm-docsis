@@ -15,9 +15,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
     prompt = ['cBR-8(.*)>', 'cBR-8(.*)#', r'cBR-8\(.*\)> ', r'cBR-8\(.*\)# ']
     model = "cBR8_cmts"
 
-    def __init__(self,
-                 *args,
-                 **kwargs):
+    def __init__(self, *args, **kwargs):
         """Constructor method
         """
         conn_cmd = kwargs.get('conn_cmd', None)
@@ -26,13 +24,16 @@ class CBR8CMTS(base_cmts.BaseCmts):
         self.password = kwargs.get('password', 'cisco')
         self.password_admin = kwargs.get('password_admin', 'cisco')
         self.mac_domain = kwargs.get('mac_domain', None)
-        self.channel_bonding = kwargs.get('channel_bonding', 24) # 16x8 : total 24
+        self.channel_bonding = kwargs.get('channel_bonding',
+                                          24)  # 16x8 : total 24
 
         if conn_cmd is None:
             # TODO: try to parse from ipaddr, etc
             raise Exception("No command specified to connect to CBR8 CMTS")
 
-        self.connection = connection_decider.connection(connection_type, device=self, conn_cmd=conn_cmd)
+        self.connection = connection_decider.connection(connection_type,
+                                                        device=self,
+                                                        conn_cmd=conn_cmd)
         if kwargs.get('debug', False):
             self.logfile_read = sys.stdout
         self.connection.connect()
@@ -57,7 +58,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
                 # over serial it could be stale so we try to recover
                 self.sendline('q')
                 self.sendline('exit')
-                self.expect([pexpect.TIMEOUT] + self.prompt, timeout = 20)
+                self.expect([pexpect.TIMEOUT] + self.prompt, timeout=20)
             self.sendline('enable')
             if 0 == self.expect(['Password:'] + self.prompt):
                 self.sendline(self.password_admin)
@@ -95,7 +96,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
             elif "online" not in status and status != None:
                 output = status
             else:
-                assert 0, "ERROR: incorrect cmstatus \""+status+"\" in cmts"
+                assert 0, "ERROR: incorrect cmstatus \"" + status + "\" in cmts"
         else:
             assert 0, "ERROR: Couldn't fetch CM status from cmts"
         return output
@@ -107,7 +108,9 @@ class CBR8CMTS(base_cmts.BaseCmts):
         :type cmmac: string
         """
         if ('c3000' in self.get_cmts_type()):
-            print('clear offline feature is not supported on cbr8 product name c3000')
+            print(
+                'clear offline feature is not supported on cbr8 product name c3000'
+            )
             return
         self.sendline('clear cable modem %s offline' % cmmac)
         self.expect(self.prompt)
@@ -120,9 +123,9 @@ class CBR8CMTS(base_cmts.BaseCmts):
         """
         self.sendline("clear cable modem %s reset" % cmmac)
         self.expect(self.prompt)
-        online_state=self.check_online(cmmac)
-        self.expect(pexpect.TIMEOUT, timeout = 5)
-        if(online_state==True):
+        online_state = self.check_online(cmmac)
+        self.expect(pexpect.TIMEOUT, timeout=5)
+        if (online_state == True):
             print("CM is still online after 5 seconds.")
         else:
             print("CM reset is initiated.")
@@ -135,7 +138,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
         :return: ip address of cable modem or "None"
         :rtype: string
         """
-        cmmac=self.get_cm_mac_cmts_format(cmmac)
+        cmmac = self.get_cm_mac_cmts_format(cmmac)
         self.sendline('show cable modem %s' % cmmac)
         self.expect(cmmac + r'\s+([\d\.]+)')
         result = self.match.group(1)
@@ -161,14 +164,15 @@ class CBR8CMTS(base_cmts.BaseCmts):
         mac = netaddr.EUI(mtamac)
         ertr_mac = netaddr.EUI(int(mac) + 0)
         ertr_mac.dialect = netaddr.mac_cisco
-        ertr_ipv4 = re.search('(%s) .* (%s)' % (ertr_mac, ValidIpv4AddressRegex), self.before)
+        ertr_ipv4 = re.search(
+            '(%s) .* (%s)' % (ertr_mac, ValidIpv4AddressRegex), self.before)
         if ertr_ipv4:
             ipv4 = ertr_ipv4.group(2)
             return ipv4
         else:
             return None
 
-    def get_center_freq(self, mac_domain = None):
+    def get_center_freq(self, mac_domain=None):
         """This function is to return the center frequency of cmts
 
         :param mac_domain: Mac Domain of the cable modem
@@ -179,7 +183,8 @@ class CBR8CMTS(base_cmts.BaseCmts):
         if mac_domain is None:
             mac_domain = self.mac_domain
         assert mac_domain is not None, "get_center_freq() requires mac_domain to be set"
-        self.sendline('show controllers integrated-Cable %s rf-ch 0' %mac_domain)
+        self.sendline('show controllers integrated-Cable %s rf-ch 0' %
+                      mac_domain)
         self.expect(r'.*UP\s+(\d+)\s+DOCSIS')
         freq = self.match.group(1)
         if self.match != None:
@@ -189,7 +194,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         return output
 
-    def get_ertr_ipv4(self, mac, offset = 2):
+    def get_ertr_ipv4(self, mac, offset=2):
         """Getting erouter ipv4 from CMTS
 
         :param mac: mac address of the cable modem
@@ -203,14 +208,15 @@ class CBR8CMTS(base_cmts.BaseCmts):
         mac = netaddr.EUI(mac)
         ertr_mac = netaddr.EUI(int(mac) + offset)
         ertr_mac.dialect = netaddr.mac_cisco
-        ertr_ipv4 = re.search('(%s) .* (%s)' % (ertr_mac, ValidIpv4AddressRegex), self.before)
+        ertr_ipv4 = re.search(
+            '(%s) .* (%s)' % (ertr_mac, ValidIpv4AddressRegex), self.before)
         if ertr_ipv4:
             ipv4 = ertr_ipv4.group(2)
             return ipv4
         else:
             return None
 
-    def get_ertr_ipv6(self, mac, offset = 2):
+    def get_ertr_ipv6(self, mac, offset=2):
         """Getting erouter ipv6 from CMTS
 
         :param mac: mac address of the cable modem

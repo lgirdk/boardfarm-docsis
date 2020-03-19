@@ -17,6 +17,7 @@ from boardfarm.devices import connection_decider
 from boardfarm.lib.regexlib import AllValidIpv6AddressesRegex, ValidIpv4AddressRegex
 import ipaddress
 
+
 class ArrisCMTS(base_cmts.BaseCmts):
     """Connects to and configures a ARRIS CMTS
     """
@@ -24,7 +25,6 @@ class ArrisCMTS(base_cmts.BaseCmts):
     model = "arris_cmts"
 
     class ArrisCMTSDecorators():
-
         @classmethod
         def mac_to_cmts_type_mac_decorator(cls, function):
             def wrapper(*args, **kwargs):
@@ -32,6 +32,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
                 if ':' in args[1]:
                     args[1] = args[0].get_cm_mac_cmts_format(args[1])
                 return function(*args)
+
             return wrapper
 
         # this is only suppose to run with instance methods
@@ -43,7 +44,8 @@ class ArrisCMTS(base_cmts.BaseCmts):
 
                 # to ensure we don't connect/disconnect in case of nested
                 # API calls
-                check = [func.__name__, instance.connlock][bool(instance.connlock)]
+                check = [func.__name__,
+                         instance.connlock][bool(instance.connlock)]
                 if check == func.__name__:
                     instance.connect()
                     instance.connlock = check
@@ -61,11 +63,10 @@ class ArrisCMTS(base_cmts.BaseCmts):
                 if exc_to_raise:
                     raise exc_to_raise
                 return output
+
             return wrapper
 
-    def __init__(self,
-                 *args,
-                 **kwargs):
+    def __init__(self, *args, **kwargs):
         """Constructor method
         """
         self.conn_cmd = kwargs.get('conn_cmd', None)
@@ -75,17 +76,16 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.password_admin = kwargs.get('password_admin', 'boardfarm')
         self.ssh_password = kwargs.get('ssh_password', 'boardfarm')
         self.mac_domain = kwargs.get('mac_domain', None)
-        self.channel_bonding = kwargs.get('channel_bonding', 32) # 24x8 : total 32
+        self.channel_bonding = kwargs.get('channel_bonding',
+                                          32)  # 24x8 : total 32
 
         self.connlock = None
         if self.conn_cmd is None:
             # TODO: try to parse from ipaddr, etc
             raise Exception("No command specified to connect to Arris CMTS")
 
-
         self.logfile_read = sys.stdout
         self.name = kwargs.get('name', self.model)
-
 
     @ArrisCMTSDecorators.connect_and_run
     def interact(self):
@@ -96,15 +96,20 @@ class ArrisCMTS(base_cmts.BaseCmts):
 
         :raises Exception: Unable to get prompt on ARRIS device
         """
-        self.connection = connection_decider.connection(self.connection_type, device = self, conn_cmd = self.conn_cmd, ssh_password = self.ssh_password)
+        self.connection = connection_decider.connection(
+            self.connection_type,
+            device=self,
+            conn_cmd=self.conn_cmd,
+            ssh_password=self.ssh_password)
         self.connection.connect()
         try:
             try:
-                self.expect_exact("Escape character is '^]'.", timeout = 5)
+                self.expect_exact("Escape character is '^]'.", timeout=5)
             except:
                 pass
             self.sendline()
-            idx = self.expect(['\r\nLogin:', pexpect.TIMEOUT] + self.prompt, timeout = 10)
+            idx = self.expect(['\r\nLogin:', pexpect.TIMEOUT] + self.prompt,
+                              timeout=10)
             if 0 == idx:
                 self.sendline(self.username)
                 self.expect('assword:')
@@ -117,13 +122,15 @@ class ArrisCMTS(base_cmts.BaseCmts):
                 # Over telnet we come in at the right prompt
                 # over serial we could have a double login
                 # not yet implemented
-                raise('Failed to connect to Arris via telnet')
+                raise ('Failed to connect to Arris via telnet')
             self.sendline('enable')
             if 0 == self.expect(['Password:'] + self.prompt):
                 self.sendline(self.password_admin)
                 self.expect(self.prompt)
             self.sendline('config')
-            self.expect('Enter configuration commands, one per line. End with exit or quit or CTRL Z')
+            self.expect(
+                'Enter configuration commands, one per line. End with exit or quit or CTRL Z'
+            )
             self.expect(self.prompt)
             self.sendline('no pagination')
             self.expect(self.prompt)
@@ -196,9 +203,9 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         self.sendline('configure')
         self.expect(self.prompt)
-        self.expect(pexpect.TIMEOUT, timeout = 5)
-        online_state=self.check_online(cmmac)
-        if(online_state==True):
+        self.expect(pexpect.TIMEOUT, timeout=5)
+        online_state = self.check_online(cmmac)
+        if (online_state == True):
             print("CM is still online after 5 seconds.")
         else:
             print("CM reset is initiated.")
@@ -238,7 +245,8 @@ class ArrisCMTS(base_cmts.BaseCmts):
         :rtype: string
         """
         self.sendline('show cable modem | include %s' % cmmac)
-        if 1 == self.expect([cmmac + r'\s+(' + ip_regexpr + ')', pexpect.TIMEOUT], timeout=2):
+        if 1 == self.expect(
+            [cmmac + r'\s+(' + ip_regexpr + ')', pexpect.TIMEOUT], timeout=2):
             output = "None"
         else:
             result = self.match.group(1)
@@ -281,8 +289,10 @@ class ArrisCMTS(base_cmts.BaseCmts):
         :rtype: string
         """
         mac_domain = None
-        self.sendline('show cable modem %s detail | include Cable-Mac=' % cm_mac)
-        if 0 == self.expect(['Cable-Mac= ([0-9]{1,3}),', pexpect.TIMEOUT], timeout=5):
+        self.sendline('show cable modem %s detail | include Cable-Mac=' %
+                      cm_mac)
+        if 0 == self.expect(['Cable-Mac= ([0-9]{1,3}),', pexpect.TIMEOUT],
+                            timeout=5):
             mac_domain = self.match.group(1)
         self.expect(self.prompt)
         return mac_domain
@@ -317,7 +327,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         """
         self.sendline("show cable modem  %s bonded-impaired" % cm_mac)
         self.expect(self.prompt)
-        bonded_impared_status = self.before;
+        bonded_impared_status = self.before
         if "No CMs were found" in bonded_impared_status:
             self.sendline("show cable modem  %s " % cm_mac)
             self.expect(r'(\d+)x(\d+)')
@@ -325,9 +335,13 @@ class ArrisCMTS(base_cmts.BaseCmts):
             upstream = int(self.match.group(2))
             self.expect(self.prompt)
         else:
-            downstream = int(re.findall(r'(\d+x\d+)',bonded_impared_status)[1].split("x")[0])
-            upstream = int(re.findall(r'(\d+x\d+)',bonded_impared_status)[1].split("x")[1])
-        return [upstream,downstream]
+            downstream = int(
+                re.findall(r'(\d+x\d+)',
+                           bonded_impared_status)[1].split("x")[0])
+            upstream = int(
+                re.findall(r'(\d+x\d+)',
+                           bonded_impared_status)[1].split("x")[1])
+        return [upstream, downstream]
 
     @ArrisCMTSDecorators.connect_and_run
     def save_running_config_to_local(self, filename):
@@ -363,7 +377,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         """
         self.sendline('show linecard status | include DMM/DMM')
         self.expect(self.prompt)
-        return  self.before.split("\n",1)[1]
+        return self.before.split("\n", 1)[1]
 
     @ArrisCMTSDecorators.connect_and_run
     def get_ups_module(self):
@@ -386,14 +400,14 @@ class ArrisCMTS(base_cmts.BaseCmts):
         :param ipaddr: <ip></><subnet> using 24 as default if subnet is not provided.
         :type ipaddr: string
         """
-        if  "/" not in ipaddr:
-            ipaddr  += "/24"
+        if "/" not in ipaddr:
+            ipaddr += "/24"
             ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
         else:
             ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
         self.sendline('interface %s' % iface)
         self.expect(self.prompt)
-        self.sendline('ip address %s %s'  %(ipaddr.ip, ipaddr.netmask))
+        self.sendline('ip address %s %s' % (ipaddr.ip, ipaddr.netmask))
         self.expect(self.prompt)
         self.sendline('no shutdown')
         self.expect(self.prompt)
@@ -467,7 +481,9 @@ class ArrisCMTS(base_cmts.BaseCmts):
         :return: mode of the provisioning(ipv4, ipv6, dual-stack, bridge)
         :rtype: string
         """
-        self.sendline('show running-config interface cable-mac %s | include cm-ip-prov-mode' % index)
+        self.sendline(
+            'show running-config interface cable-mac %s | include cm-ip-prov-mode'
+            % index)
         self.expect(self.prompt)
         result = self.before.split("\n")[1].split(" ")[-1]
         if "ipv4" in result.lower():
@@ -481,7 +497,9 @@ class ArrisCMTS(base_cmts.BaseCmts):
         return result
 
     @ArrisCMTSDecorators.connect_and_run
-    def modify_docsis_mac_ip_provisioning_mode(self, index, ip_pvmode = 'dual-stack'):
+    def modify_docsis_mac_ip_provisioning_mode(self,
+                                               index,
+                                               ip_pvmode='dual-stack'):
         """Change the ip provsioning mode
 
         :param index: mac domain of the cable modem configured
@@ -489,8 +507,11 @@ class ArrisCMTS(base_cmts.BaseCmts):
         :param ip_pvmode: provisioning mode can ipv4, ipv6 or 'dual-stack', defaults to 'dual-stack'
         :type ip_pvmode: string
         """
-        if ('dual-stack' in ip_pvmode.lower() and 'c4' in self.get_cmts_type()):
-            print('dual-stack ip provisioning modem is not supported on Chassis Type : C4 please choose apm')
+        if ('dual-stack' in ip_pvmode.lower()
+                and 'c4' in self.get_cmts_type()):
+            print(
+                'dual-stack ip provisioning modem is not supported on Chassis Type : C4 please choose apm'
+            )
             return
         self.sendline('interface cable-mac %s' % index)
         self.expect(self.prompt)
@@ -498,9 +519,12 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         self.sendline('exit')
         self.expect(self.prompt)
-        self.sendline('show running-config interface cable-mac %s | include cm-ip-prov-mode' % index)
+        self.sendline(
+            'show running-config interface cable-mac %s | include cm-ip-prov-mode'
+            % index)
         self.expect(self.prompt)
-        check_docsis_mac_ip_provisioning_mode = self.check_docsis_mac_ip_provisioning_mode(index)
+        check_docsis_mac_ip_provisioning_mode = self.check_docsis_mac_ip_provisioning_mode(
+            index)
         if check_docsis_mac_ip_provisioning_mode in ip_pvmode:
             print("The ip provision mode is successfully set.")
         else:
@@ -515,8 +539,8 @@ class ArrisCMTS(base_cmts.BaseCmts):
         :param gw: gateway ip.
         :type gw: string
         """
-        if  "/" not in ipaddr:
-            ipaddr  += "/24"
+        if "/" not in ipaddr:
+            ipaddr += "/24"
             ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
         else:
             ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
@@ -546,7 +570,8 @@ class ArrisCMTS(base_cmts.BaseCmts):
             print("An error occured while adding the route.")
         self.sendline('show ipv6 route')
         self.expect(self.prompt)
-        if str(ipaddress.IPv6Address(six.text_type(gw))).lower() in self.before.lower():
+        if str(ipaddress.IPv6Address(
+                six.text_type(gw))).lower() in self.before.lower():
             print("The route is available on cmts.")
         else:
             print("The route is not available on cmts.")
@@ -560,8 +585,8 @@ class ArrisCMTS(base_cmts.BaseCmts):
         :param gw: gateway ip
         :type gw: string
         """
-        if  "/" not in ipaddr:
-            ipaddr  += "/24"
+        if "/" not in ipaddr:
+            ipaddr += "/24"
             ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
         else:
             ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
@@ -569,7 +594,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         if 'error' in self.before.lower():
             print("An error occured while deleting the route.")
-        self.expect(pexpect.TIMEOUT, timeout = 10)
+        self.expect(pexpect.TIMEOUT, timeout=10)
         self.sendline('show ip route')
         self.expect(self.prompt)
         if gw in self.before:
@@ -592,13 +617,14 @@ class ArrisCMTS(base_cmts.BaseCmts):
             print("An error occured while deleting the route.")
         self.sendline('show ipv6 route')
         self.expect(self.prompt)
-        if str(ipaddress.ip_address(six.text_type(gw)).compressed).lower() in self.before.lower() or gw.lower() in self.before.lower():
+        if str(ipaddress.ip_address(six.text_type(gw)).compressed).lower(
+        ) in self.before.lower() or gw.lower() in self.before.lower():
             print("The route is still available on cmts.")
         else:
             print("The route is not available on cmts.")
 
     @ArrisCMTSDecorators.connect_and_run
-    def add_ip_bundle(self, index, helper_ip, ipaddr, secondary_ips = []):
+    def add_ip_bundle(self, index, helper_ip, ipaddr, secondary_ips=[]):
         """This function is to add ip bundle to a cable mac
 
         :param index: cable mac index,
@@ -610,22 +636,22 @@ class ArrisCMTS(base_cmts.BaseCmts):
         :param secondary_ips: list of seconday ips  in the format  <ip></><subnet> subnet defaut taken as 24 if not provided, defaults to empty list []
         :type secondary_ips: list
         """
-        if  "/" not in ipaddr:
-            ipaddr  += "/24"
+        if "/" not in ipaddr:
+            ipaddr += "/24"
             ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
         else:
             ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
         self.sendline('interface cable-mac %s' % index)
         self.expect(self.prompt)
-        self.sendline('ip address %s %s'  %(ipaddr.ip, ipaddr.netmask))
+        self.sendline('ip address %s %s' % (ipaddr.ip, ipaddr.netmask))
         self.expect(self.prompt)
         for ip2 in secondary_ips:
-            if  "/" not in ip2:
-                ip2  += "/24"
+            if "/" not in ip2:
+                ip2 += "/24"
                 ip2 = ipaddress.IPv4Interface(six.text_type(ip2))
             else:
                 ip2 = ipaddress.IPv4Interface(six.text_type(ip2))
-            self.sendline('ip address %s %s secondary' %(ip2.ip, ip2.netmask))
+            self.sendline('ip address %s %s secondary' % (ip2.ip, ip2.netmask))
             self.expect(self.prompt)
         self.sendline('cable helper-address %s cable-modem' % helper_ip)
         self.expect(self.prompt)
@@ -635,7 +661,9 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         self.sendline('exit')
         self.expect(self.prompt)
-        self.sendline('show running-config interface cable-mac %s | include ip address' % index)
+        self.sendline(
+            'show running-config interface cable-mac %s | include ip address' %
+            index)
         self.expect(self.prompt)
         if str(ipaddr.ip) in self.before:
             print("The ip bundle is successfully set.")
@@ -643,7 +671,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
             print("An error occured while setting the ip bundle.")
 
     @ArrisCMTSDecorators.connect_and_run
-    def add_ipv6_bundle_addrs(self, index, helper_ip, ip, secondary_ips = []):
+    def add_ipv6_bundle_addrs(self, index, helper_ip, ip, secondary_ips=[]):
         """This function is to add ipv6 bundle to a cable mac
 
         :param index: cable mac index
@@ -663,9 +691,12 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         self.sendline('exit')
         self.expect(self.prompt)
-        self.sendline('show running-config interface cable-mac %s | include ipv6 address' % index)
+        self.sendline(
+            'show running-config interface cable-mac %s | include ipv6 address'
+            % index)
         self.expect(self.prompt)
-        if str(ipaddress.ip_address(six.text_type(ip[:-3])).compressed) in self.before:
+        if str(ipaddress.ip_address(six.text_type(
+                ip[:-3])).compressed) in self.before:
             print("The ipv6 bundle is successfully set.")
         else:
             print("An error occured while setting the ipv6 bundle.")
@@ -700,10 +731,11 @@ class ArrisCMTS(base_cmts.BaseCmts):
         """
         max_iteration = 5
         self.sendline('show linecard status')
-        while 0 == self.expect(['Down | OOS'] + self.prompt) and max_iteration>0:
-            max_iteration-= 1
+        while 0 == self.expect(['Down | OOS'] +
+                               self.prompt) and max_iteration > 0:
+            max_iteration -= 1
             self.expect(self.prompt)
-            self.expect(pexpect.TIMEOUT, timeout = 5)
+            self.expect(pexpect.TIMEOUT, timeout=5)
             self.sendline('show linecard status')
 
     @ArrisCMTSDecorators.connect_and_run
@@ -723,13 +755,14 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         self.sendline('cable frequency %s' % freq)
         self.expect(self.prompt)
-        self.sendline('no shutdown' )
+        self.sendline('no shutdown')
         self.expect(self.prompt)
         self.sendline('exit')
         self.expect(self.prompt)
 
     @ArrisCMTSDecorators.connect_and_run
-    def add_service_group(self, index, qam_idx, qam_sub, qam_channels, ups_idx, ups_channels):
+    def add_service_group(self, index, qam_idx, qam_sub, qam_channels, ups_idx,
+                          ups_channels):
         """Add a service group
 
         :param index: service group number
@@ -745,25 +778,31 @@ class ArrisCMTS(base_cmts.BaseCmts):
         :param ups_channels: channel number of the upstream
         :type ups_channels: string
         """
-        print("Service group is auto configured in ARRIS once mac domain is created.")
+        print(
+            "Service group is auto configured in ARRIS once mac domain is created."
+        )
 
     @ArrisCMTSDecorators.connect_and_run
-    def mirror_traffic(self, macaddr = ""):
+    def mirror_traffic(self, macaddr=""):
         """Send the mirror traffic
 
         :param macaddr: mac address of the device if avaliable, defaults to empty string ""
         :type macaddr: string
         """
-        print("Mirror traffic feature is not supported in ARRIS unless we use lawful intercept functionality.")
+        print(
+            "Mirror traffic feature is not supported in ARRIS unless we use lawful intercept functionality."
+        )
 
     @ArrisCMTSDecorators.connect_and_run
     def unmirror_traffic(self):
         """stop mirroring the traffic
         """
-        print("Unmirror traffic feature is not supported in ARRIS unless we use lawful intercept functionality.")
+        print(
+            "Unmirror traffic feature is not supported in ARRIS unless we use lawful intercept functionality."
+        )
 
     @ArrisCMTSDecorators.connect_and_run
-    def run_tcpdump(self, time, iface = 'any', opts = ""):
+    def run_tcpdump(self, time, iface='any', opts=""):
         """tcpdump capture on the cmts interface
 
         :param time: timeout to wait till gets prompt
@@ -777,7 +816,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
 
     @ArrisCMTSDecorators.connect_and_run
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
-    def is_cm_bridged(self, mac, offset = 2):
+    def is_cm_bridged(self, mac, offset=2):
         """This function is to check if the modem is in bridge mode
 
         :param mac: Mac address of the modem,
@@ -797,7 +836,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
 
     @ArrisCMTSDecorators.connect_and_run
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
-    def get_ertr_ipv4(self, mac, offset = 2):
+    def get_ertr_ipv4(self, mac, offset=2):
         """Getting erouter ipv4 from CMTS
 
         :param mac: mac address of the cable modem
@@ -811,7 +850,8 @@ class ArrisCMTS(base_cmts.BaseCmts):
         mac = netaddr.EUI(mac)
         ertr_mac = netaddr.EUI(int(mac) + offset)
         ertr_mac.dialect = netaddr.mac_cisco
-        ertr_ipv4 = re.search('(%s) .*=(%s)' % (ertr_mac,ValidIpv4AddressRegex), self.before)
+        ertr_ipv4 = re.search(
+            '(%s) .*=(%s)' % (ertr_mac, ValidIpv4AddressRegex), self.before)
         if ertr_ipv4:
             ipv4 = ertr_ipv4.group(2)
             return ipv4
@@ -820,7 +860,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
 
     @ArrisCMTSDecorators.connect_and_run
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
-    def get_ertr_ipv6(self, mac, offset = 2):
+    def get_ertr_ipv6(self, mac, offset=2):
         """Getting erouter ipv6 from CMTS
 
         :param mac: mac address of the cable modem
@@ -834,7 +874,9 @@ class ArrisCMTS(base_cmts.BaseCmts):
         mac = netaddr.EUI(mac)
         ertr_mac = netaddr.EUI(int(mac) + offset)
         ertr_mac.dialect = netaddr.mac_cisco
-        ertr_ipv6 = re.search('(%s) IPv6=(%s)' % (ertr_mac,AllValidIpv6AddressesRegex), self.before)
+        ertr_ipv6 = re.search(
+            '(%s) IPv6=(%s)' % (ertr_mac, AllValidIpv6AddressesRegex),
+            self.before)
         if ertr_ipv6:
             ipv6 = ertr_ipv6.group(2)
             return ipv6
@@ -842,7 +884,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
             return None
 
     @ArrisCMTSDecorators.connect_and_run
-    def get_center_freq(self, mac_domain = None):
+    def get_center_freq(self, mac_domain=None):
         """This function is to return the center frequency of cmts
 
         :param mac_domain: Mac Domain of the cable modem
@@ -857,10 +899,12 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         self.sendline('show interface cable downstream')
         self.expect(self.prompt)
-        freq_list=[]
+        freq_list = []
         for row in self.before.split("\n")[3:]:
-            match_grp=re.match(r"\d{1,2}/\d{1,2}\s+"+str(mac_domain)+r"\s.*\s(\d{6,10})\s+\w+",row)
-            if match_grp!=None and match_grp.groups(0)[0]!=None:
+            match_grp = re.match(
+                r"\d{1,2}/\d{1,2}\s+" + str(mac_domain) +
+                r"\s.*\s(\d{6,10})\s+\w+", row)
+            if match_grp != None and match_grp.groups(0)[0] != None:
                 freq_list.append(match_grp.groups(0)[0])
         freq_list = map(int, freq_list)
         return str(min(freq_list))
@@ -905,8 +949,11 @@ class ArrisCMTS(base_cmts.BaseCmts):
         :return: bundle id
         :rtype: string
         """
-        self.sendline('show running-config interface cable-mac %s | include cable-mac [0-9]+.[0-9]+' % mac_domain)
-        index = self.expect(['(interface cable-mac )([0-9]+.[0-9]+)'] + self.prompt)
+        self.sendline(
+            'show running-config interface cable-mac %s | include cable-mac [0-9]+.[0-9]+'
+            % mac_domain)
+        index = self.expect(['(interface cable-mac )([0-9]+.[0-9]+)'] +
+                            self.prompt)
         if index != 0:
             assert 0, "ERROR:Failed to get the CM bundle id from CMTS"
         bundle = self.match.group(2)
@@ -926,9 +973,12 @@ class ArrisCMTS(base_cmts.BaseCmts):
         """
         mac_domain = self.get_cm_mac_domain(cm_mac)
         self.get_cm_bundle(mac_domain)
-        self.sendline('show running-config interface cable-mac %s | include secondary' % mac_domain)
+        self.sendline(
+            'show running-config interface cable-mac %s | include secondary' %
+            mac_domain)
         self.expect(self.prompt)
-        cmts_ip = re.search('ip address (%s) .* secondary' % gw_ip, self.before)
+        cmts_ip = re.search('ip address (%s) .* secondary' % gw_ip,
+                            self.before)
 
         if gw_ip is None:
             return self.before
@@ -949,7 +999,13 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
 
     @ArrisCMTSDecorators.connect_and_run
-    def add_service_class(self, index, name, max_rate, max_burst, max_tr_burst = None, downstream = False):
+    def add_service_class(self,
+                          index,
+                          name,
+                          max_rate,
+                          max_burst,
+                          max_tr_burst=None,
+                          downstream=False):
         """Add a service class
 
         :param index: service class number
@@ -965,14 +1021,24 @@ class ArrisCMTS(base_cmts.BaseCmts):
         :param downstream: True or False, defaults to False
         :type downstream: boolean
         """
-        self.sendline('qos-sc name %s max-tr-rate %s max-tr-burst %s max-burst %s' % (name, max_rate,max_tr_burst,max_burst))
+        self.sendline(
+            'qos-sc name %s max-tr-rate %s max-tr-burst %s max-burst %s' %
+            (name, max_rate, max_tr_burst, max_burst))
         self.expect(self.prompt)
         if downstream:
             self.sendline('qos-sc name %s dir 1' % name)
             self.expect(self.prompt)
 
     @ArrisCMTSDecorators.connect_and_run
-    def add_iface_docsis_mac(self, index, ip_bundle, qam_idx, qam_ch, ups_idx, ups_ch, qam_sub = None, prov_mode = None):
+    def add_iface_docsis_mac(self,
+                             index,
+                             ip_bundle,
+                             qam_idx,
+                             qam_ch,
+                             ups_idx,
+                             ups_ch,
+                             qam_sub=None,
+                             prov_mode=None):
         """configure docsis-mac domain
 
         :param index: docsis mac index
@@ -992,8 +1058,8 @@ class ArrisCMTS(base_cmts.BaseCmts):
         :param prov_mode: provisioning mode if any, defaults to None
         :type prov_mode: string, optional
         """
-        if  "/" not in ip_bundle:
-            ip_bundle  += "/24"
+        if "/" not in ip_bundle:
+            ip_bundle += "/24"
             ip_bundle = ipaddress.IPv4Interface(six.text_type(ip_bundle))
         else:
             ip_bundle = ipaddress.IPv4Interface(six.text_type(ip_bundle))
@@ -1007,7 +1073,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         self.sendline('cable dynamic-secret reject')
         self.expect(self.prompt)
-        self.sendline('cable cm-ip-prov-mode %s'% prov_mode)
+        self.sendline('cable cm-ip-prov-mode %s' % prov_mode)
         self.expect(self.prompt)
         self.sendline('cable mcast-fwd-by-dsid no')
         self.expect(self.prompt)
@@ -1021,19 +1087,24 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         self.sendline('cable privacy mandatory bpi-plus')
         self.expect(self.prompt)
-        self.sendline('ip address %s %s'  %(ip_bundle.ip, ip_bundle.netmask))
+        self.sendline('ip address %s %s' % (ip_bundle.ip, ip_bundle.netmask))
         self.expect(self.prompt)
         self.sendline('exit')
         self.expect(self.prompt)
         for ch in qam_ch:
-            self.sendline('interface cable-downstream %s/%s cable cable-mac %s'% (qam_idx, ch, index))
+            self.sendline(
+                'interface cable-downstream %s/%s cable cable-mac %s' %
+                (qam_idx, ch, index))
             self.expect(self.prompt)
-            self.sendline('interface cable-downstream %s/%s no shutdown'% (qam_idx, ch))
+            self.sendline('interface cable-downstream %s/%s no shutdown' %
+                          (qam_idx, ch))
             self.expect(self.prompt)
         for ch in ups_ch:
-            self.sendline('interface cable-upstream %s/%s cable cable-mac %s'% (qam_idx, ch, index))
+            self.sendline('interface cable-upstream %s/%s cable cable-mac %s' %
+                          (qam_idx, ch, index))
             self.expect(self.prompt)
-            self.sendline('interface cable-upstream %s/%s no shutdown'% (qam_idx, ch))
+            self.sendline('interface cable-upstream %s/%s no shutdown' %
+                          (qam_idx, ch))
             self.expect(self.prompt)
 
     @ArrisCMTSDecorators.connect_and_run
@@ -1055,7 +1126,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
 
     @ArrisCMTSDecorators.connect_and_run
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
-    def get_qos_parameter(self, cm_mac, traffic_priority = 1):
+    def get_qos_parameter(self, cm_mac, traffic_priority=1):
         """To get the qos related parameters of CM
         Example output format : {'DS': {'Maximum Sustained rate': '0', 'Maximum Burst': '128000',  ....},
                                  'US': {'Maximum Sustained rate': '0', 'Maximum Burst': '128000', 'IP ToS Overwrite [AND-msk, OR-mask]': ['0x00', '0x00'], ...}}
@@ -1075,18 +1146,26 @@ class ArrisCMTS(base_cmts.BaseCmts):
         service_flows = re.split(r"\n\s*\n", self.before)[1:-1]
         for service_flow in service_flows:
             service_flow_list = [i for i in service_flow.split("\n") if i]
-            matching = [s for s in service_flow_list if "Traffic Priority" in s]
+            matching = [
+                s for s in service_flow_list if "Traffic Priority" in s
+            ]
             qos_dict_flow = {}
-            if(traffic_priority == int(matching[0].split(":")[1].strip())):
+            if (traffic_priority == int(matching[0].split(":")[1].strip())):
                 for service in service_flow_list:
                     service = re.sub(' +', ' ', service)
                     if "scheduling type" in service.lower():
-                        qos_dict_flow[service.split(":")[0].strip()] = service.split(":")[1].strip()
-                    elif not ("ip tos" or "current throughput") in service.lower():
-                        qos_dict_flow[service.split(":")[0].strip()] = service.split(":")[1].strip().split(" ")[0]
+                        qos_dict_flow[service.split(
+                            ":")[0].strip()] = service.split(":")[1].strip()
+                    elif not ("ip tos"
+                              or "current throughput") in service.lower():
+                        qos_dict_flow[service.split(":")[0].strip(
+                        )] = service.split(":")[1].strip().split(" ")[0]
                     else:
-                        qos_dict_flow[service.split(":")[0].strip()] = [service.split(":")[1].strip().split(" ")[0][:-1], service.split(":")[1].strip().split(" ")[1]]
-            if(bool(qos_dict_flow)):
+                        qos_dict_flow[service.split(":")[0].strip()] = [
+                            service.split(":")[1].strip().split(" ")[0][:-1],
+                            service.split(":")[1].strip().split(" ")[1]
+                        ]
+            if (bool(qos_dict_flow)):
                 if "US" in qos_dict_flow.get('Direction'):
                     qos_dict["US"] = qos_dict_flow
                 else:
@@ -1106,12 +1185,15 @@ class ArrisCMTS(base_cmts.BaseCmts):
         """
 
         mode = "ipv%s" % ipaddress.ip_address(ping_ip).version
-        basic_ping = "ping repeat-count {} timeout {}".format(ping_count, timeout) if mode=="ipv4" else "ping ipv6"
+        basic_ping = "ping repeat-count {} timeout {}".format(
+            ping_count, timeout) if mode == "ipv4" else "ping ipv6"
 
         self.check_output("end")
         self.sendline("{} {}".format(basic_ping, ping_ip))
         self.expect(self.prompt)
-        match = re.search("{} packets transmitted, {} packets received".format(ping_count, ping_count), self.before)
+        match = re.search(
+            "{} packets transmitted, {} packets received".format(
+                ping_count, ping_count), self.before)
         if match:
             return True
         else:
