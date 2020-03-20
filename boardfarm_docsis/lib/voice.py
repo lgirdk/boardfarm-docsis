@@ -1,5 +1,5 @@
-import re
 import datetime
+import re
 
 
 def get_tone_time(tones_file, out, tone):

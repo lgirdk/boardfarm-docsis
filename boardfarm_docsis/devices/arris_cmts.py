@@ -6,16 +6,18 @@
 # The full text can be found in LICENSE in the root directory.
 #!/usr/bin/env python
 
-import pexpect
-import netaddr
-import six
-import sys
+import ipaddress
 import re
+import sys
+
+import netaddr
+import pexpect
+import six
+from boardfarm.devices import connection_decider
+from boardfarm.lib.regexlib import (AllValidIpv6AddressesRegex,
+                                    ValidIpv4AddressRegex)
 
 from . import base_cmts
-from boardfarm.devices import connection_decider
-from boardfarm.lib.regexlib import AllValidIpv6AddressesRegex, ValidIpv4AddressRegex
-import ipaddress
 
 
 class ArrisCMTS(base_cmts.BaseCmts):

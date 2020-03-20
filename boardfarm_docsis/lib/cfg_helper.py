@@ -1,8 +1,9 @@
 import collections
-from collections import OrderedDict
 import copy
-import os
 import json
+import os
+from collections import OrderedDict
+
 import boardfarm_docsis
 
 

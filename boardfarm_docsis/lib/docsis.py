@@ -6,24 +6,28 @@
 # The full text can be found in LICENSE in the root directory.
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
+import glob
+import hashlib
 import os
+import re
+import tempfile
+
+import boardfarm
+from aenum import Enum
+from boardfarm.lib import SnmpHelper
+from boardfarm.lib.common import (cmd_exists, keccak512_checksum,
+                                  retry_on_exception)
+from boardfarm_docsis.exceptions import (CfgUnknownType, CMCfgEncodeFailed,
+                                         MTACfgEncodeFailed)
+
+from .cfg_helper import CfgGenerator
+
 try:
     # Python 2
     import Tkinter
 except:
     # Python 3
     import tkinter as Tkinter
-import re
-import tempfile
-import hashlib
-from aenum import Enum
-import glob
-
-from .cfg_helper import CfgGenerator
-from boardfarm.lib import SnmpHelper
-from boardfarm.lib.common import cmd_exists, keccak512_checksum, retry_on_exception
-from boardfarm_docsis.exceptions import CMCfgEncodeFailed, MTACfgEncodeFailed, CfgUnknownType
-import boardfarm
 
 
 class cfg_type(Enum):

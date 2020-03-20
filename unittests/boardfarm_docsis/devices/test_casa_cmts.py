@@ -4,7 +4,6 @@
 import re
 
 import pytest
-
 from boardfarm.lib.regexlib import ValidIpv4AddressRegex
 from boardfarm_docsis.devices.casa_cmts import CasaCMTS
 

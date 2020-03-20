@@ -1,8 +1,8 @@
 import time
-import pexpect
 
-from boardfarm.lib.DeviceManager import device_type
+import pexpect
 from boardfarm.devices import openwrt_router
+from boardfarm.lib.DeviceManager import device_type
 from boardfarm.lib.network_helper import valid_ipv4, valid_ipv6
 
 

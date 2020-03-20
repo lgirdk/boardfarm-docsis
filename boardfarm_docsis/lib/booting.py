@@ -1,6 +1,6 @@
 from boardfarm.exceptions import BootFail
+from boardfarm.lib.voice import dns_setup_sipserver, voice_devices_configure
 from boardfarm_docsis.exceptions import VoiceSetupConfigureFailure
-from boardfarm.lib.voice import voice_devices_configure, dns_setup_sipserver
 
 
 def boot(self):

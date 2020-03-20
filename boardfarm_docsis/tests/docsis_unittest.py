@@ -1,5 +1,5 @@
-from boardfarm.tests import rootfs_boot
 from boardfarm.lib.SnmpHelper import snmp_v2
+from boardfarm.tests import rootfs_boot
 
 
 class selftest_test_cmts_functions(rootfs_boot.RootFSBootTest):

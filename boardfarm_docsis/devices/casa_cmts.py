@@ -6,17 +6,19 @@
 # The full text can be found in LICENSE in the root directory.
 #!/usr/bin/env python
 
+import collections
+import ipaddress
+import re
+import sys
+
 import netaddr
 import pexpect
 import six
-import sys
-import re
-import collections
-
 from boardfarm.devices import connection_decider
-from boardfarm.lib.regexlib import ValidIpv4AddressRegex, AllValidIpv6AddressesRegex
+from boardfarm.lib.regexlib import (AllValidIpv6AddressesRegex,
+                                    ValidIpv4AddressRegex)
+
 from . import base_cmts
-import ipaddress
 
 
 class CasaCMTS(base_cmts.BaseCmts):

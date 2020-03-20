@@ -1,10 +1,10 @@
+import warnings
+
 import boardfarm_docsis.lib.booting
+from boardfarm.lib.common import run_once
 from boardfarm.tests import rootfs_boot
 from boardfarm_docsis.exceptions import BftProvEnvMismatch
-from boardfarm.lib.common import run_once
-
-from debtcollector import removals, deprecate
-import warnings
+from debtcollector import deprecate, removals
 
 warnings.simplefilter("always", UserWarning)
 
