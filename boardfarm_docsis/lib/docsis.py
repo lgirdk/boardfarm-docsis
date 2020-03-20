@@ -105,7 +105,7 @@ class docsis:
             data = cfg.read()
             if data.startswith('Main'):
                 return cfg_type.CM
-            elif data.startswith('	.'):
+            elif data.startswith('\t.'):
                 return cfg_type.MTA
             else:
                 return cfg_type.UNKNOWN
