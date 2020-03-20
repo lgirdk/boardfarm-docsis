@@ -517,7 +517,7 @@ esafeErouterAdminMode OBJECT-TYPE
         ipv4Only(2),
         ipv6Only(3),
         ipv4AndIpv6(4),
-	 noTLV202dot1Present(5)
+     noTLV202dot1Present(5)
     }
     MAX-ACCESS  read-only
     STATUS      current
@@ -550,7 +550,7 @@ esafeErouterAdminMode OBJECT-TYPE
             address and an IPv6 network address and to run both
             IPv4 and IPv6 protocol stacks.
 
-	      If the value of the object is noTLV202dot1Present(5), the eRouter was not configured via TLV 202.1 in the cable modem configuration file."
+          If the value of the object is noTLV202dot1Present(5), the eRouter was not configured via TLV 202.1 in the cable modem configuration file."
     REFERENCE
             "DOCSIS IPv4 and IPv6 eRouter Specification,
             CM-SP-eRouter-I02-070223."

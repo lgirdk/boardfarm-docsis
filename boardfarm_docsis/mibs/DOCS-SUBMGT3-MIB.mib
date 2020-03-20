@@ -307,7 +307,7 @@ DocsSubmgt3CpeCtrlEntry ::= SEQUENCE {
                   Unsigned32,
      docsSubmgt3CpeCtrlMaxCpeIpv6Addresses
                   Unsigned32,
-	 docsSubmgt3CpeCtrlMaxCpeIpv6Prefixes
+     docsSubmgt3CpeCtrlMaxCpeIpv6Prefixes
                   Unsigned32,
      docsSubmgt3CpeCtrlActive
                   TruthValue,

@@ -226,7 +226,7 @@ clabAniNidStatusAuthHistoryEntry OBJECT-TYPE
 ClabAniNidStatusAuthHistoryEntry ::= SEQUENCE {
     clabAniNidStatusAuthHistoryInitiationTime                TimeTicks,
     clabAniNidStatusAuthHistoryResults                       INTEGER,
-    clabAniNidStatusAuthHistoryServer            			      INTEGER
+    clabAniNidStatusAuthHistoryServer                              INTEGER
     }
 
 clabAniNidStatusAuthHistoryInitiationTime OBJECT-TYPE

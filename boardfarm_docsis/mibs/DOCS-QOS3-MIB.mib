@@ -62,7 +62,7 @@ docsQosMib MODULE-IDENTITY
     DESCRIPTION
             "Revised Version includes ECN
              DOCS-QOS3-MIB-N-19.2010-5."
-	REVISION    "201902070000Z" -- February 7, 2019
+    REVISION    "201902070000Z" -- February 7, 2019
     DESCRIPTION
             "Revised Version includes ECN
              DOCS-QOS3-MIB-N-18.1989-2."
@@ -971,11 +971,11 @@ docsQosParamSetTable OBJECT-TYPE
         The CM MAY report the admitted and provisioned service
         flow parameter sets.
 
-		Beginning with CCAP OSSI specification I15, CCAP reporting
-		of admitted and provisioned service flow parameter sets becomes optional,
-		as a means of reducing the volume of information reported by the CCAP.
+        Beginning with CCAP OSSI specification I15, CCAP reporting
+        of admitted and provisioned service flow parameter sets becomes optional,
+        as a means of reducing the volume of information reported by the CCAP.
         The CCAP MUST report the active service flow parameter set values.
-		The CCAP MAY report the admitted and provisioned service flow parameter sets."
+        The CCAP MAY report the admitted and provisioned service flow parameter sets."
      REFERENCE
         "DOCSIS 3.0 MAC and Upper Layer Protocols Interface
         Specification CM-SP-MULPIv3.0-I08-080522, Service Flow
@@ -1720,48 +1720,48 @@ docsQosParamSetBitMap OBJECT-TYPE
         or modified the QOS Parameter Set. A bit is set to
         1 when the associated parameter is present in the original
         request as follows:
-        	'trafficPriority'  Traffic Priority
-        	'maxTrafficRate'  Maximum Sustained Traffic Rate
+            'trafficPriority'  Traffic Priority
+            'maxTrafficRate'  Maximum Sustained Traffic Rate
 
-        	'maxTrafficBurst'  Maximum Traffic Burst
-        	'minReservedRate'  Minimum Reserved Traffic Rate
+            'maxTrafficBurst'  Maximum Traffic Burst
+            'minReservedRate'  Minimum Reserved Traffic Rate
 
-        	'minReservedPkt'  Assumed Minimum Reserved Rate Packet
+            'minReservedPkt'  Assumed Minimum Reserved Rate Packet
         Size
-        	'activeTimeout'  Timeout for Active QoS Parameters
+            'activeTimeout'  Timeout for Active QoS Parameters
 
-        	'admittedTimeout'  Timeout for Admitted QoS Parameters
+            'admittedTimeout'  Timeout for Admitted QoS Parameters
 
-        	'maxConcatBurst'  Maximum Concatenated Burst
-        	'schedulingType'  Service Flow Scheduling Type
-        	'requestPolicy'  Request/Transmission Policy
-        	'nomPollInterval'  Nominal Polling Interval
-        	'tolPollJitter'  Tolerated Poll Jitter
-        	'unsolicitGrantSize'  Unsolicited Grant Size
-        	'nomGrantInterval'  Nominal Grant Interval
-        	'tolGrantJitter'  Tolerated Grant Jitter
-        	'grantsPerInterval'  Grants per Interval
-        	'tosOverwrite'  IP Type of Service (DSCP) Overwrite
-        	'maxLatency'  Maximum Downstream Latency
-        	'requiredAttrMask'  Service Flow Required Attribute
+            'maxConcatBurst'  Maximum Concatenated Burst
+            'schedulingType'  Service Flow Scheduling Type
+            'requestPolicy'  Request/Transmission Policy
+            'nomPollInterval'  Nominal Polling Interval
+            'tolPollJitter'  Tolerated Poll Jitter
+            'unsolicitGrantSize'  Unsolicited Grant Size
+            'nomGrantInterval'  Nominal Grant Interval
+            'tolGrantJitter'  Tolerated Grant Jitter
+            'grantsPerInterval'  Grants per Interval
+            'tosOverwrite'  IP Type of Service (DSCP) Overwrite
+            'maxLatency'  Maximum Downstream Latency
+            'requiredAttrMask'  Service Flow Required Attribute
                               Mask
-        	'forbiddenAttrMask  Service Flow Forbidden Attribute
+            'forbiddenAttrMask  Service Flow Forbidden Attribute
                               Mask
-        	'attrAggrMask'  Service Flow Attribute Aggregation
+            'attrAggrMask'  Service Flow Attribute Aggregation
                           Mask
-        	'applicationId'  Application Identifier
-        	'multipCntnReqWindow'  Multiplier to Contention
+            'applicationId'  Application Identifier
+            'multipCntnReqWindow'  Multiplier to Contention
                                  Request Backoff Window
-        	'multipBytesReq'  Multiplier to Number of Bytes Requested
-        	'maxReqPerSidCluster'  Maximum Requests per SID Cluster
-        	'maxOutstandingBytesPerSidCluster'  Maximum Outstanding
+            'multipBytesReq'  Multiplier to Number of Bytes Requested
+            'maxReqPerSidCluster'  Maximum Requests per SID Cluster
+            'maxOutstandingBytesPerSidCluster'  Maximum Outstanding
                                               Bytes per SID Cluster
-        	'maxTotalBytesReqPerSidCluster'  Maximum Total
+            'maxTotalBytesReqPerSidCluster'  Maximum Total
                                            Bytes Requested per SID
                                            Cluster
-        	'maximumTimeInSidCluster'  Maximum Time in the SID Cluster
-        	'peakTrafficRate'  Peak Traffic Rate
-        	'dsResequencing'   Downstream Resequencing
+            'maximumTimeInSidCluster'  Maximum Time in the SID Cluster
+            'peakTrafficRate'  Peak Traffic Rate
+            'dsResequencing'   Downstream Resequencing
             'minimumBuffer'    Minimum Buffer
             'targetBuffer'     Target Buffer
             'maximumBuffer'    Maximum Buffer C
@@ -2147,12 +2147,12 @@ docsQosParamSetAqmLatencyTarget OBJECT-TYPE
         "This attribute provides the target latency for this service flow
          when operating under Classic Active Queue Management
          (e.g. DOCSIS-PIE). If set to 0, the value in the
-		 AqmGlobalLatencyTarget attribute of the DocsQosCfg
-		 object will be used. This attribute applies to both upstream
-		 and downstream service flows. This attribute is only used when
-		 AqmGlobalEnable in the DocsQosCfg object is set to 'true' and the
-		 AqmEnable attribute is set to 'true'. This parameter will be ignored
-		 if the AQM Algorithm used by the Service Flow is ImmediateAqm."
+         AqmGlobalLatencyTarget attribute of the DocsQosCfg
+         object will be used. This attribute applies to both upstream
+         and downstream service flows. This attribute is only used when
+         AqmGlobalEnable in the DocsQosCfg object is set to 'true' and the
+         AqmEnable attribute is set to 'true'. This parameter will be ignored
+         if the AQM Algorithm used by the Service Flow is ImmediateAqm."
      REFERENCE
         "DOCSIS 3.1 MAC and Upper Layer Protocols Interface
         Specification CM-SP-MULPIv3.1-I04-141218, AQM Encodings section
@@ -2262,9 +2262,9 @@ docsQosParamSetGuaranteedGrantInterval OBJECT-TYPE
         "This attribute specifies the maximum interval between
         successive data transmission opportunities, for a PGS Service
         Flow. The valid range of this parameter is specific to the CMTS.
-		If the referenced parameter is not applicable to the direction
-		or scheduling type of the corresponding DOCSIS QoS Parameter Set,
-		both CMTS and CM report this attribute's value as 0."
+        If the referenced parameter is not applicable to the direction
+        or scheduling type of the corresponding DOCSIS QoS Parameter Set,
+        both CMTS and CM report this attribute's value as 0."
      REFERENCE
         "DOCSIS 3.1 MAC and Upper Layer Protocols Interface
         Specification CM-SP-MULPIv3.1-I17,
@@ -2280,7 +2280,7 @@ docsQosParamSetGuaranteedGrantRate OBJECT-TYPE
      DESCRIPTION
         "This attribute specifies the minimum granting rate, for an
          upstream PGS service flow. The valid range of this parameter
-		 is specific to the CMTS."
+         is specific to the CMTS."
      REFERENCE
         "DOCSIS 3.1 MAC and Upper Layer Protocols Interface
         Specification CM-SP-MULPIv3.1-I17,
@@ -4395,7 +4395,7 @@ docsQosServiceClassAqmLatencyTarget OBJECT-TYPE
         "DOCSIS 3.1 MAC and Upper Layer Protocols Interface
         Specification CM-SP-MULPIv3.1-I04-141218, AQM Encodings section
         in the Common Radio Frequency Interface Encodings Annex."
-	 DEFVAL {0}
+     DEFVAL {0}
      ::= { docsQosServiceClassEntry 43 }
 
 docsQosServiceClassHCMaxTrafficRate OBJECT-TYPE
@@ -4498,7 +4498,7 @@ docsQosServiceClassGuaranteedGrantRate OBJECT-TYPE
         "DOCSIS 3.1 MAC and Upper Layer Protocols Interface
         Specification CM-SP-MULPIv3.1-I13-181213,
         Upstream-Specific QoS Parameter Encodings."
-	 DEFVAL {0}
+     DEFVAL {0}
      ::= { docsQosServiceClassEntry 48 }
 
 docsQosServiceClassGuaranteedRequestInterval OBJECT-TYPE
@@ -4559,7 +4559,7 @@ docsQosServiceClassImmedAqmMaxThreshold OBJECT-TYPE
      REFERENCE
         "DOCSIS 3.1 MAC and Upper Layer Protocols Interface
         Specification CM-SP-MULPIv3.1-I04-141218, AQM Encodings section."
-	 DEFVAL {475}
+     DEFVAL {475}
      ::= { docsQosServiceClassEntry 51 }
 
 docsQosServiceClassImmedAqmRangeExponentRampFunc OBJECT-TYPE
@@ -4578,7 +4578,7 @@ docsQosServiceClassImmedAqmRangeExponentRampFunc OBJECT-TYPE
      REFERENCE
         "DOCSIS 3.1 MAC and Upper Layer Protocols Interface
         Specification CM-SP-MULPIv3.1-I04-141218, AQM Encodings section"
-	 DEFVAL {19}
+     DEFVAL {19}
      ::= { docsQosServiceClassEntry 52 }
 
 docsQosServiceClassLatencyHistBinEdges OBJECT-TYPE
@@ -6160,7 +6160,7 @@ docsQosAggregateServiceFlowTable OBJECT-TYPE
      STATUS      current
      DESCRIPTION
         "This table describes the  attributes for an aggregate service
-		 Flow (ASF). It contains an entry for every active ASF in each MAC Domain."
+         Flow (ASF). It contains an entry for every active ASF in each MAC Domain."
      REFERENCE
         "DOCSIS 3.1 MAC and Upper Layer Protocols Interface
         Specification CM-SP-MULPIv3.1-I17, Common Upstream
@@ -6245,9 +6245,9 @@ docsQosAggregateServiceFlowPriority OBJECT-TYPE
      STATUS      current
      DESCRIPTION
         "This attribute indicates the relative priority of the
-		 Aggregate Service Flow. It represents the sum of the
-		 traffic rate for the Classic Service flow and Aggregate
-		 Service Flow."
+         Aggregate Service Flow. It represents the sum of the
+         traffic rate for the Classic Service flow and Aggregate
+         Service Flow."
      ::= { docsQosAggregateServiceFlowEntry 3 }
 
 docsQosAggregateServiceFlowMaxAggregateTrafficRate OBJECT-TYPE
@@ -6311,7 +6311,7 @@ docsQosAggregateServiceFlowPeakTrafficRate OBJECT-TYPE
          parameter is not present in the corresponding DOCSIS QoS Parameter Set,
          this attribute returns 0. This attribute will also return 0 if DataRateUnitSetting
          is enabled and the resulting value cannot be represented in 32 bits,
-		 in which case HCPeakTrafficRate should be utilized."
+         in which case HCPeakTrafficRate should be utilized."
      ::= { docsQosAggregateServiceFlowEntry 8 }
 
 docsQosAggregateServiceFlowDataRateUnitSetting OBJECT-TYPE
@@ -6335,8 +6335,8 @@ docsQosAggregateServiceFlowLowLatencyAsf OBJECT-TYPE
      STATUS      current
      DESCRIPTION
         "This attribute indicates whether this ASF is a Low Latency ASF.
-		 This implies the ASF is describing a Dual Queue SF setup
-		 underneath the ASF"
+         This implies the ASF is describing a Dual Queue SF setup
+         underneath the ASF"
      ::= { docsQosAggregateServiceFlowEntry 10 }
 
 
@@ -6425,7 +6425,7 @@ docsQosAggregateServiceFlowQpLatencyThreshold OBJECT-TYPE
         "DOCSIS 3.1 MAC and Upper Layer Protocols Interface
         Specification CM-SP-MULPIv3.1-I13-181213, Queue Protection
         Section."
-	 DEFVAL {1000}
+     DEFVAL {1000}
      ::= { docsQosAggregateServiceFlowEntry 17 }
 
 docsQosAggregateServiceFlowQpQueuingScoreThreshold OBJECT-TYPE
@@ -6440,12 +6440,12 @@ docsQosAggregateServiceFlowQpQueuingScoreThreshold OBJECT-TYPE
         "DOCSIS 3.1 MAC and Upper Layer Protocols Interface
         Specification CM-SP-MULPIv3.1-I13-181213, General Service Flow
         Encodings."
-	 DEFVAL {2000}
+     DEFVAL {2000}
      ::= { docsQosAggregateServiceFlowEntry 18 }
 
 docsQosAggregateServiceFlowQpDrainRateExponent OBJECT-TYPE
      SYNTAX      Unsigned32 (0..255)
-	 UNITS       "log2(bytes/second)"
+     UNITS       "log2(bytes/second)"
      MAX-ACCESS  read-only
      STATUS      current
      DESCRIPTION
@@ -6471,8 +6471,8 @@ docsQosAggregateServiceFlowStatsTable OBJECT-TYPE
      DESCRIPTION
         "This object describes statistics associated with
         the Service Flows in a managed device. The CMTS MUST
-		create an instance of AggregateServiceFlowStats for
-		every ASF instantiated in the MAC Domain."
+        create an instance of AggregateServiceFlowStats for
+        every ASF instantiated in the MAC Domain."
      ::= { docsQosMibObjects 27}
 
 docsQosAggregateServiceFlowStatsEntry OBJECT-TYPE
@@ -6859,14 +6859,14 @@ docsQosSfLatencyHistCfgTable OBJECT-TYPE
         "This table defines the latency histogram structure for each
          upstream histogram enabled service flow. The CM/CMTS MUST create
          an active instance of the SfLatencyHistCfg object for every service flow
-		 for which histogram calculation is enabled via the Latency Histogram
-		 Encodings TLV. The activation of an instance of this object enables histogram
+         for which histogram calculation is enabled via the Latency Histogram
+         Encodings TLV. The activation of an instance of this object enables histogram
          calculation for the indexed service flow. The deactivation or deletion
          of an instance of this object disables histogram calculation for the indexed
          service flow.  The CM/CMTS MUST delete an instance of the SfLatencyHistCfg
-		 object if the indexed service flow is deleted (e.g. because of a DSD operation)
-		 or the histogram calculation is disabled via the Latency Histogram
-		 Encodings TLV(i.e. because of a DSC operation)."
+         object if the indexed service flow is deleted (e.g. because of a DSD operation)
+         or the histogram calculation is disabled via the Latency Histogram
+         Encodings TLV(i.e. because of a DSC operation)."
      REFERENCE
         "DOCSIS 3.1 MAC and Upper Layer Protocols Interface
         Specification CM-SP-MULPIv3.1-I17-190116. Latency Histogram Calcuation
@@ -6941,9 +6941,9 @@ docsQosSfLatencySfLabel OBJECT-TYPE
         "This attribute represents the Service Class Name or a Label
         (configured by the operator) to be used in Service Flow Latency
          Performance Reporting. The CMTS SHOULD default this attribute
-		 to the SCN if it's known. If the SCN is not known, the CMTS MUST
-		 default the SfLabel to the value 'unknown'. The Operator can
-		 set this attribute to any string."
+         to the SCN if it's known. If the SCN is not known, the CMTS MUST
+         default the SfLabel to the value 'unknown'. The Operator can
+         set this attribute to any string."
        DEFVAL { "unknown" }
      ::= { docsQosSfLatencyHistCfgEntry 2 }
 
@@ -7146,8 +7146,8 @@ docsQosSfLatencyStatsTable OBJECT-TYPE
         Number of histogram updates at the CMTS for the down-
         stream service flow. The CMTS MUST create an instance
         of the SfLatencyStats object for every combination of
-		MAC Domain and ServiceFlowId on which latency histogram
-		calculation is enabled. The CMTS MUST delete the instance
+        MAC Domain and ServiceFlowId on which latency histogram
+        calculation is enabled. The CMTS MUST delete the instance
         of SfLatencyStats when latency histogram
         calculation is disabled for a service flow."
      REFERENCE

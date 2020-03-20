@@ -37,34 +37,34 @@ docsBpi2Ext31Mib MODULE-IDENTITY
          These objects are in addition to and separate from RFC 4131
          and provide management support for new DOCSIS 3.1 features.
          The following MIBs from RFC 4131 are used to support legacy PKI
-	     CM certificate functions defined in the DOCSIS 3.0 security
-	     specification:
-	        docsBpi2CmDeviceCertTable,
-	        docsBpi2CodeMfgOrgName,
-	        docsBpi2CodeMfgCodeAccessStart,
-	        docsBpi2CodeMfgCvcAccessStart,
-	        docsBpi2CodeCoSignerOrgName,
-	        docsBpi2CodeCoSignerCodeAccessStart,
-	        docsBpi2CodeCoSignerCvcAccessStart,
-	        docsBpi2CodeCvcUpdate.
-	     The following MIBs defined in this MIB module are used to
-	     support new PKI CM certificate functions defined in the
-	     DOCSIS 3.1 security specification:
-	        docsBpi2Ext31CmDeviceCmCert,
-	        docsBpi2Ext31CodeUpdateCvcChain,
-	        docsBpi2Ext31CodeMfgOrgName,
-	        docsBpi2Ext31CodeMfgCodeAccessStart,
-	        docsBpi2Ext31CodeMfgCvcAccessStart,
-	        docsBpi2Ext31CodeCoSignerOrgName,
-	        docsBpi2Ext31CodeCoSignerCodeAccessStart,
-	        docsBpi2Ext31CodeCoSignerCvcAccessStart.
+         CM certificate functions defined in the DOCSIS 3.0 security
+         specification:
+            docsBpi2CmDeviceCertTable,
+            docsBpi2CodeMfgOrgName,
+            docsBpi2CodeMfgCodeAccessStart,
+            docsBpi2CodeMfgCvcAccessStart,
+            docsBpi2CodeCoSignerOrgName,
+            docsBpi2CodeCoSignerCodeAccessStart,
+            docsBpi2CodeCoSignerCvcAccessStart,
+            docsBpi2CodeCvcUpdate.
+         The following MIBs defined in this MIB module are used to
+         support new PKI CM certificate functions defined in the
+         DOCSIS 3.1 security specification:
+            docsBpi2Ext31CmDeviceCmCert,
+            docsBpi2Ext31CodeUpdateCvcChain,
+            docsBpi2Ext31CodeMfgOrgName,
+            docsBpi2Ext31CodeMfgCodeAccessStart,
+            docsBpi2Ext31CodeMfgCvcAccessStart,
+            docsBpi2Ext31CodeCoSignerOrgName,
+            docsBpi2Ext31CodeCoSignerCodeAccessStart,
+            docsBpi2Ext31CodeCoSignerCvcAccessStart.
          Copyright 2015-2017 Cable Television Laboratories, Inc.
          All rights reserved."
      REVISION "201704130000Z" -- April 13, 2017
      DESCRIPTION
        "Revised Version includes ECN
         DOCS-BPI2EXT-MIB-N-17.1710-1."
-	 REVISION "201610200000Z" -- October 20, 2016
+     REVISION "201610200000Z" -- October 20, 2016
      DESCRIPTION
        "Revised Version includes ECN
         DOCS-BPI2EXT-MIB-N-16.1611-2."

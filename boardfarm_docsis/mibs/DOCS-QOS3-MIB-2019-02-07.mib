@@ -1691,48 +1691,48 @@ docsQosParamSetBitMap OBJECT-TYPE
         or modified the QOS Parameter Set. A bit is set to
         1 when the associated parameter is present in the original
         request as follows:
-        	'trafficPriority'  Traffic Priority
-        	'maxTrafficRate'  Maximum Sustained Traffic Rate
+            'trafficPriority'  Traffic Priority
+            'maxTrafficRate'  Maximum Sustained Traffic Rate
 
-        	'maxTrafficBurst'  Maximum Traffic Burst
-        	'minReservedRate'  Minimum Reserved Traffic Rate
+            'maxTrafficBurst'  Maximum Traffic Burst
+            'minReservedRate'  Minimum Reserved Traffic Rate
 
-        	'minReservedPkt'  Assumed Minimum Reserved Rate Packet
+            'minReservedPkt'  Assumed Minimum Reserved Rate Packet
         Size
-        	'activeTimeout'  Timeout for Active QoS Parameters
+            'activeTimeout'  Timeout for Active QoS Parameters
 
-        	'admittedTimeout'  Timeout for Admitted QoS Parameters
+            'admittedTimeout'  Timeout for Admitted QoS Parameters
 
-        	'maxConcatBurst'  Maximum Concatenated Burst
-        	'schedulingType'  Service Flow Scheduling Type
-        	'requestPolicy'  Request/Transmission Policy
-        	'nomPollInterval'  Nominal Polling Interval
-        	'tolPollJitter'  Tolerated Poll Jitter
-        	'unsolicitGrantSize'  Unsolicited Grant Size
-        	'nomGrantInterval'  Nominal Grant Interval
-        	'tolGrantJitter'  Tolerated Grant Jitter
-        	'grantsPerInterval'  Grants per Interval
-        	'tosOverwrite'  IP Type of Service (DSCP) Overwrite
-        	'maxLatency'  Maximum Downstream Latency
-        	'requiredAttrMask'  Service Flow Required Attribute
+            'maxConcatBurst'  Maximum Concatenated Burst
+            'schedulingType'  Service Flow Scheduling Type
+            'requestPolicy'  Request/Transmission Policy
+            'nomPollInterval'  Nominal Polling Interval
+            'tolPollJitter'  Tolerated Poll Jitter
+            'unsolicitGrantSize'  Unsolicited Grant Size
+            'nomGrantInterval'  Nominal Grant Interval
+            'tolGrantJitter'  Tolerated Grant Jitter
+            'grantsPerInterval'  Grants per Interval
+            'tosOverwrite'  IP Type of Service (DSCP) Overwrite
+            'maxLatency'  Maximum Downstream Latency
+            'requiredAttrMask'  Service Flow Required Attribute
                               Mask
-        	'forbiddenAttrMask  Service Flow Forbidden Attribute
+            'forbiddenAttrMask  Service Flow Forbidden Attribute
                               Mask
-        	'attrAggrMask'  Service Flow Attribute Aggregation
+            'attrAggrMask'  Service Flow Attribute Aggregation
                           Mask
-        	'applicationId'  Application Identifier
-        	'multipCntnReqWindow'  Multiplier to Contention
+            'applicationId'  Application Identifier
+            'multipCntnReqWindow'  Multiplier to Contention
                                  Request Backoff Window
-        	'multipBytesReq'  Multiplier to Number of Bytes Requested
-        	'maxReqPerSidCluster'  Maximum Requests per SID Cluster
-        	'maxOutstandingBytesPerSidCluster'  Maximum Outstanding
+            'multipBytesReq'  Multiplier to Number of Bytes Requested
+            'maxReqPerSidCluster'  Maximum Requests per SID Cluster
+            'maxOutstandingBytesPerSidCluster'  Maximum Outstanding
                                               Bytes per SID Cluster
-        	'maxTotalBytesReqPerSidCluster'  Maximum Total
+            'maxTotalBytesReqPerSidCluster'  Maximum Total
                                            Bytes Requested per SID
                                            Cluster
-        	'maximumTimeInSidCluster'  Maximum Time in the SID Cluster
-        	'peakTrafficRate'  Peak Traffic Rate
-        	'dsResequencing'   Downstream Resequencing
+            'maximumTimeInSidCluster'  Maximum Time in the SID Cluster
+            'peakTrafficRate'  Peak Traffic Rate
+            'dsResequencing'   Downstream Resequencing
             'minimumBuffer'    Minimum Buffer
             'targetBuffer'     Target Buffer
             'maximumBuffer'    Maximum Buffer -- XXX IATC stuff here?!?

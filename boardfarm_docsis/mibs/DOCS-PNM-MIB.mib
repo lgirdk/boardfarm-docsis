@@ -6600,9 +6600,9 @@ docsPnmCmtsUtscResultOutput OBJECT-TYPE
      ::= { docsPnmCmtsUtscResultEntry 5 }
 
 docsPnmCmtsUtscResultCalibrationConstantK OBJECT-TYPE
-	 SYNTAX      Unsigned32 (0..65535)
-	 UNITS       "HundredthsdB"
-	 MAX-ACCESS  read-only
+     SYNTAX      Unsigned32 (0..65535)
+     UNITS       "HundredthsdB"
+     MAX-ACCESS  read-only
      STATUS      current
      DESCRIPTION
         "This attribute returns the calibration constant 'K' applied to all

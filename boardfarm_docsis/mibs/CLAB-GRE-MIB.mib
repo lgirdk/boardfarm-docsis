@@ -361,7 +361,7 @@ clabGRETunnelTcpMssClamping OBJECT-TYPE
         "Specifies whether TCP MSS clamping is enabled on the tunnel.
          0 disables clamping, 1 clamps the MSS depending on the
          interface MTU. A value > 1 will be used as clamping size.
-		 See Reference: RFC 4459"
+         See Reference: RFC 4459"
     DEFVAL { 0 }
     ::= { clabGRETunnelEntry 18 }
 

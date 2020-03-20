@@ -443,7 +443,7 @@ pktcEnNcsEndPntLVMgmtTable OBJECT-TYPE
        MAX-ACCESS    not-accessible
        STATUS        current
        DESCRIPTION
-	   "This MIB table contains the MIB Objects used for
+       "This MIB table contains the MIB Objects used for
             managing loop voltage on an MTA. An MTA MUST
             implement the defined MIB Objects and the associated
             functionality."
@@ -456,7 +456,7 @@ pktcEnNcsEndPntLVMgmtEntry OBJECT-TYPE
        MAX-ACCESS    not-accessible
        STATUS        current
        DESCRIPTION
-	   "Each entry in this MIB table consists of the
+       "Each entry in this MIB table consists of the
             loop voltage management policy for the specified
             index. The MTA MUST use the ifIndex with a value of '1'
             to represent the E-MTA and the remaining indices

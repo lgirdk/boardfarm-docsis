@@ -93,7 +93,7 @@ clabProjWireless        OBJECT IDENTIFIER ::= { clabProject 5 }
 -- Sub-tree for Global Security Definitions
 clabSecurity            OBJECT IDENTIFIER ::= { cableLabs 3 }
 clabSecCertObject       OBJECT IDENTIFIER ::= { clabSecurity 1 }
-clabSecOlcaObject		OBJECT IDENTIFIER ::= { clabSecurity 2 }
+clabSecOlcaObject        OBJECT IDENTIFIER ::= { clabSecurity 2 }
 -- Sub tree for CableLabs cross project common MIB definitions
 clabCommonMibs          OBJECT IDENTIFIER ::= { cableLabs 4 }
 

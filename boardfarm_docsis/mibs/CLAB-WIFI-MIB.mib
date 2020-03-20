@@ -118,13 +118,13 @@ IMPORTS
 
 -- Textual Conventions
 PktErrorRateType ::= TEXTUAL-CONVENTION
-			DISPLAY-HINT 	"d-9"
-			STATUS current
-			DESCRIPTION
-				"This data type represents a packet error rate in
-				 units of 10^-5 or a resolution of 0.000000001
-				 precision."
-			SYNTAX Integer32
+            DISPLAY-HINT     "d-9"
+            STATUS current
+            DESCRIPTION
+                "This data type represents a packet error rate in
+                 units of 10^-5 or a resolution of 0.000000001
+                 precision."
+            SYNTAX Integer32
 
 -- Object Definitions
 clabWIFINotifications OBJECT IDENTIFIER ::= { clabWIFIMib 0 }
@@ -866,10 +866,10 @@ clabWIFIRadioRPIHistogramReport   OBJECT-TYPE
 
 clabWIFIRadioPreambleType    OBJECT-TYPE
     SYNTAX      INTEGER  {
-    			    short(1),
-			    long(2),
-			    auto(3)
-			 }
+                             short(1),
+                             long(2),
+                             auto(3)
+                         }
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -2769,7 +2769,7 @@ ClabWIFIAccessPointWPSEntry ::= SEQUENCE {
     clabWIFIAccessPointWPSAPPin
                  SnmpAdminString,
     clabWIFIAccessPointWPSSetWPSClientPin
-		 SnmpAdminString,
+                 SnmpAdminString,
     clabWIFIAccessPointWPSConfigMethodsEnable
                  SnmpAdminString,
     clabWIFIAccessPointWPSSetWPSMethods
@@ -5334,7 +5334,7 @@ clabWIFIAccessPointPasspoint2VenueNamesEntry    OBJECT-TYPE
         "The conceptual row of clabWIFIAccessPointPasspoint2VenueNamesTable."
     INDEX {
             clabWIFIAccessPointId,
-			clabWIFIAccessPointPasspoint2VenueNameIndex
+            clabWIFIAccessPointPasspoint2VenueNameIndex
                       }
     ::= { clabWIFIAccessPointPasspoint2VenueNamesTable 1 }
 
@@ -5444,7 +5444,7 @@ clabWIFIAccessPointPasspoint2NAIRealmsEapMethodsTable OBJECT-TYPE
     DESCRIPTION
         "This table is used to get the EAP method for each Realm."
     REFERENCE
-    		"clabWIFIAccessPointPasspoint"
+            "clabWIFIAccessPointPasspoint"
     ::= {clabWIFIAccessPointPasspoint 12 }
 
 clabWIFIAccessPointPasspoint2NAIRealmsEapMethodsEntry    OBJECT-TYPE
@@ -5455,8 +5455,8 @@ clabWIFIAccessPointPasspoint2NAIRealmsEapMethodsEntry    OBJECT-TYPE
         "The conceptual row of clabWIFIAccessPointPasspoint2NAIRealmsEapMethods Table."
     INDEX {
             clabWIFIAccessPointId,
-			clabWIFIAccessPointPasspoint2NAIRealmsIndex,
-			clabWIFIAccessPointPasspoint2NAIRealmsEapMethodsIndex
+            clabWIFIAccessPointPasspoint2NAIRealmsIndex,
+            clabWIFIAccessPointPasspoint2NAIRealmsEapMethodsIndex
           }
     ::= {clabWIFIAccessPointPasspoint2NAIRealmsEapMethodsTable 1 }
 
@@ -5497,7 +5497,7 @@ clabWIFIAccessPointPasspoint2NAIRealmsEapMethodsAuthTable OBJECT-TYPE
     DESCRIPTION
         "This table is used to get the Authentication ID and paramemters for each EAP method."
     REFERENCE
-    		"clabWIFIAccessPointPasspoint"
+            "clabWIFIAccessPointPasspoint"
     ::= {clabWIFIAccessPointPasspoint 13 }
 
 clabWIFIAccessPointPasspoint2NAIRealmsEapMethodsAuthEntry    OBJECT-TYPE
@@ -5508,9 +5508,9 @@ clabWIFIAccessPointPasspoint2NAIRealmsEapMethodsAuthEntry    OBJECT-TYPE
         "The conceptual row of clabWIFIAccessPointPasspoint2NAIRealmsEapMethodsAuth Table."
     INDEX {
             clabWIFIAccessPointId,
-			clabWIFIAccessPointPasspoint2NAIRealmsIndex,
-			clabWIFIAccessPointPasspoint2NAIRealmsEapMethodsIndex,
-			clabWIFIAccessPointPasspoint2NAIRealmsEapMethodsAuthParmIndex
+            clabWIFIAccessPointPasspoint2NAIRealmsIndex,
+            clabWIFIAccessPointPasspoint2NAIRealmsEapMethodsIndex,
+            clabWIFIAccessPointPasspoint2NAIRealmsEapMethodsAuthParmIndex
           }
     ::= {clabWIFIAccessPointPasspoint2NAIRealmsEapMethodsAuthTable 1 }
 
@@ -5634,7 +5634,7 @@ clabWIFIAccessPointPasspoint2OSUProviderNamesTable OBJECT-TYPE
     DESCRIPTION
         "This table is used to get the provider names for each OSU provider."
     REFERENCE
-    		"clabWIFIAccessPointPasspoint"
+            "clabWIFIAccessPointPasspoint"
     ::= {clabWIFIAccessPointPasspoint 15 }
 
 clabWIFIAccessPointPasspoint2OSUProviderNamesEntry    OBJECT-TYPE
@@ -5645,7 +5645,7 @@ clabWIFIAccessPointPasspoint2OSUProviderNamesEntry    OBJECT-TYPE
         "The conceptual row of clabWIFIAccessPointPasspoint2OSUProviderNames Table."
     INDEX {
             clabWIFIAccessPointId,
-			clabWIFIAccessPointPasspoint2OSUProviderIndex,
+            clabWIFIAccessPointPasspoint2OSUProviderIndex,
             clabWIFIAccessPointPasspoint2OSUProviderNamesIndex
           }
     ::= {clabWIFIAccessPointPasspoint2OSUProviderNamesTable 1 }
@@ -5695,7 +5695,7 @@ clabWIFIAccessPointPasspoint2OSUProviderIconsTable OBJECT-TYPE
     DESCRIPTION
         "This table is used to get the icon information for each OSU provider."
     REFERENCE
-    		"clabWIFIAccessPointPasspoint"
+            "clabWIFIAccessPointPasspoint"
     ::= {clabWIFIAccessPointPasspoint 16 }
 
 clabWIFIAccessPointPasspoint2OSUProviderIconsEntry    OBJECT-TYPE
@@ -5706,8 +5706,8 @@ clabWIFIAccessPointPasspoint2OSUProviderIconsEntry    OBJECT-TYPE
         "The conceptual row of clabWIFIAccessPointPasspoint2OSUProviderIcons Table."
     INDEX {
             clabWIFIAccessPointId,
-			clabWIFIAccessPointPasspoint2OSUProviderIndex,
-			clabWIFIAccessPointPasspoint2OSUProviderIconsIndex
+            clabWIFIAccessPointPasspoint2OSUProviderIndex,
+            clabWIFIAccessPointPasspoint2OSUProviderIconsIndex
           }
     ::= {clabWIFIAccessPointPasspoint2OSUProviderIconsTable 1 }
 
@@ -5793,7 +5793,7 @@ clabWIFIAccessPointPasspoint2OSUProviderServiceDescTable OBJECT-TYPE
     DESCRIPTION
         "This table is used to get the service descriptions for each OSU provider."
     REFERENCE
-    		"clabWIFIAccessPointPasspoint"
+            "clabWIFIAccessPointPasspoint"
     ::= {clabWIFIAccessPointPasspoint 17 }
 
 clabWIFIAccessPointPasspoint2OSUProviderServiceDescEntry    OBJECT-TYPE
@@ -5804,8 +5804,8 @@ clabWIFIAccessPointPasspoint2OSUProviderServiceDescEntry    OBJECT-TYPE
         "The conceptual row of clabWIFIAccessPointPasspoint2OSUProviderServiceDesc Table."
     INDEX {
             clabWIFIAccessPointId,
-			clabWIFIAccessPointPasspoint2OSUProviderIndex,
-			clabWIFIAccessPointPasspoint2OSUProviderServiceDescIndex
+            clabWIFIAccessPointPasspoint2OSUProviderIndex,
+            clabWIFIAccessPointPasspoint2OSUProviderServiceDescIndex
           }
     ::= {clabWIFIAccessPointPasspoint2OSUProviderServiceDescTable 1 }
 

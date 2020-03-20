@@ -6,26 +6,26 @@ IMPORTS
     Integer32,
     Unsigned32,
     NOTIFICATION-TYPE
-	--	BITS
-    							FROM SNMPv2-SMI
+    --    BITS
+                                FROM SNMPv2-SMI
     TruthValue, DisplayString, DateAndTime
-    							FROM SNMPv2-TC
+                                FROM SNMPv2-TC
     OBJECT-GROUP,
-    MODULE-COMPLIANCE				FROM SNMPv2-CONF
+    MODULE-COMPLIANCE                FROM SNMPv2-CONF
     InetAddressType, InetAddress
                                                FROM INET-ADDRESS-MIB
-	NOTIFICATION-GROUP
-    							FROM SNMPv2-CONF
+    NOTIFICATION-GROUP
+                                FROM SNMPv2-CONF
 clabProjPacketCable
-  							    	FROM CLAB-DEF-MIB;
+                                      FROM CLAB-DEF-MIB;
 pktcEventMib MODULE-IDENTITY
     LAST-UPDATED    "0203080000Z" -- 03/08/02
     ORGANIZATION    "Packet Cable Provisioning/OSS Group"
     CONTACT-INFO
      "Matt Osman
             Postal: Cable Television Laboratories, Inc.
-			400 Centennial Parkway
-			Louisville, Colorado 80027-1266
+            400 Centennial Parkway
+            Louisville, Colorado 80027-1266
             U.S.A.
             Phone:  +1 303-661-9100
             Fax:    +1 303-661-9199
@@ -35,25 +35,25 @@ pktcEventMib MODULE-IDENTITY
             for event reporting
 
             Acknowledgements:
-            Rick Vetter		-	Motorola
-     Eugene Nechamkin	-	Broadcom"
+            Rick Vetter        -    Motorola
+     Eugene Nechamkin    -    Broadcom"
     ::=  { clabProjPacketCable 3 }
 
 --
 --
-pktcDevEventControl		OBJECT IDENTIFIER ::= { pktcEventMib 1 }
-pktcDevEventConfig	  	OBJECT IDENTIFIER ::= { pktcEventMib 2 }
-pktcDevEventThrottle	OBJECT IDENTIFIER ::= { pktcEventMib 3 }
-pktcDevEventLocal		OBJECT IDENTIFIER ::= { pktcEventMib 4 }
-pktcDevEventNotify		OBJECT IDENTIFIER ::= { pktcEventMib 5 }
-pktcDevEvNotification 	OBJECT IDENTIFIER ::= { pktcEventMib 6 0 }
+pktcDevEventControl        OBJECT IDENTIFIER ::= { pktcEventMib 1 }
+pktcDevEventConfig          OBJECT IDENTIFIER ::= { pktcEventMib 2 }
+pktcDevEventThrottle    OBJECT IDENTIFIER ::= { pktcEventMib 3 }
+pktcDevEventLocal        OBJECT IDENTIFIER ::= { pktcEventMib 4 }
+pktcDevEventNotify        OBJECT IDENTIFIER ::= { pktcEventMib 5 }
+pktcDevEvNotification     OBJECT IDENTIFIER ::= { pktcEventMib 6 0 }
 
 --
 --  Event Reporting
 --
 
 --
---	Event reporting control
+--    Event reporting control
 --
 pktcDevEvControl OBJECT-TYPE
     SYNTAX INTEGER {
@@ -120,7 +120,7 @@ pktcDevEvSyslogUdpPort OBJECT-TYPE
     ::= { pktcDevEventControl 5 }
 
 --
---	Event throttling control
+--    Event throttling control
 --
 pktcDevEvThrottleAdminStatus OBJECT-TYPE
     SYNTAX INTEGER {
@@ -227,11 +227,11 @@ pktcDevEvProgrammableEntry OBJECT-TYPE
     ::= { pktcDevEvProgrammableTable 1 }
 
 PktcDevEvProgrammableEntry ::= SEQUENCE {
-    pktcDevEvProgrammableId		  	Integer32,
-    pktcDevEvProgrammableEnterprise	  	Integer32,
-    pktcDevEvProgrammableLevel     	  	INTEGER,
-    pktcDevEvProgrammableReporting       	BITS,
-    pktcDevEvProgrammableText 			DisplayString
+    pktcDevEvProgrammableId              Integer32,
+    pktcDevEvProgrammableEnterprise          Integer32,
+    pktcDevEvProgrammableLevel               INTEGER,
+    pktcDevEvProgrammableReporting           BITS,
+    pktcDevEvProgrammableText             DisplayString
 
     }
 
@@ -243,7 +243,7 @@ pktcDevEvProgrammableId OBJECT-TYPE
 "ID for a specific programmable event to which the priority and display string are matched. These Event Ids are vendor specific or in the case of PacketCable events defined in pkt-tr-memevent-id-v01-001128."
     ::= { pktcDevEvProgrammableEntry 1 }
 
-pktcDevEvProgrammableEnterprise	OBJECT-TYPE
+pktcDevEvProgrammableEnterprise    OBJECT-TYPE
     SYNTAX      Integer32  (1..2147483647)
     MAX-ACCESS  read-only
     STATUS      current
@@ -284,8 +284,8 @@ pktcDevEvProgrammableReporting OBJECT-TYPE
             local(0),
             traps(1),
             syslog(2),
-		inform(3),
-		none(4)
+        inform(3),
+        none(4)
         }
         MAX-ACCESS  read-write
         STATUS      current
@@ -298,8 +298,8 @@ pktcDevEvProgrammableReporting OBJECT-TYPE
              traps(1) bit is set, then generate a trap, if the
              syslog(2) bit is set, then send a syslog message
              (assuming the syslog address is set)
-		   inform(3) bit is set, then generate an inform, if the
-		   none(4) bit is set, then this event is not generated."
+           inform(3) bit is set, then generate an inform, if the
+           none(4) bit is set, then this event is not generated."
 --      DEFVAL { local }
         ::= { pktcDevEvProgrammableEntry 4 }
 
@@ -338,11 +338,11 @@ pktcDevEvFixedEntry OBJECT-TYPE
     ::= { pktcDevEvFixedTable 1 }
 
 PktcDevEvFixedEntry ::= SEQUENCE {
-    pktcDevEvFixedId		  Integer32,
-    pktcDevEvFixedEnterprise 	  Integer32,
-    pktcDevEvFixedLevel     	  INTEGER,
-    pktcDevEvFixedReporting     	  BITS,
-    pktcDevEvFixedText 		  DisplayString
+    pktcDevEvFixedId          Integer32,
+    pktcDevEvFixedEnterprise       Integer32,
+    pktcDevEvFixedLevel           INTEGER,
+    pktcDevEvFixedReporting           BITS,
+    pktcDevEvFixedText           DisplayString
     }
 
 pktcDevEvFixedId OBJECT-TYPE
@@ -353,14 +353,14 @@ pktcDevEvFixedId OBJECT-TYPE
 "ID for a specific fixed event to which the priority and display string are matched. These Event Ids are vendor specific or in the case of PacketCable events defined in pkt-tr-memevent-id-v01-001128."
     ::= { pktcDevEvFixedEntry 1 }
 
-pktcDevEvFixedEnterprise	OBJECT-TYPE
+pktcDevEvFixedEnterprise    OBJECT-TYPE
     SYNTAX      Integer32  (1..2147483647)
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
          "Provides the IANA enterprise number of the device manufacturer for
-		proprietary events, and the CableLabs IANA enterprise number for
-		PacketCable specified events."
+        proprietary events, and the CableLabs IANA enterprise number for
+        PacketCable specified events."
     ::= { pktcDevEvFixedEntry 2 }
 
 pktcDevEvFixedLevel OBJECT-TYPE
@@ -396,8 +396,8 @@ pktcDevEvFixedReporting OBJECT-TYPE
             local(0),
             traps(1),
             syslog(2),
-		  inform(3),
-		  none(4)
+          inform(3),
+          none(4)
         }
         MAX-ACCESS  read-write
         STATUS      current
@@ -410,7 +410,7 @@ pktcDevEvFixedReporting OBJECT-TYPE
               bit is set, then send a syslog message (assuming the syslog address is
               set) inform(3) bit is set, then generate an inform, if the none(4) bit
               is set, then this event is not generated."
---	  DEFVAL { local }
+--      DEFVAL { local }
         ::= { pktcDevEvFixedEntry 4 }
 
 pktcDevEvFixedText OBJECT-TYPE
@@ -449,14 +449,14 @@ pktcDevEventEntry OBJECT-TYPE
     ::= { pktcDevEventTable 1 }
 
 PktcDevEventEntry ::= SEQUENCE {
-           	pktcDevEvIndex           	INTEGER,
-	     	pktcDevEvTime			DateAndTime,
-            	pktcDevEvLevel           	INTEGER,
-	     	pktcDevEvEnterprise		Integer32,
-            	pktcDevEvId              	Unsigned32,
-           	pktcDevEvText            	DisplayString,
-	    	pktcDevEvMacAddress		OCTET STRING,
-	      	pktcDevEvEndpointName	DisplayString
+               pktcDevEvIndex               INTEGER,
+             pktcDevEvTime            DateAndTime,
+                pktcDevEvLevel               INTEGER,
+             pktcDevEvEnterprise        Integer32,
+                pktcDevEvId                  Unsigned32,
+               pktcDevEvText                DisplayString,
+            pktcDevEvMacAddress        OCTET STRING,
+              pktcDevEvEndpointName    DisplayString
         }
 
 pktcDevEvIndex OBJECT-TYPE
@@ -470,13 +470,13 @@ pktcDevEvIndex OBJECT-TYPE
             (b) the device reboots and does not implement non-volatile
             storage for this log, or (c) it reaches the value 2^31.
             The next entry for all the above cases is 1. This also serves as
-		  a indicator of event sequence."
+          a indicator of event sequence."
     ::= { pktcDevEventEntry 1 }
 
-pktcDevEvTime		OBJECT-TYPE
-    SYNTAX      	DateAndTime
-    MAX-ACCESS  	read-only
-    STATUS      	current
+pktcDevEvTime        OBJECT-TYPE
+    SYNTAX          DateAndTime
+    MAX-ACCESS      read-only
+    STATUS          current
     DESCRIPTION
             "Provides a human-readable description of the
 time at which the event occurred."
@@ -499,14 +499,14 @@ pktcDevEvLevel OBJECT-TYPE
              to least serious (debug)."
     ::= { pktcDevEventEntry 3 }
 
-   pktcDevEvEnterprise	OBJECT-TYPE
+   pktcDevEvEnterprise    OBJECT-TYPE
     SYNTAX      Integer32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
          "Provides the IANA enterprise number of the device manufacturer for
-		proprietary events, and the CableLabs IANA enterprise number for
-		PacketCable specified events."
+        proprietary events, and the CableLabs IANA enterprise number for
+        PacketCable specified events."
     ::= { pktcDevEventEntry 4 }
 
 pktcDevEvId OBJECT-TYPE
@@ -529,7 +529,7 @@ pktcDevEvText OBJECT-TYPE
              etc.)."
     ::= { pktcDevEventEntry 6 }
 
-   pktcDevEvMacAddress	 OBJECT-TYPE
+   pktcDevEvMacAddress     OBJECT-TYPE
     SYNTAX      OCTET STRING
     MAX-ACCESS  read-only
     STATUS      current
@@ -537,7 +537,7 @@ pktcDevEvText OBJECT-TYPE
             "Provides the MAC address of the device generating the event."
     ::= { pktcDevEventEntry 7 }
 
-    pktcDevEvEndpointName	 OBJECT-TYPE
+    pktcDevEvEndpointName     OBJECT-TYPE
     SYNTAX      DisplayString
     MAX-ACCESS  read-only
     STATUS      current
@@ -549,7 +549,7 @@ pktcDevEvText OBJECT-TYPE
     ::= { pktcDevEventEntry 8 }
 
 --
---	Event Data for Traps - Informs
+--    Event Data for Traps - Informs
 --
     pktcDevEvReportIndex           OBJECT-TYPE
     SYNTAX      Integer32  (1..2147483647)
@@ -560,13 +560,13 @@ pktcDevEvText OBJECT-TYPE
              for each event generated. Used for sequencing of events."
     ::= { pktcDevEventNotify 1 }
 
-   pktcDevEvReportTime		OBJECT-TYPE
+   pktcDevEvReportTime        OBJECT-TYPE
     SYNTAX      DateAndTime
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
             "Provides a human-readable description of the time at
-			which the event occurred."
+            which the event occurred."
     ::= { pktcDevEventNotify 2 }
 
     pktcDevEvReportLevel           OBJECT-TYPE
@@ -585,15 +585,15 @@ pktcDevEvText OBJECT-TYPE
              to least serious (debug)."
     ::= { pktcDevEventNotify 3 }
 
-   pktcDevEvReportEnterprise	OBJECT-TYPE
+   pktcDevEvReportEnterprise    OBJECT-TYPE
     SYNTAX      Integer32
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
             "Provides the IANA enterprise number of the device
-          	manufacturer for proprietary events, and the CableLabs
-          	IANA enterprise number for
-		PacketCable specified events."
+              manufacturer for proprietary events, and the CableLabs
+              IANA enterprise number for
+        PacketCable specified events."
     ::= { pktcDevEventNotify 4 }
 
     pktcDevEvReportId              OBJECT-TYPE
@@ -616,7 +616,7 @@ pktcDevEvText OBJECT-TYPE
              etc.)."
     ::= { pktcDevEventNotify 6 }
 
-   pktcDevEvReportMacAddress	 OBJECT-TYPE
+   pktcDevEvReportMacAddress     OBJECT-TYPE
     SYNTAX      OCTET STRING
     MAX-ACCESS  read-only
     STATUS      current
@@ -624,7 +624,7 @@ pktcDevEvText OBJECT-TYPE
           "Provides the MAC address of the device generating the event."
     ::= { pktcDevEventNotify 7 }
 
-    pktcDevEvReportEndpointName	 OBJECT-TYPE
+    pktcDevEvReportEndpointName     OBJECT-TYPE
     SYNTAX      DisplayString
     MAX-ACCESS  read-only
     STATUS      current
@@ -636,22 +636,22 @@ pktcDevEvText OBJECT-TYPE
     ::= { pktcDevEventNotify 8 }
 
    pktcDevEvInform NOTIFICATION-TYPE
-	OBJECTS { pktcDevEvReportIndex, pktcDevEvReportTime,pktcDevEvReportLevel,
-	    pktcDevEvReportEnterprise,pktcDevEvReportId,pktcDevEvReportText,
-	    pktcDevEvReportMacAddress,pktcDevEvReportEndpointName }
-	STATUS      current
+    OBJECTS { pktcDevEvReportIndex, pktcDevEvReportTime,pktcDevEvReportLevel,
+        pktcDevEvReportEnterprise,pktcDevEvReportId,pktcDevEvReportText,
+        pktcDevEvReportMacAddress,pktcDevEvReportEndpointName }
+    STATUS      current
         DESCRIPTION
-		"Inform for event reporting "
-	::= { pktcDevEvNotification 1 }
+        "Inform for event reporting "
+    ::= { pktcDevEvNotification 1 }
 
    pktcDevEvTrap NOTIFICATION-TYPE
-	OBJECTS { pktcDevEvReportIndex, pktcDevEvReportTime,pktcDevEvReportLevel,
-	    pktcDevEvReportEnterprise,pktcDevEvReportId,pktcDevEvReportText,
-	    pktcDevEvReportMacAddress,pktcDevEvReportEndpointName }
-	STATUS      current
+    OBJECTS { pktcDevEvReportIndex, pktcDevEvReportTime,pktcDevEvReportLevel,
+        pktcDevEvReportEnterprise,pktcDevEvReportId,pktcDevEvReportText,
+        pktcDevEvReportMacAddress,pktcDevEvReportEndpointName }
+    STATUS      current
         DESCRIPTION
-		" Trap for event reporting "
-	::= { pktcDevEvNotification 2 }
+        " Trap for event reporting "
+    ::= { pktcDevEvNotification 2 }
 
 pktcEventConformance  OBJECT IDENTIFIER ::= { pktcEventMib 7 }
 pktcEventCompliances  OBJECT IDENTIFIER ::= { pktcEventConformance 1 }
@@ -678,39 +678,39 @@ pktcEventBasicCompliance MODULE-COMPLIANCE
 
 pktcEventGroup OBJECT-GROUP
     OBJECTS {
-        	pktcDevEvControl,
-        	pktcDevEvControlState,
-        	pktcDevEvSyslogAddressType,
-        	pktcDevEvSyslogAddress,
-        	pktcDevEvSyslogUdpPort,
-        	pktcDevEvThrottleAdminStatus,
-        	pktcDevEvThrottleInhibited,
-        	pktcDevEvThrottleThreshold,
-        	pktcDevEvThrottleInterval,
-  		pktcDevEvProgrammableEnterprise,
-    		pktcDevEvProgrammableLevel,
-    		pktcDevEvProgrammableReporting,
-    		pktcDevEvProgrammableText,
-    		pktcDevEvFixedEnterprise,
-    		pktcDevEvFixedLevel,
-    		pktcDevEvFixedReporting,
-    		pktcDevEvFixedText,
-          	pktcDevEvIndex,
-	     	pktcDevEvTime,
-        	pktcDevEvLevel,
-	    	pktcDevEvEnterprise,
-        	pktcDevEvId,
-        	pktcDevEvText,
-	    	pktcDevEvMacAddress,
-	    	pktcDevEvEndpointName,
-		pktcDevEvReportIndex,
-		pktcDevEvReportTime,
- 		pktcDevEvReportLevel,
-		pktcDevEvReportEnterprise,
-		pktcDevEvReportId,
-    		pktcDevEvReportText,
-    		pktcDevEvReportMacAddress,
-    		pktcDevEvReportEndpointName
+            pktcDevEvControl,
+            pktcDevEvControlState,
+            pktcDevEvSyslogAddressType,
+            pktcDevEvSyslogAddress,
+            pktcDevEvSyslogUdpPort,
+            pktcDevEvThrottleAdminStatus,
+            pktcDevEvThrottleInhibited,
+            pktcDevEvThrottleThreshold,
+            pktcDevEvThrottleInterval,
+          pktcDevEvProgrammableEnterprise,
+            pktcDevEvProgrammableLevel,
+            pktcDevEvProgrammableReporting,
+            pktcDevEvProgrammableText,
+            pktcDevEvFixedEnterprise,
+            pktcDevEvFixedLevel,
+            pktcDevEvFixedReporting,
+            pktcDevEvFixedText,
+              pktcDevEvIndex,
+             pktcDevEvTime,
+            pktcDevEvLevel,
+            pktcDevEvEnterprise,
+            pktcDevEvId,
+            pktcDevEvText,
+            pktcDevEvMacAddress,
+            pktcDevEvEndpointName,
+        pktcDevEvReportIndex,
+        pktcDevEvReportTime,
+         pktcDevEvReportLevel,
+        pktcDevEvReportEnterprise,
+        pktcDevEvReportId,
+            pktcDevEvReportText,
+            pktcDevEvReportMacAddress,
+            pktcDevEvReportEndpointName
     }
     STATUS    current
     DESCRIPTION
@@ -719,12 +719,12 @@ pktcEventGroup OBJECT-GROUP
 
 -- Notification Group Added
 
-pktcEventNotificationGroup		NOTIFICATION-GROUP
-	NOTIFICATIONS { pktcDevEvInform, pktcDevEvTrap }
-	STATUS	current
-	DESCRIPTION
-		"These notifications deal with change in status of
-		MTA Device."
-	::= { pktcEventGroups 2 }
+pktcEventNotificationGroup        NOTIFICATION-GROUP
+    NOTIFICATIONS { pktcDevEvInform, pktcDevEvTrap }
+    STATUS    current
+    DESCRIPTION
+        "These notifications deal with change in status of
+        MTA Device."
+    ::= { pktcEventGroups 2 }
 
 END

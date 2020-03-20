@@ -75,7 +75,7 @@
 
        REVISION     "200503030000Z"  -- March 3, 2005
        DESCRIPTION  "Added the IANAtunnelType TC and deprecated
-	                 IANAifType sixToFour (215) per RFC4087."
+                     IANAifType sixToFour (215) per RFC4087."
 
        REVISION     "200411220000Z"  -- November 22, 2004
        DESCRIPTION  "Registration of new IANA ifType 227 per RFC4631."
@@ -85,7 +85,7 @@
 
        REVISION     "200405120000Z"  -- May 12, 2004
        DESCRIPTION  "Added description for IANAifType 6, and
-	                 changed the descriptions for IANAifTypes
+                     changed the descriptions for IANAifTypes
                      180, 181, and 182."
 
        REVISION     "200405070000Z"  -- May 7, 2004
@@ -378,18 +378,18 @@
                    mpc (113),          -- IBM multi-protocol channel support
                    ipOverAtm (114),    -- IBM ipOverAtm
                    iso88025Fiber (115), -- ISO 802.5j Fiber Token Ring
-                   tdlc (116),	       -- IBM twinaxial data link control
+                   tdlc (116),           -- IBM twinaxial data link control
                    gigabitEthernet (117), -- Obsoleted via RFC3635
                                           -- ethernetCsmacd (6) should be used instead
                    hdlc (118),         -- HDLC
-                   lapf (119),	       -- LAP F
-                   v37 (120),	       -- V.37
+                   lapf (119),           -- LAP F
+                   v37 (120),           -- V.37
                    x25mlp (121),       -- Multi-Link Protocol
                    x25huntGroup (122), -- X25 Hunt Group
                    trasnpHdlc (123),   -- Transp HDLC
                    interleave (124),   -- Interleave channel
                    fast (125),         -- Fast channel
-                   ip (126),	       -- IP (for APPN HPR in IP networks)
+                   ip (126),           -- IP (for APPN HPR in IP networks)
                    docsCableMaclayer (127),  -- CATV Mac Layer
                    docsCableDownstream (128), -- CATV Downstream interface
                    docsCableUpstream (129),  -- CATV Upstream interface
@@ -414,16 +414,16 @@
                    dvbRccUpstream (148),  -- DVB-RCC Upstream Channel
                    atmVirtual (149),   -- ATM Virtual Interface
                    mplsTunnel (150),   -- MPLS Tunnel Virtual Interface
-                   srp (151),	-- Spatial Reuse Protocol
+                   srp (151),    -- Spatial Reuse Protocol
                    voiceOverAtm (152),  -- Voice Over ATM
                    voiceOverFrameRelay (153),   -- Voice Over Frame Relay
-                   idsl (154),		-- Digital Subscriber Loop over ISDN
+                   idsl (154),        -- Digital Subscriber Loop over ISDN
                    compositeLink (155),  -- Avici Composite Link Interface
                    ss7SigLink (156),     -- SS7 Signaling Link
                    propWirelessP2P (157),  --  Prop. P2P wireless interface
                    frForward (158),    -- Frame Forward Interface
-                   rfc1483 (159),	-- Multiprotocol over ATM AAL5
-                   usb (160),		-- USB Interface
+                   rfc1483 (159),    -- Multiprotocol over ATM AAL5
+                   usb (160),        -- USB Interface
                    ieee8023adLag (161),  -- IEEE 802.3ad Link Aggregate
                    bgppolicyaccounting (162), -- BGP Policy Accounting
                    frf16MfrBundle (163), -- FRF .16 Multilink Frame Relay
