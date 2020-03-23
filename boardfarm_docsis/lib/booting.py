@@ -3,27 +3,27 @@ from boardfarm.lib.voice import dns_setup_sipserver, voice_devices_configure
 from boardfarm_docsis.exceptions import VoiceSetupConfigureFailure
 
 
-def boot(self, logged=dict()):
+def boot(self, devices, logged=dict()):
     logged['boot_step'] = "env_ok"
 
-    self.dev.board.cm_cfg = self.dev.board.generate_cfg(
-        self.cfg, None, self.ertr_mode)
+    devices.board.cm_cfg = devices.board.generate_cfg(self.cfg, None,
+                                                      self.ertr_mode)
     logged['boot_step'] = "cmcfg_ok"
-    self.dev.board.mta_cfg = self.dev.board.generate_mta_cfg(self.country)
+    devices.board.mta_cfg = devices.board.generate_mta_cfg(self.country)
     logged['boot_step'] = "mtacfg_ok"
 
     # TODO: why is this required? need to fix globally
-    self.dev.board.config['cm_cfg'] = self.dev.board.cm_cfg
+    devices.board.config['cm_cfg'] = devices.board.cm_cfg
 
     if self.voice:
         try:
-            sipserver = self.dev.sipcenter
+            sipserver = devices.sipcenter
             sipserver.kill_asterisk()
             dns_setup_sipserver(sipserver, self.config)
             voice_devices_list = [
-                sipserver, self.dev.softphone, self.dev.lan, self.dev.lan2
+                sipserver, devices.softphone, devices.lan, devices.lan2
             ]
-            voice_devices_configure(voice_devices_list, self.dev.sipcenter)
+            voice_devices_configure(voice_devices_list, devices.sipcenter)
         except Exception as e:
             print("\n\nFailed to configure voice setup")
             print(e)
@@ -34,7 +34,7 @@ def boot(self, logged=dict()):
     try:
         self.boot()
         if self.voice:
-            self.dev.board.wait_for_mta_provisioning()
+            devices.board.wait_for_mta_provisioning()
             logged['boot_step'] = "voice_mta_ok"
 
     except Exception as e:
