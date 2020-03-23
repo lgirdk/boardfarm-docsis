@@ -3,7 +3,7 @@ from boardfarm.lib.voice import dns_setup_sipserver, voice_devices_configure
 from boardfarm_docsis.exceptions import VoiceSetupConfigureFailure
 
 
-def boot(self, devices, logged=dict()):
+def boot(self, config, devices, logged=dict()):
     logged['boot_step'] = "env_ok"
 
     devices.board.cm_cfg = devices.board.generate_cfg(self.cfg, None,
@@ -19,7 +19,7 @@ def boot(self, devices, logged=dict()):
         try:
             sipserver = devices.sipcenter
             sipserver.kill_asterisk()
-            dns_setup_sipserver(sipserver, self.config)
+            dns_setup_sipserver(sipserver, config)
             voice_devices_list = [
                 sipserver, devices.softphone, devices.lan, devices.lan2
             ]
