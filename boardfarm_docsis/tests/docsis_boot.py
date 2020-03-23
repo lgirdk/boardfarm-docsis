@@ -39,7 +39,7 @@ class DocsisBootStub(rootfs_boot.RootFSBootTest):
             raise BftProvEnvMismatch()
         if self.cfg is None:
             self.skipTest("Do not run stub directly")
-        boardfarm_docsis.lib.booting.boot(self)
+        boardfarm_docsis.lib.booting.boot(self, self.logged)
 
     @removals.remove(removal_version="> 1.1.1", category=UserWarning)
     def recover(self):

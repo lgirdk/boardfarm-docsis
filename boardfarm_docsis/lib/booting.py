@@ -3,14 +3,14 @@ from boardfarm.lib.voice import dns_setup_sipserver, voice_devices_configure
 from boardfarm_docsis.exceptions import VoiceSetupConfigureFailure
 
 
-def boot(self):
-    self.logged['boot_step'] = "env_ok"
+def boot(self, logged=dict()):
+    logged['boot_step'] = "env_ok"
 
     self.dev.board.cm_cfg = self.dev.board.generate_cfg(
         self.cfg, None, self.ertr_mode)
-    self.logged['boot_step'] = "cmcfg_ok"
+    logged['boot_step'] = "cmcfg_ok"
     self.dev.board.mta_cfg = self.dev.board.generate_mta_cfg(self.country)
-    self.logged['boot_step'] = "mtacfg_ok"
+    logged['boot_step'] = "mtacfg_ok"
 
     # TODO: why is this required? need to fix globally
     self.dev.board.config['cm_cfg'] = self.dev.board.cm_cfg
@@ -28,14 +28,14 @@ def boot(self):
             print("\n\nFailed to configure voice setup")
             print(e)
             raise VoiceSetupConfigureFailure
-        self.logged['boot_step'] = "voice_ok"
+        logged['boot_step'] = "voice_ok"
     else:
-        self.logged['boot_step'] = "voice_skipped"
+        logged['boot_step'] = "voice_skipped"
     try:
         self.boot()
         if self.voice:
             self.dev.board.wait_for_mta_provisioning()
-            self.logged['boot_step'] = "voice_mta_ok"
+            logged['boot_step'] = "voice_mta_ok"
 
     except Exception as e:
         print("\n\nFailed to Boot")
