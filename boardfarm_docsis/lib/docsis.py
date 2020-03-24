@@ -409,6 +409,15 @@ def check_board(board, cmts, cm_mac):
 
 
 def check_provisioning(board, mta=False):
+    """This function is used to validate the provisioning using sha3
+
+    :param board : board device class to fetch different interfaces
+    :type board : boardfarm_docsis.devices.Docsis
+    :param mta : to check mta cfg
+    :type mta : Boolean
+    :return value: out
+    :return type: Boolean
+    """
 
     # few cmts methods needs to be added before comparing sha3
     #TODO: need to do this
@@ -422,12 +431,18 @@ def check_provisioning(board, mta=False):
         ret = d.encode()
         return keccak512_checksum(ret)
 
-    sha3_on_board = board.cfg_sha3(mta)
-    cfg = board.mta_cfg if mta else board.cm_cfg
-    sha3_on_fw = _shortname(cfg)
+    sha3_on_board = board.cfg_sha3()
+    sha3_on_fw = _shortname(board.cm_cfg)
     print(sha3_on_board)
     print(sha3_on_fw)
-    return sha3_on_board == sha3_on_fw
+    out = [sha3_on_board == sha3_on_fw]
+    if mta:
+        sha3_on_board = board.cfg_sha3(mta)
+        sha3_on_fw = _shortname(board.mta_cfg)
+        print(sha3_on_board)
+        print(sha3_on_fw)
+        out.append(sha3_on_board == sha3_on_fw)
+    return all(out)
 
 
 def check_interface(board, ip, prov_mode="dual", lan_devices=["lan"]):
