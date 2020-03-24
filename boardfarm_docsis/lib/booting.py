@@ -1,9 +1,10 @@
-from boardfarm.exceptions import BootFail
+import boardfarm.lib.booting
+from boardfarm.exceptions import BootFail, NoTFTPServer
 from boardfarm.lib.voice import dns_setup_sipserver, voice_devices_configure
 from boardfarm_docsis.exceptions import VoiceSetupConfigureFailure
 
 
-def boot(self, config, env_helper, devices, logged=dict()):
+def boot(config, env_helper, devices, logged=dict()):
     cfg = env_helper.get_prov_mode()
     ertr_mode = env_helper.get_ertr_mode()
     country = env_helper.get_country()
@@ -36,11 +37,16 @@ def boot(self, config, env_helper, devices, logged=dict()):
     else:
         logged['boot_step'] = "voice_skipped"
     try:
-        self.boot()
+        boardfarm.lib.booting.boot(config,
+                                   env_helper,
+                                   devices,
+                                   reflash=True,
+                                   logged=logged)
         if voice:
             devices.board.wait_for_mta_provisioning()
             logged['boot_step'] = "voice_mta_ok"
-
+    except NoTFTPServer as e:
+        raise e
     except Exception as e:
         print("\n\nFailed to Boot")
         print(e)

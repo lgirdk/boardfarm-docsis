@@ -1,6 +1,8 @@
 import warnings
 
+import boardfarm.exceptions
 import boardfarm_docsis.lib.booting
+from boardfarm import lib
 from boardfarm.lib.common import run_once
 from boardfarm.tests import rootfs_boot
 from boardfarm_docsis.exceptions import BftProvEnvMismatch
@@ -39,8 +41,13 @@ class DocsisBootStub(rootfs_boot.RootFSBootTest):
             raise BftProvEnvMismatch()
         if self.__class__.__name__ == "DocsisBootStub":
             self.skipTest("Do not run stub directly")
-        boardfarm_docsis.lib.booting.boot(self, self.config, self.env_helper,
-                                          self.dev, self.logged)
+        try:
+            boardfarm_docsis.lib.booting.boot(self.config, self.env_helper,
+                                              self.dev, self.logged)
+        except boardfarm.exceptions.NoTFTPServer:
+            msg = 'No WAN Device or tftp_server defined, skipping flash.'
+            lib.common.test_msg(msg)
+            self.skipTest(msg)
 
     @classmethod
     def teardown_class(cls):
