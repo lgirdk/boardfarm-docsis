@@ -27,3 +27,7 @@ class VoiceSetupConfigureFailure(BftBaseException):
 
 class BftProvEnvMismatch(BftBaseException):
     '''Exception that occurs when prov mode is not equal to environment'''
+
+
+class InvalidTCID(BftBaseException):
+    '''Invalid TCID passed'''
