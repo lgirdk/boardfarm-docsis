@@ -42,6 +42,27 @@ class DocsisBootStub(rootfs_boot.RootFSBootTest):
         boardfarm_docsis.lib.booting.boot(self, self.config, self.env_helper,
                                           self.dev, self.logged)
 
+    @classmethod
+    def teardown_class(cls):
+        obj = cls.test_obj
+
+        # all in-built teardown API for unittest
+        blacklist = [
+            'teardown_class', 'teardown_wrapper', 'tearDownClass', 'tearDown'
+        ]
+
+        for attr in dir(obj):
+            if "tear" in attr.lower() and "down" in attr.lower():
+                if attr not in blacklist:
+                    cls.call(getattr(obj, attr))
+                    break
+
+        if not obj.td_step.td_result:
+            deprecate("teardown for test [{}] needs to re-worked".format(
+                cls.__name__),
+                      removal_version="> 2",
+                      category=UserWarning)
+
     @removals.remove(removal_version="> 1.1.1", category=UserWarning)
     def recover(self):
         pass
