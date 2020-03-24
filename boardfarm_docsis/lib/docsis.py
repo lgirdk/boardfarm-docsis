@@ -58,9 +58,9 @@ class docsis:
         if tmpdir is None:
             tmpdir = tempfile.mkdtemp()
 
+        assert board, "board is a required argument"
+
         if mibs_paths == []:
-            if board is None:
-                from boardfarm.devices import board
             mibs_paths = getattr(board, 'mibs_paths', [])
         if mibs_paths != []:
             default = os.path.expandvars(
@@ -427,7 +427,7 @@ def check_provisioning(board, mta=False):
     # validate_cm_side()
 
     def _shortname(cfg):
-        d = docsis(cfg)
+        d = docsis(cfg, board=board)
         ret = d.encode()
         return keccak512_checksum(ret)
 
