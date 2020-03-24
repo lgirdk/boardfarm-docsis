@@ -37,10 +37,10 @@ class DocsisBootStub(rootfs_boot.RootFSBootTest):
     def runTest(self):
         if not self.env_helper.env_check(self.env_req):
             raise BftProvEnvMismatch()
-        if self.cfg is None:
+        if self.__class__.__name__ == "DocsisBootStub":
             self.skipTest("Do not run stub directly")
-        boardfarm_docsis.lib.booting.boot(self, self.config, self.dev,
-                                          self.logged)
+        boardfarm_docsis.lib.booting.boot(self, self.config, self.env_helper,
+                                          self.dev, self.logged)
 
     @removals.remove(removal_version="> 1.1.1", category=UserWarning)
     def recover(self):
@@ -53,10 +53,6 @@ class DocsisBootFromEnv(DocsisBootStub):
     env_req = {}
 
     def runTest(self):
-        self.cfg = self.env_helper.get_prov_mode()
-        self.ertr_mode = self.env_helper.get_ertr_mode()
-        self.country = self.env_helper.get_country()
-        self.voice = self.env_helper.voice_enabled()
         super(DocsisBootFromEnv, self).runTest()
 
 
