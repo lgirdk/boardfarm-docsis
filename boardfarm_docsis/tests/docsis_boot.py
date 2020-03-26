@@ -24,6 +24,7 @@ class DocsisBootStub(rootfs_boot.RootFSBootTest):
     def __init__(self, *args, **kw):
         # check DocsisBoottype and Enviornment config
         self.check_bootmode()
+        self.decorate_teardown()
 
         super(DocsisBootStub, self).__init__(*args, **kw)
 
@@ -34,6 +35,20 @@ class DocsisBootStub(rootfs_boot.RootFSBootTest):
                 message=
                 "Use DocisisBootFromEnv to boot with MAX config, and set BFT_ARGS to the required environment.",
                 category=UserWarning)
+
+    def decorate_teardown(self):
+        # all in-built teardown API for unittest
+        blacklist = [
+            'teardown_class', 'teardown_wrapper', 'tearDownClass', 'tearDown'
+        ]
+
+        for attr in dir(self):
+            if "tear" in attr.lower() and "down" in attr.lower():
+                if attr not in blacklist:
+                    func = getattr(self, attr)
+                    func = run_once(func)
+                    self.legacy_td = func
+                    break
 
     @run_once
     def runTest(self):
@@ -52,17 +67,7 @@ class DocsisBootStub(rootfs_boot.RootFSBootTest):
     @classmethod
     def teardown_class(cls):
         obj = cls.test_obj
-
-        # all in-built teardown API for unittest
-        blacklist = [
-            'teardown_class', 'teardown_wrapper', 'tearDownClass', 'tearDown'
-        ]
-
-        for attr in dir(obj):
-            if "tear" in attr.lower() and "down" in attr.lower():
-                if attr not in blacklist:
-                    cls.call(getattr(obj, attr))
-                    break
+        cls.call(obj.legacy_td)
 
         if not obj.td_step.td_result:
             deprecate("teardown for test [{}] needs to re-worked".format(
