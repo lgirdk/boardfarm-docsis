@@ -67,7 +67,9 @@ class DocsisBootStub(rootfs_boot.RootFSBootTest):
     @classmethod
     def teardown_class(cls):
         obj = cls.test_obj
-        cls.call(obj.legacy_td)
+
+        if hasattr(obj, "legacy_td"):
+            cls.call(obj.legacy_td)
 
         if not obj.td_step.td_result:
             deprecate("teardown for test [{}] needs to re-worked".format(
