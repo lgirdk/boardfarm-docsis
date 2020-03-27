@@ -966,34 +966,19 @@
             }
         }
     },
+    "global_snmp": {
+        "generic_mta_list": {
+            "emtaSnmpAuthFallBackEnable": {
+                "data": "1",
+                "data_type": "int",
+                "suffix": ".0"
+            }
+        }
+    },
     "global_snmp_private": {
         "generic_mta_list": {
             "snmpCommunityName": {
                 "data": "private",
-                "data_type": "string",
-                "suffix": ".97.100.109.105.110"
-            },
-            "snmpCommunitySecurityName": {
-                "data": "@admin",
-                "data_type": "string",
-                "suffix": ".97.100.109.105.110"
-            },
-            "snmpCommunityStatus": {
-                "data": "4",
-                "data_type": "int",
-                "suffix": ".97.100.109.105.110"
-            },
-            "snmpCommunityStorageType": {
-                "data": "2",
-                "data_type": "int",
-                "suffix": ".97.100.109.105.110"
-            }
-        }
-    },
-    "global_snmp_public": {
-        "generic_mta_list": {
-            "snmpCommunityName": {
-                "data": "public",
                 "data_type": "string",
                 "suffix": ".109.116.97.112.114.111.118"
             },
@@ -1011,6 +996,30 @@
                 "data": "2",
                 "data_type": "int",
                 "suffix": ".109.116.97.112.114.111.118"
+            }
+        }
+    },
+    "global_snmp_public": {
+        "generic_mta_list": {
+            "snmpCommunityName": {
+                "data": "public",
+                "data_type": "string",
+                "suffix": ".67.98.110.77.116.97.82.101.97.100.79.110.108.121"
+            },
+            "snmpCommunitySecurityName": {
+                "data": "CbnMtaReadOnly",
+                "data_type": "string",
+                "suffix": ".67.98.110.77.116.97.82.101.97.100.79.110.108.121"
+            },
+            "snmpCommunityStatus": {
+                "data": "4",
+                "data_type": "int",
+                "suffix": ".67.98.110.77.116.97.82.101.97.100.79.110.108.121"
+            },
+            "snmpCommunityStorageType": {
+                "data": "2",
+                "data_type": "int",
+                "suffix": ".67.98.110.77.116.97.82.101.97.100.79.110.108.121"
             }
         }
     }
