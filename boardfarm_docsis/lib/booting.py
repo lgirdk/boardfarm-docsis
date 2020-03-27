@@ -45,6 +45,11 @@ def boot(config, env_helper, devices, logged=dict()):
         if voice:
             devices.board.wait_for_mta_provisioning()
             logged['boot_step'] = "voice_mta_ok"
+
+        devices.board.restart_tr069(
+            devices.wan,
+            devices.board.get_interface_ipaddr(devices.board.wan_iface))
+        logged['boot_step'] = "acs_connection_ok"
     except NoTFTPServer as e:
         raise e
     except Exception as e:
