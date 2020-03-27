@@ -374,6 +374,14 @@ class mta_cfg(cm_cfg):
                 fname = "mta-config-" + self.shortname(10) + ".txt"
             self.txt = start.gen_mta_cfg(
             )  # the derived class already created the skeleton
+
+            high, low = [], []
+            for line in self.txt.splitlines():
+                if 'pktcSigDevCIDFskAfterRing' in line:
+                    low.append(line)
+                else:
+                    high.append(line)
+            self.txt = "\n".join(high + low)
             new_list = self.txt.replace('SnmpMibObject',
                                         '').replace(';',
                                                     '').replace(' ',
