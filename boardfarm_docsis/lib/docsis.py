@@ -14,9 +14,11 @@ import tempfile
 
 import boardfarm
 from aenum import Enum
+from boardfarm.exceptions import BootFail, CodeError
 from boardfarm.lib import SnmpHelper
 from boardfarm.lib.common import (cmd_exists, keccak512_checksum,
                                   retry_on_exception)
+from boardfarm.lib.DeviceManager import device_type
 from boardfarm_docsis.exceptions import (CfgUnknownType, CMCfgEncodeFailed,
                                          MTACfgEncodeFailed)
 
@@ -585,3 +587,66 @@ def check_cm_firmware_version(board, wan, env_helper):
             result, fm_ver)
 
     return True
+
+
+def factoryreset(s, board, method="SNMP"):
+    """Reset board to Factory Default
+
+       :param s : object with log_to_file attribute for logging
+       :type s : TestStep Obj with attribute log_to_file
+       :param board : board DUT device class
+       :type board : device_type.DUT
+       :param method : ("SNMP", "ACS", "CONSOLE") Default to "SNMP"
+       :type method : String value with values("SNMP","ACS","CONSOLE")
+       :rtype: Bool
+       :raise Assertion: Asserts when FactoryReset failed or arg error
+       :return: returns bool True if FactoryReset successful
+    """
+    print("=======Begin FactoryReset via {}=======".format(method))
+
+    try:
+        wan = board.dev.by_type(device_type.wan)
+        wan_ip = board.get_interface_ipaddr(board.wan_iface)
+
+        if method == "SNMP":
+            if not hasattr(s, 'cm_wan_ip'):
+                s.cm_wan_ip = wan_ip
+
+            # TODO Need to remove dependency on self
+            board.reset_defaults_via_snmp(s, wan)
+            board.reboot_modem_os_via_snmp(s, wan)
+
+        elif method == "ACS":
+            raise Exception("Not Implemented")
+
+        elif method == "CONSOLE":
+            if board.env_helper.has_image():
+                cm_fm = board.env_helper.get_image(mirror=False)
+                if "nosh" in cm_fm.lower():
+                    print(
+                        "Failed FactoryReset via CONSOLE on NOSH Image is not possible"
+                    )
+                    raise CodeError(
+                        "Failed FactoryReset via CONSOLE on NOSH Image is not possible"
+                    )
+
+            # TODO Need to remove dependency on self
+            board.reset_defaults_via_os(s)
+
+        else:
+            raise Exception(
+                """WrongValue: Pass any value ['SNMP', 'ACS', 'CONSOLE'] for method arg"""
+            )
+        # Verify CM status and board ip address
+        assert 'INTEGER: 12' == board.get_cmStatus(wan, wan_ip, 'INTEGER: 12'), \
+                                "board cmstatus is down"
+
+        board.check_valid_docsis_ip_networking()
+
+        print("=======End FactoryReset via {}=======".format(method))
+        return True
+
+    except Exception as e:
+        print("Failed Board FactoryReset using {} \n {}".format(
+            method, str(e)))
+        raise BootFail("Failed Board FactoryReset: {}".format(str(e)))
