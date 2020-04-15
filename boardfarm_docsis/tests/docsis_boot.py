@@ -51,7 +51,7 @@ class DocsisBootStub(rootfs_boot.RootFSBootTest):
                     break
 
     @run_once
-    def runTest(self):
+    def test_main(self):
         if not self.env_helper.env_check(self.env_req):
             raise BftProvEnvMismatch()
         if self.__class__.__name__ == "DocsisBootStub":
@@ -63,6 +63,11 @@ class DocsisBootStub(rootfs_boot.RootFSBootTest):
             msg = 'No WAN Device or tftp_server defined, skipping flash.'
             lib.common.test_msg(msg)
             self.skipTest(msg)
+
+    def runTest(self):
+        '''This exists for backwards compatability.
+        Delete this if/when all references to runTest are removed.'''
+        self.test_main()
 
     @classmethod
     def teardown_class(cls):
@@ -87,8 +92,13 @@ class DocsisBootFromEnv(DocsisBootStub):
 
     env_req = {}
 
+    def test_main(self):
+        super(DocsisBootFromEnv, self).test_main()
+
     def runTest(self):
-        super(DocsisBootFromEnv, self).runTest()
+        '''This exists for backwards compatability.
+        Delete this if/when all references to runTest are removed.'''
+        self.test_main()
 
 
 class DocsisBootDualStack(DocsisBootStub):
