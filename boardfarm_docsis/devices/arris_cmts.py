@@ -93,6 +93,13 @@ class ArrisCMTS(base_cmts.BaseCmts):
     def interact(self):
         super(ArrisCMTS, self).interact()
 
+    def __str__(self):
+        txt = []
+        txt.append("name: {}".format(self.name))
+        txt.append("command: {}".format(self.conn_cmd))
+        txt.append("class: {}".format(type(self).__name__))
+        return "\n".join(txt)
+
     def connect(self):
         """This method is used to connect cmts, login to the cmts based on the connection type available
 
