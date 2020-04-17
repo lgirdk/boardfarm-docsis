@@ -56,6 +56,10 @@ class DocsisBootStub(rootfs_boot.RootFSBootTest):
             raise BftProvEnvMismatch()
         if self.__class__.__name__ == "DocsisBootStub":
             self.skipTest("Do not run stub directly")
+        # to ensure that only DocsisBoot prefixed test cases can run the below implementation
+        if "DocsisBoot" not in self.__class__.__name__:
+            raise boardfarm.exceptions.CodeError(
+                "{} cannot call boot method".format(self.__class__.__name__))
         try:
             boardfarm_docsis.lib.booting.boot(self.config, self.env_helper,
                                               self.dev, self.logged)
