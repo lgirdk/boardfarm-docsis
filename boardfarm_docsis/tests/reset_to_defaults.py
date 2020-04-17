@@ -5,6 +5,8 @@ from boardfarm_docsis.tests.docsis_boot import DocsisBootStub as BF_Test
 class reset_board_to_defaults(BF_Test):
     """Factory reset via ARM console command, wait for boot
     and CM to become operational"""
+    env_req = {}
+
     def runTest(self):
         try:
             self.dev.board.reset_defaults_via_os(self)
