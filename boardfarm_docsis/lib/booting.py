@@ -21,6 +21,8 @@ def boot(config, env_helper, devices, logged=dict()):
     # TODO: why is this required? need to fix globally
     devices.board.config['cm_cfg'] = devices.board.cm_cfg
 
+    devices.board.enable_time_display()
+
     if voice:
         try:
             sipserver = devices.sipcenter
