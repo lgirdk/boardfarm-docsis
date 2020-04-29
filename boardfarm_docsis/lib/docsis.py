@@ -617,7 +617,14 @@ def factoryreset(s, board, method="SNMP"):
             board.reboot_modem_os_via_snmp(s, wan)
 
         elif method == "ACS":
-            raise Exception("Not Implemented")
+            try:
+                board.dev.acs_server.FactoryReset()
+            except Exception as e:
+                print("Failed: FactoryReset through ACS '{}'"
+                      "\n Restarting tr069 and retry Factory Reset again..".
+                      format(str(e)))
+                board.restart_tr069(wan, wan_ip)
+                board.dev.acs_server.FactoryReset()
 
         elif method == "CONSOLE":
             if board.env_helper.has_image():
@@ -647,6 +654,6 @@ def factoryreset(s, board, method="SNMP"):
         return True
 
     except Exception as e:
-        print("Failed Board FactoryReset using {} \n {}".format(
+        print("Failed Board FactoryReset using '{}' \n {}".format(
             method, str(e)))
         raise BootFail("Failed Board FactoryReset: {}".format(str(e)))
