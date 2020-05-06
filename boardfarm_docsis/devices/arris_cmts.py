@@ -487,7 +487,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         Get the provisioning mode of the cable modem from CMTS
         :param index: mac domain of the cable modem
         :type index: string
-        :return: mode of the provisioning(ipv4, ipv6, dual-stack, bridge)
+        :return: mode of the provisioning(ipv4, ipv6, dual-stack, apm)
         :rtype: string
         """
         self.sendline(
@@ -501,8 +501,8 @@ class ArrisCMTS(base_cmts.BaseCmts):
             result = "dual-stack"
         elif "ipv6" in result.lower():
             result = "ipv6"
-        elif "bridge" in result.lower():
-            result = "bridge"
+        elif "apm" in result.lower():
+            result = "apm"
         return result
 
     @ArrisCMTSDecorators.connect_and_run

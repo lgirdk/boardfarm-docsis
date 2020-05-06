@@ -994,7 +994,7 @@ class CasaCMTS(base_cmts.BaseCmts):
 
         :param index: mac domain of the cable modem
         :type index: string
-        :return: mode of the provisioning(ipv4, ipv6, dual-stack, bridge)
+        :return: mode of the provisioning(ipv4, ipv6, dual-stack, apm)
         :rtype: string
         """
         self.sendline('show interface docsis-mac %s' % index)
@@ -1008,8 +1008,8 @@ class CasaCMTS(base_cmts.BaseCmts):
                 result = "dual-stack"
             elif "ipv6" in result.lower():
                 result = "ipv6"
-            elif "bridge" in result.lower():
-                result = "bridge"
+            elif "apm" in result.lower():
+                result = "apm"
             return result
         else:
             return "Not able to fetch ip provisioning mode on CMTS"
