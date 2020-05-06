@@ -24,7 +24,7 @@ class Docsis(openwrt_router.OpenWrtRouter):
     def get_cm_mgmt_cfg(self):
         """This method attempts to obtain the CM management interface configuration. It queries the CMTS for the mac-domain configuration.
 
-        :return: the status of the CM mgmt interface (currently one of 'ipv4', 'ipv6', 'dual-stack', 'bridge', or (python)None)
+        :return: the status of the CM mgmt interface (currently one of 'ipv4', 'ipv6', 'dual-stack', 'apm', or (python)None)
         :rtype: string
         """
         mac_dom_config = None
@@ -102,12 +102,12 @@ class Docsis(openwrt_router.OpenWrtRouter):
 
         # we need to fetch the CM config mode from CMTS, skippin wan0 validation for the time being.
 
-        if cm_configmode == 'bridge':
+        if cm_configmode in ['bridge', 'disabled']:
             # TODO
             pass
         if cm_configmode == 'ipv4':
             erouter_ipv4 = True
-        if cm_configmode == 'dslite':
+        if cm_configmode in ['dslite', 'ipv6']:
             erouter_ipv6 = True
         if cm_configmode == 'dual-stack':
             erouter_ipv4 = True

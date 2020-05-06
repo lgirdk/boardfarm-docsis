@@ -9,7 +9,7 @@ def boot(config, env_helper, devices, logged=dict()):
     ertr_mode = env_helper.get_ertr_mode()
     country = env_helper.get_country()
     voice = env_helper.voice_enabled()
-    tr069check = cfg not in ["disabled", "bridge"]
+    tr069check = cfg not in ["disabled", "bridge", "none"]
 
     logged['boot_step'] = "env_ok"
 

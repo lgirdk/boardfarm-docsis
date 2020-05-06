@@ -150,7 +150,7 @@ class DocsisBootDSLite(DocsisBootStub):
     env_req = {
         "environment_def": {
             "board": {
-                "eRouter_Provisioning_mode": "dslite"
+                "eRouter_Provisioning_mode": ["dslite", "ipv6"]
             }
         }
     }
@@ -163,11 +163,23 @@ class DocsisBootBridge(DocsisBootStub):
     env_req = {
         "environment_def": {
             "board": {
-                "eRouter_Provisioning_mode": "bridge"
+                "eRouter_Provisioning_mode": ['bridge', 'disabled']
             }
         }
     }
     cfg = "bridge"
+
+
+class DocsisBootDisabled(DocsisBootStub):
+
+    env_req = {
+        "environment_def": {
+            "board": {
+                "eRouter_Provisioning_mode": 'disabled'
+            }
+        }
+    }
+    cfg = "disabled"
 
 
 class DocsisBootNone(DocsisBootStub):

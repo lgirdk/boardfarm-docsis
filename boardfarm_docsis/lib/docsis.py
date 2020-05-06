@@ -341,9 +341,9 @@ class cm_cfg(object):
 
     def _cm_configmode(self):
         '''function to check config mode in CM'''
-        '''0-Disable/Bridge, 1-IPv4, 2-IPv6 (DSlite), 3-IPv4 and IPv6(Dual)'''
+        '''0-Disable/Bridge, 1-IPv4, 2-IPv6 (IPv6 | dslite), 3-IPv4 and IPv6(Dual)'''
         modeset = ['0x010100', '0x010101', '0x010102', '0x010103']
-        modestr = ['bridge', 'ipv4', 'dslite', 'dual-stack']
+        modestr = ['disabled', 'ipv4', 'ipv6', 'dual-stack']
         for mode in range(0, len(modeset)):
             tlv_check = "GenericTLV TlvCode 202 TlvLength 3 TlvValue " + modeset[
                 mode]
@@ -489,7 +489,10 @@ def check_interface(board, ip, prov_mode="dual", lan_devices=["lan"]):
 
         :raises CodeError : if the IP addresses are not validated as per prov_mode
         """
-        version = {"ipv4": ["ipv4", "dual"], "ipv6": ["dslite", "dual"]}
+        version = {
+            "ipv4": ["ipv4", "dual"],
+            "ipv6": ["dslite", "ipv6", "dual"]
+        }
         check = lambda x: x if prov_mode in version[mode.lower()] else not x
         assert check(
             iface.get(mode.lower(),
@@ -520,7 +523,7 @@ def check_interface(board, ip, prov_mode="dual", lan_devices=["lan"]):
 
     # since aftr iface does not have an IP address/mac address of it's own
     # just validate if the interface exists
-    if prov_mode == "dslite":
+    if prov_mode in ["dslite", "ipv6"]:
         assert board.check_iface_exists(board.aftr_iface), \
                 "{} interface didn't come up in prov mode : {}".format(board.aftr_iface, prov_mode)
     if prov_mode != "ipv4": _validate_cpe("IPv6")  # validate ipv6 for CPEs
