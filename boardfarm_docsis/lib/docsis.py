@@ -434,8 +434,6 @@ def check_provisioning(board, mta=False):
     def validate_cm_side():
         pass
 
-    # validate_cm_side()
-
     def _shortname(cfg):
         d = docsis(cfg, board=board)
         ret = d.encode()

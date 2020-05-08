@@ -985,10 +985,6 @@ class CfgGenerator():
 
         self.additional_cfg = ""
 
-        # For future used (if we want to get defaults from json file)
-        #json_name = __file__.split('.')[0] + '.json'
-        #default_json = os.path.abspath(os.path.realpath(os.path.dirname(__file__))) + json_name
-
         self.cm_base_cfg = None
         self.cm_base_cfg = [GlobalParameters(),\
                             DsServiceFlow(),\

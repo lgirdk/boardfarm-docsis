@@ -1172,8 +1172,6 @@ class ArrisCMTS(base_cmts.BaseCmts):
                 for i in strip_units:
                     value = value.replace(i, '').strip()
 
-
-#                 qos_dict_flow[key] = value.split(',')
                 if "scheduling type" in key:
                     qos_dict_flow[key] = value
                 elif "ip tos" not in key.lower() and\

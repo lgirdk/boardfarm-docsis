@@ -1160,8 +1160,6 @@ class CasaCMTS(base_cmts.BaseCmts):
                 for i in strip_units:
                     value = value.replace(i, '').strip()
 
-
-#                 qos_dict_flow[key] = value.split(',')
                 if "scheduling type" in key.lower():
                     qos_dict_flow[key] = value
                 elif ("ip tos" not in key.lower()
