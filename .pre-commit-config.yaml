@@ -49,3 +49,9 @@ repos:
       rev: v1.0
       hooks:
           - id: eradicate
+            name: eradicate
+            description: Apply eradicate
+            entry: eradicate
+            language: python
+            files: \.py$
+            args: [--in-place]
