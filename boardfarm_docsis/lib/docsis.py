@@ -14,7 +14,7 @@ import tempfile
 
 import boardfarm
 from aenum import Enum
-from boardfarm.exceptions import BootFail, CodeError
+from boardfarm.exceptions import BftCommandNotFound, BootFail, CodeError
 from boardfarm.lib import SnmpHelper
 from boardfarm.lib.common import (cmd_exists, keccak512_checksum,
                                   retry_on_exception)
@@ -439,18 +439,22 @@ def check_provisioning(board, mta=False):
         ret = d.encode()
         return keccak512_checksum(ret)
 
-    sha3_on_board = board.cfg_sha3()
-    sha3_on_fw = _shortname(board.cm_cfg)
-    print(sha3_on_board)
-    print(sha3_on_fw)
-    out = [sha3_on_board == sha3_on_fw]
-    if mta:
-        sha3_on_board = board.cfg_sha3(mta)
-        sha3_on_fw = _shortname(board.mta_cfg)
+    try:
+        sha3_on_board = board.cfg_sha3()
+        sha3_on_fw = _shortname(board.cm_cfg)
         print(sha3_on_board)
         print(sha3_on_fw)
-        out.append(sha3_on_board == sha3_on_fw)
-    return all(out)
+        out = [sha3_on_board == sha3_on_fw]
+        if mta:
+            sha3_on_board = board.cfg_sha3(mta)
+            sha3_on_fw = _shortname(board.mta_cfg)
+            print(sha3_on_board)
+            print(sha3_on_fw)
+            out.append(sha3_on_board == sha3_on_fw)
+        return all(out)
+    except BftCommandNotFound:
+        print('NOTE: Ignoring provisioning check: sha3Sum command not found')
+        return True
 
 
 def check_interface(board, ip, prov_mode="dual", lan_devices=["lan"]):
