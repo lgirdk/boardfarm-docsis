@@ -51,7 +51,8 @@ def boot(config, env_helper, devices, logged=dict()):
                                    env_helper,
                                    devices,
                                    reflash=True,
-                                   logged=logged)
+                                   logged=logged,
+                                   flashing_image=False)
         if voice:
             devices.board.wait_for_mta_provisioning()
             logged['boot_step'] = "voice_mta_ok"
