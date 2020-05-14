@@ -20,15 +20,6 @@ def boot(config, env_helper, devices, logged=dict()):
     # TODO: why is this required? need to fix globally
     devices.board.config['cm_cfg'] = devices.board.cm_cfg
 
-    # the following is a nice to have feature, but
-    # if a device has not shell or it is powered off
-    # the console interaction will fail
-    try:
-        devices.board.enable_time_display()
-    except Exception as e:
-        print(e)
-        print('NOTICE: Failed to enable_time_display')
-
     if voice:
         try:
             sipserver = devices.sipcenter
