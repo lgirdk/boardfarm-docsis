@@ -227,7 +227,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
         :return: returns ipv6 address of erouter else None
         :rtype: string
         """
-        self.sendline("show cable modem %s cpe" % mac)
+        self.sendline("show cable modem %s ipv6 cpe" % mac)
         self.expect(self.prompt)
         ertr_ipv6 = re.search(AllValidIpv6AddressesRegex, self.before)
         if ertr_ipv6:
