@@ -2,6 +2,7 @@ import time
 
 import pexpect
 from boardfarm.devices import openwrt_router
+from boardfarm.exceptions import CodeError
 from boardfarm.lib.DeviceManager import device_type
 from boardfarm.lib.network_helper import valid_ipv4, valid_ipv6
 
@@ -160,3 +161,16 @@ class Docsis(openwrt_router.OpenWrtRouter):
         raise Exception(
             "Not implemented! should be implemented to return the cm model name"
         )
+
+    def reset_defaults_via_console(self):
+        if self.env_helper.has_image():
+            cm_fm = self.env_helper.get_image(mirror=False)
+            if "nosh" in cm_fm.lower():
+                raise CodeError(
+                    "Failed FactoryReset via CONSOLE on NOSH Image is not possible"
+                )
+
+        return self.reset_defaults_via_os()
+
+    def factory_reset(self):
+        return self.reset_defaults_via_console()
