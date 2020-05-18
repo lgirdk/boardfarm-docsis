@@ -47,6 +47,8 @@ def boot(config, env_helper, devices, logged=dict()):
             devices.board.wait_for_mta_provisioning()
             logged['boot_step'] = "voice_mta_ok"
 
+        devices.board.get_cpeid()
+
     except NoTFTPServer as e:
         raise e
     except Exception as e:
