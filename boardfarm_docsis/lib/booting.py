@@ -1,3 +1,5 @@
+import warnings
+
 import boardfarm.lib.booting
 from boardfarm.exceptions import BootFail, NoTFTPServer
 from boardfarm.lib.voice import dns_setup_sipserver, voice_devices_configure
@@ -47,7 +49,14 @@ def boot(config, env_helper, devices, logged=dict()):
             devices.board.wait_for_mta_provisioning()
             logged['boot_step'] = "voice_mta_ok"
 
-        devices.board.get_cpeid()
+        for _ in range(10):
+            try:
+                devices.board.get_cpeid()
+                break
+            except:
+                warnings.warn("Failed to connect to ACS, retrying")
+        else:
+            raise BootFail("Failed to connect to ACS")
 
     except NoTFTPServer as e:
         raise e
