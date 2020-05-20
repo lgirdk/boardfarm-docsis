@@ -158,10 +158,10 @@ class ArrisCMTS(base_cmts.BaseCmts):
         except:
             self.close()
 
-    @ArrisCMTSDecorators.connect_and_run
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
-    def check_online(self, cmmac):
-        """Check the CM status from CMTS function checks the encrytion mode and returns True if online
+    def _check_online(self, cmmac):
+        """Internal fuction to Check the CM status from CMTS function checks the encrytion mode and returns True if online
+        It is not decarated by ArrisCMTSDecorators.connect_and_run
 
         :param cmmac: mac address of the CM
         :type cmmac: string
@@ -181,6 +181,18 @@ class ArrisCMTS(base_cmts.BaseCmts):
             except:
                 r = 'Offline'
         return r
+
+    @ArrisCMTSDecorators.connect_and_run
+    @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
+    def check_online(self, cmmac):
+        """Check the CM status from CMTS function checks the encrytion mode and returns True if online
+
+        :param cmmac: mac address of the CM
+        :type cmmac: string
+        :return: True if the CM is operational else actual status on cmts
+        :rtype: string / boolean
+        """
+        return self._check_online(cmmac)
 
     @ArrisCMTSDecorators.connect_and_run
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
@@ -213,7 +225,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.sendline('configure')
         self.expect(self.prompt)
         self.expect(pexpect.TIMEOUT, timeout=5)
-        online_state = self.check_online(cmmac)
+        online_state = self._check_online(cmmac)
         if (online_state == True):
             print("CM is still online after 5 seconds.")
         else:
