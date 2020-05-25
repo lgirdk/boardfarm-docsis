@@ -31,3 +31,25 @@ def get_tone_time(tones_file, out, tone):
                                                     '%a %b %d %H:%M:%S %Y ')
     time_diff = date_time_obj_stop - date_time_obj_start
     return time_diff.total_seconds()
+
+
+def check_peer_registration(board, num_list, sipserver):
+    '''
+    Method to validate the peer registration status.
+    :param board: The board object
+    :type board: string
+    :param num_list: The users corresponding to MTA Lines
+    :type num_list: list
+    :param sipserver: The sipserver object
+    :type sipserver: string
+    :return: True if both the users in sip server are registered
+    :rtype: Boolean
+    '''
+    mta_ip = board.get_interface_ipaddr(board.mta_iface)
+    return_list = [
+        True
+        if sipserver.peer_reg_status(user, mta_ip) == "Registered" else False
+        for user in num_list
+    ]
+
+    return all(return_list)
