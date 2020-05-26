@@ -11,6 +11,7 @@ def boot(config, env_helper, devices, logged=dict()):
     ertr_mode = env_helper.get_ertr_mode()
     country = env_helper.get_country()
     voice = env_helper.voice_enabled()
+    tr069check = cfg not in ["disabled", "bridge", "none"]
 
     logged['boot_step'] = "env_ok"
 
@@ -49,14 +50,15 @@ def boot(config, env_helper, devices, logged=dict()):
             devices.board.wait_for_mta_provisioning()
             logged['boot_step'] = "voice_mta_ok"
 
-        for _ in range(10):
-            try:
-                devices.board.get_cpeid()
-                break
-            except:
-                warnings.warn("Failed to connect to ACS, retrying")
-        else:
-            raise BootFail("Failed to connect to ACS")
+        if tr069check:
+            for _ in range(10):
+                try:
+                    devices.board.get_cpeid()
+                    break
+                except:
+                    warnings.warn("Failed to connect to ACS, retrying")
+            else:
+                raise BootFail("Failed to connect to ACS")
 
     except NoTFTPServer as e:
         raise e
