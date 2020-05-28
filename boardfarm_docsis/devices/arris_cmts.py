@@ -71,6 +71,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
     def __init__(self, *args, **kwargs):
         """Constructor method
         """
+        super().__init__(args, kwargs)
         self.conn_cmd = kwargs.get('conn_cmd', None)
         self.connection_type = kwargs.get('connection_type', 'local_serial')
         self.username = kwargs.get('username', 'boardfarm')
@@ -159,7 +160,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
             self.close()
 
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
-    def _check_online(self, cmmac):
+    def _check_online(self, cmmac=None):
         """Internal fuction to Check the CM status from CMTS function checks the encrytion mode and returns True if online
         It is not decarated by ArrisCMTSDecorators.connect_and_run
 
@@ -183,6 +184,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         return r
 
     @ArrisCMTSDecorators.connect_and_run
+    @base_cmts.deco_get_mac
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
     def check_online(self, cmmac):
         """Check the CM status from CMTS function checks the encrytion mode and returns True if online

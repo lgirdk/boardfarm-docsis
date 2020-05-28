@@ -1,10 +1,26 @@
 from boardfarm.devices import base
 
 
+def deco_get_mac(function):
+    def wrapper(*args, **kwargs):
+        args = list(args)
+        if args[1] is None:
+            args[1] = args[0].board_wan_mac
+        return function(*args)
+
+    return wrapper
+
+
 class BaseCmts(base.BaseDevice):
     """Connects to and configures  CMTS common methods API
     """
     model = "undefined"
+    board_wan_mac = None
+    board_mta_mac = None
+
+    def __init__(self, *args, **kwargs):
+        self.board_wan_mac = kwargs.get('wan_mac', None)
+        self.board_mta_mac = kwargs.get('mta_mac', None)
 
     def connect(self):
         """This method is used to connect cmts, login to the cmts based on the connection type available
@@ -20,7 +36,7 @@ class BaseCmts(base.BaseDevice):
         """
         raise Exception("Not implemented!")
 
-    def check_online(self, cmmac):
+    def check_online(self, cmmac=None):
         """Check the CM status from CMTS function checks the encrytion mode and returns True if online
 
         :param cmmac: mac address of the CM

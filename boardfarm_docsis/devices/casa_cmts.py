@@ -34,6 +34,7 @@ class CasaCMTS(base_cmts.BaseCmts):
     def __init__(self, *args, **kwargs):
         """Constructor method
         """
+        super().__init__(args, kwargs)
         conn_cmd = kwargs.get('conn_cmd', None)
         connection_type = kwargs.get('connection_type', 'local_serial')
         self.ipaddr = kwargs.get('ipaddr', None)
@@ -102,6 +103,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.sendline('exit')
         self.sendline('exit')
 
+    @base_cmts.deco_get_mac
     def check_online(self, cmmac):
         """Check the CM status from CMTS
         Function checks the encryption mode and returns True if online
