@@ -1,3 +1,4 @@
+import sys
 import warnings
 
 import boardfarm.exceptions
@@ -10,85 +11,95 @@ from debtcollector import deprecate, removals
 
 warnings.simplefilter("always", UserWarning)
 
+if "pytest" in sys.modules:
+    # if in pytest bypass all this
+    class DocsisBootStub(rootfs_boot.RootFSBootTest):
+        cfg = None
+        ertr_mode = {}
+        country = 'NL'  #default
+        voice = False
+else:
 
-class DocsisBootStub(rootfs_boot.RootFSBootTest):
-    '''
-    Boots a board as usual but with dual-stack-config instead of the board default
-    '''
+    class DocsisBootStub(rootfs_boot.RootFSBootTest):
+        '''
+        Boots a board as usual but with dual-stack-config instead of the board default
+        '''
 
-    cfg = None
-    ertr_mode = {}
-    country = 'NL'  #default
-    voice = False
+        cfg = None
+        ertr_mode = {}
+        country = 'NL'  #default
+        voice = False
 
-    def __init__(self, *args, **kw):
-        # check DocsisBoottype and Enviornment config
-        self.check_bootmode()
-        self.decorate_teardown()
+        def __init__(self, *args, **kw):
+            # check DocsisBoottype and Enviornment config
+            self.check_bootmode()
+            self.decorate_teardown()
 
-        super(DocsisBootStub, self).__init__(*args, **kw)
+            super(DocsisBootStub, self).__init__(*args, **kw)
 
-    def check_bootmode(self):
-        if not isinstance(self, DocsisBootFromEnv):
-            deprecate(
-                "Warning!",
-                message=
-                "Use DocisisBootFromEnv to boot with MAX config, and set BFT_ARGS to the required environment.",
-                category=UserWarning)
+        def check_bootmode(self):
+            if not isinstance(self, DocsisBootFromEnv):
+                deprecate(
+                    "Warning!",
+                    message=
+                    "Use DocisisBootFromEnv to boot with MAX config, and set BFT_ARGS to the required environment.",
+                    category=UserWarning)
 
-    def decorate_teardown(self):
-        # all in-built teardown API for unittest
-        blacklist = [
-            'teardown_class', 'teardown_wrapper', 'tearDownClass', 'tearDown'
-        ]
+        def decorate_teardown(self):
+            # all in-built teardown API for unittest
+            blacklist = [
+                'teardown_class', 'teardown_wrapper', 'tearDownClass',
+                'tearDown'
+            ]
 
-        for attr in dir(self):
-            if "tear" in attr.lower() and "down" in attr.lower():
-                if attr not in blacklist:
-                    func = getattr(self, attr)
-                    func = run_once(func)
-                    self.legacy_td = func
-                    break
+            for attr in dir(self):
+                if "tear" in attr.lower() and "down" in attr.lower():
+                    if attr not in blacklist:
+                        func = getattr(self, attr)
+                        func = run_once(func)
+                        self.legacy_td = func
+                        break
 
-    @run_once
-    def test_main(self):
-        if not self.env_helper.env_check(self.env_req):
-            raise BftProvEnvMismatch()
-        if self.__class__.__name__ == "DocsisBootStub":
-            self.skipTest("Do not run stub directly")
-        # to ensure that only DocsisBoot prefixed test cases can run the below implementation
-        if "DocsisBoot" not in self.__class__.__name__:
-            raise boardfarm.exceptions.CodeError(
-                "{} cannot call boot method".format(self.__class__.__name__))
-        try:
-            boardfarm_docsis.lib.booting.boot(self.config, self.env_helper,
-                                              self.dev, self.logged)
-        except boardfarm.exceptions.NoTFTPServer:
-            msg = 'No WAN Device or tftp_server defined, skipping flash.'
-            lib.common.test_msg(msg)
-            self.skipTest(msg)
+        @run_once
+        def test_main(self):
+            if not self.env_helper.env_check(self.env_req):
+                raise BftProvEnvMismatch()
+            if self.__class__.__name__ == "DocsisBootStub":
+                self.skipTest("Do not run stub directly")
+            # to ensure that only DocsisBoot prefixed test cases can run the below implementation
+            if "DocsisBoot" not in self.__class__.__name__:
+                raise boardfarm.exceptions.CodeError(
+                    "{} cannot call boot method".format(
+                        self.__class__.__name__))
+            try:
+                boardfarm_docsis.lib.booting.boot(self.config, self.env_helper,
+                                                  self.dev, self.logged)
+            except boardfarm.exceptions.NoTFTPServer:
+                msg = 'No WAN Device or tftp_server defined, skipping flash.'
+                lib.common.test_msg(msg)
+                self.skipTest(msg)
 
-    def runTest(self):
-        '''This exists for backwards compatability.
-        Delete this if/when all references to runTest are removed.'''
-        self.test_main()
+        def runTest(self):
+            '''This exists for backwards compatability.
+            Delete this if/when all references to runTest are removed.'''
+            self.test_main()
 
-    @classmethod
-    def teardown_class(cls):
-        obj = cls.test_obj
+        @classmethod
+        def teardown_class(cls):
+            obj = cls.test_obj
 
-        if hasattr(obj, "legacy_td"):
-            cls.call(obj.legacy_td)
+            if hasattr(obj, "legacy_td"):
+                cls.call(obj.legacy_td)
 
-        if not obj.td_step.td_result:
-            deprecate("teardown for test [{}] needs to re-worked".format(
-                cls.__name__),
-                      removal_version="> 2",
-                      category=UserWarning)
+            if not obj.td_step.td_result:
+                deprecate("teardown for test [{}] needs to re-worked".format(
+                    cls.__name__),
+                          removal_version="> 2",
+                          category=UserWarning)
 
-    @removals.remove(removal_version="> 1.1.1", category=UserWarning)
-    def recover(self):
-        pass
+        @removals.remove(removal_version="> 1.1.1", category=UserWarning)
+        def recover(self):
+            pass
 
 
 class DocsisBootFromEnv(DocsisBootStub):
