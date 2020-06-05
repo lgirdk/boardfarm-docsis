@@ -50,6 +50,12 @@ class DocsisEnvHelper(EnvHelper):
         :rtype: boolean
         """
         try:
-            return self.env['environment_def']['board']['voice']
+            if 'voice' in self.env['environment_def']['board']:
+                return self.env['environment_def']['board']['voice']
+            elif 'voice' in self.env['environment_def']:
+                return True
+            else:
+                return False
+
         except (KeyError, AttributeError):
             raise BftEnvExcKeyError
