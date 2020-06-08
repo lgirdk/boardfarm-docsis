@@ -59,3 +59,19 @@ class DocsisEnvHelper(EnvHelper):
 
         except (KeyError, AttributeError):
             raise BftEnvExcKeyError
+
+    def has_lan_advertise_identity(self, idx):
+        """Return lan identity value defined in lan_clients of env else return False.
+
+        :idx: lan client index from lan_clients to return corresponding value
+        :type: integer
+
+        :return: possible values are True/False
+        :rtype: boolean
+        """
+
+        try:
+            return self.env['environment_def']['board']['lan_clients'][idx][
+                'advertise_identity']
+        except (KeyError, AttributeError):
+            return False
