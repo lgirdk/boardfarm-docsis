@@ -51,7 +51,7 @@ def boot(config, env_helper, devices, logged=dict()):
             logged['boot_step'] = "voice_mta_ok"
 
         if tr069check:
-            for _ in range(10):
+            for _ in range(20):
                 try:
                     devices.board.get_cpeid()
                     break
