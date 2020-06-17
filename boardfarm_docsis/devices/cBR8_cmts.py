@@ -151,6 +151,23 @@ class CBR8CMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         return output
 
+    def get_cmipv6(self, cmmac):
+        """Get IPv6 address of the Cable modem from CMTS
+
+        :param cmmac: mac address of the CM
+        :type cmmac: string
+        :return: ipv6 address(str) of cable modem or "None"
+        :rtype: string
+        """
+        self.sendline('show cable modem %s ipv6' % cmmac)
+        self.expect(self.prompt)
+        match = re.search(AllValidIpv6AddressesRegex, self.before)
+        if match:
+            output = match.group(0)
+        else:
+            output = "None"
+        return output
+
     def get_mtaip(self, cmmac, mtamac):
         """Get the MTA IP from CMTS
 
