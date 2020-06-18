@@ -669,3 +669,41 @@ def factoryreset(s, board, method="SNMP"):
         print("Failed Board FactoryReset using '{}' \n {}".format(
             method, str(e)))
         raise BootFail("Failed Board FactoryReset: {}".format(str(e)))
+
+
+def configure_cm_dhcp_server(board, mode="dual", enable=True):
+    """Enable/disable board dhcp 4/6 server
+
+       :param board : board DUT device class
+       :type board : device_type.DUT
+       :param mode : enable/disable board dhcp ipv4/ipv6/dual
+                     ["dual" = ipv4 & ipv6,
+                      "ipv4" = only ipv4,
+                      "ipv6" = only ipv6
+                     ]
+       :type mode : string
+       :param enable : enable/disable cm dhcp server
+       :type enable : boolean
+       :rtype: boolean
+       :raise Assertion: Asserts when ACS RPC  raise exception
+       :return: returns bool True if enable/disable ACS RPC successful
+                returns bool False if requested operation is already running
+    """
+    if not board.get_cpeid():
+        board.restart_tr069(board.dev.wan,
+                            board.get_interface_ipaddr(board.wan_iface))
+    r_status = False
+
+    if mode in ["dual", "ipv4"]:
+        if enable != board.dev.acs_server.GPV(
+                "Device.DHCPv4.Server.Enable")[0]["value"]:
+            r_status = 0 == board.dev.acs_server.SPV(
+                {"Device.DHCPv4.Server.Enable": enable})
+
+    if mode in ["dual", "ipv6"]:
+        if enable != board.dev.acs_server.GPV(
+                "Device.DHCPv6.Server.Enable")[0]["value"]:
+            r_status = 0 == board.dev.acs_server.SPV(
+                {"Device.DHCPv6.Server.Enable": enable})
+
+    return r_status
