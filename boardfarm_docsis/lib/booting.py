@@ -55,7 +55,8 @@ def boot(config, env_helper, devices, logged=dict()):
                 try:
                     devices.board.get_cpeid()
                     break
-                except:
+                except Exception as e:
+                    print(e)
                     warnings.warn("Failed to connect to ACS, retrying")
             else:
                 raise BootFail("Failed to connect to ACS")
