@@ -966,6 +966,79 @@
             }
         }
     },
+    "global_offhook_warning_mta": {
+        "generic_mta_list": {
+            "pktcSigDevToneFirstFreqValue": {
+                "data": "425",
+                "data_type": "unsigned32",
+                "suffix": ".5.1"
+            },
+            "pktcSigDevToneFourthFreqValue": {
+                "data": "0",
+                "data_type": "unsigned32",
+                "suffix": ".5.1"
+            },
+            "pktcSigDevToneFreqAmpModePrtg": {
+                "data": "0",
+                "data_type": "int",
+                "suffix": ".5.1"
+            },
+            "pktcSigDevToneFreqMode": {
+                "data": "-190",
+                "data_type": "int",
+                "suffix": ".5.1"
+            },
+            "pktcSigDevToneFreqOffDuration": {
+                "data": "200",
+                "data_type": "unsigned32",
+                "suffix": ".5.1"
+            },
+            "pktcSigDevToneFreqOnDuration": {
+                "data": "200",
+                "data_type": "unsigned32",
+                "suffix": ".5.1"
+            },
+            "pktcSigDevToneFreqRepeatCount": {
+                "data": "0",
+                "data_type": "unsigned32",
+                "suffix": ".5.1"
+            },
+            "pktcSigDevToneSecondFreqValue": {
+                "data": "0",
+                "data_type": "unsigned32",
+                "suffix": ".5.1"
+            },
+            "pktcSigDevToneSteady": {
+                "data": "2",
+                "data_type": "int",
+                "suffix": ".5"
+            },
+            "pktcSigDevToneThirdFreqValue": {
+                "data": "0",
+                "data_type": "unsigned32",
+                "suffix": ".5.1"
+            },
+            "pktcSigDevToneWholeToneRepeatCount": {
+                "data": "80",
+                "data_type": "unsigned32",
+                "suffix": ".5"
+            }
+        },
+        "line1": {
+            "pktcNcsEndPntConfigOffHookWarnToneTO": {
+                "data": "30",
+                "data_type": "unsigned32",
+                "suffix": ""
+            }
+        },
+        "line2": {
+            "pktcNcsEndPntConfigOffHookWarnToneTO": {
+                "data": "30",
+                "data_type": "unsigned32",
+                "suffix": ""
+            }
+        }
+    },
     "global_snmp": {
         "generic_mta_list": {
             "emtaSnmpAuthFallBackEnable": {
