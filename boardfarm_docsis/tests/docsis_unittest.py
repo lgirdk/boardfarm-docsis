@@ -1,9 +1,11 @@
+import pytest
 from boardfarm.lib.SnmpHelper import snmp_v2
 from boardfarm.tests import rootfs_boot
 
 
+@pytest.mark.selftest
 class selftest_test_cmts_functions(rootfs_boot.RootFSBootTest):
-    def runTest(self):
+    def test_main(self):
         '''
         This function is to test the cmts functions moved to boardfarm-docsis/devices/base_cmts.py.
         Input : None (self -- cmts object).
@@ -25,7 +27,7 @@ class selftest_test_cmts_functions(rootfs_boot.RootFSBootTest):
 
 
 class selftest_snmpv2(rootfs_boot.RootFSBootTest):
-    def runTest(self):
+    def test_main(self):
         board = self.dev.board
         wan = self.dev.wan
         mib_list = ["docsDevSwServer", "docsDevSwFilename"]
@@ -49,7 +51,7 @@ class selftest_snmpv2(rootfs_boot.RootFSBootTest):
 class selftest_check_online(rootfs_boot.RootFSBootTest):
     """This test should not throw ANY exceptions (This is for the Arris cmts
     class way of connecting)"""
-    def runTest(self):
+    def test_main(self):
         v = self.dev.cmts.check_online(self.dev.board.get_cm_mac_addr())
         if v is True:
             print("CM is online")
