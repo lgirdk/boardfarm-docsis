@@ -968,6 +968,11 @@
     },
     "global_offhook_warning_mta": {
         "generic_mta_list": {
+            "pktcSigDevToneDbLevel": {
+                "data": "-190",
+                "data_type": "int",
+                "suffix": ".5.1"
+            },
             "pktcSigDevToneFirstFreqValue": {
                 "data": "425",
                 "data_type": "unsigned32",
@@ -984,7 +989,7 @@
                 "suffix": ".5.1"
             },
             "pktcSigDevToneFreqMode": {
-                "data": "-190",
+                "data": "2",
                 "data_type": "int",
                 "suffix": ".5.1"
             },
