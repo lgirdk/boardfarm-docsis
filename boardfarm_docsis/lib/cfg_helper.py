@@ -119,17 +119,17 @@ class GeneralServiceFlow(object):
     AdmQosParamsTimeout = 'AdmQosParamsTimeout'
     ServiceClassName = 'ServiceClassName'
 
-    GeneralServiceFlow_dict_defaults = {\
-                                         QosParamSetType:7,\
-                                         TrafficPriority:1,\
-                                         MaxRateSustained:0,\
-                                         MaxTrafficBurst:None,\
-                                         MinReservedRate:None,\
-                                         MinResPacketSize:None,\
-                                         ActQosParamsTimeout:None,\
-                                         AdmQosParamsTimeout:None,\
-                                         ServiceClassName:None\
-                                       }
+    GeneralServiceFlow_dict_defaults = {
+        QosParamSetType: 7,
+        TrafficPriority: 1,
+        MaxRateSustained: 0,
+        MaxTrafficBurst: None,
+        MinReservedRate: None,
+        MinResPacketSize: None,
+        ActQosParamsTimeout: None,
+        AdmQosParamsTimeout: None,
+        ServiceClassName: None
+    }
 
     def __init__(self, **kwargs):
         """Constructor method to copy the service flow params and update the dict
@@ -289,17 +289,17 @@ class IpPacketClassifier(GeneralClassifierParameters):
     DstPortEnd = 'DstPortEnd'
     IpProto = 'IpProto'
 
-    IpPacketClassifier_dict_defaults = {\
-                 IpSrcAddr:None,\
-                 IpSrcMask:None,\
-                 SrcPortStart:None,\
-                 SrcPortEnd:None,\
-                 IpDstAddr:None,\
-                 IpDstMask:None,\
-                 DstPortStart:None,\
-                 DstPortEnd:None,\
-                 IpProto:None
-               }
+    IpPacketClassifier_dict_defaults = {
+        IpSrcAddr: None,
+        IpSrcMask: None,
+        SrcPortStart: None,
+        SrcPortEnd: None,
+        IpDstAddr: None,
+        IpDstMask: None,
+        DstPortStart: None,
+        DstPortEnd: None,
+        IpProto: None
+    }
 
     @classmethod
     def name(cls):
@@ -421,13 +421,13 @@ class UsServiceFlow(GeneralServiceFlow):
     RequestOrTxPolicy = 'RequestOrTxPolicy'
     IpTosOverwrite = 'IpTosOverwrite'
 
-    UsServiceFlow_defaults = {\
-                 UsServiceFlowRef:1,\
-                 MaxConcatenatedBurst:0,\
-                 SchedulingType:None,\
-                 RequestOrTxPolicy:None,\
-                 IpTosOverwrite:'0x0000'\
-               }
+    UsServiceFlow_defaults = {
+        UsServiceFlowRef: 1,
+        MaxConcatenatedBurst: 0,
+        SchedulingType: None,
+        RequestOrTxPolicy: None,
+        IpTosOverwrite: '0x0000'
+    }
 
     @classmethod
     def name(cls):
@@ -477,10 +477,7 @@ class DsServiceFlow(GeneralServiceFlow):
     DsServiceFlowRef = 'DsServiceFlowRef'
     MaxDsLatency = 'MaxDsLatency'
 
-    DsServiceFlow_dict_defaults = {\
-                 DsServiceFlowRef:3,\
-                 MaxDsLatency: None\
-               }
+    DsServiceFlow_dict_defaults = {DsServiceFlowRef: 3, MaxDsLatency: None}
 
     @classmethod
     def name(cls):
@@ -840,19 +837,19 @@ class GlobalParameters(object):
         return tmplist
 
     @staticmethod
-    def _validate_SnmpMibObject(l):
+    def _validate_SnmpMibObject(val_list):
         """Makes sure that there are no numberic oid in SnmpMibObject
 
         :raises assertion : If condition fails then assert
         """
-        if len(l) == 0:
+        if len(val_list) == 0:
             return
 
-        for i, v in enumerate(l):
+        for i, v in enumerate(val_list):
             mib_name = v.split(' ', 1)[0]
             if mib_name.count('.') > 1:
                 print("No numeric OIDs allowed in SnmpMibObject")
-                print("SnmpMibObject = %s" % l)
+                print("SnmpMibObject = %s" % val_list)
                 assert 0, "SnmpMibObject at position " + str(
                     i) + " has '" + mib_name + "' has numeric OID!!!!"
         pass
@@ -866,15 +863,18 @@ class GlobalParameters(object):
             # If a syslog ip is assigned might as well give some defautls
             # to its related attributes. These can then be overridden via
             # the kwargs received
-            snmpobjlogs = ['docsDevEvSyslog.0 IPAddress ' + str(GlobalParameters.sys_log_ip),\
-                           'docsDevEvReporting.emergency HexString 0xe0',\
-                           'docsDevEvReporting.alert HexString 0xe0',\
-                           'docsDevEvReporting.critical HexString 0xe0',\
-                           'docsDevEvReporting.error HexString 0xe0',\
-                           'docsDevEvReporting.warning HexString 0xe0',\
-                           'docsDevEvReporting.notice HexString 0xe0',\
-                           'docsDevEvReporting.information HexString 0xe0',\
-                           'docsDevEvReporting.debug HexString 0xe0']
+            snmpobjlogs = [
+                'docsDevEvSyslog.0 IPAddress ' +
+                str(GlobalParameters.sys_log_ip),
+                'docsDevEvReporting.emergency HexString 0xe0',
+                'docsDevEvReporting.alert HexString 0xe0',
+                'docsDevEvReporting.critical HexString 0xe0',
+                'docsDevEvReporting.error HexString 0xe0',
+                'docsDevEvReporting.warning HexString 0xe0',
+                'docsDevEvReporting.notice HexString 0xe0',
+                'docsDevEvReporting.information HexString 0xe0',
+                'docsDevEvReporting.debug HexString 0xe0'
+            ]
 
             if kwargs == {} or self.SnmpMibObject not in kwargs:
                 kwargs[self.SnmpMibObject] = []
@@ -986,11 +986,13 @@ class CfgGenerator():
         self.additional_cfg = ""
 
         self.cm_base_cfg = None
-        self.cm_base_cfg = [GlobalParameters(),\
-                            DsServiceFlow(),\
-                            UsServiceFlow(),\
-                            BaselinePrivacy(),\
-                            eRouter()]
+        self.cm_base_cfg = [
+            GlobalParameters(),
+            DsServiceFlow(),
+            UsServiceFlow(),
+            BaselinePrivacy(),
+            eRouter()
+        ]
         self.mta_base_cfg = [GlobalMTAParams()]
 
     def first(self, s):

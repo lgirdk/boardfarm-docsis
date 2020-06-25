@@ -27,7 +27,7 @@ from .cfg_helper import CfgGenerator
 try:
     # Python 2
     import Tkinter
-except:
+except Exception:
     # Python 3
     import tkinter as Tkinter
 
@@ -179,7 +179,7 @@ class docsis:
             # calculate and compare sha1 of board cfg file with one present in tftp here.
             pass
 
-        #TODO: we need to have a common lib which marks services running in each device.
+        # TODO: we need to have a common lib which marks services running in each device.
         # this needs to be removed at a later point.
         provisioner.tftp_device = board.tftp_dev
         provisioner.provision_board(board.config)
@@ -269,7 +269,7 @@ class cm_cfg(object):
         '''Creates a default basic CM cfg file for modification'''
 
         # TODO: we require loading a file for the moment
-        if start == None:
+        if start is None:
             # create a default config file with bare minimum config,
             # no snmp objs, no CVCs, nothing vendor specific!
             # only CM RF minimal config
@@ -404,14 +404,14 @@ class mta_cfg(cm_cfg):
             raise Exception("Wrong type %s received" % type(start))
 
 
-#-----------------------------------Library Methods-----------------------------------
+# -----------------------------------Library Methods-----------------------------------
 
 
 def check_board(board, cmts, cm_mac):
 
     assert board.is_online(), "CM show not OPERATIONAL on console"
     assert cmts.check_online(
-        cm_mac) == True, "CM is not online"  #check cm online on CMTS
+        cm_mac) is True, "CM is not online"  # check cm online on CMTS
     assert sum(cmts.DUT_chnl_lock(
         cm_mac)) == cmts.channel_bonding, "CM is in partial service"
 
@@ -430,7 +430,7 @@ def check_provisioning(board, mta=False):
     """
 
     # few cmts methods needs to be added before comparing sha3
-    #TODO: need to do this
+    # TODO: need to do this
     def validate_cm_side():
         pass
 
@@ -495,7 +495,13 @@ def check_interface(board, ip, prov_mode="dual", lan_devices=["lan"]):
             "ipv4": ["ipv4", "dual"],
             "ipv6": ["dslite", "ipv6", "dual"]
         }
-        check = lambda x: x if prov_mode in version[mode.lower()] else not x
+
+        def check(x):
+            if prov_mode in version[mode.lower()]:
+                return x
+            else:
+                return None
+
         assert check(
             iface.get(mode.lower(),
                       None)), "Failed to fetch E-Router {}, mode: {}".format(
@@ -528,7 +534,8 @@ def check_interface(board, ip, prov_mode="dual", lan_devices=["lan"]):
     if prov_mode in ["dslite", "ipv6"]:
         assert board.check_iface_exists(board.aftr_iface), \
                 "{} interface didn't come up in prov mode : {}".format(board.aftr_iface, prov_mode)
-    if prov_mode != "ipv4": _validate_cpe("IPv6")  # validate ipv6 for CPEs
+    if prov_mode != "ipv4":
+        _validate_cpe("IPv6")  # validate ipv6 for CPEs
 
 
 def generate_cfg_file(board,
