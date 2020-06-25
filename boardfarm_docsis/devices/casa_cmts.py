@@ -4,7 +4,6 @@
 #
 # This file is distributed under the Clear BSD license.
 # The full text can be found in LICENSE in the root directory.
-#!/usr/bin/env python
 
 import collections
 import ipaddress
@@ -126,7 +125,7 @@ class CasaCMTS(base_cmts.BaseCmts):
                 output = True
             elif status == "online" and encrytion == "no":
                 output = True
-            elif "online" not in status and status != None:
+            elif "online" not in status and status is not None:
                 output = status
             else:
                 assert 0, "ERROR: incorrect cmstatus \"" + status + "\" in cmts for bpi encrytion \"" + encrytion + "\""
@@ -159,7 +158,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         online_state = self.check_online(cmmac)
         self.expect(pexpect.TIMEOUT, timeout=5)
-        if (online_state == True):
+        if (online_state is True):
             print("CM is still online after 5 seconds.")
         else:
             print("CM reset is initiated.")
@@ -176,7 +175,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.expect(r'(\d+/\d+\.\d+/\d+(\*|\#)\s+\d+/\d+/\d+(\*|\#))\s+online')
         result = self.match.group(1)
         match = re.search(r'\#', result)
-        if match != None:
+        if match is not None:
             output = 1
         else:
             output = 0
@@ -232,7 +231,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.sendline('show cable modem %s cpe' % cmmac)
         self.expect(r'([\d\.]+)\s+dhcp\s+' + mtamac)
         result = self.match.group(1)
-        if self.match != None:
+        if self.match is not None:
             output = result
         else:
             output = "None"
@@ -1003,7 +1002,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.expect(r'ip-provisioning-mode (\w+\-\w+)')
         result = self.match.group(1)
         self.expect(self.prompt)
-        if self.match != None:
+        if self.match is not None:
             if "ipv4" in result.lower():
                 result = "ipv4"
             elif "dual" in result.lower():
@@ -1098,7 +1097,7 @@ class CasaCMTS(base_cmts.BaseCmts):
             output = "None"
         else:
             result = self.match.group(1)
-            if self.match != None:
+            if self.match is not None:
                 output = result
             else:
                 output = "None"

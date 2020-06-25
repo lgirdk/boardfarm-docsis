@@ -95,7 +95,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
                 output = True
             elif status == "p-online(pt)" or status == "p-online" or status == "p-online(d)":
                 output = True
-            elif "online" not in status and status != None:
+            elif "online" not in status and status is not None:
                 output = status
             else:
                 assert 0, "ERROR: incorrect cmstatus \"" + status + "\" in cmts"
@@ -127,7 +127,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         online_state = self.check_online(cmmac)
         self.expect(pexpect.TIMEOUT, timeout=5)
-        if (online_state == True):
+        if (online_state is True):
             print("CM is still online after 5 seconds.")
         else:
             print("CM reset is initiated.")
@@ -144,7 +144,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
         self.sendline('show cable modem %s' % cmmac)
         self.expect(cmmac + r'\s+([\d\.]+)')
         result = self.match.group(1)
-        if self.match != None:
+        if self.match is not None:
             output = result
         else:
             output = "None"
@@ -206,7 +206,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
                       mac_domain)
         self.expect(r'.*UP\s+(\d+)\s+DOCSIS')
         freq = self.match.group(1)
-        if self.match != None:
+        if self.match is not None:
             output = freq
         else:
             output = "None"

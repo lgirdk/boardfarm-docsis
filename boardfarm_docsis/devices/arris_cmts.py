@@ -4,7 +4,6 @@
 #
 # This file is distributed under the Clear BSD license.
 # The full text can be found in LICENSE in the root directory.
-#!/usr/bin/env python
 
 import ipaddress
 import re
@@ -228,7 +227,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         self.expect(pexpect.TIMEOUT, timeout=5)
         online_state = self._check_online(cmmac)
-        if (online_state == True):
+        if (online_state is True):
             print("CM is still online after 5 seconds.")
         else:
             print("CM reset is initiated.")
@@ -248,7 +247,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.sendline('show cable modem %s detail | include MTA' % (cmmac))
         self.expect(r'CPE\(MTA\)\s+.*IPv4=(' + ValidIpv4AddressRegex + ')\r\n')
         result = self.match.group(1)
-        if self.match != None:
+        if self.match is not None:
             output = result
         else:
             output = "None"
@@ -273,7 +272,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
             output = "None"
         else:
             result = self.match.group(1)
-            if self.match != None:
+            if self.match is not None:
                 output = result
             else:
                 output = "None"
@@ -372,7 +371,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         """
         self.sendline('no pagination')
         self.expect(self.prompt)
-        #show running-config will display the current running config file of CMTS
+        # show running-config will display the current running config file of CMTS
         self.sendline('show running-config')
         self.expect(r'arrisc4\(config\)\#')
         f = open(filename, "w")
@@ -927,7 +926,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
             match_grp = re.match(
                 r"\d{1,2}/\d{1,2}\s+" + str(mac_domain) +
                 r"\s.*\s(\d{6,10})\s+\w+", row)
-            if match_grp != None and match_grp.groups(0)[0] != None:
+            if match_grp is not None and match_grp.groups(0)[0] is not None:
                 freq_list.append(match_grp.groups(0)[0])
         freq_list = map(int, freq_list)
         return str(min(freq_list))
@@ -1140,7 +1139,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.sendline('show linecard status | include chassis')
         self.expect('Chassis Type:(.*)\r\n')
         result = self.match.group(1)
-        if self.match != None:
+        if self.match is not None:
             output = result
         else:
             output = "None"

@@ -16,7 +16,7 @@ if "pytest" in sys.modules:
     class DocsisBootStub(rootfs_boot.RootFSBootTest):
         cfg = None
         ertr_mode = {}
-        country = 'NL'  #default
+        country = 'NL'  # default
         voice = False
 else:
 
@@ -27,7 +27,7 @@ else:
 
         cfg = None
         ertr_mode = {}
-        country = 'NL'  #default
+        country = 'NL'  # default
         voice = False
 
         def __init__(self, *args, **kw):
