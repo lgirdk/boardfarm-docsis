@@ -27,7 +27,7 @@ from .cfg_helper import CfgGenerator
 try:
     # Python 2
     import Tkinter
-except Exception:
+except:
     # Python 3
     import tkinter as Tkinter
 
