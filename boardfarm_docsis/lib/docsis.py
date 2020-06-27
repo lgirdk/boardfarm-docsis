@@ -500,7 +500,7 @@ def check_interface(board, ip, prov_mode="dual", lan_devices=["lan"]):
             if prov_mode in version[mode.lower()]:
                 return x
             else:
-                return None
+                return not x
 
         assert check(
             iface.get(mode.lower(),
