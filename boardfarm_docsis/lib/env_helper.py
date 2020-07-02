@@ -50,9 +50,7 @@ class DocsisEnvHelper(EnvHelper):
         :rtype: boolean
         """
         try:
-            if 'voice' in self.env['environment_def']['board']:
-                return self.env['environment_def']['board']['voice']
-            elif 'voice' in self.env['environment_def']:
+            if 'voice' in self.env['environment_def']:
                 return True
             else:
                 return False
