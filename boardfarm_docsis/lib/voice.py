@@ -1,6 +1,9 @@
 import datetime
 import re
 
+from boardfarm.lib.SnmpHelper import get_mib_oid, snmp_v2
+from boardfarm_lgi.tests.lib.lgi_lib import mibstring2dict
+
 
 def get_tone_time(tones_file, out, tone):
     """"To verify dial tone based on country after off hook or call
@@ -53,3 +56,26 @@ def check_peer_registration(board, num_list, sipserver):
     ]
 
     return all(return_list)
+
+
+def fetch_mta_interfaces(wan, mta_ip):
+    '''
+    To fetch the mta interfaces using snmpwalk on the Mib 'ifDescr'.
+    :param wan: The wan object
+    :type wan: boardfarm.devices.DebianBox_AFTR
+    :param mta_ip: The mta_ip
+    :type mta_list: string
+    :return: list containing the mta int indexes
+    :rtype: list
+    '''
+    snmp_output = snmp_v2(wan,
+                          mta_ip,
+                          'ifEntry',
+                          index=2,
+                          walk_cmd="awk /{}/".format(get_mib_oid('ifDescr')))
+    out_dict = mibstring2dict(snmp_output, 'ifDescr')
+    index_list = []
+    for k, v in out_dict.items():
+        if v == 'Voice Over Cable Interface':
+            index_list.append(int(k.split('.')[-1]))
+    return index_list
