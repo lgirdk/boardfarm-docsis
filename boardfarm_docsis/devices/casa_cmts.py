@@ -34,7 +34,7 @@ class CasaCMTS(base_cmts.BaseCmts):
     def __init__(self, *args, **kwargs):
         """Constructor method
         """
-        super().__init__(args, kwargs)
+        super().__init__(*args, **kwargs)
         conn_cmd = kwargs.get('conn_cmd', None)
         connection_type = kwargs.get('connection_type', 'local_serial')
         self.ipaddr = kwargs.get('ipaddr', None)
@@ -103,6 +103,35 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.sendline('exit')
         self.sendline('exit')
 
+    def is_cm_online(self,
+                     ignore_bpi=False,
+                     ignore_partial=False,
+                     ignore_cpe=False):
+        """Returns True if the CM status is operational
+        :param ignore_bpi: returns True even when BPI is disabled
+        :type ignore_bpi: boolean
+        :param ignore_partial: returns True even when the CM is in partial service
+        :type ignore_partial: boolean
+        :param ignore_cpe: returns True even when LAN<->WAN forwarding is disabled
+        :type ignore_cpe: boolean
+        :return: True if the CM is operational, False otherwise
+        :rtype: boolean
+        """
+        b = self.check_output(f'show cable modem {self.board_wan_mac}')
+        if "offline cm 1" in b:
+            return False
+        if ignore_bpi is False:
+            if not re.search(r"online\(p(t|k)", b):
+                return False
+        if ignore_partial is False:
+            if self.check_PartialService() == 1:
+                print("Cable modem in partial service")
+                return False
+        if ignore_cpe is False:
+            if re.search(r"online\(d", b) or re.search(r"online\(p.d", b):
+                return False
+        return True
+
     @base_cmts.deco_get_mac
     def check_online(self, cmmac):
         """Check the CM status from CMTS
@@ -164,6 +193,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         else:
             print("CM reset is initiated.")
 
+    @base_cmts.deco_get_mac
     def check_PartialService(self, cmmac):
         """Check the cable modem is in partial service
 

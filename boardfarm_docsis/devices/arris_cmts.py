@@ -70,7 +70,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
     def __init__(self, *args, **kwargs):
         """Constructor method
         """
-        super().__init__(args, kwargs)
+        super().__init__(*args, **kwargs)
         self.conn_cmd = kwargs.get('conn_cmd', None)
         self.connection_type = kwargs.get('connection_type', 'local_serial')
         self.username = kwargs.get('username', 'boardfarm')
@@ -158,6 +158,49 @@ class ArrisCMTS(base_cmts.BaseCmts):
         except:
             self.close()
 
+    def _is_cm_online(self,
+                      ignore_bpi=False,
+                      ignore_partial=False,
+                      ignore_cpe=False):
+        """Unittest helper invoked by is_cm_online
+        Returns True if the CM status is operational
+        see is_cm_online(...)
+        """
+        b = self.check_output(f'show cable modem {self.board_wan_mac} detail')
+
+        if not re.search(r"State=(Operational|Online-d)", b):
+            return False
+        if ignore_bpi is False:
+            if not re.search(r"Privacy=Ready((\s){1,})Ver=BPI", b):
+                return False
+        if ignore_partial is False:
+            if self._check_PartialService(self.board_wan_mac):
+                print("Cable modem in partial service")
+                return False
+        if ignore_cpe is False:
+            if re.search(r"State=Online-d", b):
+                return False
+        return True
+
+    @ArrisCMTSDecorators.connect_and_run
+    def is_cm_online(self,
+                     ignore_bpi=False,
+                     ignore_partial=False,
+                     ignore_cpe=False):
+        """Returns True if the CM status is operational
+        :param ignore_bpi: returns True even when BPI is disabled
+        :type ignore_bpi: boolean
+        :param ignore_partial: returns True even when the CM is in partial service
+        :type ignore_partial: boolean
+        :param ignore_cpe: returns True even when LAN<->WAN forwarding is disabled
+        :type ignore_cpe: boolean
+        :return: True if the CM is operational, False otherwise
+        :rtype: boolean
+        """
+        return self._is_cm_online(ignore_bpi=ignore_bpi,
+                                  ignore_partial=ignore_partial,
+                                  ignore_cpe=ignore_cpe)
+
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
     def _check_online(self, cmmac=None):
         """Internal fuction to Check the CM status from CMTS function checks the encrytion mode and returns True if online
@@ -184,7 +227,6 @@ class ArrisCMTS(base_cmts.BaseCmts):
 
     @ArrisCMTSDecorators.connect_and_run
     @base_cmts.deco_get_mac
-    @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
     def check_online(self, cmmac):
         """Check the CM status from CMTS function checks the encrytion mode and returns True if online
 
@@ -319,6 +361,18 @@ class ArrisCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         return mac_domain
 
+    def _check_PartialService(self, cmmac):
+        """Helper function for check_PartialService
+        """
+        self.sendline('show cable modem %s' % cmmac)
+        self.expect(self.prompt)
+        if "impaired" in self.before:
+            output = 1
+        else:
+            output = 0
+        return output
+
+    @base_cmts.deco_get_mac
     @ArrisCMTSDecorators.connect_and_run
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
     def check_PartialService(self, cmmac):
@@ -329,13 +383,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         :return: 1 if is true else return the value as 0
         :rtype: int
         """
-        self.sendline('show cable modem %s' % cmmac)
-        self.expect(self.prompt)
-        if "impaired" in self.before:
-            output = 1
-        else:
-            output = 0
-        return output
+        return self.check_PartialService(cmmac)
 
     @ArrisCMTSDecorators.connect_and_run
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator

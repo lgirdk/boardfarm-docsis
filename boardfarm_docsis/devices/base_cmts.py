@@ -1,11 +1,14 @@
 from boardfarm.devices import base
+from boardfarm.exceptions import CodeError
+from boardfarm.lib import DeviceManager
+from netaddr import EUI, mac_cisco
 
 
 def deco_get_mac(function):
     def wrapper(*args, **kwargs):
         args = list(args)
-        if args[1] is None:
-            args[1] = args[0].board_wan_mac
+        if len(args) == 1:
+            args.append(args[0].board_wan_mac)
         return function(*args)
 
     return wrapper
@@ -19,8 +22,12 @@ class BaseCmts(base.BaseDevice):
     board_mta_mac = None
 
     def __init__(self, *args, **kwargs):
-        self.board_wan_mac = kwargs.get('wan_mac', None)
-        self.board_mta_mac = kwargs.get('mta_mac', None)
+        mgr = kwargs.get("mgr", None)
+        if mgr:
+            board = mgr.by_type(DeviceManager.device_type.DUT)
+            self.board_wan_mac = EUI(board.cm_mac, dialect=mac_cisco)
+            self.board_mta_mac = EUI(int(self.board_wan_mac) + 1,
+                                     dialect=mac_cisco)
 
     def connect(self):
         """This method is used to connect cmts, login to the cmts based on the connection type available
@@ -35,6 +42,17 @@ class BaseCmts(base.BaseDevice):
         :raises Exception: Not implemented
         """
         raise Exception("Not implemented!")
+
+    def is_cm_online(self,
+                     ignore_bpi=False,
+                     ignore_partial=False,
+                     ignore_cpe=False):
+        """Returns True if the CM status is operational
+        ignore_bpi returns True even when BPI is disabled
+        ignore_partial returns True even when the CM is in partial service
+        ignore_cpe returns True even when LAN<->WAN forwarding is disabled
+        """
+        raise CodeError("Not implemented!")
 
     def check_online(self, cmmac=None):
         """Check the CM status from CMTS function checks the encrytion mode and returns True if online
