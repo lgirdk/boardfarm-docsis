@@ -74,6 +74,11 @@ else:
             try:
                 boardfarm_docsis.lib.booting.boot(self.config, self.env_helper,
                                                   self.dev, self.logged)
+                self.dev.board.enable_logs()
+                self.dev.board.enable_time_display()
+                self.dev.board.enable_logs(component="pacm")
+                if self.voice:
+                    self.dev.board.enable_logs(component="voice")
             except boardfarm.exceptions.NoTFTPServer:
                 msg = 'No WAN Device or tftp_server defined, skipping flash.'
                 lib.common.test_msg(msg)
