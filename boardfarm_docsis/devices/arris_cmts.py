@@ -383,7 +383,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         :return: 1 if is true else return the value as 0
         :rtype: int
         """
-        return self.check_PartialService(cmmac)
+        return self._check_PartialService(cmmac)
 
     @ArrisCMTSDecorators.connect_and_run
     @ArrisCMTSDecorators.mac_to_cmts_type_mac_decorator
