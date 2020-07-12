@@ -22,6 +22,7 @@ from boardfarm.lib.common import (cmd_exists, keccak512_checksum,
 from boardfarm.lib.DeviceManager import device_type
 from boardfarm_docsis.exceptions import (CfgUnknownType, CMCfgEncodeFailed,
                                          MTACfgEncodeFailed)
+from debtcollector import deprecate
 
 from .cfg_helper import CfgGenerator
 
@@ -39,7 +40,7 @@ class cfg_type(Enum):
     MTA = 2
 
 
-class docsis:
+class docsis_encoder:
     """
     Name: docsis module
     Purpose: docsis operating.
@@ -62,15 +63,10 @@ class docsis:
             tmpdir = tempfile.mkdtemp()
 
         assert board, "board is a required argument"
-
         if mibs_paths == []:
             mibs_paths = getattr(board, 'mibs_paths', [])
         if mibs_paths != []:
-            default = os.path.expandvars(
-                '/home/$USER/.snmp/mibs:/usr/share/snmp/mibs:/usr/share/snmp/mibs/iana:/usr/share/snmp/mibs/ietf:/usr/share/mibs/site:/usr/share/snmp/mibs:/usr/share/mibs/iana:/usr/share/mibs/ietf:/usr/share/mibs/netsnmp'
-            )
-            mibs_path_arg = "-M " + default
-
+            mibs_path_arg = "-M "
             for mibs_path in mibs_paths:
                 mibs_path_arg = mibs_path_arg + ":" + mibs_path
 
@@ -110,6 +106,7 @@ class docsis:
         with open(self.file_path) as cfg:
             # TODO: this is OK but could be better
             data = cfg.read()
+            # BAD: this section needs cleaning up as parts are vendor specific
             if data.startswith('Main'):
                 return cfg_type.CM
             elif data.startswith('\t.'):
@@ -127,37 +124,48 @@ class docsis:
 
         # TODO: decode MTA?
 
+    def _run_cmd(self, cmd):
+        print(cmd)
+        os.system(cmd)
+
+    # this method can be overridden for vendor specific commands
+    def encode_mta(self, mibs_path_arg, file_path, mtacfg_path):
+        self._run_cmd("docsis {} -p {} {}".format(mibs_path_arg, file_path,
+                                                  mtacfg_path))
+        if not os.path.exists(mtacfg_path):
+            raise MTACfgEncodeFailed()
+        return mtacfg_path
+
+    # this method can be overridden for vendor specific commands
+    def encode_cm(self,
+                  mibs_path_arg,
+                  file_path,
+                  cmcfg_path,
+                  key_file='/dev/null'):
+        self._run_cmd("docsis {} -e {} {} {}".format(mibs_path_arg, file_path,
+                                                     key_file, cmcfg_path))
+        if not os.path.exists(cmcfg_path):
+            raise CMCfgEncodeFailed()
+        return cmcfg_path
+
     def encode(self, output_type='cm_cfg'):
         def encode_mta():
             mtacfg_name = self.file.replace('.txt', '.bin')
             mtacfg_path = os.path.join(self.dir_path, mtacfg_name)
             if os.path.isfile(mtacfg_path):
                 os.remove(mtacfg_path)
-            tclsh = Tkinter.Tcl()
-            tclsh.eval("source %s/mta_conf_Proc.tcl" %
-                       os.path.dirname(__file__))
-            tclsh.eval("run [list %s -e -hash eu -out %s]" %
-                       (self.file_path, mtacfg_path))
-            if not os.path.exists(mtacfg_path):
-                raise MTACfgEncodeFailed()
-
-            return mtacfg_path
+            return self.encode_mta(self.mibs_path_arg, self.file_path,
+                                   mtacfg_path)
 
         def encode_cm():
             cmcfg_name = self.file.replace('.txt', '.cfg')
             cmcfg_path = os.path.join(self.dir_path, cmcfg_name)
             if os.path.isfile(cmcfg_path):
                 os.remove(cmcfg_path)
-            print("docsis %s -e %s /dev/null %s" %
-                  (self.mibs_path_arg, self.file_path, cmcfg_path))
-            os.system("docsis %s -e %s /dev/null %s" %
-                      (self.mibs_path_arg, self.file_path, cmcfg_path))
-            if not os.path.exists(cmcfg_path):
-                raise CMCfgEncodeFailed()
+            return self.encode_cm(self.mibs_path_arg, self.file_path,
+                                  cmcfg_path)
 
-            return cmcfg_path
-
-        if output_type == 'mta_cfg':
+        if output_type == 'mta_cfg' or isinstance(self.cm_cfg, mta_cfg):
             return encode_mta()
 
         if self.get_cfg_type() == cfg_type.CM:
@@ -708,3 +716,16 @@ def configure_cm_dhcp_server(board, mode="dual", enable=True):
                 {"Device.DHCPv6.Server.Enable": enable})
 
     return r_status
+
+
+class docsis(docsis_encoder):
+    """
+    Deprecated use docsis_encoder, eventually this will be removed.
+    """
+    def __init__(self, *args, **kw):
+        deprecate(
+            "Warning!",
+            message=
+            "Use docis_encoder to encode/validate the Docsis related files",
+            category=UserWarning)
+        super(docsis, self).__init__(*args, **kw)
