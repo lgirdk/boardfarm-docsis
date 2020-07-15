@@ -1,5 +1,8 @@
-from boardfarm.lib.network_testing import (kill_process, tcpdump_capture,
-                                           tshark_read)
+from boardfarm.lib.network_testing import (
+    kill_process,
+    tcpdump_capture,
+    tshark_read,
+)
 from boardfarm.orchestration import TestStep as TS
 from boardfarm_docsis.tests.docsis_boot import DocsisBootStub as BF_Test
 from requests import HTTPError
