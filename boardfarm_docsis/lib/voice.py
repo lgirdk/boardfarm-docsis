@@ -18,26 +18,31 @@ def get_tone_time(tones_file, out, tone):
     :rval: timediff
     :rtype: int
     """
-    compansation = tones_file[tone]['compansation']
-    signal_num = tones_file[tone]['signal_num']
-    assert re.search(r"TONE gain compansation\s"+str(compansation), out), \
-    "No tone"
+    compansation = tones_file[tone]["compansation"]
+    signal_num = tones_file[tone]["signal_num"]
+    assert re.search(r"TONE gain compansation\s" + str(compansation), out), "No tone"
     time_start = re.findall(
-        r"([Mon|Tue|Wed|Thu|Fri|Sat|Sun].*)\[ERROR\].*Started Signal\[" +
-        str(signal_num) + r"\]", out)[0]
+        r"([Mon|Tue|Wed|Thu|Fri|Sat|Sun].*)\[ERROR\].*Started Signal\["
+        + str(signal_num)
+        + r"\]",
+        out,
+    )[0]
     time_stop = re.findall(
-        r"([Mon|Tue|Wed|Thu|Fri|Sat|Sun].*)\[ERROR\].*Stopping Signal\[" +
-        str(signal_num) + r"\]", out)[-1]
-    date_time_obj_start = datetime.datetime.strptime(time_start,
-                                                     '%a %b %d %H:%M:%S %Y ')
-    date_time_obj_stop = datetime.datetime.strptime(time_stop,
-                                                    '%a %b %d %H:%M:%S %Y ')
+        r"([Mon|Tue|Wed|Thu|Fri|Sat|Sun].*)\[ERROR\].*Stopping Signal\["
+        + str(signal_num)
+        + r"\]",
+        out,
+    )[-1]
+    date_time_obj_start = datetime.datetime.strptime(
+        time_start, "%a %b %d %H:%M:%S %Y "
+    )
+    date_time_obj_stop = datetime.datetime.strptime(time_stop, "%a %b %d %H:%M:%S %Y ")
     time_diff = date_time_obj_stop - date_time_obj_start
     return time_diff.total_seconds()
 
 
 def check_peer_registration(board, num_list, sipserver):
-    '''
+    """
     Method to validate the peer registration status.
     :param board: The board object
     :type board: string
@@ -47,11 +52,10 @@ def check_peer_registration(board, num_list, sipserver):
     :type sipserver: string
     :return: True if both the users in sip server are registered
     :rtype: Boolean
-    '''
+    """
     mta_ip = board.get_interface_ipaddr(board.mta_iface)
     return_list = [
-        True
-        if sipserver.peer_reg_status(user, mta_ip) == "Registered" else False
+        True if sipserver.peer_reg_status(user, mta_ip) == "Registered" else False
         for user in num_list
     ]
 
@@ -59,7 +63,7 @@ def check_peer_registration(board, num_list, sipserver):
 
 
 def fetch_mta_interfaces(wan, mta_ip):
-    '''
+    """
     To fetch the mta interfaces using snmpwalk on the Mib 'ifDescr'.
     :param wan: The wan object
     :type wan: boardfarm.devices.DebianBox_AFTR
@@ -67,15 +71,17 @@ def fetch_mta_interfaces(wan, mta_ip):
     :type mta_list: string
     :return: list containing the mta int indexes
     :rtype: list
-    '''
-    snmp_output = snmp_v2(wan,
-                          mta_ip,
-                          'ifEntry',
-                          index=2,
-                          walk_cmd="awk /{}/".format(get_mib_oid('ifDescr')))
-    out_dict = mibstring2dict(snmp_output, 'ifDescr')
+    """
+    snmp_output = snmp_v2(
+        wan,
+        mta_ip,
+        "ifEntry",
+        index=2,
+        walk_cmd="awk /{}/".format(get_mib_oid("ifDescr")),
+    )
+    out_dict = mibstring2dict(snmp_output, "ifDescr")
     index_list = []
     for k, v in out_dict.items():
-        if v == 'Voice Over Cable Interface':
-            index_list.append(int(k.split('.')[-1]))
+        if v == "Voice Over Cable Interface":
+            index_list.append(int(k.split(".")[-1]))
     return index_list

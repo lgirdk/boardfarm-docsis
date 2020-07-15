@@ -4,12 +4,12 @@
 import pytest
 from boardfarm_docsis.devices.arris_cmts import ArrisCMTS
 
-is_cm_online_offline = '''Jul  2 15:33:36
+is_cm_online_offline = """Jul  2 15:33:36
 
 
-'''
+"""
 
-is_cm_online_DhcpV4Done = '''
+is_cm_online_DhcpV4Done = """
 Jul  2 15:42:54
 
 
@@ -26,9 +26,9 @@ u    2083995  14023 Activ BE          0          0         9     1780      0    
 d    2083996  *4670 Activ             0          0         8     2872                 15/15
 L2VPN per CM: (Disabled)
 Current CPE=0, IPv4 Addr=0, IPv6 Addr=0          Max CPE=32, IPv4 Addr=0, IPv6 Addr=0
-'''
+"""
 
-is_cm_online_online_d = '''Jul  2 15:33:36
+is_cm_online_online_d = """Jul  2 15:33:36
 
 
 15/15-1/6       CM 342c.c454.2f0b (COMPAL_CH7465) D3.0 State=Online-d   D1.1/atdma PrimSID=14336 FiberNode= FN2
@@ -44,9 +44,9 @@ uB   2083945  14336 Activ BE          0          0         0        0      0    
 dB   2083946  *5150 Activ             0          0         0        0                 15/0-23
 L2VPN per CM: (Disabled)
 Current CPE=0, IPv4 Addr=0, IPv6 Addr=0          Max CPE=16, IPv4 Addr=32, IPv6 Addr=64
-'''
+"""
 
-is_cm_online_online_d_without_encr = '''Jul  2 15:33:36
+is_cm_online_online_d_without_encr = """Jul  2 15:33:36
 
 
 15/15-1/6       CM 342c.c454.2f0b (COMPAL_CH7465) D3.0 State=Online-d   D1.1/atdma PrimSID=14336 FiberNode= FN2
@@ -62,9 +62,9 @@ uB   2083945  14336 Activ BE          0          0         0        0      0    
 dB   2083946  *5150 Activ             0          0         0        0                 15/0-23
 L2VPN per CM: (Disabled)
 Current CPE=0, IPv4 Addr=0, IPv6 Addr=0          Max CPE=16, IPv4 Addr=32, IPv6 Addr=64
-'''
+"""
 
-is_cm_online_online_without_encr = '''Jul  2 15:44:24
+is_cm_online_online_without_encr = """Jul  2 15:44:24
 
 
 15/15-1/6       CM 342c.c454.2f0b (COMPAL_CH7465) D3.0 State=Operational D1.1/atdma PrimSID=14023 FiberNode= FN2
@@ -84,9 +84,9 @@ Current CPE=2, IPv4 Addr=2, IPv6 Addr=2          Max CPE=16, IPv4 Addr=32, IPv6 
  CPE       342c.c454.2f0d Filter-Group:Up=0 Down=0 Proto-Throttle=Normal IPv6=fe80::362c:c4ff:fe54:2f0d
 +CPE       342c.c454.2f0d IPv6=2002:0:c4:2::e:c1
 +CPE       342c.c454.2f0d IPv4=10.13.0.20
-'''
+"""
 
-is_cm_online_online_with_encr = '''Jul  2 15:44:24
+is_cm_online_online_with_encr = """Jul  2 15:44:24
 
 
 15/15-1/6       CM 342c.c454.2f0b (COMPAL_CH7465) D3.0 State=Operational D1.1/atdma PrimSID=14023 FiberNode= FN2
@@ -106,9 +106,9 @@ Current CPE=2, IPv4 Addr=2, IPv6 Addr=2          Max CPE=16, IPv4 Addr=32, IPv6 
  CPE       342c.c454.2f0d Filter-Group:Up=0 Down=0 Proto-Throttle=Normal IPv6=fe80::362c:c4ff:fe54:2f0d
 +CPE       342c.c454.2f0d IPv6=2002:0:c4:2::e:c1
 +CPE       342c.c454.2f0d IPv4=10.13.0.20
-'''
+"""
 
-is_cm_online_online_impaired = '''Jul  2 18:14:09
+is_cm_online_online_impaired = """Jul  2 18:14:09
 
 
 15/15-1/6       CM 342c.c454.2f0b (COMPAL_CH7465) D3.0 State=Operational D1.1/atdma PrimSID=12369 FiberNode= FN2
@@ -131,126 +131,130 @@ Current CPE=1, IPv4 Addr=1, IPv6 Addr=2          Max CPE=16, IPv4 Addr=32, IPv6 
  CPE       342c.c454.2f0d Filter-Group:Up=0 Down=0 Proto-Throttle=Normal IPv6=fe80::362c:c4ff:fe54:2f0d
 +CPE       342c.c454.2f0d IPv6=2002:0:c4:2::e:c1
 +CPE       342c.c454.2f0d IPv4=10.13.0.20
-'''
+"""
 
-combinations = [(False, False, False), (False, False, True),
-                (False, True, False), (False, True, True),
-                (True, False, False), (True, False, True), (True, True, False),
-                (True, True, True)]
+combinations = [
+    (False, False, False),
+    (False, False, True),
+    (False, True, False),
+    (False, True, True),
+    (True, False, False),
+    (True, False, True),
+    (True, True, False),
+    (True, True, True),
+]
 
 
 @pytest.mark.parametrize(
     "cmts_ouput, params_combination, partial, result",
-    [(is_cm_online_offline, combinations[0], 0, False),
-     (is_cm_online_DhcpV4Done, combinations[0], 0, False),
-     (is_cm_online_online_d_without_encr, combinations[0], 0, False),
-     (is_cm_online_online_d, combinations[0], 0, False),
-     (is_cm_online_online_without_encr, combinations[0], 0, False),
-     (is_cm_online_online_with_encr, combinations[0], 0, True),
-     (is_cm_online_offline, combinations[0], 1, False),
-     (is_cm_online_DhcpV4Done, combinations[0], 1, False),
-     (is_cm_online_online_d_without_encr, combinations[0], 1, False),
-     (is_cm_online_online_d, combinations[0], 1, False),
-     (is_cm_online_online_without_encr, combinations[0], 1, False),
-     (is_cm_online_online_with_encr, combinations[0], 1, False),
-     (is_cm_online_offline, combinations[1], 0, False),
-     (is_cm_online_DhcpV4Done, combinations[1], 0, False),
-     (is_cm_online_online_d_without_encr, combinations[1], 0, False),
-     (is_cm_online_online_d, combinations[1], 0, True),
-     (is_cm_online_online_without_encr, combinations[1], 0, False),
-     (is_cm_online_online_with_encr, combinations[1], 0, True),
-     (is_cm_online_offline, combinations[1], 1, False),
-     (is_cm_online_DhcpV4Done, combinations[1], 1, False),
-     (is_cm_online_online_d_without_encr, combinations[1], 1, False),
-     (is_cm_online_online_d, combinations[1], 1, False),
-     (is_cm_online_online_without_encr, combinations[1], 1, False),
-     (is_cm_online_online_with_encr, combinations[1], 1, False),
-     (is_cm_online_offline, combinations[2], 0, False),
-     (is_cm_online_DhcpV4Done, combinations[2], 0, False),
-     (is_cm_online_online_d_without_encr, combinations[2], 0, False),
-     (is_cm_online_online_d, combinations[2], 0, False),
-     (is_cm_online_online_without_encr, combinations[2], 0, False),
-     (is_cm_online_online_with_encr, combinations[2], 0, True),
-     (is_cm_online_offline, combinations[2], 1, False),
-     (is_cm_online_DhcpV4Done, combinations[2], 1, False),
-     (is_cm_online_online_d_without_encr, combinations[2], 1, False),
-     (is_cm_online_online_d, combinations[2], 1, False),
-     (is_cm_online_online_without_encr, combinations[2], 1, False),
-     (is_cm_online_online_with_encr, combinations[2], 1, True),
-     (is_cm_online_offline, combinations[3], 0, False),
-     (is_cm_online_DhcpV4Done, combinations[3], 0, False),
-     (is_cm_online_online_d_without_encr, combinations[3], 0, False),
-     (is_cm_online_online_d, combinations[3], 0, True),
-     (is_cm_online_online_without_encr, combinations[3], 0, False),
-     (is_cm_online_online_with_encr, combinations[3], 0, True),
-     (is_cm_online_offline, combinations[3], 1, False),
-     (is_cm_online_DhcpV4Done, combinations[3], 1, False),
-     (is_cm_online_online_d_without_encr, combinations[3], 1, False),
-     (is_cm_online_online_d, combinations[3], 1, True),
-     (is_cm_online_online_without_encr, combinations[3], 1, False),
-     (is_cm_online_online_with_encr, combinations[3], 1, True),
-     (is_cm_online_offline, combinations[4], 0, False),
-     (is_cm_online_DhcpV4Done, combinations[4], 0, False),
-     (is_cm_online_online_d_without_encr, combinations[4], 0, False),
-     (is_cm_online_online_d, combinations[4], 0, False),
-     (is_cm_online_online_without_encr, combinations[4], 0, True),
-     (is_cm_online_online_with_encr, combinations[4], 0, True),
-     (is_cm_online_offline, combinations[4], 1, False),
-     (is_cm_online_DhcpV4Done, combinations[4], 1, False),
-     (is_cm_online_online_d_without_encr, combinations[4], 1, False),
-     (is_cm_online_online_d, combinations[4], 1, False),
-     (is_cm_online_online_without_encr, combinations[4], 1, False),
-     (is_cm_online_online_with_encr, combinations[4], 1, False),
-     (is_cm_online_offline, combinations[5], 0, False),
-     (is_cm_online_DhcpV4Done, combinations[5], 0, False),
-     (is_cm_online_online_d_without_encr, combinations[5], 0, True),
-     (is_cm_online_online_d, combinations[5], 0, True),
-     (is_cm_online_online_without_encr, combinations[5], 0, True),
-     (is_cm_online_online_with_encr, combinations[5], 0, True),
-     (is_cm_online_offline, combinations[5], 1, False),
-     (is_cm_online_DhcpV4Done, combinations[5], 1, False),
-     (is_cm_online_online_d_without_encr, combinations[5], 1, False),
-     (is_cm_online_online_d, combinations[5], 1, False),
-     (is_cm_online_online_without_encr, combinations[5], 1, False),
-     (is_cm_online_online_with_encr, combinations[5], 1, False),
-     (is_cm_online_offline, combinations[6], 0, False),
-     (is_cm_online_DhcpV4Done, combinations[6], 0, False),
-     (is_cm_online_online_d_without_encr, combinations[6], 0, False),
-     (is_cm_online_online_d, combinations[6], 0, False),
-     (is_cm_online_online_without_encr, combinations[6], 0, True),
-     (is_cm_online_online_with_encr, combinations[6], 0, True),
-     (is_cm_online_offline, combinations[6], 1, False),
-     (is_cm_online_DhcpV4Done, combinations[6], 1, False),
-     (is_cm_online_online_d_without_encr, combinations[6], 1, False),
-     (is_cm_online_online_d, combinations[6], 1, False),
-     (is_cm_online_online_without_encr, combinations[6], 1, True),
-     (is_cm_online_online_with_encr, combinations[6], 1, True),
-     (is_cm_online_offline, combinations[7], 0, False),
-     (is_cm_online_DhcpV4Done, combinations[7], 0, False),
-     (is_cm_online_online_d_without_encr, combinations[7], 0, True),
-     (is_cm_online_online_d, combinations[7], 0, True),
-     (is_cm_online_online_without_encr, combinations[7], 0, True),
-     (is_cm_online_online_with_encr, combinations[7], 0, True),
-     (is_cm_online_offline, combinations[7], 1, False),
-     (is_cm_online_DhcpV4Done, combinations[7], 1, False),
-     (is_cm_online_online_d_without_encr, combinations[7], 1, True),
-     (is_cm_online_online_d, combinations[7], 1, True),
-     (is_cm_online_online_without_encr, combinations[7], 1, True),
-     (is_cm_online_online_with_encr, combinations[7], 1, True)])
+    [
+        (is_cm_online_offline, combinations[0], 0, False),
+        (is_cm_online_DhcpV4Done, combinations[0], 0, False),
+        (is_cm_online_online_d_without_encr, combinations[0], 0, False),
+        (is_cm_online_online_d, combinations[0], 0, False),
+        (is_cm_online_online_without_encr, combinations[0], 0, False),
+        (is_cm_online_online_with_encr, combinations[0], 0, True),
+        (is_cm_online_offline, combinations[0], 1, False),
+        (is_cm_online_DhcpV4Done, combinations[0], 1, False),
+        (is_cm_online_online_d_without_encr, combinations[0], 1, False),
+        (is_cm_online_online_d, combinations[0], 1, False),
+        (is_cm_online_online_without_encr, combinations[0], 1, False),
+        (is_cm_online_online_with_encr, combinations[0], 1, False),
+        (is_cm_online_offline, combinations[1], 0, False),
+        (is_cm_online_DhcpV4Done, combinations[1], 0, False),
+        (is_cm_online_online_d_without_encr, combinations[1], 0, False),
+        (is_cm_online_online_d, combinations[1], 0, True),
+        (is_cm_online_online_without_encr, combinations[1], 0, False),
+        (is_cm_online_online_with_encr, combinations[1], 0, True),
+        (is_cm_online_offline, combinations[1], 1, False),
+        (is_cm_online_DhcpV4Done, combinations[1], 1, False),
+        (is_cm_online_online_d_without_encr, combinations[1], 1, False),
+        (is_cm_online_online_d, combinations[1], 1, False),
+        (is_cm_online_online_without_encr, combinations[1], 1, False),
+        (is_cm_online_online_with_encr, combinations[1], 1, False),
+        (is_cm_online_offline, combinations[2], 0, False),
+        (is_cm_online_DhcpV4Done, combinations[2], 0, False),
+        (is_cm_online_online_d_without_encr, combinations[2], 0, False),
+        (is_cm_online_online_d, combinations[2], 0, False),
+        (is_cm_online_online_without_encr, combinations[2], 0, False),
+        (is_cm_online_online_with_encr, combinations[2], 0, True),
+        (is_cm_online_offline, combinations[2], 1, False),
+        (is_cm_online_DhcpV4Done, combinations[2], 1, False),
+        (is_cm_online_online_d_without_encr, combinations[2], 1, False),
+        (is_cm_online_online_d, combinations[2], 1, False),
+        (is_cm_online_online_without_encr, combinations[2], 1, False),
+        (is_cm_online_online_with_encr, combinations[2], 1, True),
+        (is_cm_online_offline, combinations[3], 0, False),
+        (is_cm_online_DhcpV4Done, combinations[3], 0, False),
+        (is_cm_online_online_d_without_encr, combinations[3], 0, False),
+        (is_cm_online_online_d, combinations[3], 0, True),
+        (is_cm_online_online_without_encr, combinations[3], 0, False),
+        (is_cm_online_online_with_encr, combinations[3], 0, True),
+        (is_cm_online_offline, combinations[3], 1, False),
+        (is_cm_online_DhcpV4Done, combinations[3], 1, False),
+        (is_cm_online_online_d_without_encr, combinations[3], 1, False),
+        (is_cm_online_online_d, combinations[3], 1, True),
+        (is_cm_online_online_without_encr, combinations[3], 1, False),
+        (is_cm_online_online_with_encr, combinations[3], 1, True),
+        (is_cm_online_offline, combinations[4], 0, False),
+        (is_cm_online_DhcpV4Done, combinations[4], 0, False),
+        (is_cm_online_online_d_without_encr, combinations[4], 0, False),
+        (is_cm_online_online_d, combinations[4], 0, False),
+        (is_cm_online_online_without_encr, combinations[4], 0, True),
+        (is_cm_online_online_with_encr, combinations[4], 0, True),
+        (is_cm_online_offline, combinations[4], 1, False),
+        (is_cm_online_DhcpV4Done, combinations[4], 1, False),
+        (is_cm_online_online_d_without_encr, combinations[4], 1, False),
+        (is_cm_online_online_d, combinations[4], 1, False),
+        (is_cm_online_online_without_encr, combinations[4], 1, False),
+        (is_cm_online_online_with_encr, combinations[4], 1, False),
+        (is_cm_online_offline, combinations[5], 0, False),
+        (is_cm_online_DhcpV4Done, combinations[5], 0, False),
+        (is_cm_online_online_d_without_encr, combinations[5], 0, True),
+        (is_cm_online_online_d, combinations[5], 0, True),
+        (is_cm_online_online_without_encr, combinations[5], 0, True),
+        (is_cm_online_online_with_encr, combinations[5], 0, True),
+        (is_cm_online_offline, combinations[5], 1, False),
+        (is_cm_online_DhcpV4Done, combinations[5], 1, False),
+        (is_cm_online_online_d_without_encr, combinations[5], 1, False),
+        (is_cm_online_online_d, combinations[5], 1, False),
+        (is_cm_online_online_without_encr, combinations[5], 1, False),
+        (is_cm_online_online_with_encr, combinations[5], 1, False),
+        (is_cm_online_offline, combinations[6], 0, False),
+        (is_cm_online_DhcpV4Done, combinations[6], 0, False),
+        (is_cm_online_online_d_without_encr, combinations[6], 0, False),
+        (is_cm_online_online_d, combinations[6], 0, False),
+        (is_cm_online_online_without_encr, combinations[6], 0, True),
+        (is_cm_online_online_with_encr, combinations[6], 0, True),
+        (is_cm_online_offline, combinations[6], 1, False),
+        (is_cm_online_DhcpV4Done, combinations[6], 1, False),
+        (is_cm_online_online_d_without_encr, combinations[6], 1, False),
+        (is_cm_online_online_d, combinations[6], 1, False),
+        (is_cm_online_online_without_encr, combinations[6], 1, True),
+        (is_cm_online_online_with_encr, combinations[6], 1, True),
+        (is_cm_online_offline, combinations[7], 0, False),
+        (is_cm_online_DhcpV4Done, combinations[7], 0, False),
+        (is_cm_online_online_d_without_encr, combinations[7], 0, True),
+        (is_cm_online_online_d, combinations[7], 0, True),
+        (is_cm_online_online_without_encr, combinations[7], 0, True),
+        (is_cm_online_online_with_encr, combinations[7], 0, True),
+        (is_cm_online_offline, combinations[7], 1, False),
+        (is_cm_online_DhcpV4Done, combinations[7], 1, False),
+        (is_cm_online_online_d_without_encr, combinations[7], 1, True),
+        (is_cm_online_online_d, combinations[7], 1, True),
+        (is_cm_online_online_without_encr, combinations[7], 1, True),
+        (is_cm_online_online_with_encr, combinations[7], 1, True),
+    ],
+)
 def test_is_cm_online(mocker, cmts_ouput, params_combination, partial, result):
-    mocker.patch.object(ArrisCMTS,
-                        '__init__',
-                        return_value=None,
-                        autospec=True)
-    mocker.patch.object(ArrisCMTS, 'sendline', autospec=True)
-    mocker.patch.object(ArrisCMTS,
-                        'check_output',
-                        return_value=cmts_ouput,
-                        autospec=True)
-    mocker.patch.object(ArrisCMTS, 'expect', autospec=True)
-    mocker.patch.object(ArrisCMTS,
-                        '_check_PartialService',
-                        return_value=partial,
-                        autospec=True)
+    mocker.patch.object(ArrisCMTS, "__init__", return_value=None, autospec=True)
+    mocker.patch.object(ArrisCMTS, "sendline", autospec=True)
+    mocker.patch.object(
+        ArrisCMTS, "check_output", return_value=cmts_ouput, autospec=True
+    )
+    mocker.patch.object(ArrisCMTS, "expect", autospec=True)
+    mocker.patch.object(
+        ArrisCMTS, "_check_PartialService", return_value=partial, autospec=True
+    )
     arris = ArrisCMTS()
     assert arris._is_cm_online(*params_combination) == result

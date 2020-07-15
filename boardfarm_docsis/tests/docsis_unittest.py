@@ -6,17 +6,19 @@ from boardfarm.tests import rootfs_boot
 @pytest.mark.selftest
 class selftest_test_cmts_functions(rootfs_boot.RootFSBootTest):
     def test_main(self):
-        '''
+        """
         This function is to test the cmts functions moved to boardfarm-docsis/devices/base_cmts.py.
         Input : None (self -- cmts object).
         Output : None (checks the cmts methods and prints the output).
-        '''
+        """
         cmts = self.dev.cmts
         board = self.dev.board
         ip_provisioning_mode = cmts.check_docsis_mac_ip_provisioning_mode(
-            cmts.mac_domain)
-        print("The ip provisioning mode on given mac domain is %s" %
-              ip_provisioning_mode)
+            cmts.mac_domain
+        )
+        print(
+            "The ip provisioning mode on given mac domain is %s" % ip_provisioning_mode
+        )
         cmts.wait_for_ready()
         is_cm_bridged = cmts.is_cm_bridged(board.config["cm_mac"])
         print("The status of cm bridged is %s" % is_cm_bridged)
@@ -51,6 +53,7 @@ class selftest_snmpv2(rootfs_boot.RootFSBootTest):
 class selftest_check_online(rootfs_boot.RootFSBootTest):
     """This test should not throw ANY exceptions (This is for the Arris cmts
     class way of connecting)"""
+
     def test_main(self):
         v = self.dev.cmts.check_online(self.dev.board.get_cm_mac_addr())
         if v is True:

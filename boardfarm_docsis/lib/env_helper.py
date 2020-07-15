@@ -3,26 +3,26 @@ from boardfarm.lib.env_helper import EnvHelper
 
 
 class DocsisEnvHelper(EnvHelper):
-    '''
+    """
     Docsis specific env helper, adds more options such as  "eRouter_Provisioning_mode": "Bridge"
-    '''
+    """
+
     def get_prov_mode(self):
-        '''
+        """
         returns the provisioning mode of the desired environment.
         possible values are: ipv4, ipv6, dslite, dualstack, bridge
-        '''
+        """
 
         try:
-            return self.env['environment_def']['board'][
-                'eRouter_Provisioning_mode']
+            return self.env["environment_def"]["board"]["eRouter_Provisioning_mode"]
         except (KeyError, AttributeError):
             raise BftEnvExcKeyError
 
     def has_prov_mode(self):
-        '''
+        """
         returns true or false depending if the environment has specified a
         provisioning mode
-        '''
+        """
         try:
             self.get_prov_mode()
             return True
@@ -30,7 +30,7 @@ class DocsisEnvHelper(EnvHelper):
             return False
 
     def get_ertr_mode(self):
-        return {'max_config': True}
+        return {"max_config": True}
 
     def get_country(self):
         """This method returns the country name from env json.
@@ -39,7 +39,7 @@ class DocsisEnvHelper(EnvHelper):
         :rtype: string
         """
         try:
-            return self.env['environment_def']['board']['country']
+            return self.env["environment_def"]["board"]["country"]
         except (KeyError, AttributeError):
             raise BftEnvExcKeyError
 
@@ -50,7 +50,7 @@ class DocsisEnvHelper(EnvHelper):
         :rtype: boolean
         """
         try:
-            if 'voice' in self.env['environment_def']:
+            if "voice" in self.env["environment_def"]:
                 return True
             else:
                 return False
@@ -69,7 +69,8 @@ class DocsisEnvHelper(EnvHelper):
         """
 
         try:
-            return self.env['environment_def']['board']['lan_clients'][idx][
-                'advertise_identity']
+            return self.env["environment_def"]["board"]["lan_clients"][idx][
+                "advertise_identity"
+            ]
         except (KeyError, AttributeError):
             return False

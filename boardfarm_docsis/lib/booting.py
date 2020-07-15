@@ -13,15 +13,15 @@ def boot(config, env_helper, devices, logged=dict()):
     voice = env_helper.voice_enabled()
     tr069check = cfg not in ["disabled", "bridge", "none"]
 
-    logged['boot_step'] = "env_ok"
+    logged["boot_step"] = "env_ok"
 
     devices.board.cm_cfg = devices.board.generate_cfg(cfg, None, ertr_mode)
-    logged['boot_step'] = "cmcfg_ok"
+    logged["boot_step"] = "cmcfg_ok"
     devices.board.mta_cfg = devices.board.generate_mta_cfg(country)
-    logged['boot_step'] = "mtacfg_ok"
+    logged["boot_step"] = "mtacfg_ok"
 
     # TODO: why is this required? need to fix globally
-    devices.board.config['cm_cfg'] = devices.board.cm_cfg
+    devices.board.config["cm_cfg"] = devices.board.cm_cfg
 
     if voice:
         try:
@@ -29,26 +29,31 @@ def boot(config, env_helper, devices, logged=dict()):
             sipserver.kill_asterisk()
             dns_setup_sipserver(sipserver, config)
             voice_devices_list = [
-                sipserver, devices.softphone, devices.lan, devices.lan2
+                sipserver,
+                devices.softphone,
+                devices.lan,
+                devices.lan2,
             ]
             voice_devices_configure(voice_devices_list, devices.sipcenter)
         except Exception as e:
             print("\n\nFailed to configure voice setup")
             print(e)
             raise VoiceSetupConfigureFailure
-        logged['boot_step'] = "voice_ok"
+        logged["boot_step"] = "voice_ok"
     else:
-        logged['boot_step'] = "voice_skipped"
+        logged["boot_step"] = "voice_skipped"
     try:
-        boardfarm.lib.booting.boot(config,
-                                   env_helper,
-                                   devices,
-                                   reflash=True,
-                                   logged=logged,
-                                   flashing_image=False)
+        boardfarm.lib.booting.boot(
+            config,
+            env_helper,
+            devices,
+            reflash=True,
+            logged=logged,
+            flashing_image=False,
+        )
         if voice:
             devices.board.wait_for_mta_provisioning()
-            logged['boot_step'] = "voice_mta_ok"
+            logged["boot_step"] = "voice_mta_ok"
 
         if tr069check:
             for _ in range(20):

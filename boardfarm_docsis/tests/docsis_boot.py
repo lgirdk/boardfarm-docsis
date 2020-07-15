@@ -16,18 +16,20 @@ if "pytest" in sys.modules:
     class DocsisBootStub(rootfs_boot.RootFSBootTest):
         cfg = None
         ertr_mode = {}
-        country = 'NL'  # default
+        country = "NL"  # default
         voice = False
+
+
 else:
 
     class DocsisBootStub(rootfs_boot.RootFSBootTest):
-        '''
+        """
         Boots a board as usual but with dual-stack-config instead of the board default
-        '''
+        """
 
         cfg = None
         ertr_mode = {}
-        country = 'NL'  # default
+        country = "NL"  # default
         voice = False
 
         def __init__(self, *args, **kw):
@@ -41,15 +43,17 @@ else:
             if not isinstance(self, DocsisBootFromEnv):
                 deprecate(
                     "Warning!",
-                    message=
-                    "Use DocisisBootFromEnv to boot with MAX config, and set BFT_ARGS to the required environment.",
-                    category=UserWarning)
+                    message="Use DocisisBootFromEnv to boot with MAX config, and set BFT_ARGS to the required environment.",
+                    category=UserWarning,
+                )
 
         def decorate_teardown(self):
             # all in-built teardown API for unittest
             blacklist = [
-                'teardown_class', 'teardown_wrapper', 'tearDownClass',
-                'tearDown'
+                "teardown_class",
+                "teardown_wrapper",
+                "tearDownClass",
+                "tearDown",
             ]
 
             for attr in dir(self):
@@ -69,24 +73,25 @@ else:
             # to ensure that only DocsisBoot prefixed test cases can run the below implementation
             if "DocsisBoot" not in self.__class__.__name__:
                 raise boardfarm.exceptions.CodeError(
-                    "{} cannot call boot method".format(
-                        self.__class__.__name__))
+                    "{} cannot call boot method".format(self.__class__.__name__)
+                )
             try:
-                boardfarm_docsis.lib.booting.boot(self.config, self.env_helper,
-                                                  self.dev, self.logged)
+                boardfarm_docsis.lib.booting.boot(
+                    self.config, self.env_helper, self.dev, self.logged
+                )
                 self.dev.board.enable_logs()
                 self.dev.board.enable_time_display()
                 self.dev.board.enable_logs(component="pacm")
                 if self.voice:
                     self.dev.board.enable_logs(component="voice")
             except boardfarm.exceptions.NoTFTPServer:
-                msg = 'No WAN Device or tftp_server defined, skipping flash.'
+                msg = "No WAN Device or tftp_server defined, skipping flash."
                 lib.common.test_msg(msg)
                 self.skipTest(msg)
 
         def runTest(self):
-            '''This exists for backwards compatability.
-            Delete this if/when all references to runTest are removed.'''
+            """This exists for backwards compatability.
+            Delete this if/when all references to runTest are removed."""
             self.test_main()
 
         @classmethod
@@ -97,10 +102,11 @@ else:
                 cls.call(obj.legacy_td)
 
             if not obj.td_step.td_result:
-                deprecate("teardown for test [{}] needs to re-worked".format(
-                    cls.__name__),
-                          removal_version="> 2",
-                          category=UserWarning)
+                deprecate(
+                    "teardown for test [{}] needs to re-worked".format(cls.__name__),
+                    removal_version="> 2",
+                    category=UserWarning,
+                )
 
         @removals.remove(removal_version="> 1.1.1", category=UserWarning)
         def recover(self):
@@ -108,7 +114,7 @@ else:
 
 
 class DocsisBootFromEnv(DocsisBootStub):
-    '''Dynamic boot from ENV json'''
+    """Dynamic boot from ENV json"""
 
     env_req = {}
 
@@ -116,71 +122,47 @@ class DocsisBootFromEnv(DocsisBootStub):
         super(DocsisBootFromEnv, self).test_main()
 
     def runTest(self):
-        '''This exists for backwards compatability.
-        Delete this if/when all references to runTest are removed.'''
+        """This exists for backwards compatability.
+        Delete this if/when all references to runTest are removed."""
         self.test_main()
 
 
 class DocsisBootDualStack(DocsisBootStub):
-    '''Normal boot, but with Dual Stack CM cfg specified'''
+    """Normal boot, but with Dual Stack CM cfg specified"""
 
-    env_req = {
-        "environment_def": {
-            "board": {
-                "eRouter_Provisioning_mode": "dual"
-            }
-        }
-    }
+    env_req = {"environment_def": {"board": {"eRouter_Provisioning_mode": "dual"}}}
     cfg = "dual"
 
 
 class DocsisBootIPv4(DocsisBootStub):
-    '''Normal boot, but with IPv4 CM cfg specified'''
+    """Normal boot, but with IPv4 CM cfg specified"""
 
-    env_req = {
-        "environment_def": {
-            "board": {
-                "eRouter_Provisioning_mode": "ipv4"
-            }
-        }
-    }
+    env_req = {"environment_def": {"board": {"eRouter_Provisioning_mode": "ipv4"}}}
     cfg = "ipv4"
 
 
 class DocsisBootIPv6(DocsisBootStub):
-    '''Normal boot, but with IPv6 CM cfg specified'''
+    """Normal boot, but with IPv6 CM cfg specified"""
 
-    env_req = {
-        "environment_def": {
-            "board": {
-                "eRouter_Provisioning_mode": "ipv6"
-            }
-        }
-    }
+    env_req = {"environment_def": {"board": {"eRouter_Provisioning_mode": "ipv6"}}}
     cfg = "ipv6"
 
 
 class DocsisBootDSLite(DocsisBootStub):
-    '''Normal boot, but with DSLite CM cfg specified'''
+    """Normal boot, but with DSLite CM cfg specified"""
 
     env_req = {
-        "environment_def": {
-            "board": {
-                "eRouter_Provisioning_mode": ["dslite", "ipv6"]
-            }
-        }
+        "environment_def": {"board": {"eRouter_Provisioning_mode": ["dslite", "ipv6"]}}
     }
     cfg = "dslite"
 
 
 class DocsisBootBridge(DocsisBootStub):
-    '''Normal boot, but with bridged CM cfg specified'''
+    """Normal boot, but with bridged CM cfg specified"""
 
     env_req = {
         "environment_def": {
-            "board": {
-                "eRouter_Provisioning_mode": ['bridge', 'disabled']
-            }
+            "board": {"eRouter_Provisioning_mode": ["bridge", "disabled"]}
         }
     }
     cfg = "bridge"
@@ -188,24 +170,12 @@ class DocsisBootBridge(DocsisBootStub):
 
 class DocsisBootDisabled(DocsisBootStub):
 
-    env_req = {
-        "environment_def": {
-            "board": {
-                "eRouter_Provisioning_mode": 'disabled'
-            }
-        }
-    }
+    env_req = {"environment_def": {"board": {"eRouter_Provisioning_mode": "disabled"}}}
     cfg = "disabled"
 
 
 class DocsisBootNone(DocsisBootStub):
-    '''Normal boot, but with none specified'''
+    """Normal boot, but with none specified"""
 
-    env_req = {
-        "environment_def": {
-            "board": {
-                "eRouter_Provisioning_mode": "none"
-            }
-        }
-    }
+    env_req = {"environment_def": {"board": {"eRouter_Provisioning_mode": "none"}}}
     cfg = "none"

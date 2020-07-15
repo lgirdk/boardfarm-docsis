@@ -17,6 +17,7 @@ def deco_get_mac(function):
 class BaseCmts(base.BaseDevice):
     """Connects to and configures  CMTS common methods API
     """
+
     model = "undefined"
     board_wan_mac = None
     board_mta_mac = None
@@ -26,8 +27,7 @@ class BaseCmts(base.BaseDevice):
         if mgr:
             board = mgr.by_type(DeviceManager.device_type.DUT)
             self.board_wan_mac = EUI(board.cm_mac, dialect=mac_cisco)
-            self.board_mta_mac = EUI(int(self.board_wan_mac) + 1,
-                                     dialect=mac_cisco)
+            self.board_mta_mac = EUI(int(self.board_wan_mac) + 1, dialect=mac_cisco)
 
     def connect(self):
         """This method is used to connect cmts, login to the cmts based on the connection type available
@@ -43,10 +43,7 @@ class BaseCmts(base.BaseDevice):
         """
         raise Exception("Not implemented!")
 
-    def is_cm_online(self,
-                     ignore_bpi=False,
-                     ignore_partial=False,
-                     ignore_cpe=False):
+    def is_cm_online(self, ignore_bpi=False, ignore_partial=False, ignore_cpe=False):
         """Returns True if the CM status is operational
         ignore_bpi returns True even when BPI is disabled
         ignore_partial returns True even when the CM is in partial service
@@ -244,9 +241,7 @@ class BaseCmts(base.BaseDevice):
         """
         raise Exception("Not implemented!")
 
-    def modify_docsis_mac_ip_provisioning_mode(self,
-                                               index,
-                                               ip_pvmode='dual-stack'):
+    def modify_docsis_mac_ip_provisioning_mode(self, index, ip_pvmode="dual-stack"):
         """Change the ip provsioning mode
 
         :param index: mac domain of the cable modem configured
@@ -471,13 +466,9 @@ class BaseCmts(base.BaseDevice):
         """
         raise Exception("Not implemented!")
 
-    def add_service_class(self,
-                          index,
-                          name,
-                          max_rate,
-                          max_burst,
-                          max_tr_burst=None,
-                          downstream=False):
+    def add_service_class(
+        self, index, name, max_rate, max_burst, max_tr_burst=None, downstream=False
+    ):
         """Add a service class
 
         :param index: service class number
@@ -496,15 +487,17 @@ class BaseCmts(base.BaseDevice):
         """
         raise Exception("Not implemented!")
 
-    def add_iface_docsis_mac(self,
-                             index,
-                             ip_bundle,
-                             qam_idx,
-                             qam_ch,
-                             ups_idx,
-                             ups_ch,
-                             qam_sub=None,
-                             prov_mode=None):
+    def add_iface_docsis_mac(
+        self,
+        index,
+        ip_bundle,
+        qam_idx,
+        qam_ch,
+        ups_idx,
+        ups_ch,
+        qam_sub=None,
+        prov_mode=None,
+    ):
         """configure docsis-mac domain
 
         :param index: docsis mac index
@@ -534,8 +527,9 @@ class BaseCmts(base.BaseDevice):
         """
         raise Exception("Not implemented!")
 
-    def add_service_group(self, index, qam_idx, qam_sub, qam_channels, ups_idx,
-                          ups_channels):
+    def add_service_group(
+        self, index, qam_idx, qam_sub, qam_channels, ups_idx, ups_channels
+    ):
         """Add a service group
 
         :param index: service group number
@@ -570,7 +564,7 @@ class BaseCmts(base.BaseDevice):
         """
         raise Exception("Not implemented!")
 
-    def run_tcpdump(self, time, iface='any', opts=""):
+    def run_tcpdump(self, time, iface="any", opts=""):
         """tcpdump capture on the cmts interface
 
         :param time: timeout to wait till gets prompt
@@ -603,7 +597,7 @@ class BaseCmts(base.BaseDevice):
         if mac is None:
             return None
         # the mac cmts syntax format example is 3843.7d80.0ac0
-        tmp = mac.replace(':', '')
+        tmp = mac.replace(":", "")
         mac_cmts_format = tmp[:4] + "." + tmp[4:8] + "." + tmp[8:]
         return mac_cmts_format.lower()
 
