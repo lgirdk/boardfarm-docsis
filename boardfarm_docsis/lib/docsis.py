@@ -444,7 +444,7 @@ def check_provisioning(board, mta=False):
         pass
 
     def _shortname(cfg):
-        d = docsis(cfg, board=board)
+        d = board.get_docsis(cfg)
         ret = d.encode()
         return keccak512_checksum(ret)
 
