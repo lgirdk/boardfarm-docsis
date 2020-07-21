@@ -1,5 +1,7 @@
 from boardfarm.exceptions import BftEnvExcKeyError
 from boardfarm.lib.env_helper import EnvHelper
+from boardfarm_docsis.devices.docsis import Docsis
+from boardfarm_docsis.exceptions import EnvKeyError
 
 
 class DocsisEnvHelper(EnvHelper):
@@ -10,11 +12,18 @@ class DocsisEnvHelper(EnvHelper):
     def get_prov_mode(self):
         """
         returns the provisioning mode of the desired environment.
-        possible values are: ipv4, ipv6, dslite, dualstack, bridge
+        possible values are: ipv4, ipv6, dslite, dualstack, disabled
         """
-
         try:
-            return self.env["environment_def"]["board"]["eRouter_Provisioning_mode"]
+            prov_mode = self.env["environment_def"]["board"][
+                "eRouter_Provisioning_mode"
+            ]
+            if prov_mode in Docsis.erouter_config_modes:
+                return prov_mode
+            else:
+                raise EnvKeyError(
+                    "Invalid Provisioning mode " + prov_mode + " Specified "
+                )
         except (KeyError, AttributeError):
             raise BftEnvExcKeyError
 
@@ -26,7 +35,7 @@ class DocsisEnvHelper(EnvHelper):
         try:
             self.get_prov_mode()
             return True
-        except:
+        except (KeyError, AttributeError):
             return False
 
     def get_ertr_mode(self):

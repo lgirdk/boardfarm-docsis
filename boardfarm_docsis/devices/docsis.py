@@ -17,7 +17,6 @@ class Docsis(openwrt_router.OpenWrtRouter):
 
     # The possible configurations for the eRouter
     disabled = {
-        "bridge",
         "disabled",
     }  # this will add an erouter initialisation (TLV 202) set to  0
     erouter_config_modes = (
@@ -106,7 +105,7 @@ class Docsis(openwrt_router.OpenWrtRouter):
 
         # we need to fetch the CM config mode from CMTS, skippin wan0 validation for the time being.
 
-        if cm_configmode in ["bridge", "disabled"]:
+        if cm_configmode == "disabled":
             # TODO
             pass
         if cm_configmode == "ipv4":

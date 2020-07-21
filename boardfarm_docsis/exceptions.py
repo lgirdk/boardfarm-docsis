@@ -31,3 +31,7 @@ class BftProvEnvMismatch(BftBaseException):
 
 class InvalidTCID(BftBaseException):
     """Invalid TCID passed"""
+
+
+class EnvKeyError(BftBaseException):
+    """Exception that occurs when invalid provisioning mode is specified"""
