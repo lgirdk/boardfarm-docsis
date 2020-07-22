@@ -1,3 +1,4 @@
+import time
 import warnings
 
 import boardfarm.lib.booting
@@ -12,9 +13,11 @@ def boot(config, env_helper, devices, logged=dict()):
     country = env_helper.get_country()
     voice = env_helper.voice_enabled()
     tr069check = cfg not in ["disabled", "bridge", "none"]
-
     logged["boot_step"] = "env_ok"
-
+    # the following if should not be here
+    if "rdkb" in env_helper.get_software()["image_uri"]:
+        ertr_mode.update({"max_config": False})
+        ertr_mode.update({"favour_tlvs": True})
     devices.board.cm_cfg = devices.board.generate_cfg(cfg, None, ertr_mode)
     logged["boot_step"] = "cmcfg_ok"
     devices.board.mta_cfg = devices.board.generate_mta_cfg(country)
@@ -63,6 +66,7 @@ def boot(config, env_helper, devices, logged=dict()):
                 except Exception as e:
                     print(e)
                     warnings.warn("Failed to connect to ACS, retrying")
+                    time.sleep(10)
             else:
                 raise BootFail("Failed to connect to ACS")
 
