@@ -208,16 +208,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         :return: 1 if is true else return the value as 0
         :rtype: integer
         """
-        self.sendline("show cable modem %s" % cmmac)
-        self.expect(r"(\d+/\d+\.\d+/\d+(\*|\#)\s+\d+/\d+/\d+(\*|\#))\s+online")
-        result = self.match.group(1)
-        match = re.search(r"\#", result)
-        if match is not None:
-            output = 1
-        else:
-            output = 0
-        self.expect(self.prompt)
-        return output
+        return 0 if (sum(self.DUT_chnl_lock(cmmac)) == self.channel_bonding) else 1
 
     def get_cmip(self, cmmac):
         """Get the IP of the Cable modem from CMTS
