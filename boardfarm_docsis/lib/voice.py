@@ -1,6 +1,7 @@
 import datetime
 import re
 
+import pexpect
 from boardfarm.lib.SnmpHelper import get_mib_oid, snmp_v2
 from boardfarm_lgi.tests.lib.lgi_lib import mibstring2dict
 
@@ -85,3 +86,35 @@ def fetch_mta_interfaces(wan, mta_ip):
         if v == "Voice Over Cable Interface":
             index_list.append(int(k.split(".")[-1]))
     return index_list
+
+
+def cleanup_voice_prompt(self, devices):
+    """This method to cleanup container's (LAN/LAN2 and softphone) prompt
+    :param self: self for container object
+    :param devices: lan or softphone
+    :type device: list of container Object
+    :return: boolean value based on result_result list
+    :rtype: Boolean
+    """
+    result = []
+    for dev in devices:
+        for _ in range(2):
+            dev.sendline()
+            idx = dev.expect([pexpect.TIMEOUT, ">>>"] + dev.prompt, timeout=5)
+            if idx == 0:
+                dev.sendcontol("c")
+                dev.expect(dev.prompt, timeout=5)
+            elif idx == 1:
+                if dev in [self.dev.lan, self.dev.lan2]:
+                    dev.sendline("ser.close()")
+                    dev.sendline("exit()")
+                    dev.expect(dev.prompt, timeout=5)
+                else:
+                    dev.sendline("q")
+                    dev.expect(dev.prompt, timeout=5)
+            else:
+                result.append(True)
+                break
+        else:
+            result.append(False)
+    return all(result)
