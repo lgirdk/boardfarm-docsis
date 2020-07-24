@@ -15,7 +15,8 @@ def boot(config, env_helper, devices, logged=dict()):
     tr069check = cfg not in ["disabled", "bridge", "none"]
     logged["boot_step"] = "env_ok"
     # the following if should not be here
-    if "rdkb" in env_helper.get_software()["image_uri"]:
+    sw = env_helper.get_software()
+    if sw.get("image_uri", None) and "rdkb" in sw["image_uri"]:
         ertr_mode.update({"max_config": False})
         ertr_mode.update({"favour_tlvs": True})
     devices.board.cm_cfg = devices.board.generate_cfg(cfg, None, ertr_mode)
