@@ -35,7 +35,7 @@ from .cfg_helper import CfgGenerator
 try:
     # Python 2
     import Tkinter
-except:
+except Exception:
     # Python 3
     import tkinter as Tkinter
 

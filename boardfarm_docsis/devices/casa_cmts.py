@@ -98,7 +98,7 @@ class CasaCMTS(base_cmts.BaseCmts):
             self.sendline("page-off")
             self.expect(self.prompt)
             return
-        except:
+        except Exception:
             raise Exception("Unable to get prompt on CASA device")
 
     def logout(self):

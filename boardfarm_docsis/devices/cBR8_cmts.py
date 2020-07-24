@@ -68,7 +68,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
                 self.sendline(self.password_admin)
                 self.expect(self.prompt)
             return
-        except:
+        except Exception:
             raise Exception("Unable to get prompt on CBR8 device")
 
     def logout(self):

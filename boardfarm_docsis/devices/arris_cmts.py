@@ -116,7 +116,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         try:
             try:
                 self.expect_exact("Escape character is '^]'.", timeout=5)
-            except:
+            except Exception:
                 pass
             self.sendline()
             idx = self.expect(["\r\nLogin:", pexpect.TIMEOUT] + self.prompt, timeout=10)
@@ -145,7 +145,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
             self.sendline("no pagination")
             self.expect(self.prompt)
             return
-        except:
+        except Exception:
             self.close()
             self.pid = None
             raise Exception("Unable to get prompt on Arris device")
@@ -156,7 +156,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         try:
             self.sendline("exit")
             self.sendline("exit")
-        except:
+        except Exception:
             self.close()
 
     def _is_cm_online(self, ignore_bpi=False, ignore_partial=False, ignore_cpe=False):
@@ -216,7 +216,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         else:
             try:
                 r = re.findall(r"State=(.*?\s)", self.before)[0].strip()
-            except:
+            except Exception:
                 r = "Offline"
         return r
 

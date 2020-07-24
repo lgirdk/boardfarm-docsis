@@ -146,7 +146,7 @@ class Docsis(openwrt_router.OpenWrtRouter):
                 break
             except KeyboardInterrupt:
                 raise
-            except:
+            except Exception:
                 if time.time() - start_time > time_for_provisioning:
                     if strict:
                         assert False, (
