@@ -7,12 +7,16 @@ from boardfarm.lib.voice import dns_setup_sipserver, voice_devices_configure
 from boardfarm_docsis.exceptions import VoiceSetupConfigureFailure
 
 
-def boot(config, env_helper, devices, logged=dict()):
+def boot(config, env_helper, devices, logged=None):
     cfg = env_helper.get_prov_mode()
     ertr_mode = env_helper.get_ertr_mode()
     country = env_helper.get_country()
     voice = env_helper.voice_enabled()
     tr069check = cfg not in ["disabled", "bridge", "none"]
+
+    if logged is None:
+        logged = dict()
+
     logged["boot_step"] = "env_ok"
     # the following if should not be here
     sw = env_helper.get_software()
