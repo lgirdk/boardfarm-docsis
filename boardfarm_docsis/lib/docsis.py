@@ -60,11 +60,14 @@ class docsis_encoder:
 
     mibs_path_arg = ""
 
-    def __init__(self, file_or_obj, tmpdir=None, mibs_paths=[], board=None):
+    def __init__(self, file_or_obj, tmpdir=None, mibs_paths=None, board=None):
         # TODO: fix at some point, this tmpdir is already relative to the CM config you
         # are grabbing? Not ideal as that dir might not be writeable, or a tftp or http URL
         # at some point - need to use a real local tmpdir or maybe even results so we can
         # save the resulting artifacts in other tools
+        if mibs_paths is None:
+            mibs_paths = []
+
         if tmpdir is None:
             tmpdir = tempfile.mkdtemp()
 
@@ -487,7 +490,7 @@ def check_provisioning(board, mta=False):
         return True
 
 
-def check_interface(board, ip, prov_mode="dual", lan_devices=["lan"]):
+def check_interface(board, ip, prov_mode="dual", lan_devices=None):
     """This function is used to validate IP addresses for CPEs
 
     Possible provisioning modes ["none","bridge", "ipv4", "dslite", "dual"]
@@ -505,6 +508,8 @@ def check_interface(board, ip, prov_mode="dual", lan_devices=["lan"]):
 
     :raises CodeError : if the IP addresses are not validated as per prov_mode
     """
+    if lan_devices is None:
+        lan_devices = ["lan"]
 
     # This is only for erouter and CPE interfaces check.
     def _validate_ertr(iface, mode):

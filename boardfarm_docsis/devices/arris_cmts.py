@@ -690,7 +690,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
             print("The route is not available on cmts.")
 
     @ArrisCMTSDecorators.connect_and_run
-    def add_ip_bundle(self, index, helper_ip, ipaddr, secondary_ips=[]):
+    def add_ip_bundle(self, index, helper_ip, ipaddr, secondary_ips=None):
         """This function is to add ip bundle to a cable mac
 
         :param index: cable mac index,
@@ -702,6 +702,10 @@ class ArrisCMTS(base_cmts.BaseCmts):
         :param secondary_ips: list of seconday ips  in the format  <ip></><subnet> subnet defaut taken as 24 if not provided, defaults to empty list []
         :type secondary_ips: list
         """
+
+        if secondary_ips is None:
+            secondary_ips = []
+
         if "/" not in ipaddr:
             ipaddr += "/24"
             ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
@@ -737,7 +741,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
             print("An error occured while setting the ip bundle.")
 
     @ArrisCMTSDecorators.connect_and_run
-    def add_ipv6_bundle_addrs(self, index, helper_ip, ip, secondary_ips=[]):
+    def add_ipv6_bundle_addrs(self, index, helper_ip, ip, secondary_ips=None):
         """This function is to add ipv6 bundle to a cable mac
 
         :param index: cable mac index
@@ -749,6 +753,9 @@ class ArrisCMTS(base_cmts.BaseCmts):
         :param secondary_ips: list of seconday ips  in the format  <ip></><subnet> subnet defaut taken as 24 if not provided defaults to empty list []
         :type secondary_ips: list
         """
+        if secondary_ips is None:
+            secondary_ips = []
+
         self.sendline("interface cable-mac %s" % index)
         self.expect(self.prompt)
         self.sendline("ipv6 address %s" % ip)

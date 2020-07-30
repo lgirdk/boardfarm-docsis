@@ -55,7 +55,7 @@ class Docsis(openwrt_router.OpenWrtRouter):
         :rtype: string
         """
         status = ["Timeout: No Response from", r"(INTEGER: \d+)"]
-        for not_used in range(100):
+        for _not_used in range(100):
             # TODO: wan ip could change after reboot?
             wan.sendline(
                 "snmpget -v 2c -t 2 -r 10 -c public %s %s.2"
@@ -81,7 +81,9 @@ class Docsis(openwrt_router.OpenWrtRouter):
 
         :raises Exception: to be implemented
         """
-        assert False, "Code to detect if tr069 client is running, to be implemented"
+        raise AssertionError(
+            "Code to detect if tr069 client is running, to be implemented"
+        )
 
     def check_valid_docsis_ip_networking(self, strict=True, time_for_provisioning=240):
         """This method is to check the docsis provision on CM
@@ -149,7 +151,7 @@ class Docsis(openwrt_router.OpenWrtRouter):
             except Exception:
                 if time.time() - start_time > time_for_provisioning:
                     if strict:
-                        assert False, (
+                        raise AssertionError(
                             "Failed to provision docsis device properly = " + failure
                         )
                     else:

@@ -473,7 +473,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.sendline("exit")
         self.expect(self.prompt)
 
-    def add_ip_bundle(self, index, helper_ip, ipaddr, secondary_ips=[]):
+    def add_ip_bundle(self, index, helper_ip, ipaddr, secondary_ips=None):
         """This function is to add ip bundle to a cable mac.
 
         :param index: cable mac index,
@@ -485,6 +485,9 @@ class CasaCMTS(base_cmts.BaseCmts):
         :param secondary_ips: list of seconday ips  in the format  <ip></><subnet> subnet defaut taken as 24 if not provided.
         :type secondary_ips: list
         """
+        if secondary_ips is None:
+            secondary_ips = []
+
         if "/" not in ipaddr:
             ipaddr += "/24"
             ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
@@ -517,7 +520,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         else:
             print("An error occured while setting the ip bundle.")
 
-    def add_ipv6_bundle_addrs(self, index, helper_ip, ip, secondary_ips=[]):
+    def add_ipv6_bundle_addrs(self, index, helper_ip, ip, secondary_ips=None):
         """This function is to add ipv6 bundle to a cable mac.
 
         :param index: cable mac index,
@@ -529,6 +532,9 @@ class CasaCMTS(base_cmts.BaseCmts):
         :param secondary_ips: list of seconday ips  in the format  <ip></><subnet> subnet defaut taken as 24 if not provided.
         :type secondary_ips: list
         """
+        if secondary_ips is None:
+            secondary_ips = []
+
         self.sendline("interface ip-bundle %s" % index)
         self.expect(self.prompt)
         self.sendline("ipv6 address %s" % ip)

@@ -608,7 +608,7 @@ class GlobalMTAParams(object):
         """
         final_list = []
         global_mta_config_file = get_base_cfg(global_mta_config_json)
-        for key, val in global_mta_config_file.items():
+        for _key, val in global_mta_config_file.items():
             for sub_section, sub_value in val.items():
                 tmp = sub_value
                 line_suffix = ""
