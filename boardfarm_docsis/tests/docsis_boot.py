@@ -3,7 +3,6 @@ import warnings
 
 import boardfarm.exceptions
 import boardfarm_docsis.lib.booting
-from boardfarm import lib
 from boardfarm.lib.common import run_once
 from boardfarm.tests import rootfs_boot
 from boardfarm_docsis.exceptions import BftProvEnvMismatch
@@ -84,10 +83,10 @@ else:
                 self.dev.board.enable_logs(component="pacm")
                 if self.voice:
                     self.dev.board.enable_logs(component="voice")
-            except boardfarm.exceptions.NoTFTPServer:
-                msg = "No WAN Device or tftp_server defined, skipping flash."
-                lib.common.test_msg(msg)
-                self.skipTest(msg)
+            except Exception as e:
+                print(f"\n\nFailed to complete {self.__class__.__name__}")
+                print(e)
+                raise boardfarm.exceptions.BootFail
 
         def runTest(self):
             """This exists for backwards compatability.
