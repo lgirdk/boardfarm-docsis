@@ -208,15 +208,16 @@ class ArrisCMTS(base_cmts.BaseCmts):
         """
         self.sendline("no pagination")
         self.expect_prompt()
-        self.sendline("show cable modem  %s detail" % cmmac)
+        self.sendline("show cable modem | include %s" % cmmac)
         self.expect_prompt()
 
-        if "State=Operational" in self.before:
+        if "Operational" in self.before:
             return True
         else:
             try:
-                r = re.findall(r"State=(.*?\s)", self.before)[0].strip()
-            except:
+                # Regex matches any status after digit (e.g 24x8) up until first space
+                r = re.findall(r"(?!(\d+)\s+)([A-Z])\w+[^\s]+", self.before)[0].strip()
+            except Exception:
                 r = "Offline"
         return r
 
