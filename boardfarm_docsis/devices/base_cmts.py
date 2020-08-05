@@ -21,6 +21,7 @@ class BaseCmts(base.BaseDevice):
     model = "undefined"
     board_wan_mac = None
     board_mta_mac = None
+    sign_check = True
 
     def __init__(self, *args, **kwargs):
         mgr = kwargs.get("mgr", None)
