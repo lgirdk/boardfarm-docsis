@@ -106,7 +106,7 @@ def cleanup_voice_prompt(self, devices):
                 dev.expect(dev.prompt, timeout=5)
             elif idx == 1:
                 if dev in [self.dev.lan, self.dev.lan2]:
-                    dev.sendline("ser.close()")
+                    dev.sendline("set.close()")
                     dev.sendline("exit()")
                     dev.expect(dev.prompt, timeout=5)
                 else:
