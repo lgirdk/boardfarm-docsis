@@ -2,3 +2,4 @@
 tests/docsis_lib/tmp/*
 *.egg-info/
 .tox/*
+results/
