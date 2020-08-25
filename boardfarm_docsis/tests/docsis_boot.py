@@ -83,6 +83,10 @@ else:
                 self.dev.board.enable_logs(component="pacm")
                 if self.voice:
                     self.dev.board.enable_logs(component="voice")
+            except boardfarm.exceptions.BftSysExit:
+                print(f"\n\nException BftSysExit in {self.__class__.__name__}")
+                print("Bailing out")
+                sys.exit(2)
             except Exception as e:
                 print(f"\n\nFailed to complete {self.__class__.__name__}")
                 print(e)
