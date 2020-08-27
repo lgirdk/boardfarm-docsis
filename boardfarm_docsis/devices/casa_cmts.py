@@ -1080,9 +1080,15 @@ class CasaCMTS(base_cmts.BaseCmts):
         """
         self.sendline("show cable modem %s cpe" % mac)
         self.expect(self.prompt)
-        ertr_ipv6 = re.search(AllValidIpv6AddressesRegex, self.before)
+        mac = netaddr.EUI(mac)
+        ertr_mac = netaddr.EUI(int(mac) + offset)
+        ertr_mac.dialect = netaddr.mac_cisco
+        output = self.before.replace("\r", "").replace("\n", "")
+        ertr_ipv6 = re.search(
+            r"(%s) .* (%s)" % (AllValidIpv6AddressesRegex, ertr_mac), output
+        )
         if ertr_ipv6:
-            ipv6 = ertr_ipv6.group()
+            ipv6 = ertr_ipv6.group(1)
             return ipv6
         else:
             return None
