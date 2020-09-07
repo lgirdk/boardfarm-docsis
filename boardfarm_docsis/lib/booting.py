@@ -23,6 +23,7 @@ def boot(config, env_helper, devices, logged=None):
     if sw.get("image_uri", None) and "rdkb" in sw["image_uri"]:
         ertr_mode.update({"max_config": False})
         ertr_mode.update({"favour_tlvs": True})
+        ertr_mode.update({"rdkb": True})
     devices.board.cm_cfg = devices.board.generate_cfg(cfg, None, ertr_mode)
     logged["boot_step"] = "cmcfg_ok"
     devices.board.mta_cfg = devices.board.generate_mta_cfg(country)

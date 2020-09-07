@@ -475,7 +475,7 @@ class DsServiceFlow(GeneralServiceFlow):
     DsServiceFlowRef = "DsServiceFlowRef"
     MaxDsLatency = "MaxDsLatency"
 
-    DsServiceFlow_dict_defaults = {DsServiceFlowRef: 3, MaxDsLatency: None}
+    DsServiceFlow_defaults = {DsServiceFlowRef: 3, MaxDsLatency: None}
 
     @classmethod
     def name(cls):
@@ -486,7 +486,7 @@ class DsServiceFlow(GeneralServiceFlow):
         general service flow
         """
         super(DsServiceFlow, self).__init__(**kwargs)
-        self.DsServiceFlow_dict = copy.deepcopy(self.DsServiceFlow_dict_defaults)
+        self.DsServiceFlow_dict = copy.deepcopy(self.DsServiceFlow_defaults)
         update_dict(self.DsServiceFlow_dict, **kwargs)
         self.DsServiceFlow_dict.update(self.GeneralServiceFlow_dict)
 
@@ -686,6 +686,35 @@ class VendorSpecific(object):
 
     def get_dict(self):
         return self.VendorSpecific_dict
+
+
+class SNMPv1v2cCoexistenceConfig(object):
+    SNMPv1v2cCoexistenceConfig_dict = OrderedDict()
+    SNMPv1v2cCoexistenceConfig_defaults = {}
+
+    @classmethod
+    def name(cls):
+        """
+        To get the class name
+        """
+        return cls.__name__
+
+    def __init__(self, **kwargs):
+        self.SNMPv1v2cCoexistenceConfig_dict = copy.deepcopy(
+            self.SNMPv1v2cCoexistenceConfig_defaults
+        )
+        self.SNMPv1v2cCoexistenceConfig_dict.update(**kwargs)
+
+    def __str__(self):
+        return self.to_str()
+
+    def to_str(self):
+        return dict_to_str(
+            self.SNMPv1v2cCoexistenceConfig_dict, name=self.__class__.__name__
+        )
+
+    def get_dict(self):
+        return self.SNMPv1v2cCoexistenceConfig_dict
 
 
 class GlobalParameters(object):

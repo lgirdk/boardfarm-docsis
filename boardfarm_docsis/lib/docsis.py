@@ -293,6 +293,7 @@ class cm_cfg(object):
         """Creates a default basic CM cfg file for modification"""
         self.dslite = False
 
+        self._start = start
         # TODO: we require loading a file for the moment
         if start is None:
             # create a default config file with bare minimum config,
