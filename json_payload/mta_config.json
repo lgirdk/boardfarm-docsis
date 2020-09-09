@@ -1085,7 +1085,7 @@
                 "suffix": ".67.98.110.77.116.97.82.101.97.100.79.110.108.121"
             },
             "snmpCommunitySecurityName": {
-                "data": "CbnMtaReadOnly",
+                "data": "@mtaprov",
                 "data_type": "string",
                 "suffix": ".67.98.110.77.116.97.82.101.97.100.79.110.108.121"
             },
