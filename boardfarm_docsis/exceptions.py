@@ -35,3 +35,7 @@ class InvalidTCID(BftBaseException):
 
 class EnvKeyError(BftBaseException):
     """Exception that occurs when invalid provisioning mode is specified"""
+
+
+class IpAddrMismatch(BftBaseException):
+    """Exception that occurs when LAN IP is not in given IP network"""

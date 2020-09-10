@@ -9,6 +9,7 @@
 
 import glob
 import hashlib
+import ipaddress
 import os
 import re
 import tempfile
@@ -26,6 +27,7 @@ from boardfarm.lib.DeviceManager import device_type
 from boardfarm_docsis.exceptions import (
     CfgUnknownType,
     CMCfgEncodeFailed,
+    IpAddrMismatch,
     MTACfgEncodeFailed,
 )
 from debtcollector import deprecate
@@ -439,7 +441,6 @@ class mta_cfg(cm_cfg):
 
 
 def check_board(board, cmts, cm_mac):
-
     assert board.is_online(), "CM show not OPERATIONAL on console"
     assert (
         cmts.check_online(cm_mac) is True
@@ -550,10 +551,24 @@ def check_interface(board, ip, prov_mode="dual", lan_devices=None):
 
         :raises CodeError : if the IP addresses are not validated as per prov_mode
         """
+        prov_info = [
+            prov for prov in board.config["devices"] if "provisioner" == prov["name"]
+        ]
         for dev in lan_devices:
-            assert ip[dev].get(
-                mode.lower(), None
-            ), "Failed to fetch {} {}, mode: {}".format(dev, mode, prov_mode)
+            if prov_mode == "disabled" and mode.lower() == "ipv4":
+                if ipaddress.ip_address(
+                    ip[dev].get(mode.lower())
+                ) in ipaddress.ip_network(prov_info[0]["open_network"]):
+                    pass
+                else:
+                    raise IpAddrMismatch(
+                        "LAN IP {} is not in public IP "
+                        "subnet".format(ip[dev].get(mode.lower()))
+                    )
+            else:
+                assert ip[dev].get(
+                    mode.lower(), None
+                ), "Failed to fetch {} {}, mode: {}".format(dev, mode, prov_mode)
 
     # Validate IPv4 conditions
     _validate_ertr(ip["board"][board.erouter_iface], "IPv4")
