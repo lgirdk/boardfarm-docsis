@@ -291,6 +291,7 @@ class cm_cfg(object):
 
     def __init__(self, start=None, fname=None):
         """Creates a default basic CM cfg file for modification"""
+        self.dslite = False
 
         # TODO: we require loading a file for the moment
         if start is None:
@@ -325,6 +326,8 @@ class cm_cfg(object):
             self.txt = (
                 start.generate_cfg()
             )  # the derived class already created the skeleton
+            if "DsLite" in self.txt:
+                self.dslite = True
             self.original_fname = fname
             self.encoded_fname = self.original_fname.replace(
                 ".txt", self.encoded_suffix
