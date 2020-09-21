@@ -102,7 +102,7 @@ def cleanup_voice_prompt(self, devices):
             dev.sendline()
             idx = dev.expect([pexpect.TIMEOUT, ">>>"] + dev.prompt, timeout=5)
             if idx == 0:
-                dev.sendcontol("c")
+                dev.sendcontrol("c")
                 dev.expect(dev.prompt, timeout=5)
             elif idx == 1:
                 if dev in [self.dev.lan, self.dev.lan2]:
