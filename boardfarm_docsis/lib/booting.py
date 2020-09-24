@@ -13,6 +13,7 @@ def boot(config, env_helper, devices, logged=None):
     country = env_helper.get_country()
     voice = env_helper.voice_enabled()
     tr069check = cfg not in ["disabled", "bridge", "none"]
+    tr069provision = env_helper.get_tr069_provisioning()
 
     if logged is None:
         logged = dict()
@@ -75,6 +76,15 @@ def boot(config, env_helper, devices, logged=None):
                     time.sleep(10)
             else:
                 raise BootFail("Failed to connect to ACS")
+
+            if tr069provision:
+                devices.board.factory_reset()
+
+                for i in tr069provision:
+                    for acs_api in i:
+                        API_func = getattr(devices.acs_server, acs_api)
+                        for param in i[acs_api]:
+                            API_func(param)
 
     except NoTFTPServer as e:
         raise e

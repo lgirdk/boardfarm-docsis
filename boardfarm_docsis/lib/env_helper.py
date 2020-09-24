@@ -83,3 +83,15 @@ class DocsisEnvHelper(EnvHelper):
             ]
         except (KeyError, AttributeError):
             return False
+
+    def get_tr069_provisioning(self):
+        """Return list of ACS APIs to be executed during tr069 provisioning.
+
+        :return: object containing list ACS APIs to call for provisioning
+        :rtype: dictionary
+        """
+
+        try:
+            return self.env["environment_def"]["tr-069"]["provisioning"]
+        except (KeyError, AttributeError):
+            return False
