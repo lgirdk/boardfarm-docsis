@@ -1288,3 +1288,8 @@ class ArrisCMTS(base_cmts.BaseCmts):
             return True
         else:
             return False
+
+    @ArrisCMTSDecorators.connect_and_run
+    def check_output(self, cmd):
+        """get check_output out from parent class """
+        return super().check_output(cmd)
