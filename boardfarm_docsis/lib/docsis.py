@@ -582,7 +582,7 @@ def check_interface(board, ip, prov_mode="dual", lan_devices=None):
 
     # since aftr iface does not have an IP address/mac address of it's own
     # just validate if the interface exists
-    if prov_mode in ["dslite", "ipv6"]:
+    if prov_mode in ["dslite"]:
         assert board.check_iface_exists(
             board.aftr_iface
         ), "{} interface didn't come up in prov mode : {}".format(
