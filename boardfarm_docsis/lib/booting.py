@@ -61,9 +61,11 @@ def boot(config, env_helper, devices, logged=None):
             logged=logged,
             flashing_image=False,
         )
+        devices.board.enable_logs(component="pacm")
         if voice:
             devices.board.wait_for_mta_provisioning()
             logged["boot_step"] = "voice_mta_ok"
+            devices.board.enable_logs(component="voice")
 
         if tr069check:
             for _ in range(20):
