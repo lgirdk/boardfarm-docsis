@@ -7,7 +7,7 @@ from boardfarm_lgi.tests.lib.lgi_lib import mibstring2dict
 
 
 def get_tone_time(tones_file, out, tone):
-    """"To verify dial tone based on country after off hook or call
+    """ "To verify dial tone based on country after off hook or call
 
     :param tones_file: tones_file with all tone metrics
     :type tones_file: dict

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import pytest
+
 from boardfarm_docsis.devices.arris_cmts import ArrisCMTS
 
 is_cm_online_offline = """Jul  2 15:33:36

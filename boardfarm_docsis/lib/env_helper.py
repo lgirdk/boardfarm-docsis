@@ -1,5 +1,6 @@
 from boardfarm.exceptions import BftEnvExcKeyError
 from boardfarm.lib.env_helper import EnvHelper
+
 from boardfarm_docsis.devices.docsis import Docsis
 from boardfarm_docsis.exceptions import EnvKeyError
 

@@ -15,8 +15,7 @@ def deco_get_mac(function):
 
 
 class BaseCmts(base.BaseDevice):
-    """Connects to and configures  CMTS common methods API
-    """
+    """Connects to and configures  CMTS common methods API"""
 
     model = "undefined"
     board_wan_mac = None

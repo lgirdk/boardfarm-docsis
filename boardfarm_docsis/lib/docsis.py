@@ -24,13 +24,14 @@ from boardfarm.lib.common import (
     retry_on_exception,
 )
 from boardfarm.lib.DeviceManager import device_type
+from debtcollector import deprecate
+
 from boardfarm_docsis.exceptions import (
     CfgUnknownType,
     CMCfgEncodeFailed,
     IpAddrMismatch,
     MTACfgEncodeFailed,
 )
-from debtcollector import deprecate
 
 from .cfg_helper import CfgGenerator
 
@@ -625,18 +626,18 @@ def configure_board_v2(provisioner, board, test_args, test_data, **kwargs):
 
 def check_cm_firmware_version(board, wan, env_helper):
     """Compare CM firmware version with provided enviornment FM version
-       checking all images ending with suffix <fm_version>.*
-             eg CH7465LG-NCIP-6.12.18.26-3-GA-SH.p7
+    checking all images ending with suffix <fm_version>.*
+          eg CH7465LG-NCIP-6.12.18.26-3-GA-SH.p7
 
-       :param board : board DUT device class
-       :type board : device_type.DUT
-       :param wan : wan is wan device type
-       :type wan :  device_type.wan
-       :param env_helper : device class to fetch different devices
-       :type env_helper : boardfarm_docsis.devices.Docsis
-       :rtype: Bool
-       :raise Assertion: Asserts when CM FM Mismatch or exception
-       :return: returns bool True if FM Matches
+    :param board : board DUT device class
+    :type board : device_type.DUT
+    :param wan : wan is wan device type
+    :type wan :  device_type.wan
+    :param env_helper : device class to fetch different devices
+    :type env_helper : boardfarm_docsis.devices.Docsis
+    :rtype: Bool
+    :raise Assertion: Asserts when CM FM Mismatch or exception
+    :return: returns bool True if FM Matches
     """
     if env_helper.has_image():
         fm_ver = env_helper.get_image(mirror=False).rpartition(".")[0]
@@ -657,15 +658,15 @@ def check_cm_firmware_version(board, wan, env_helper):
 def factoryreset(s, board, method="SNMP"):
     """Reset board to Factory Default
 
-       :param s : object with log_to_file attribute for logging
-       :type s : TestStep Obj with attribute log_to_file
-       :param board : board DUT device class
-       :type board : device_type.DUT
-       :param method : ("SNMP", "ACS", "CONSOLE") Default to "SNMP"
-       :type method : String value with values("SNMP","ACS","CONSOLE")
-       :rtype: Bool
-       :raise Assertion: Asserts when FactoryReset failed or arg error
-       :return: returns bool True if FactoryReset successful
+    :param s : object with log_to_file attribute for logging
+    :type s : TestStep Obj with attribute log_to_file
+    :param board : board DUT device class
+    :type board : device_type.DUT
+    :param method : ("SNMP", "ACS", "CONSOLE") Default to "SNMP"
+    :type method : String value with values("SNMP","ACS","CONSOLE")
+    :rtype: Bool
+    :raise Assertion: Asserts when FactoryReset failed or arg error
+    :return: returns bool True if FactoryReset successful
     """
     print("=======Begin FactoryReset via {}=======".format(method))
 
@@ -728,20 +729,20 @@ def factoryreset(s, board, method="SNMP"):
 def configure_cm_dhcp_server(board, mode="dual", enable=True):
     """Enable/disable board dhcp 4/6 server
 
-       :param board : board DUT device class
-       :type board : device_type.DUT
-       :param mode : enable/disable board dhcp ipv4/ipv6/dual
-                     ["dual" = ipv4 & ipv6,
-                      "ipv4" = only ipv4,
-                      "ipv6" = only ipv6
-                     ]
-       :type mode : string
-       :param enable : enable/disable cm dhcp server
-       :type enable : boolean
-       :rtype: boolean
-       :raise Assertion: Asserts when ACS RPC  raise exception
-       :return: returns bool True if enable/disable ACS RPC successful
-                returns bool False if requested operation is already running
+    :param board : board DUT device class
+    :type board : device_type.DUT
+    :param mode : enable/disable board dhcp ipv4/ipv6/dual
+                  ["dual" = ipv4 & ipv6,
+                   "ipv4" = only ipv4,
+                   "ipv6" = only ipv6
+                  ]
+    :type mode : string
+    :param enable : enable/disable cm dhcp server
+    :type enable : boolean
+    :rtype: boolean
+    :raise Assertion: Asserts when ACS RPC  raise exception
+    :return: returns bool True if enable/disable ACS RPC successful
+             returns bool False if requested operation is already running
     """
     if not board.get_cpeid():
         board.restart_tr069(board.dev.wan, board.get_interface_ipaddr(board.wan_iface))

@@ -9,8 +9,7 @@ from boardfarm.lib.network_helper import valid_ipv4, valid_ipv6
 
 # TODO: probably the wrong parent
 class Docsis(openwrt_router.OpenWrtRouter):
-    """Docsis class used to perform generic operations
-    """
+    """Docsis class used to perform generic operations"""
 
     # The possible configurations for the CM
     cm_mgmt_config_modes = {"dual", "ipv4", "ipv6"}

@@ -14,15 +14,13 @@ from . import base_cmts
 
 
 class CBR8CMTS(base_cmts.BaseCmts):
-    """Connects to and configures a CBR8 CMTS
-    """
+    """Connects to and configures a CBR8 CMTS"""
 
     prompt = ["cBR-8(.*)>", "cBR-8(.*)#", r"cBR-8\(.*\)> ", r"cBR-8\(.*\)# "]
     model = "cBR8_cmts"
 
     def __init__(self, *args, **kwargs):
-        """Constructor method
-        """
+        """Constructor method"""
         conn_cmd = kwargs.get("conn_cmd", None)
         connection_type = kwargs.get("connection_type", "local_serial")
         self.ipaddr = kwargs.get("ipaddr", None)
@@ -72,8 +70,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
             raise Exception("Unable to get prompt on CBR8 device")
 
     def logout(self):
-        """Logout of the CMTS device
-        """
+        """Logout of the CMTS device"""
         self.sendline("exit")
         self.sendline("exit")
 

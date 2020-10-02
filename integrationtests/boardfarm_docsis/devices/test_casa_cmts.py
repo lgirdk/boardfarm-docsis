@@ -5,6 +5,7 @@ import re
 
 import pytest
 from boardfarm.lib.regexlib import ValidIpv4AddressRegex
+
 from boardfarm_docsis.devices.casa_cmts import CasaCMTS
 
 out_str_zero_ip = """show cable modem 342c.c454.2ed2

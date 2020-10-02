@@ -110,8 +110,7 @@ def dict_to_str(d, name=None, indent=4):
 
 
 class GeneralServiceFlow(object):
-    """Class to create the service flow parameters in config file
-    """
+    """Class to create the service flow parameters in config file"""
 
     GeneralServiceFlow_dict = OrderedDict()
 
@@ -138,8 +137,7 @@ class GeneralServiceFlow(object):
     }
 
     def __init__(self, **kwargs):
-        """Constructor method to copy the service flow params and update the dict
-        """
+        """Constructor method to copy the service flow params and update the dict"""
         self.GeneralServiceFlow_dict = copy.deepcopy(
             self.GeneralServiceFlow_dict_defaults
         )
@@ -171,8 +169,7 @@ class GeneralServiceFlow(object):
 
 
 class GeneralClassifierParameters(object):
-    """Class to create the classifier parameters in config file
-    """
+    """Class to create the classifier parameters in config file"""
 
     GeneralClassifierParameters_dict = OrderedDict()
 
@@ -192,8 +189,7 @@ class GeneralClassifierParameters(object):
     }
 
     def __init__(self, **kwargs):
-        """Constructor method to copy the classifier params and update the dict
-        """
+        """Constructor method to copy the classifier params and update the dict"""
         self.GeneralClassifierParameters_dict = copy.deepcopy(
             self.GeneralClassifierParameters_defaults
         )
@@ -225,8 +221,7 @@ class GeneralClassifierParameters(object):
 
 
 class LLCPacketClassifier(GeneralClassifierParameters):
-    """Class to create the LLC packet classifier parameters in config file
-    """
+    """Class to create the LLC packet classifier parameters in config file"""
 
     LLCPacketClassifier_dict = OrderedDict()
 
@@ -279,8 +274,7 @@ class LLCPacketClassifier(GeneralClassifierParameters):
 
 
 class IpPacketClassifier(GeneralClassifierParameters):
-    """Class to create the IP packet classifier parameters in config file
-    """
+    """Class to create the IP packet classifier parameters in config file"""
 
     IpPacketClassifier_dict = OrderedDict()
 
@@ -347,8 +341,7 @@ class IpPacketClassifier(GeneralClassifierParameters):
 
 
 class DsPacketClass(GeneralClassifierParameters):
-    """Class to create the classifier parameters for DS packets
-    """
+    """Class to create the classifier parameters for DS packets"""
 
     classifier = None
 
@@ -377,8 +370,7 @@ class DsPacketClass(GeneralClassifierParameters):
 
 
 class UsPacketClass(GeneralClassifierParameters):
-    """Class to create the classifier parameters for US packets
-    """
+    """Class to create the classifier parameters for US packets"""
 
     classifier = None
 
@@ -516,8 +508,7 @@ class DsServiceFlow(GeneralServiceFlow):
 
 
 class BaselinePrivacy(object):
-    """Class to create the baseline privacy parameters
-    """
+    """Class to create the baseline privacy parameters"""
 
     BaselinePrivacy_dict = OrderedDict()
 
@@ -548,8 +539,7 @@ class BaselinePrivacy(object):
         return cls.__name__
 
     def __init__(self, **kwargs):
-        """Constructor method to copy the baseline privacy and update the dict
-        """
+        """Constructor method to copy the baseline privacy and update the dict"""
         self.BaselinePrivacy_dict = copy.deepcopy(self.BaselinePrivacy_defaults)
         update_dict(self.BaselinePrivacy_dict, **kwargs)
 
@@ -942,8 +932,7 @@ class GlobalParameters(object):
 
 
 class eRouter(object):
-    """Class to create the eRouter related parameters
-    """
+    """Class to create the eRouter related parameters"""
 
     eRouter_dict = OrderedDict()
     InitializationMode = "InitializationMode"
@@ -966,8 +955,7 @@ class eRouter(object):
         return "eRouter"
 
     def __init__(self, **kwargs):
-        """Constructor method to copy the erouter params and update the dict
-        """
+        """Constructor method to copy the erouter params and update the dict"""
         self.eRouter_dict = copy.deepcopy(self.eRouter_defaults)
         update_dict(self.eRouter_dict, **kwargs)
 
@@ -1025,8 +1013,8 @@ class CfgGenerator:
 
     def first(self, s):
         """Return the first element from an ordered collection
-           or an arbitrary element from an unordered collection.
-           Raise StopIteration if the collection is empty.
+        or an arbitrary element from an unordered collection.
+        Raise StopIteration if the collection is empty.
         """
         return next(iter(s))
 

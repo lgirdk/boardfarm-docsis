@@ -22,8 +22,7 @@ from . import base_cmts
 
 
 class ArrisCMTS(base_cmts.BaseCmts):
-    """Connects to and configures a ARRIS CMTS
-    """
+    """Connects to and configures a ARRIS CMTS"""
 
     prompt = ["arris(.*)>", "arris(.*)#", r"arris\(.*\)> ", r"arris\(.*\)# "]
     model = "arris_cmts"
@@ -70,8 +69,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
             return wrapper
 
     def __init__(self, *args, **kwargs):
-        """Constructor method
-        """
+        """Constructor method"""
         super().__init__(*args, **kwargs)
         self.conn_cmd = kwargs.get("conn_cmd", None)
         self.connection_type = kwargs.get("connection_type", "local_serial")
@@ -151,8 +149,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
             raise Exception("Unable to get prompt on Arris device")
 
     def logout(self):
-        """Logout of the CMTS device
-        """
+        """Logout of the CMTS device"""
         try:
             self.sendline("exit")
             self.sendline("exit")
@@ -357,8 +354,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
         return mac_domain
 
     def _check_PartialService(self, cmmac):
-        """Helper function for check_PartialService
-        """
+        """Helper function for check_PartialService"""
         self.sendline("show cable modem %s" % cmmac)
         self.expect(self.prompt)
         if "impaired" in self.before:
@@ -410,8 +406,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
 
     @ArrisCMTSDecorators.connect_and_run
     def save_running_config_to_local(self, filename):
-        """save the running config to startup
-        """
+        """save the running config to startup"""
         self.sendline("no pagination")
         self.expect(self.prompt)
         # show running-config will display the current running config file of CMTS
@@ -424,8 +419,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
 
     @ArrisCMTSDecorators.connect_and_run
     def save_running_to_startup_config(self):
-        """Copy running config to local machine
-        """
+        """Copy running config to local machine"""
         self.sendline("exit")
         self.expect(self.prompt)
         self.sendline("copy running-config startup-config")
@@ -587,8 +581,8 @@ class ArrisCMTS(base_cmts.BaseCmts):
             % index
         )
         self.expect(self.prompt)
-        check_docsis_mac_ip_provisioning_mode = self.check_docsis_mac_ip_provisioning_mode(
-            index
+        check_docsis_mac_ip_provisioning_mode = (
+            self.check_docsis_mac_ip_provisioning_mode(index)
         )
         if check_docsis_mac_ip_provisioning_mode in ip_pvmode:
             print("The ip provision mode is successfully set.")
@@ -800,8 +794,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
 
     @ArrisCMTSDecorators.connect_and_run
     def wait_for_ready(self):
-        """Check the cmts status
-        """
+        """Check the cmts status"""
         max_iteration = 5
         self.sendline("show linecard status")
         while 0 == self.expect(["Down | OOS"] + self.prompt) and max_iteration > 0:
@@ -866,8 +859,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
 
     @ArrisCMTSDecorators.connect_and_run
     def unmirror_traffic(self):
-        """stop mirroring the traffic
-        """
+        """stop mirroring the traffic"""
         print(
             "Unmirror traffic feature is not supported in ARRIS unless we use lawful intercept functionality."
         )
@@ -1063,8 +1055,7 @@ class ArrisCMTS(base_cmts.BaseCmts):
 
     @ArrisCMTSDecorators.connect_and_run
     def reset(self):
-        """Delete the startup config and Reboot the CMTS
-        """
+        """Delete the startup config and Reboot the CMTS"""
         self.sendline("erase nvram")
         self.expect(self.prompt)
         self.sendline("reload")

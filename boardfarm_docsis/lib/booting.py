@@ -4,6 +4,7 @@ import warnings
 import boardfarm.lib.booting
 from boardfarm.exceptions import BootFail, NoTFTPServer
 from boardfarm.lib.voice import dns_setup_sipserver, voice_devices_configure
+
 from boardfarm_docsis.exceptions import VoiceSetupConfigureFailure
 
 

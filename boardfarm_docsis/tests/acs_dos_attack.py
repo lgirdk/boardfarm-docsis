@@ -4,14 +4,13 @@ from boardfarm.lib.network_testing import (
     tshark_read,
 )
 from boardfarm.orchestration import TestStep as TS
-from boardfarm_docsis.tests.docsis_boot import DocsisBootStub as BF_Test
 from requests import HTTPError
+
+from boardfarm_docsis.tests.docsis_boot import DocsisBootStub as BF_Test
 
 
 class ACS_dos_attack(BF_Test):
-    """to look for DOS attack
-
-    """
+    """to look for DOS attack"""
 
     def test_main(self):
         param_list = [

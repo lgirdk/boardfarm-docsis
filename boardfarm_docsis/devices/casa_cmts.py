@@ -24,8 +24,7 @@ from . import base_cmts
 
 
 class CasaCMTS(base_cmts.BaseCmts):
-    """Connects to and configures a CASA CMTS
-    """
+    """Connects to and configures a CASA CMTS"""
 
     prompt = [
         "CASA-C3200>",
@@ -38,8 +37,7 @@ class CasaCMTS(base_cmts.BaseCmts):
     model = "casa_cmts"
 
     def __init__(self, *args, **kwargs):
-        """Constructor method
-        """
+        """Constructor method"""
         super().__init__(*args, **kwargs)
         conn_cmd = kwargs.get("conn_cmd", None)
         connection_type = kwargs.get("connection_type", "local_serial")
@@ -102,8 +100,7 @@ class CasaCMTS(base_cmts.BaseCmts):
             raise Exception("Unable to get prompt on CASA device")
 
     def logout(self):
-        """Logout of the CMTS device
-        """
+        """Logout of the CMTS device"""
         self.sendline("exit")
         self.sendline("exit")
 
@@ -349,8 +346,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         return cmts_ip
 
     def reset(self):
-        """Delete the startup config and Reboot the CMTS
-        """
+        """Delete the startup config and Reboot the CMTS"""
         self.sendline("exit")
         self.expect(self.prompt)
         self.sendline("del startup-config")
@@ -379,8 +375,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
 
     def wait_for_ready(self):
-        """Check the cmts status
-        """
+        """Check the cmts status"""
         self.sendline("show system")
         while 0 == self.expect(["NotReady"] + self.prompt):
             self.expect(self.prompt)
@@ -388,8 +383,7 @@ class CasaCMTS(base_cmts.BaseCmts):
             self.sendline("show system")
 
     def save_running_to_startup_config(self):
-        """save the running config to startup
-        """
+        """save the running config to startup"""
         self.sendline("exit")
         self.expect(self.prompt)
         self.sendline("copy running-config startup-config")
@@ -398,8 +392,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
 
     def save_running_config_to_local(self, filename):
-        """Saves the running config to a file on the local machine
-        """
+        """Saves the running config to a file on the local machine"""
         self.sendline("show running-config")
         self.expect("show running-config")
         self.expect(self.prompt)
@@ -870,8 +863,8 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         self.sendline("exit")
         self.expect(self.prompt)
-        check_docsis_mac_ip_provisioning_mode = self.check_docsis_mac_ip_provisioning_mode(
-            index
+        check_docsis_mac_ip_provisioning_mode = (
+            self.check_docsis_mac_ip_provisioning_mode(index)
         )
         if check_docsis_mac_ip_provisioning_mode in ip_pvmode:
             print("The ip provision mode is successfully set.")
@@ -965,8 +958,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
 
     def unmirror_traffic(self):
-        """stop mirroring the traffic
-        """
+        """stop mirroring the traffic"""
         self.sendline("diag")
         self.expect("Password:")
         self.sendline("casadiag")

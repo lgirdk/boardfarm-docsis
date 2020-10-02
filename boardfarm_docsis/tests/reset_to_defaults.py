@@ -1,4 +1,5 @@
 from boardfarm.exceptions import BootFail
+
 from boardfarm_docsis.tests.docsis_boot import DocsisBootStub as BF_Test
 
 
