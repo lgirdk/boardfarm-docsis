@@ -4,6 +4,7 @@ import warnings
 import boardfarm.lib.booting
 from boardfarm.exceptions import BootFail, NoTFTPServer
 from boardfarm.lib.voice import dns_setup_sipserver, voice_devices_configure
+from boardfarm.library import check_devices
 
 from boardfarm_docsis.exceptions import VoiceSetupConfigureFailure
 
@@ -53,6 +54,8 @@ def boot(config, env_helper, devices, logged=None):
         logged["boot_step"] = "voice_ok"
     else:
         logged["boot_step"] = "voice_skipped"
+
+    check_devs = True
     try:
         boardfarm.lib.booting.boot(
             config,
@@ -88,10 +91,13 @@ def boot(config, env_helper, devices, logged=None):
                         API_func = getattr(devices.acs_server, acs_api)
                         for param in i[acs_api]:
                             API_func(param)
-
+        check_devs = False
     except NoTFTPServer as e:
         raise e
     except Exception as e:
         print("\n\nFailed to Boot")
         print(e)
         raise BootFail
+    finally:
+        if check_devs:
+            check_devices(devices)
