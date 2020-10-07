@@ -96,3 +96,57 @@ class DocsisEnvHelper(EnvHelper):
             return self.env["environment_def"]["tr-069"]["provisioning"]
         except (KeyError, AttributeError):
             return False
+
+    def get_config_boot(self):
+        """Returns the ["environment_def"]["board"]["config_boot"] dictionary
+
+        :return: the config_boot dictionary
+        :rtype: dict
+
+        :raise: BftEnvExcKeyError"""
+
+        try:
+            return self.env["environment_def"]["board"]["config_boot"]
+        except (KeyError, AttributeError):
+            raise BftEnvExcKeyError("config_boot not in env_helper")
+
+    def has_config_boot(self):
+        """Returns True or False depending if the environment contains the
+        "config_boot" dictionary
+
+        :return: possible values are True/False
+        :rtype: boolean
+        """
+
+        try:
+            self.get_config_boot()
+            return True
+        except BftEnvExcKeyError:
+            return False
+
+    def _check_config_boot(self, req_cfg_boot):
+        cfg_boot = self.get_config_boot()
+        if "llc" in req_cfg_boot:
+            if "llc" not in cfg_boot or not set(req_cfg_boot["llc"]).issubset(
+                set(cfg_boot["llc"])
+            ):
+                raise BftEnvExcKeyError
+
+    def env_check(self, test_environment):
+        """Test environment check (overrides behaviour).
+
+        This is needed as some of the list in the config boot file do not follow
+        the same rules as the lists in the base class.
+
+        :param test_environment: the environment to be checked against the EnvHelper environment
+        :type test_environment: dict
+
+        .. note:: raises BftEnvMismatch  if the test_environment is not contained in the env helper environment
+        .. note:: recursively checks dictionaries
+        .. note:: A value of None in the test_environment is used as a wildcard, i.e. matches any values int the EnvHelper
+        """
+        test_env_copy = test_environment.copy()
+        req_cfg_boot = test_env_copy["environment_def"]["board"].pop("config_boot", {})
+        if req_cfg_boot:
+            self._check_config_boot(req_cfg_boot)
+        return super().env_check(test_env_copy)
