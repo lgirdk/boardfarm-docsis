@@ -1,5 +1,6 @@
-from boardfarm.exceptions import BftEnvExcKeyError
+from boardfarm.exceptions import BftEnvExcKeyError, BftEnvMismatch
 from boardfarm.lib.env_helper import EnvHelper
+from nested_lookup import nested_lookup
 
 from boardfarm_docsis.devices.docsis import Docsis
 from boardfarm_docsis.exceptions import EnvKeyError
@@ -124,13 +125,63 @@ class DocsisEnvHelper(EnvHelper):
         except BftEnvExcKeyError:
             return False
 
+    def _is_subset(self, subset, superset):
+        """Recursive check for nested config_boot, this behaves slightly differently from the
+        default env_helper behaviour"""
+        if isinstance(subset, dict):
+            return all(
+                key in superset and self._is_subset(val, superset[key])
+                for key, val in subset.items()
+            )
+
+        if isinstance(subset, list) or isinstance(subset, set):
+            return all(
+                any(self._is_subset(subitem, superitem) for superitem in superset)
+                for subitem in subset
+            )
+
+        # assume that subset is a plain value if none of the above match
+        return subset == superset
+
     def _check_config_boot(self, req_cfg_boot):
-        cfg_boot = self.get_config_boot()
+        """Validates the config_boot separately as the rules are slightly
+        different from the general env
+        llc is checked as a subset
+        snmp is checked as a subset
+        vendor_specific is matched for equality
+
+        NOTE: vendor spcific could be checked as a subset by
+        using
+            self._is_subset(req_cfg_boot["vendor_specific"],
+                            cfg_boot["vendor_specific"])
+
+        but this might create some ambiguities.
+
+        :param req_cfg_boot: requested cfg_boot environment from env_helper
+        :type req_cfg_boot: dictionary
+        :raise: BftEnvMismatch
+        """
+        try:
+            cfg_boot = self.get_config_boot()
+        except BftEnvExcKeyError:
+            raise BftEnvMismatch('"config_boot" mismatch')
+
         if "llc" in req_cfg_boot:
-            if "llc" not in cfg_boot or not set(req_cfg_boot["llc"]).issubset(
-                set(cfg_boot["llc"])
+            if "llc" not in cfg_boot or not self._is_subset(
+                req_cfg_boot["llc"], cfg_boot["llc"]
             ):
-                raise BftEnvExcKeyError
+                raise BftEnvMismatch('"llc" mismatch')
+        if "snmp" in req_cfg_boot:
+            if "snmp" not in cfg_boot or not self._is_subset(
+                req_cfg_boot["snmp"], cfg_boot["snmp"]
+            ):
+                raise BftEnvMismatch('"snmp" mismatch')
+        if "vendor_specific" in req_cfg_boot:
+            if (
+                "vendor_specific" not in cfg_boot
+                or req_cfg_boot["vendor_specific"] != cfg_boot["vendor_specific"]
+            ):
+                raise BftEnvMismatch('"vendor_specific" mismatch')
 
     def env_check(self, test_environment):
         """Test environment check (overrides behaviour).
@@ -143,10 +194,10 @@ class DocsisEnvHelper(EnvHelper):
 
         .. note:: raises BftEnvMismatch  if the test_environment is not contained in the env helper environment
         .. note:: recursively checks dictionaries
-        .. note:: A value of None in the test_environment is used as a wildcard, i.e. matches any values int the EnvHelper
         """
-        test_env_copy = test_environment.copy()
-        req_cfg_boot = test_env_copy["environment_def"]["board"].pop("config_boot", {})
-        if req_cfg_boot:
+        if nested_lookup("config_boot", test_environment):
+            req_cfg_boot = test_environment["environment_def"]["board"].get(
+                "config_boot", {}
+            )
             self._check_config_boot(req_cfg_boot)
-        return super().env_check(test_env_copy)
+        return super().env_check(test_environment)
