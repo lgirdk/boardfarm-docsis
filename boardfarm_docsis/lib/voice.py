@@ -3,7 +3,10 @@ import re
 
 import pexpect
 from boardfarm.lib.SnmpHelper import get_mib_oid, snmp_v2
+from boardfarm_cbn.devices.mv1.mv1_cm_cfg import get_cbn_cfg
 from boardfarm_lgi.tests.lib.lgi_lib import mibstring2dict
+
+from boardfarm_docsis.lib.cfg_helper import get_base_cfg
 
 
 def get_tone_time(tones_file, out, tone):
@@ -118,3 +121,22 @@ def cleanup_voice_prompt(self, devices):
         else:
             result.append(False)
     return all(result)
+
+
+def fetch_mta_data(feature, line, mib, country=None):
+    """
+    This method is to access the data present in the mta_cfg files.
+    :param feature: The feature for which we are fetching the Mib Data
+    :param line: The line under which the Mib is specified
+    :param mib: The name of the Mib
+    :param country: The country for which we are interested fetching the
+        config for. The cbn Mibs under 'cbn_mta_cfg.json' are country specific
+        and the docsis Mibs in 'mta_config.json' are country agnostic.
+    :return: The data value for a particular Mib
+    """
+    if country:
+        cbn_config_file = get_cbn_cfg("cbn_mta_cfg.json")
+        return cbn_config_file[country][feature][line][mib]["data"]
+    else:
+        docsis_config_file = get_base_cfg("mta_config.json")
+        return docsis_config_file[feature][line][mib]["data"]
