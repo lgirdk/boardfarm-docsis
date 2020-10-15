@@ -84,13 +84,18 @@ def boot(config, env_helper, devices, logged=None):
                 raise BootFail("Failed to connect to ACS")
 
             if tr069provision:
-                devices.board.factory_reset()
+                reset_val = env_helper.get_software().get("factory_reset", False)
+                if reset_val:
+                    for i in tr069provision:
+                        for acs_api in i:
+                            API_func = getattr(devices.acs_server, acs_api)
+                            for param in i[acs_api]:
+                                API_func(param)
+                else:
+                    raise BootFail(
+                        "Factory reset has to performed for tr069 provisioning. Env json with factory reset true should be used."
+                    )
 
-                for i in tr069provision:
-                    for acs_api in i:
-                        API_func = getattr(devices.acs_server, acs_api)
-                        for param in i[acs_api]:
-                            API_func(param)
         check_devs = False
     except NoTFTPServer as e:
         raise e
