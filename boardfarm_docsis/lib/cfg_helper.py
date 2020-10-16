@@ -416,7 +416,7 @@ class UsServiceFlow(GeneralServiceFlow):
         MaxConcatenatedBurst: 0,
         SchedulingType: None,
         RequestOrTxPolicy: None,
-        IpTosOverwrite: "0x0000",
+        IpTosOverwrite: None,
     }
 
     @classmethod
@@ -1221,7 +1221,7 @@ if __name__ == "__main__":
                 "TrafficPriority": 1,
                 "MaxRateSustained": 300000000,
                 "SchedulingType": 2,
-                "IpTosOverwrite": "0x0000",
+                "IpTosOverwrite": None,
                 "MaxTrafficBurst": 42600,
                 "MaxConcatenatedBurst": 42600,
             }
