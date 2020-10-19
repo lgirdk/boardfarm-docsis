@@ -69,6 +69,8 @@ class MiniCMTS(base_cmts.BaseCmts):
                 self.expect(self.prompt[0])
                 self.sendline("enable")
                 self.expect(self.prompt[1])
+                self.sendline("terminal length 0")
+                self.expect(self.prompt[1])
             return
         except pexpect.exceptions.TIMEOUT:
             raise Exception(
