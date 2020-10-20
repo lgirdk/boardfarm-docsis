@@ -20,13 +20,18 @@ from boardfarm.lib.regexlib import (
 )
 from tabulate import tabulate
 
-from . import base_cmts
+from .base_cmts import BaseCmts
 
 
-class MiniCMTS(base_cmts.BaseCmts):
+class MiniCMTS(BaseCmts):
     """Connects to and configures a Topvision 1U mini CMTS"""
 
-    prompt = ["Topvision>", "Topvision#"]
+    prompt = [
+        "Topvision(.*)>",
+        "Topvision(.*)#",
+        r"Topvision\(.*\)#",
+        r"Topvision\(.*\)>",
+    ]
     model = "mini_cmts"
 
     def __init__(self, *args, **kwargs):
@@ -44,13 +49,12 @@ class MiniCMTS(base_cmts.BaseCmts):
             # TODO: try to parse from ipaddr, etc
             raise Exception("No command specified to connect to Topvision mini CMTS")
 
+        self.connlock = None
         self.connection = connection_decider.connection(
             connection_type, device=self, conn_cmd=conn_cmd
         )
         if kwargs.get("debug", False):
             self.logfile_read = sys.stdout
-        self.connection.connect()
-        self.connect()
         self.logfile_read = sys.stdout
 
         self.name = kwargs.get("name", "mini_cmts")
@@ -61,6 +65,7 @@ class MiniCMTS(base_cmts.BaseCmts):
 
         :raises Exception: Unable to get prompt on Topvision device
         """
+        self.connection.connect()
         try:
             if self.expect([pexpect.TIMEOUT, "Username:"]):
                 self.sendline(self.username)
@@ -69,8 +74,7 @@ class MiniCMTS(base_cmts.BaseCmts):
                 self.expect(self.prompt[0])
                 self.sendline("enable")
                 self.expect(self.prompt[1])
-                self.sendline("terminal length 0")
-                self.expect(self.prompt[1])
+                self.additional_setup()
             return
         except pexpect.exceptions.TIMEOUT:
             raise Exception(
@@ -83,10 +87,27 @@ class MiniCMTS(base_cmts.BaseCmts):
             print(repr(e))
             raise e
 
+    def additional_setup(self):
+        """Function to contain additional initialization steps"""
+        # Change terminal length to inf in order to avoid pagination
+        self.sendline("terminal length 0")
+        self.expect(self.prompt[1])
+
+        # Increase connection timeout until better solution
+        self.sendline("config terminal")
+        self.expect(self.prompt)
+        self.sendline("line vty")
+        self.expect(self.prompt)
+        self.sendline("exec-timeout 60")
+        self.expect(self.prompt)
+        self.sendline("end")
+        self.expect(self.prompt)
+
     def logout(self):
         """Logout of the CMTS device"""
         self.sendline("quit")
 
+    @BaseCmts.connect_and_run
     def __run_and_return_df(
         self, cmd, columns, index, skiprows=2, skipfooter=1
     ) -> pd.DataFrame:
@@ -129,6 +150,7 @@ class MiniCMTS(base_cmts.BaseCmts):
         scm = self.__run_and_return_df(cmd=cmd, columns=columns, index="MAC_ADDRESS")
         return scm
 
+    @BaseCmts.convert_mac_to_cmts_type
     def _show_cable_modem_cpe(self, cm_mac: str) -> pd.DataFrame:
         """Internal api to return scm cpe dataframe"""
         columns = [
@@ -147,6 +169,7 @@ class MiniCMTS(base_cmts.BaseCmts):
         )
         return cpe_list
 
+    @BaseCmts.convert_mac_to_cmts_type
     def check_online(self, cm_mac: str) -> bool:
         """Check the CM status from CMTS
         Function checks the CM mode and returns True if online
@@ -157,8 +180,15 @@ class MiniCMTS(base_cmts.BaseCmts):
         :rtype: boolean
         """
         scm = self._show_cable_modem()
-        return scm.loc[cm_mac]["MAC_STATE"] in ["online", "w-online(pt)"]
+        try:
+            result = scm.loc[cm_mac]["MAC_STATE"] in ["online", "w-online(pt)"]
+        except KeyError:
+            print(f"CM {cm_mac} is not found on cmts.")
+            result = False
+        return result
 
+    @BaseCmts.convert_mac_to_cmts_type
+    @BaseCmts.connect_and_run
     def clear_offline(self, cm_mac: str) -> None:
         """Clear the CM entry from cmts which is offline -clear cable modem <cm_mac> delete
         :param cm_mac: mac address of the CM
@@ -167,6 +197,8 @@ class MiniCMTS(base_cmts.BaseCmts):
         self.sendline(f"clear cable modem {cm_mac} delete")
         self.expect(self.prompt)
 
+    @BaseCmts.convert_mac_to_cmts_type
+    @BaseCmts.connect_and_run
     def clear_cm_reset(self, cm_mac: str) -> None:
         """Reset the CM from cmts using cli -clear cable modem <cm_mac> reset
 
@@ -176,6 +208,7 @@ class MiniCMTS(base_cmts.BaseCmts):
         self.sendline(f"clear cable modem {cm_mac} reset")
         self.expect(self.prompt)
 
+    @BaseCmts.convert_mac_to_cmts_type
     def get_cmip(self, cm_mac: str) -> [str, None]:
         """API to get modem IPv4 address
 
@@ -184,6 +217,7 @@ class MiniCMTS(base_cmts.BaseCmts):
         """
         return self._get_cable_modem_ip(cm_mac, ipv6=False)
 
+    @BaseCmts.convert_mac_to_cmts_type
     def get_cmipv6(self, cm_mac: str) -> [str, None]:
         """PI to get modem IPv6 address
 
@@ -192,6 +226,7 @@ class MiniCMTS(base_cmts.BaseCmts):
         """
         return self._get_cable_modem_ip(cm_mac, ipv6=True)
 
+    @BaseCmts.convert_mac_to_cmts_type
     def _get_cable_modem_ip(self, cm_mac: str, ipv6=False) -> [str, None]:
         """Internal function to get cable modem ip
 
@@ -207,8 +242,14 @@ class MiniCMTS(base_cmts.BaseCmts):
             return None
         additional_args = "ipv6" if ipv6 else ""
         scm = self._show_cable_modem(additional_args)
-        return scm.loc[cm_mac]["IP_ADDRESS"].strip("*")
+        try:
+            ip = scm.loc[cm_mac]["IP_ADDRESS"].strip("*")
+        except KeyError:
+            print(f"CM {cm_mac} is not found on cmts.")
+            ip = ""
+        return ip
 
+    @BaseCmts.convert_mac_to_cmts_type
     def check_partial_service(self, cm_mac: str) -> bool:
         """Check the CM status from CMTS
         Function checks the show cable modem and returns True if p-online
@@ -221,6 +262,7 @@ class MiniCMTS(base_cmts.BaseCmts):
         scm = self._show_cable_modem()
         return "p-online" in scm.loc[cm_mac]["MAC_STATE"]
 
+    @BaseCmts.connect_and_run
     def get_cmts_ip_bundle(self) -> [str, None]:
         """Get CMTS bundle IP"""
         # Only one ip bundle present for now on cmts, so just searching for all
@@ -233,6 +275,7 @@ class MiniCMTS(base_cmts.BaseCmts):
         else:
             assert 0, "ERROR: Failed to get the CMTS bundle IP"
 
+    @BaseCmts.convert_mac_to_cmts_type
     def get_qos_parameter(self, cm_mac):
         columns = [
             "SFID",
@@ -255,6 +298,7 @@ class MiniCMTS(base_cmts.BaseCmts):
         print_dataframe(qos_response)
         return qos_response.to_dict(orient="index")
 
+    @BaseCmts.convert_mac_to_cmts_type
     def get_mtaip(self, cm_mac: str, mta_mac: str) -> str:
         """Get the MTA IP from CMTS
 
@@ -266,8 +310,14 @@ class MiniCMTS(base_cmts.BaseCmts):
         :rtype: string
         """
         cpe_list = self._show_cable_modem_cpe(cm_mac)
-        return cpe_list.loc[mta_mac]["CPE_IP_ADDRESS"]
+        try:
+            mtaip = cpe_list.loc[mta_mac]["CPE_IP_ADDRESS"]
+        except KeyError:
+            print(f"MTA {mta_mac} is not found on cmts.")
+            mtaip = ""
+        return mtaip
 
+    @BaseCmts.connect_and_run
     def ping(self, ping_ip: str) -> bool:
         """This function to ping the device from cmts
         :param ping_ip: device ip which needs to be verified
@@ -310,6 +360,8 @@ class MiniCMTS(base_cmts.BaseCmts):
         print("Multiple mac domains not supported on Mini CMTS for now.")
         return ""
 
+    @BaseCmts.convert_mac_to_cmts_type
+    @BaseCmts.connect_and_run
     def get_center_freq(self, cm_mac: str) -> int:
         """Get center frequency for CM
 

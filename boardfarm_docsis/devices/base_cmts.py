@@ -22,6 +22,46 @@ class BaseCmts(base.BaseDevice):
     board_mta_mac = None
     sign_check = True
 
+    @classmethod
+    def convert_mac_to_cmts_type(cls, function):
+        def wrapper(*args, **kwargs):
+            args = list(args)
+            if ":" in args[1]:
+                args[1] = args[0].get_cm_mac_cmts_format(args[1])
+            return function(*args)
+
+        return wrapper
+
+    # this is only suppose to run with instance methods
+    @classmethod
+    def connect_and_run(cls, func):
+        def wrapper(*args, **kwargs):
+            instance = args[0]
+            exc_to_raise = None
+
+            # to ensure we don't connect/disconnect in case of nested
+            # API calls
+            check = [func.__name__, instance.connlock][bool(instance.connlock)]
+            if check == func.__name__:
+                instance.connect()
+                instance.connlock = check
+
+            try:
+                output = func(*args, **kwargs)
+            except Exception as e:
+                exc_to_raise = e
+
+            if func.__name__ == instance.connlock:
+                instance.logout()
+                instance.connlock = None
+                instance.pid = None
+
+            if exc_to_raise:
+                raise exc_to_raise
+            return output
+
+        return wrapper
+
     def __init__(self, *args, **kwargs):
         mgr = kwargs.get("mgr", None)
         if mgr:
