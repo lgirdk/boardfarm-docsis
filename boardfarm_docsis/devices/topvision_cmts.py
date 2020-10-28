@@ -37,27 +37,24 @@ class MiniCMTS(BaseCmts):
     def __init__(self, *args, **kwargs):
         """Constructor method"""
         super().__init__(*args, **kwargs)
-        conn_cmd = kwargs.get("conn_cmd", None)
-        connection_type = kwargs.get("connection_type", "local_serial")
+        self.conn_cmd = kwargs.get("conn_cmd", None)
+        self.connection_type = kwargs.get("connection_type", "local_serial")
         self.ipaddr = kwargs.get("ipaddr", None)
         self.username = kwargs.get("username", "admin")
         self.password = kwargs.get("password", "admin")
         self.password_admin = kwargs.get("password_admin", "admin")
         self.mac_domain = kwargs.get("mac_domain", None)
 
-        if conn_cmd is None:
+        if self.conn_cmd is None:
             # TODO: try to parse from ipaddr, etc
             raise Exception("No command specified to connect to Topvision mini CMTS")
 
         self.connlock = None
-        self.connection = connection_decider.connection(
-            connection_type, device=self, conn_cmd=conn_cmd
-        )
-        if kwargs.get("debug", False):
-            self.logfile_read = sys.stdout
-        self.logfile_read = sys.stdout
-
         self.name = kwargs.get("name", "mini_cmts")
+
+    @BaseCmts.connect_and_run
+    def interact(self):
+        super(MiniCMTS, self).interact()
 
     def connect(self):
         """This method is used to connect to cmts.
@@ -65,6 +62,12 @@ class MiniCMTS(BaseCmts):
 
         :raises Exception: Unable to get prompt on Topvision device
         """
+
+        self.connection = connection_decider.connection(
+            self.connection_type, device=self, conn_cmd=self.conn_cmd
+        )
+
+        self.logfile_read = sys.stdout
         self.connection.connect()
         try:
             if self.expect([pexpect.TIMEOUT, "Username:"]):
