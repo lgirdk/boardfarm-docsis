@@ -35,8 +35,6 @@ class CasaCMTS(base_cmts.BaseCmts):
         r"CASA-C10G\(.*\)#",
     ]
     model = "casa_cmts"
-    current_time_cmd = "show clock"
-    dateformat = "%a %b %d %H:%M:%S %Z %Y"
 
     def __init__(self, *args, **kwargs):
         """Constructor method"""
@@ -1380,11 +1378,6 @@ class CasaCMTS(base_cmts.BaseCmts):
         :raises ValueError: if the conversion failed for whatever reason
         :raises CodeError: if there is no timestamp
         """
+        self.current_time_cmd = "show clock"
+        self.dateformat = "%a %b %d %H:%M:%S %Z %Y"
         return super().get_current_time(fmt)
-        """
-        output = self.check_output('show clock')
-        if output != '':
-            return datetime.strptime(output,"%a %b %d %H:%M:%S %Z %Y").strftime(fmt)
-        else:
-            raise CodeError("Failed to get CMTS current time")
-        """

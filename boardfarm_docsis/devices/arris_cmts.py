@@ -1253,10 +1253,3 @@ class ArrisCMTS(BaseCmts):
         self.current_time_cmd = "show clock"
         self.dateformat = "%Y %B %d %H:%M:%S"
         return super().get_current_time(fmt)
-        """
-        output = self.check_output('show clock')
-        if ouput != '':
-            return datetime.strptime(output,"%Y %B %d %H:%M:%S").strftime(fmt)
-        else:
-            raise CodeError("Failed to get CMTS current time")
-        """
