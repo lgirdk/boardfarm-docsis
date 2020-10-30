@@ -4,6 +4,7 @@
 import re
 
 import pytest
+from boardfarm.exceptions import CodeError
 from boardfarm.lib.regexlib import ValidIpv4AddressRegex
 
 from boardfarm_docsis.devices.casa_cmts import CasaCMTS
@@ -259,3 +260,27 @@ def test_is_cm_online(mocker, cmts_ouput, params_combination, partial, result):
     )
     casa = CasaCMTS()
     assert casa.is_cm_online(*params_combination) == result
+
+
+@pytest.mark.parametrize(
+    "cmts_output, result, raises",
+    [
+        ("Fri Oct 30 10:26:07 UTC 2020", "2020-10-30T10:26:07", None),
+        ("Fri 30 10:26:07 UTC 2020", "", ValueError),
+        ("Fri Oct 32 10:26:07 UTC 2020", "", ValueError),
+        ("Thu Oct 29 10:26:07 UTC 2020", "2020-10-29T10:26:07", None),
+        ("Tue Feb 04 14:00:00 UTC 2020", "2020-02-04T14:00:00", None),
+        ("", "", CodeError),
+    ],
+)
+def test_get_current_time(mocker, cmts_output, result, raises):
+    mocker.patch.object(CasaCMTS, "__init__", return_value=None, autospec=True)
+    mocker.patch.object(
+        CasaCMTS, "check_output", return_value=cmts_output, autospec=True
+    )
+    casa = CasaCMTS()
+    if raises:
+        with pytest.raises(raises) as e:
+            casa.get_current_time()
+    else:
+        assert casa.get_current_time() == result

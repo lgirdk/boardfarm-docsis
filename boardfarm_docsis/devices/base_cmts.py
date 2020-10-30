@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from boardfarm.devices import base
 from boardfarm.exceptions import CodeError
 from boardfarm.lib import DeviceManager
@@ -21,6 +23,9 @@ class BaseCmts(base.BaseDevice):
     board_wan_mac = None
     board_mta_mac = None
     sign_check = True
+    linesep = "\r"
+    dateformat = None
+    current_time_cmd = None
 
     @classmethod
     def convert_mac_to_cmts_type(cls, function):
@@ -676,3 +681,22 @@ class BaseCmts(base.BaseDevice):
         :return: True if ping passed else False
         """
         raise Exception("Not implemented!")
+
+    def get_current_time(self, fmt="%Y-%m-%dT%H:%M:%S%z"):
+        """Returns the current time on the CMTS
+        the derived class only needs to set the "current_time_cmd" and
+        "dateformat" strings (both specific to the cmts vendor) amd then call
+        super.
+
+        :return: the current time as a string formatted as "YYYY-MM-DD hh:mm:ss"
+        :raises ValueError: if the conversion failed for whatever reason
+        :raises CodeError: if there is no timestamp
+        """
+        if not self.current_time_cmd or not self.dateformat:
+            raise NotImplementedError
+
+        output = self.check_output(self.current_time_cmd)
+        if output != "":
+            return datetime.strptime(output, self.dateformat).strftime(fmt)
+        else:
+            raise CodeError("Failed to get CMTS current time")

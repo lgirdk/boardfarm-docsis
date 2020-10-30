@@ -8,12 +8,14 @@
 
 import re
 import sys
+from datetime import datetime
 from io import StringIO
 
 import netaddr
 import pandas as pd
 import pexpect
 from boardfarm.devices import connection_decider
+from boardfarm.exceptions import CodeError
 from boardfarm.lib.regexlib import (
     AllValidIpv6AddressesRegex,
     ValidIpv4AddressRegex,
@@ -445,6 +447,30 @@ class MiniCMTS(BaseCmts):
             if cpe_mac == ertr_mac:
                 return False
         return True
+
+    def _get_current_time(self, fmt="%Y-%m-%dT%H:%M:%S%z"):
+        """used for unittests"""
+        output = self.check_output("show sys-date")
+        # TO DO: get tiem timezone as well
+        pattern = r"\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[1-2]\d|3[0-1]) (?:[0-1]\d|2[0-3]):[0-5]\d:[0-5]\d"
+        time_now = re.search(pattern, output)
+        if time_now:
+            return datetime.strptime(time_now.group(0), "%Y-%m-%d %H:%M:%S").strftime(
+                fmt
+            )
+        else:
+            raise CodeError("Failed to get CMTS current time")
+
+    @BaseCmts.connect_and_run
+    def get_current_time(self, fmt="%Y-%m-%dT%H:%M:%S%z"):
+        """Returns the current time on the CMTS
+        This is full override as the topvision device is a little "different"
+        NOTE: this is missing the timezone
+
+        :return: the current time as a string formatted as "YYYY-MM-DD hh:mm:ss"
+        :raises CodeError: if anything went wrong in getting the time
+        """
+        return self._get_current_time(fmt=fmt)
 
 
 def print_dataframe(dataframe: pd.DataFrame, column_number=15):

@@ -1244,3 +1244,19 @@ class ArrisCMTS(BaseCmts):
     def check_output(self, cmd):
         """get check_output out from parent class """
         return super().check_output(cmd)
+
+    def get_current_time(self, fmt="%Y-%m-%dT%H:%M:%S%z"):
+        """Returns the current time on the CMTS
+        :return: the current time as a string formatted as "%Y-%m-%dT%H:%M:%S%z"
+        :raises CodeError: if anything went wrong in getting the time
+        """
+        self.current_time_cmd = "show clock"
+        self.dateformat = "%Y %B %d %H:%M:%S"
+        return super().get_current_time(fmt)
+        """
+        output = self.check_output('show clock')
+        if ouput != '':
+            return datetime.strptime(output,"%Y %B %d %H:%M:%S").strftime(fmt)
+        else:
+            raise CodeError("Failed to get CMTS current time")
+        """
