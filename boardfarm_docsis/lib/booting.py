@@ -30,6 +30,9 @@ def boot(config, env_helper, devices, logged=None):
         devices.board.lan_iface = "brlan0"
         devices.board._build_arm_ifaces_list(lan_i=devices.board.lan_iface)
         devices.board.tr069_agent = "CcspTr069PaSsp"
+        devices.board.unsupported_objects = [
+            "Device.IP.Diagnostics.DownloadDiagnostics."
+        ]
     devices.board.cm_cfg = devices.board.generate_cfg(cfg, None, ertr_mode)
     logged["boot_step"] = "cmcfg_ok"
     devices.board.mta_cfg = devices.board.generate_mta_cfg(country)
