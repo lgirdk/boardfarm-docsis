@@ -1,3 +1,4 @@
+import time
 from datetime import datetime
 
 from boardfarm.devices import base
@@ -26,6 +27,7 @@ class BaseCmts(base.BaseDevice):
     linesep = "\r"
     dateformat = None
     current_time_cmd = None
+    T4 = 30  # seconds
 
     @classmethod
     def convert_mac_to_cmts_type(cls, function):
@@ -699,3 +701,32 @@ class BaseCmts(base.BaseDevice):
             return datetime.strptime(output, self.dateformat).strftime(fmt)
         else:
             raise CodeError("Failed to get CMTS current time")
+
+    def wait_for_cm_online(
+        self,
+        ignore_bpi=False,
+        ignore_partial=False,
+        ignore_cpe=False,
+        time_to_sleep=10,
+        iterations=20,
+    ):
+        """Waits for a CM to come online in an iterate-check-sleep loop. A CM
+        is online when the its status is OPERATIONAL.
+        The total timeout is 200s ca. (10s * 20 iterations). An ideal timeout
+        for a CM to come online should be around 90s max, but currently this is
+        not the case in our setup.
+
+        :param ignore_bpi: (optional) considers the CM online even when BPI is disabled
+        :type ignore_bpi: bool
+        :param ignore_partial: (optional) considers the CM online even when CM is oin
+        :type ignore_partial: bool
+        :param ignore_cpe: (optional) considers tje CM online even when LAN<->WAN forwarding is disabled
+        :type ignore_cpe: bool
+        :param :
+        :raises Execption: boardfarm.exception.CodeError on online failure
+        """
+        for _ in range(iterations):
+            if self.dev.cmts.is_cm_online(ignore_bpi, ignore_partial, ignore_cpe):
+                return
+            time.sleep(time_to_sleep)
+        raise CodeError(f"CM {self.board_wan_mac} is not online!!")

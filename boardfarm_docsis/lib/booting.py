@@ -172,3 +172,29 @@ def boot(config, env_helper, devices, logged=None):
     finally:
         if check_devs:
             check_devices(devices)
+
+
+def flash_and_boot_cpe(device, env_helper):
+    """is this really needed?"""
+    device.power_cycle()  # probably not needed
+    device.flash(env_helper)
+    device.power_cycle()  # probably not needed
+
+
+def booting(dev_mgr, env_helper, config):
+    board = dev_mgr.board
+
+    board.flash(env_helper)
+
+    # The following is done to mark CM offline on CMTS console, before even it
+    # its T4 timeout
+    dev_mgr.cmts.reset_cm(board.hw.mac["cm"])
+
+    time.sleep(dev_mgr.cmts.T4)
+
+    dev_mgr.cmts.wait_for_cm_online(board.hw.mac["cm"])
+
+    if dev_mgr.board.sw.version not in env_helper.get_software():
+        raise BootFail(
+            f"Image {dev_mgr.board.sw.version} does not match {env_helper.get_software()}"
+        )
