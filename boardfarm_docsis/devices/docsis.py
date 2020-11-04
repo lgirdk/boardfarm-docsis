@@ -1,3 +1,4 @@
+import logging
 import time
 
 import pexpect
@@ -5,6 +6,9 @@ from boardfarm.devices import openwrt_router
 from boardfarm.exceptions import CodeError
 from boardfarm.lib.DeviceManager import device_type
 from boardfarm.lib.network_helper import valid_ipv4, valid_ipv6
+from netaddr import EUI
+
+logger = logging.getLogger("bft")
 
 
 # TODO: probably the wrong parent
@@ -130,15 +134,16 @@ class Docsis(openwrt_router.OpenWrtRouter):
                 if hasattr(self, "erouter_iface"):
                     if erouter_ipv4:
                         failure = "erouter ipv4 failed"
-                        valid_ipv4(self.get_interface_ipaddr(self.erouter_iface))
+                        valid_ipv4(self.dev.cmts.get_ertr_ipv4(self.cm_mac))
                     if erouter_ipv6:
                         failure = "erouter ipv6 failed"
-                        valid_ipv6(self.get_interface_ip6addr(self.erouter_iface))
+                        valid_ipv6(self.dev.cmts.get_ertr_ipv6(self.cm_mac))
 
                 if hasattr(self, "mta_iface"):
                     if mta_ipv4:
                         failure = "mta ipv4 failed"
-                        valid_ipv4(self.get_interface_ipaddr(self.mta_iface))
+                        mta_mac = str(EUI(int(EUI(self.cm_mac))) + 1)
+                        valid_ipv4(self.dev.cmts.get_mtaip(self, self.cm_mac, mta_mac))
                     if mta_ipv6:
                         failure = "mta ipv6 failed"
                         valid_ipv6(self.get_interface_ip6addr(self.mta_iface))
@@ -148,13 +153,16 @@ class Docsis(openwrt_router.OpenWrtRouter):
             except KeyboardInterrupt:
                 raise
             except Exception:
+                self.arm.sendline()  # switches to the arm console
+                self.arm.expect_prompt()
                 if time.time() - start_time > time_for_provisioning:
                     if strict:
                         raise AssertionError(
                             "Failed to provision docsis device properly = " + failure
                         )
                     else:
-                        print("WARN: failed to provision board entirely")
+                        logger.warn("WARN: board not ready, retrying")
+                time.sleep(20)
 
     def get_cm_model_type(self):
         """This methods returns the model of the CM

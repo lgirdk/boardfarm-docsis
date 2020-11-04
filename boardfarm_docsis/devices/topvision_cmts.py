@@ -140,7 +140,7 @@ class MiniCMTS(BaseCmts):
             index_col=index,
         )
 
-    def _show_cable_modem(self, additional_args=None) -> pd.DataFrame:
+    def _show_cable_modem(self, additional_args="") -> pd.DataFrame:
         """Internal api to return scm dataframe"""
         columns = [
             "MAC_ADDRESS",
@@ -154,7 +154,7 @@ class MiniCMTS(BaseCmts):
             "BPI_ENABLED",
             "ONLINE_TIME",
         ]
-        cmd = f"show cable modem {additional_args if additional_args else ''}"
+        cmd = f"show cable modem {additional_args}"
         scm = self.__run_and_return_df(cmd=cmd, columns=columns, index="MAC_ADDRESS")
         return scm
 
@@ -270,7 +270,6 @@ class MiniCMTS(BaseCmts):
         """
         return self._get_cable_modem_ip(cm_mac, ipv6=True)
 
-    @BaseCmts.convert_mac_to_cmts_type
     def _get_cable_modem_ip(self, cm_mac: str, ipv6=False) -> [str, None]:
         """Internal function to get cable modem ip
 
@@ -287,11 +286,20 @@ class MiniCMTS(BaseCmts):
         additional_args = "ipv6" if ipv6 else ""
         scm = self._show_cable_modem(additional_args)
         try:
-            ip = scm.loc[cm_mac]["IP_ADDRESS"].strip("*")
+            ip_str = scm.loc[cm_mac]["IP_ADDRESS"].strip("*")
+            ip = netaddr.IPAddress(ip_str)
         except KeyError:
-            print(f"CM {cm_mac} is not found on cmts.")
+            logger.error(f"CM {cm_mac} is not found on cmts.")
             ip = ""
-        return ip
+        except netaddr.core.AddrFormatError:
+            ip = ""
+            msg = (
+                "Modem {cm_mac} offline"
+                if ip_str == "--"
+                else f"Failed to convert {ip_str}"
+            )
+            logger.error(msg)
+        return str(ip)
 
     @BaseCmts.convert_mac_to_cmts_type
     def check_partial_service(self, cm_mac: str) -> bool:
