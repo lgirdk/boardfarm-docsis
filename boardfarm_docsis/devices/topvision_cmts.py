@@ -6,6 +6,7 @@
 # This file is distributed under the Clear BSD license.
 # The full text can be found in LICENSE in the root directory.
 
+import logging
 import re
 import sys
 from datetime import datetime
@@ -23,6 +24,8 @@ from boardfarm.lib.regexlib import (
 from tabulate import tabulate
 
 from .base_cmts import BaseCmts
+
+logger = logging.getLogger("bft")
 
 
 class MiniCMTS(BaseCmts):
@@ -173,6 +176,42 @@ class MiniCMTS(BaseCmts):
             cmd=cmd, columns=columns, index="CPE_MAC", skiprows=1, skipfooter=6
         )
         return cpe_list
+
+    @BaseCmts.connect_and_run
+    def is_cm_online(self, ignore_bpi=False, ignore_partial=False, ignore_cpe=False):
+        """Returns True if the CM status is operational
+        :param ignore_bpi: returns True even when BPI is disabled
+        :type ignore_bpi: boolean
+        :param ignore_partial: returns True even when the CM is in partial service
+        :type ignore_partial: boolean
+        :param ignore_cpe: returns True even when LAN<->WAN forwarding is disabled
+        :type ignore_cpe: boolean
+        :return: True if the CM is operational, False otherwise
+        :rtype: boolean
+        """
+        scm = self._show_cable_modem()
+        try:
+            status = scm.loc[str(self.board_wan_mac)]["MAC_STATE"]
+        except KeyError:
+            logger.error(f"CM {self.board_wan_mac} is not found on cmts.")
+            raise CodeError
+
+        if "offline" in status:
+            logger.debug("Cable modem is offline")
+            return False
+        if ignore_bpi is False:
+            if not re.search(r"online\(p(t|k)", status):
+                logger.debug("Cable modem in BPI is disabled")
+                return False
+        if ignore_partial is False:
+            if re.search(r"p-online", status):
+                logger.debug("Cable modem in partial service")
+                return False
+        if ignore_cpe is False:
+            if re.search(r"online\(d", status):
+                logger.debug("Cable modem is prohibited from forwarding data")
+                return False
+        return True
 
     @BaseCmts.convert_mac_to_cmts_type
     def check_online(self, cm_mac: str) -> bool:
