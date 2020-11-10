@@ -58,12 +58,16 @@ class Dummy:
     def factory_reset(self, *args, **kwargs):
         pass
 
+    def get_mta_config(self, *args, **kwargs):
+        pass
+
 
 class DummyDev:
     def __init__(self):
         self.board = Dummy()
         self.acs_server = Dummy()
         self.board.cm_cfg = None
+        self.board.mta_cfg = None
 
     def get_prov_mode(self, *args, **kwargs):
         pass
@@ -75,6 +79,9 @@ class DummyDev:
         pass
 
     def get_tr069_provisioning(self, *args, **kwargs):
+        pass
+
+    def get_mta_config(self, *args, **kwargs):
         pass
 
 
@@ -101,6 +108,9 @@ def test_boot(mocker, provision, sw_output, exp_out):
     mocker.patch.object(env_helper, "voice_enabled", return_value=False, autospec=True)
     mocker.patch.object(
         env_helper, "get_software", return_value=sw_output, autospec=True
+    )
+    mocker.patch.object(
+        env_helper, "get_mta_config", return_value=provision, autospec=True
     )
 
     devices = DummyDev()

@@ -16,6 +16,7 @@ def boot(config, env_helper, devices, logged=None):
     voice = env_helper.voice_enabled()
     tr069check = cfg not in ["disabled", "bridge", "none"]
     tr069provision = env_helper.get_tr069_provisioning()
+    mta_mibs = env_helper.get_mta_config()
 
     if logged is None:
         logged = dict()
@@ -42,7 +43,9 @@ def boot(config, env_helper, devices, logged=None):
 
     devices.board.cm_cfg = devices.board.generate_cfg(cfg, None, ertr_mode)
     logged["boot_step"] = "cmcfg_ok"
-    devices.board.mta_cfg = devices.board.generate_mta_cfg(country)
+    devices.board.mta_cfg = devices.board.generate_mta_cfg(
+        country, snmp_mib_obj=mta_mibs
+    )
     logged["boot_step"] = "mtacfg_ok"
 
     # TODO: why is this required? need to fix globally

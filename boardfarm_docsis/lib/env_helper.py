@@ -201,3 +201,13 @@ class DocsisEnvHelper(EnvHelper):
             )
             self._check_config_boot(req_cfg_boot)
         return super().env_check(test_environment)
+
+    def get_mta_config(self):
+        """Returns the ["environment_def"]["voice"]["mta_config_boot"]["snmp_mibs"] values
+        :return: the vendor specific mta dict
+        :rtype: list, bool if Key/Attribure Error"""
+
+        try:
+            return self.env["environment_def"]["voice"]["mta_config_boot"]["snmp_mibs"]
+        except (KeyError, AttributeError):
+            return False
