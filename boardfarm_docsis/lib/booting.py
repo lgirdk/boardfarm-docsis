@@ -33,6 +33,10 @@ def boot(config, env_helper, devices, logged=None):
         devices.board.unsupported_objects = [
             "Device.IP.Diagnostics.DownloadDiagnostics."
         ]
+        # Remove "# " from arm prompts
+        if "# " in devices.board.arm.prompt:
+            devices.board.arm.prompt.remove("# ")
+
     devices.board.cm_cfg = devices.board.generate_cfg(cfg, None, ertr_mode)
     logged["boot_step"] = "cmcfg_ok"
     devices.board.mta_cfg = devices.board.generate_mta_cfg(country)
