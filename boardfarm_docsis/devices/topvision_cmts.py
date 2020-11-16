@@ -351,7 +351,7 @@ class MiniCMTS(BaseCmts):
         return qos_response.to_dict(orient="index")
 
     @BaseCmts.convert_mac_to_cmts_type
-    def get_mtaip(self, cm_mac: str, mta_mac: str) -> str:
+    def get_mtaip(self, cm_mac: str, mta_mac: str = None) -> str:
         """Get the MTA IP from CMTS
 
         :param cm_mac: mac address of the CM
@@ -361,11 +361,15 @@ class MiniCMTS(BaseCmts):
         :return: MTA ip address or "None" if ip not found
         :rtype: string
         """
+        if mta_mac:
+            mta_mac = self.get_cm_mac_cmts_format(mta_mac)
+        else:
+            mta_mac = self.board_mta_mac
         cpe_list = self._show_cable_modem_cpe(cm_mac)
         try:
             mtaip = cpe_list.loc[mta_mac]["CPE_IP_ADDRESS"]
         except KeyError:
-            print(f"MTA {mta_mac} is not found on cmts.")
+            logger.error(f"MTA {mta_mac} is not found on cmts.")
             mtaip = ""
         return mtaip
 

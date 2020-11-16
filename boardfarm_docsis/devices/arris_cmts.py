@@ -229,7 +229,7 @@ class ArrisCMTS(BaseCmts):
 
     @BaseCmts.connect_and_run
     @BaseCmts.convert_mac_to_cmts_type
-    def get_mtaip(self, cmmac, mtamac):
+    def get_mtaip(self, cmmac, mtamac=None):
         """Get the MTA IP from CMTS
 
         :param cmmac: mac address of the CM
