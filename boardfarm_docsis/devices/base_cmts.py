@@ -123,7 +123,7 @@ class BaseCmts(base.BaseDevice):
         """
         raise Exception("Not implemented!")
 
-    def get_mtaip(self, cmmac, mtamac):
+    def get_mtaip(self, cmmac, mtamac=None):
         """Get the MTA IP from CMTS
 
         :param cmmac: mac address of the CM
@@ -640,17 +640,14 @@ class BaseCmts(base.BaseDevice):
     def get_cm_mac_cmts_format(self, mac):
         """to convert mac adress to the format that to be used on cmts
 
-        :param mac: mac address of CM in foramt XX:XX:XX:XX:XX:XX
+        :param mac: mac address of CM in foramt XX:XX:XX:XX:XX:XX or XX-XX-XX-XX-XX-XX
         :type mac: string
         :return:  the cm_mac in cmts format xxxx.xxxx.xxxx (lowercase)
         :rtype: string
         """
         if mac is None:
             return None
-        # the mac cmts syntax format example is 3843.7d80.0ac0
-        tmp = mac.replace(":", "")
-        mac_cmts_format = tmp[:4] + "." + tmp[4:8] + "." + tmp[8:]
-        return mac_cmts_format.lower()
+        return str(EUI(mac).format(mac_cisco))
 
     def get_downstream_qam(self, cm_mac):
         """This function is to get downstream modulation type(64qam, 256qam...)

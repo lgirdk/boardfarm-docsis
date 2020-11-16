@@ -241,7 +241,7 @@ class CasaCMTS(base_cmts.BaseCmts):
             output = "None"
         return output
 
-    def get_mtaip(self, cmmac, mtamac):
+    def get_mtaip(self, cmmac, mtamac=None):
         """Get the MTA IP from CMTS
 
         :param cmmac: mac address of the CM
@@ -251,10 +251,12 @@ class CasaCMTS(base_cmts.BaseCmts):
         :return: MTA ip address or "None" if ip not found
         :rtype: string
         """
-        if ":" in mtamac:
+        if mtamac:
             mtamac = self.get_cm_mac_cmts_format(mtamac)
+        else:
+            mtamac = self.board_mta_mac
         self.sendline("show cable modem %s cpe" % cmmac)
-        self.expect(r"([\d\.]+)\s+dhcp\s+" + mtamac)
+        self.expect(r"([\d\.]+)\s+dhcp\s+" + str(mtamac))
         result = self.match.group(1)
         if self.match is not None:
             output = result
