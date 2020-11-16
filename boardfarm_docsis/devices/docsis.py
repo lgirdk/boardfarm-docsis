@@ -6,7 +6,7 @@ from boardfarm.devices import openwrt_router
 from boardfarm.exceptions import CodeError
 from boardfarm.lib.DeviceManager import device_type
 from boardfarm.lib.network_helper import valid_ipv4, valid_ipv6
-from netaddr import EUI
+from netaddr import EUI, mac_unix_expanded
 
 logger = logging.getLogger("bft")
 
@@ -142,8 +142,10 @@ class Docsis(openwrt_router.OpenWrtRouter):
                 if hasattr(self, "mta_iface"):
                     if mta_ipv4:
                         failure = "mta ipv4 failed"
-                        mta_mac = str(EUI(int(EUI(self.cm_mac))) + 1)
-                        valid_ipv4(self.dev.cmts.get_mtaip(self, self.cm_mac, mta_mac))
+                        mta_mac = str(
+                            EUI(int(EUI(self.cm_mac)) + 1, dialect=mac_unix_expanded)
+                        )
+                        valid_ipv4(self.dev.cmts.get_mtaip(self.cm_mac, mta_mac))
                     if mta_ipv6:
                         failure = "mta ipv6 failed"
                         valid_ipv6(self.get_interface_ip6addr(self.mta_iface))
