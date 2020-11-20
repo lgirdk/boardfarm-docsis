@@ -21,6 +21,8 @@ def boot(config, env_helper, devices, logged=None):
         logged = dict()
 
     logged["boot_step"] = "env_ok"
+    gui_password = None
+
     # the following if should not be here
     sw = env_helper.get_software()
     if sw.get("image_uri", None) and "rdkb" in sw["image_uri"]:
@@ -36,6 +38,7 @@ def boot(config, env_helper, devices, logged=None):
         # Remove "# " from arm prompts
         if "# " in devices.board.arm.prompt:
             devices.board.arm.prompt.remove("# ")
+        gui_password = "password"
 
     devices.board.cm_cfg = devices.board.generate_cfg(cfg, None, ertr_mode)
     logged["boot_step"] = "cmcfg_ok"
@@ -105,6 +108,13 @@ def boot(config, env_helper, devices, logged=None):
                     raise BootFail(
                         "Factory reset has to performed for tr069 provisioning. Env json with factory reset true should be used."
                     )
+        if gui_password:
+            if not devices.board.trigger_dmcli_cmd(
+                operation="setvalues",
+                param="Device.Users.User.3.X_CISCO_COM_Password",
+                value_for_set=gui_password,
+            ):
+                raise BootFail("Failed to set the GUI password via dmcli")
 
         check_devs = False
     except NoTFTPServer as e:
