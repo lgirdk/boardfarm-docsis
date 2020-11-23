@@ -4,6 +4,7 @@ import time
 import pexpect
 from boardfarm.devices import openwrt_router
 from boardfarm.exceptions import CodeError
+from boardfarm.lib import SnmpHelper
 from boardfarm.lib.DeviceManager import device_type
 from boardfarm.lib.network_helper import valid_ipv4, valid_ipv6
 from netaddr import EUI, mac_unix_expanded
@@ -187,3 +188,11 @@ class Docsis(openwrt_router.OpenWrtRouter):
 
     def factory_reset(self):
         return self.reset_defaults_via_console()
+
+    def is_erouter_honouring_config(self, method="snmp"):
+        if "snmp" == method:
+            ip = self.dev.cmts.get_cmip(self.cm_mac)
+            out = SnmpHelper.snmp_v2(self.dev.wan, ip, "esafeErouterInitModeControl")
+        else:
+            raise CodeError(f"Failed to get esafeErouterInitModeControl via {method}")
+        return "5" == out
