@@ -90,7 +90,7 @@ class ArrisCMTS(BaseCmts):
                 # Over telnet we come in at the right prompt
                 # over serial we could have a double login
                 # not yet implemented
-                raise ("Failed to connect to Arris via telnet")
+                raise Exception("Failed to connect to Arris via telnet")
             self.sendline("enable")
             if 0 == self.expect(["Password:"] + self.prompt):
                 self.sendline(self.password_admin)
