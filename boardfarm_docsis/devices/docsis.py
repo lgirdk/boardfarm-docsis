@@ -190,9 +190,23 @@ class Docsis(openwrt_router.OpenWrtRouter):
         return self.reset_defaults_via_console()
 
     def is_erouter_honouring_config(self, method="snmp"):
+        """Checks if the ErouterInitModeControl is set to honour what is stated
+        in the boot file. This check can be performed via snmp or dmcli.
+
+        :param method: one of "snmp"(default) or "dmcli"
+        :type method: string
+
+        :return: True if ErouterInitModeControl is set to follow the bootfile,
+        False otherwise
+        :rtype: bool
+        """
         if "snmp" == method:
             ip = self.dev.cmts.get_cmip(self.cm_mac)
             out = SnmpHelper.snmp_v2(self.dev.wan, ip, "esafeErouterInitModeControl")
+            return "5" == out
+        elif "dmcli" == method:
+            param = "Device.X_LGI-COM_Gateway.ErouterModeControl"
+            out = self.dmcli.GPV(param)
+            return "honoreRouterInitMode" == out.rval
         else:
             raise CodeError(f"Failed to get esafeErouterInitModeControl via {method}")
-        return "5" == out
