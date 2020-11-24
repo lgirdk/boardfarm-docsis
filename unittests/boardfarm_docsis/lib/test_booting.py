@@ -43,6 +43,9 @@ class Dummy:
     def voice_enabled(self, *args, **kwargs):
         pass
 
+    def mitm_enabled(self, *args, **kwargs):
+        pass
+
     def get_software(self, *args, **kwargs):
         pass
 
@@ -112,6 +115,7 @@ def test_boot(mocker, provision, sw_output, exp_out):
         env_helper, "get_tr069_provisioning", return_value=provision, autospec=True
     )
     mocker.patch.object(env_helper, "voice_enabled", return_value=False, autospec=True)
+    mocker.patch.object(env_helper, "mitm_enabled", return_value=False, autospec=True)
     mocker.patch.object(
         env_helper, "get_software", return_value=sw_output, autospec=True
     )

@@ -8,3 +8,7 @@ class BootFail(Exception):
 
 class NoTFTPServer(Exception):
     pass
+
+
+class CodeError(Exception):
+    pass

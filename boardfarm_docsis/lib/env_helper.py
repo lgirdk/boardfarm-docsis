@@ -86,6 +86,25 @@ class DocsisEnvHelper(EnvHelper):
         except (KeyError, AttributeError):
             return False
 
+    def get_mitm_devices(self):
+        """
+        returns list of mitm'ed devices of the desired environment.
+        """
+        try:
+            devices = self.env["environment_def"]["mitm"]
+        except (KeyError, AttributeError):
+            return list()
+        return devices
+
+    def mitm_enabled(self):
+        """Flag to see if we have any devices mitm'ed
+
+        :return: True if at least 1 device mitm'ed, False otherwise
+        """
+        if self.get_mitm_devices():
+            return True
+        return False
+
     def get_tr069_provisioning(self):
         """Return list of ACS APIs to be executed during tr069 provisioning.
 

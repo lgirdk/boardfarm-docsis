@@ -2,11 +2,23 @@ import time
 import warnings
 
 import boardfarm.lib.booting
-from boardfarm.exceptions import BootFail, NoTFTPServer
+from boardfarm.exceptions import BootFail, CodeError, NoTFTPServer
 from boardfarm.lib.voice import dns_setup_sipserver, voice_devices_configure
 from boardfarm.library import check_devices
 
 from boardfarm_docsis.exceptions import VoiceSetupConfigureFailure
+
+
+def activate_mitm(devices, env_helper, logged):
+    # TODO: Deploy mitm containers before mitm activation.
+    # Now we assume that container is already deployed manually
+    try:
+        devices.mitm.start_capture(env_helper.get_mitm_devices())
+    except AttributeError:
+        raise CodeError("No MITM device found in device manager")
+    except KeyError as e:
+        raise CodeError(str(e))
+    logged["boot_step"] = "mitm_ok"
 
 
 def boot(config, env_helper, devices, logged=None):
@@ -14,6 +26,7 @@ def boot(config, env_helper, devices, logged=None):
     ertr_mode = env_helper.get_ertr_mode()
     country = env_helper.get_country()
     voice = env_helper.voice_enabled()
+    mitm_present = env_helper.mitm_enabled()
     tr069check = cfg not in ["disabled", "bridge", "none"]
     tr069provision = env_helper.get_tr069_provisioning()
     mta_mibs = env_helper.get_mta_config()
@@ -89,6 +102,10 @@ def boot(config, env_helper, devices, logged=None):
             flashing_image=False,
         )
         devices.board.enable_logs(component="pacm")
+
+        if mitm_present:
+            activate_mitm(devices, env_helper, logged)
+
         if voice:
             devices.board.wait_for_mta_provisioning()
             logged["boot_step"] = "voice_mta_ok"
