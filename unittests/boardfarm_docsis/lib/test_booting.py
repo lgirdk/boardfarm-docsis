@@ -61,6 +61,9 @@ class Dummy:
     def get_mta_config(self, *args, **kwargs):
         pass
 
+    def get_emta_config_template(self, *args, **kwargs):
+        pass
+
 
 class DummyDev:
     def __init__(self):
@@ -82,6 +85,9 @@ class DummyDev:
         pass
 
     def get_mta_config(self, *args, **kwargs):
+        pass
+
+    def get_emta_config_template(self, *args, **kwargs):
         pass
 
 
@@ -111,6 +117,9 @@ def test_boot(mocker, provision, sw_output, exp_out):
     )
     mocker.patch.object(
         env_helper, "get_mta_config", return_value=provision, autospec=True
+    )
+    mocker.patch.object(
+        env_helper, "get_emta_config_template", return_value="CH-Compal", autospec=True
     )
 
     devices = DummyDev()

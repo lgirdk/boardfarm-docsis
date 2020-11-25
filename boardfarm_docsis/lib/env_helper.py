@@ -211,3 +211,13 @@ class DocsisEnvHelper(EnvHelper):
             return self.env["environment_def"]["voice"]["mta_config_boot"]["snmp_mibs"]
         except (KeyError, AttributeError):
             return False
+
+    def get_emta_config_template(self):
+        """Return the ["environment_def"]["board"]["emta"]["config_template"] value
+        :return: emta config template ex: "CH_Compal"
+        :rtype: string
+        """
+        try:
+            return self.env["environment_def"]["board"]["emta"]["config_template"]
+        except (KeyError, AttributeError):
+            return False
