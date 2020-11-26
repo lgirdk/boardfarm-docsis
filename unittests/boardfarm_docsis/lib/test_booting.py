@@ -67,6 +67,9 @@ class Dummy:
     def get_emta_config_template(self, *args, **kwargs):
         pass
 
+    def get_dns_dict(self, *args, **kwargs):
+        pass
+
 
 class DummyDev:
     def __init__(self):
@@ -91,6 +94,9 @@ class DummyDev:
         pass
 
     def get_emta_config_template(self, *args, **kwargs):
+        pass
+
+    def get_dns_dict(self, *args, **kwargs):
         pass
 
 
