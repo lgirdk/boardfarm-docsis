@@ -4,7 +4,7 @@ import sys
 import pytest
 
 sys.path.insert(0, os.getcwd() + "/unittests/")
-import boardfarm
+
 from boardfarm.exceptions import BootFail
 
 sys.path.pop(0)
@@ -70,6 +70,12 @@ class Dummy:
     def get_dns_dict(self, *args, **kwargs):
         pass
 
+    def get_board_sku(self, *args, **kwargs):
+        pass
+
+    def deploy_board_sku_via_dmcli(self, *args, **kwargs):
+        pass
+
 
 class DummyDev:
     def __init__(self):
@@ -103,6 +109,9 @@ class DummyDev:
     def __iter__(self):
         return iter([])
 
+    def deploy_board_sku_via_dmcli(self, *args, **kwargs):
+        pass
+
 
 @pytest.mark.parametrize(
     "provision, sw_output, exp_out",
@@ -135,8 +144,10 @@ def test_boot(mocker, provision, sw_output, exp_out):
     mocker.patch.object(
         env_helper, "get_emta_config_template", return_value="CH-Compal", autospec=True
     )
+    mocker.patch.object(env_helper, "get_board_sku", return_value=20, autospec=True)
 
     devices = DummyDev()
+
     mocker.patch.object(devices.board, "generate_cfg", return_value=None, autospec=True)
     mocker.patch.object(
         devices.board, "generate_mta_cfg", return_value=None, autospec=True
@@ -149,6 +160,9 @@ def test_boot(mocker, provision, sw_output, exp_out):
     mocker.patch.object(devices.board, "get_cpeid", return_value=None, autospec=True)
     mocker.patch.object(
         devices.board, "factory_reset", return_value=False, autospec=True
+    )
+    mocker.patch.object(
+        devices.board, "deploy_board_sku_via_dmcli", return_value=True, autospec=True
     )
     if "True" in str(sw_output):
         val = boot(config, env_helper, devices, logged=None)

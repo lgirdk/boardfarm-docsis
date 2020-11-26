@@ -251,3 +251,12 @@ class DocsisEnvHelper(EnvHelper):
             return self.env["environment_def"]["DNS"]
         except (KeyError, AttributeError):
             return False
+
+    def get_board_sku(self):
+        """Returns the ["environment_def"]["board"]["SKU"] value
+        :return: SKU values from eval list
+        :rtype: String"""
+        try:
+            return self.env["environment_def"]["board"]["SKU"]
+        except (KeyError, AttributeError):
+            return None

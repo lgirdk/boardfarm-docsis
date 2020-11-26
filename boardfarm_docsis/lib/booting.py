@@ -33,6 +33,7 @@ def boot(config, env_helper, devices, logged=None):
     mta_mibs = env_helper.get_mta_config()
     config_template = env_helper.get_emta_config_template()
     dns_dict = env_helper.get_dns_dict()
+    sku = env_helper.get_board_sku()
 
     if logged is None:
         logged = dict()
@@ -154,6 +155,11 @@ def boot(config, env_helper, devices, logged=None):
                     raise BootFail(
                         "Factory reset has to performed for tr069 provisioning. Env json with factory reset true should be used."
                     )
+        if sku:
+            op = devices.board.deploy_board_sku_via_dmcli(sku)
+            if not op:
+                raise BootFail("Failed to set the SKU via dmcli")
+
         if gui_password:
             if not devices.board.trigger_dmcli_cmd(
                 operation="setvalues",
