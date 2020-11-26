@@ -240,3 +240,14 @@ class DocsisEnvHelper(EnvHelper):
             return self.env["environment_def"]["board"]["emta"]["config_template"]
         except (KeyError, AttributeError):
             return False
+
+    def get_dns_dict(self):
+        """Returns the dict of reachable and unreachable IP address from DNS.
+
+        :return: number of reachable and unreachable IP address to be fetched from DNS
+        :rtype: dictionary
+        """
+        try:
+            return self.env["environment_def"]["DNS"]
+        except (KeyError, AttributeError):
+            return False

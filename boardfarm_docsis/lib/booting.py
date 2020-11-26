@@ -7,6 +7,7 @@ from boardfarm.lib.voice import dns_setup_sipserver, voice_devices_configure
 from boardfarm.library import check_devices
 
 from boardfarm_docsis.exceptions import VoiceSetupConfigureFailure
+from boardfarm_docsis.lib.dns_helper import dns_acs_config
 
 
 def activate_mitm(devices, env_helper, logged):
@@ -31,6 +32,7 @@ def boot(config, env_helper, devices, logged=None):
     tr069provision = env_helper.get_tr069_provisioning()
     mta_mibs = env_helper.get_mta_config()
     config_template = env_helper.get_emta_config_template()
+    dns_dict = env_helper.get_dns_dict()
 
     if logged is None:
         logged = dict()
@@ -70,6 +72,9 @@ def boot(config, env_helper, devices, logged=None):
 
     # TODO: why is this required? need to fix globally
     devices.board.config["cm_cfg"] = devices.board.cm_cfg
+
+    # to get recahbale and unreachable ips for ACS DNS
+    dns_acs_config(devices, dns_dict)
 
     if voice:
         try:
