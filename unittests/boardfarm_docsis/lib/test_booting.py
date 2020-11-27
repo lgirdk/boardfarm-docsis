@@ -77,6 +77,7 @@ class DummyDev:
         self.acs_server = Dummy()
         self.board.cm_cfg = None
         self.board.mta_cfg = None
+        self.lan_clients = []
 
     def get_prov_mode(self, *args, **kwargs):
         pass
@@ -98,6 +99,9 @@ class DummyDev:
 
     def get_dns_dict(self, *args, **kwargs):
         pass
+
+    def __iter__(self):
+        return iter([])
 
 
 @pytest.mark.parametrize(

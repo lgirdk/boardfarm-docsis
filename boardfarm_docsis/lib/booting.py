@@ -58,6 +58,8 @@ def boot(config, env_helper, devices, logged=None):
         gui_password = "password"
 
     devices.board.cm_cfg = devices.board.generate_cfg(cfg, None, ertr_mode)
+    dslite_enabled = devices.board.cm_cfg.dslite if devices.board.cm_cfg else None
+
     logged["boot_step"] = "cmcfg_ok"
 
     if config_template:
@@ -106,6 +108,18 @@ def boot(config, env_helper, devices, logged=None):
             logged=logged,
             flashing_image=False,
         )
+        for lan in devices.lan_clients:
+            lan.configure_docker_iface()
+
+            if env_helper.get_prov_mode() == "ipv6" and not dslite_enabled:
+                lan.start_ipv6_lan_client()
+            else:
+                if env_helper.get_prov_mode() == "dual":
+                    lan.start_ipv6_lan_client()
+
+                lan.start_ipv4_lan_client()
+            lan.configure_proxy_pkgs()
+
         devices.board.enable_logs(component="pacm")
 
         if mitm_present:
