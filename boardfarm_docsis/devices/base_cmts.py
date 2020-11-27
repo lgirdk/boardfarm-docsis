@@ -647,7 +647,9 @@ class BaseCmts(base.BaseDevice):
         """
         if mac is None:
             return None
-        return str(EUI(mac).format(mac_cisco))
+        mac = EUI(mac)
+        mac.dialect = mac_cisco
+        return str(mac)
 
     def get_downstream_qam(self, cm_mac):
         """This function is to get downstream modulation type(64qam, 256qam...)
