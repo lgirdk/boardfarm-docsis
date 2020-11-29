@@ -197,20 +197,30 @@ class MiniCMTS(BaseCmts):
             raise CodeError
 
         if "offline" in status:
-            logger.debug("Cable modem is offline")
+            logger.debug(f"Cable modem is {status}")
             return False
+        if "init" in status:
+            logger.debug(f"Cable modem is initialising: {status} ")
+            return False
+        if "online" not in status:
+            logger.debug(f"Cable modem in unkown state: {status} ")
+            return False
+        # now it must be in some sort of online state
         if ignore_bpi is False:
             if not re.search(r"online\(p(t|k)", status):
-                logger.debug("Cable modem in BPI is disabled")
+                logger.debug(f"Cable modem in BPI is disabled: {status}")
                 return False
         if ignore_partial is False:
             if re.search(r"p-online", status):
-                logger.debug("Cable modem in partial service")
+                logger.debug(f"Cable modem in partial service: {status}")
                 return False
         if ignore_cpe is False:
             if re.search(r"online\(d", status):
-                logger.debug("Cable modem is prohibited from forwarding data")
+                logger.debug(
+                    f"Cable modem is prohibited from forwarding data: {status}"
+                )
                 return False
+        logger.debug(f"Cable modem is online: {status}")
         return True
 
     @BaseCmts.convert_mac_to_cmts_type
