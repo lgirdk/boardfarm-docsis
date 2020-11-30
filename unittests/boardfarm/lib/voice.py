@@ -1,6 +1,6 @@
-class dns_setup_sipserver:
+def dns_setup_sipserver(*args, **kwargs):
     pass
 
 
-class voice_devices_configure:
+def voice_devices_configure(*args, **kwargs):
     pass

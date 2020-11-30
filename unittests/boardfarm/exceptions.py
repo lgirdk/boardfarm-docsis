@@ -1,14 +1,18 @@
-class BftBaseException:
+class BftBaseException(Exception):
     pass
 
 
-class BootFail(Exception):
+class CodeError(BftBaseException):
     pass
 
 
-class NoTFTPServer(Exception):
+class DeviceDoesNotExistError(BftBaseException):
     pass
 
 
-class CodeError(Exception):
+class BootFail(BftBaseException):
+    pass
+
+
+class NoTFTPServer(BftBaseException):
     pass
