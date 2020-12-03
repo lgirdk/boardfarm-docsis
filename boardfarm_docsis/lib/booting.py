@@ -81,7 +81,7 @@ def boot(config, env_helper, devices, logged=None):
     if voice:
         try:
             sipserver = devices.sipcenter
-            sipserver.kill_asterisk()
+            sipserver.stop()
             dns_setup_sipserver(sipserver, config)
             voice_devices_list = [
                 sipserver,
