@@ -1,4 +1,5 @@
 import logging
+import traceback
 from collections import OrderedDict
 
 import debtcollector
@@ -7,6 +8,7 @@ from boardfarm.devices.base import BaseDevice
 from boardfarm.devices.base_devices.board import BaseBoard
 from boardfarm.exceptions import CodeError
 from netaddr import EUI, mac_unix_expanded
+from termcolor import colored
 
 from boardfarm_docsis.devices.docsis import Docsis
 from boardfarm_docsis.lib.env_helper import DocsisEnvHelper
@@ -51,10 +53,19 @@ class DocsisCPEHw:
         def _meta_flash(img):
             """Flash with image."""
             try:
+                board.dev.cmts.clear_cm_reset(board.hw.mac["cm"])
                 board.dev.cmts.wait_for_cm_online(ignore_partial=True)
+                board.hw.login_arm_root()
                 board.hw.flash_meta(img, wan, lan, check_version=True)
             except Exception as e:
-                logger.error("Failed to flash meta image: {meta}")
+                traceback.print_exc()
+                logger.error(
+                    colored(
+                        f"Failed to flash meta image: {img}",
+                        color="green",
+                        attrs=["bold"],
+                    )
+                )
                 logger.error(f"{e}")
 
         def _factory_reset(img):
@@ -185,7 +196,28 @@ class DocsisCPESw(Docsis):
         raise NotImplementedError
 
 
-class DocsisCPE(BaseBoard):
+class InterceptDocsisCPE(object):
+    """Any pexpect call made using self will be redirected to self.sw
+    if the method is not implemented
+    """
+
+    def __getattribute__(self, name):
+        try:
+            attr = object.__getattribute__(self, name)
+        except Exception:
+            attr = self.sw.__getattribute__(name)
+        if callable(attr):
+
+            def newfunc(*args, **kwargs):
+                result = attr(*args, **kwargs)
+                return result
+
+            return newfunc
+        else:
+            return attr
+
+
+class DocsisCPE(InterceptDocsisCPE, BaseBoard):
     """Docsis CPE"""
 
     sw: BaseDevice = None  # is this right?
