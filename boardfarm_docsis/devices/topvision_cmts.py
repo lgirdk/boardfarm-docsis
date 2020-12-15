@@ -89,10 +89,10 @@ class MiniCMTS(BaseCmts):
                 "Unable to get prompt on Topvision mini CMTS device due to timeout."
             )
         except Exception as e:
-            print(
+            logger.error(
                 "Something went wrong during CMTS initialisation. See exception below:"
             )
-            print(repr(e))
+            logger.error(repr(e))
             raise e
 
     def additional_setup(self):
@@ -237,7 +237,7 @@ class MiniCMTS(BaseCmts):
         try:
             result = scm.loc[cm_mac]["MAC_STATE"] in ["online", "w-online(pt)"]
         except KeyError:
-            print(f"CM {cm_mac} is not found on cmts.")
+            logger.error(f"CM {cm_mac} is not found on cmts.")
             result = False
         return result
 
@@ -291,7 +291,7 @@ class MiniCMTS(BaseCmts):
         :rtype: string, None
         """
         if not self.check_online(cm_mac):
-            print(f"Modem {cm_mac} is not online. Can not get ip.")
+            logger.debug(f"Modem {cm_mac} is not online. Can not get ip.")
             return None
         additional_args = "ipv6" if ipv6 else ""
         scm = self._show_cable_modem(additional_args)
@@ -406,7 +406,7 @@ class MiniCMTS(BaseCmts):
         :param opts: any other options to filter, defaults to ""
         :type opts: string
         """
-        print("TCPDUMP feature is not supported in Topvision CMTS.")
+        logger.error("TCPDUMP feature is not supported in Topvision CMTS.")
 
     def get_cmts_type(self):
         """This function is to get the product type on cmts
@@ -423,7 +423,7 @@ class MiniCMTS(BaseCmts):
         :param cm_mac: CM mac string. Added for compatibility
         :return: empty string
         """
-        print("Multiple mac domains not supported on Mini CMTS for now.")
+        logger.error("Multiple mac domains not supported on Mini CMTS for now.")
         return ""
 
     @BaseCmts.convert_mac_to_cmts_type
@@ -551,7 +551,7 @@ def print_dataframe(dataframe: pd.DataFrame, column_number=15):
         table_headers = (
             index_column_name + dataframe.columns[start_column:end_column].to_list()
         )
-        print(
+        logger.debug(
             "\n"
             + tabulate(
                 dataframe.loc[:, dataframe.columns[start_column:end_column]],

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import logging
 import re
 import sys
 
@@ -11,6 +12,8 @@ from boardfarm.lib.regexlib import (
 )
 
 from . import base_cmts
+
+logger = logging.getLogger("bft")
 
 
 class CBR8CMTS(base_cmts.BaseCmts):
@@ -117,7 +120,9 @@ class CBR8CMTS(base_cmts.BaseCmts):
         :type cmmac: string
         """
         if "c3000" in self.get_cmts_type():
-            print("clear offline feature is not supported on cbr8 product name c3000")
+            logger.error(
+                "clear offline feature is not supported on cbr8 product name c3000"
+            )
             return
         self.sendline("clear cable modem %s offline" % cmmac)
         self.expect(self.prompt)
@@ -133,9 +138,9 @@ class CBR8CMTS(base_cmts.BaseCmts):
         online_state = self.check_online(cmmac)
         self.expect(pexpect.TIMEOUT, timeout=5)
         if online_state is True:
-            print("CM is still online after 5 seconds.")
+            logger.debug("CM is still online after 5 seconds.")
         else:
-            print("CM reset is initiated.")
+            logger.debug("CM reset is initiated.")
 
     def get_cmip(self, cmmac):
         """Get the IP of the Cable modem from CMTS

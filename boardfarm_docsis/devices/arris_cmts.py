@@ -6,6 +6,7 @@
 # The full text can be found in LICENSE in the root directory.
 
 import ipaddress
+import logging
 import re
 import sys
 
@@ -20,6 +21,8 @@ from boardfarm.lib.regexlib import (
 
 from . import base_cmts
 from .base_cmts import BaseCmts
+
+logger = logging.getLogger("bft")
 
 
 class ArrisCMTS(BaseCmts):
@@ -130,7 +133,7 @@ class ArrisCMTS(BaseCmts):
                 return False
         if ignore_partial is False:
             if self._check_PartialService(self.board_wan_mac):
-                print("Cable modem in partial service")
+                logger.debug("Cable modem in partial service")
                 return False
         if ignore_cpe is False:
             if re.search(r"State=Online-d", b):
@@ -223,9 +226,9 @@ class ArrisCMTS(BaseCmts):
         self.expect(pexpect.TIMEOUT, timeout=5)
         online_state = self._check_online(cmmac)
         if online_state is True:
-            print("CM is still online after 5 seconds.")
+            logger.debug("CM is still online after 5 seconds.")
         else:
-            print("CM reset is initiated.")
+            logger.info("CM reset is initiated.")
 
     @BaseCmts.connect_and_run
     @BaseCmts.convert_mac_to_cmts_type
@@ -526,7 +529,7 @@ class ArrisCMTS(BaseCmts):
         :type ip_pvmode: string
         """
         if "dual-stack" in ip_pvmode.lower() and "c4" in self.get_cmts_type():
-            print(
+            logger.error(
                 "dual-stack ip provisioning modem is not supported on Chassis Type : C4 please choose apm"
             )
             return
@@ -545,9 +548,9 @@ class ArrisCMTS(BaseCmts):
             self.check_docsis_mac_ip_provisioning_mode(index)
         )
         if check_docsis_mac_ip_provisioning_mode in ip_pvmode:
-            print("The ip provision mode is successfully set.")
+            logger.info("The ip provision mode is successfully set.")
         else:
-            print("An error occured while setting the ip provision mode.")
+            logger.error("An error occured while setting the ip provision mode.")
 
     @BaseCmts.connect_and_run
     def add_route(self, ipaddr, gw):
@@ -566,13 +569,13 @@ class ArrisCMTS(BaseCmts):
         self.sendline("ip route %s %s %s" % (ipaddr.ip, ipaddr.netmask, gw))
         self.expect(self.prompt)
         if "error" in self.before.lower():
-            print("An error occured while adding the route.")
+            logger.error("An error occured while adding the route.")
         self.sendline("show ip route")
         self.expect(self.prompt)
         if gw in self.before:
-            print("The route is available on cmts.")
+            logger.info("The route is available on cmts.")
         else:
-            print("The route is not available on cmts.")
+            logger.info("The route is not available on cmts.")
 
     @BaseCmts.connect_and_run
     def add_route6(self, net, gw):
@@ -586,13 +589,13 @@ class ArrisCMTS(BaseCmts):
         self.sendline("ipv6 route %s %s" % (net, gw))
         self.expect(self.prompt)
         if "error" in self.before.lower():
-            print("An error occured while adding the route.")
+            logger.error("An error occured while adding the route.")
         self.sendline("show ipv6 route")
         self.expect(self.prompt)
         if str(ipaddress.IPv6Address(six.text_type(gw))).lower() in self.before.lower():
-            print("The route is available on cmts.")
+            logger.info("The route is available on cmts.")
         else:
-            print("The route is not available on cmts.")
+            logger.info("The route is not available on cmts.")
 
     @BaseCmts.connect_and_run
     def del_route(self, ipaddr, gw):
@@ -611,14 +614,14 @@ class ArrisCMTS(BaseCmts):
         self.sendline("no ip route %s %s %s" % (ipaddr.ip, ipaddr.netmask, gw))
         self.expect(self.prompt)
         if "error" in self.before.lower():
-            print("An error occured while deleting the route.")
+            logger.error("An error occured while deleting the route.")
         self.expect(pexpect.TIMEOUT, timeout=10)
         self.sendline("show ip route")
         self.expect(self.prompt)
         if gw in self.before:
-            print("The route is still available on cmts.")
+            logger.debug("The route is still available on cmts.")
         else:
-            print("The route is not available on cmts.")
+            logger.info("The route is not available on cmts.")
 
     @BaseCmts.connect_and_run
     def del_route6(self, net, gw):
@@ -632,7 +635,7 @@ class ArrisCMTS(BaseCmts):
         self.sendline("no ipv6 route %s %s" % (net, gw))
         self.expect(self.prompt)
         if "error" in self.before.lower():
-            print("An error occured while deleting the route.")
+            logger.error("An error occured while deleting the route.")
         self.sendline("show ipv6 route")
         self.expect(self.prompt)
         if (
@@ -640,9 +643,9 @@ class ArrisCMTS(BaseCmts):
             in self.before.lower()
             or gw.lower() in self.before.lower()
         ):
-            print("The route is still available on cmts.")
+            logger.debug("The route is still available on cmts.")
         else:
-            print("The route is not available on cmts.")
+            logger.debug("The route is not available on cmts.")
 
     @BaseCmts.connect_and_run
     def add_ip_bundle(self, index, helper_ip, ipaddr, secondary_ips=None):
@@ -691,9 +694,9 @@ class ArrisCMTS(BaseCmts):
         )
         self.expect(self.prompt)
         if str(ipaddr.ip) in self.before:
-            print("The ip bundle is successfully set.")
+            logger.info("The ip bundle is successfully set.")
         else:
-            print("An error occured while setting the ip bundle.")
+            logger.error("An error occured while setting the ip bundle.")
 
     @BaseCmts.connect_and_run
     def add_ipv6_bundle_addrs(self, index, helper_ip, ip, secondary_ips=None):
@@ -724,9 +727,9 @@ class ArrisCMTS(BaseCmts):
         )
         self.expect(self.prompt)
         if str(ipaddress.ip_address(six.text_type(ip[:-3])).compressed) in self.before:
-            print("The ipv6 bundle is successfully set.")
+            logger.info("The ipv6 bundle is successfully set.")
         else:
-            print("An error occured while setting the ipv6 bundle.")
+            logger.error("An error occured while setting the ipv6 bundle.")
 
     @BaseCmts.connect_and_run
     def set_iface_qam(self, index, sub, annex, interleave, power):
@@ -804,7 +807,9 @@ class ArrisCMTS(BaseCmts):
         :param ups_channels: channel number of the upstream
         :type ups_channels: string
         """
-        print("Service group is auto configured in ARRIS once mac domain is created.")
+        logger.debug(
+            "Service group is auto configured in ARRIS once mac domain is created."
+        )
 
     @BaseCmts.connect_and_run
     def mirror_traffic(self, macaddr=""):
@@ -813,14 +818,14 @@ class ArrisCMTS(BaseCmts):
         :param macaddr: mac address of the device if avaliable, defaults to empty string ""
         :type macaddr: string
         """
-        print(
+        logger.error(
             "Mirror traffic feature is not supported in ARRIS unless we use lawful intercept functionality."
         )
 
     @BaseCmts.connect_and_run
     def unmirror_traffic(self):
         """stop mirroring the traffic"""
-        print(
+        logger.error(
             "Unmirror traffic feature is not supported in ARRIS unless we use lawful intercept functionality."
         )
 
@@ -835,7 +840,7 @@ class ArrisCMTS(BaseCmts):
         :param opts: any other options to filter, defaults to ""
         :type opts: string
         """
-        print("TCPDUMP feature is not supported in ARRIS.")
+        logger.error("TCPDUMP feature is not supported in ARRIS.")
 
     @BaseCmts.connect_and_run
     @BaseCmts.convert_mac_to_cmts_type

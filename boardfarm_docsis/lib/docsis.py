@@ -10,6 +10,7 @@
 import glob
 import hashlib
 import ipaddress
+import logging
 import os
 import re
 import tempfile
@@ -41,6 +42,8 @@ try:
 except Exception:
     # Python 3
     import tkinter as Tkinter
+
+logger = logging.getLogger("bft")
 
 
 class cfg_type(Enum):
@@ -141,7 +144,7 @@ class docsis_encoder:
         # TODO: decode MTA?
 
     def _run_cmd(self, cmd):
-        print(cmd)
+        logger.debug(cmd)
         os.system(cmd)
 
     # this method can be overridden for vendor specific commands
@@ -324,7 +327,7 @@ class cm_cfg(object):
             if fname is None:
                 # create a name and add some sha256 digits
                 fname = "cm-config-" + self.shortname(10) + ".txt"
-                print("Config name created: %s" % fname)
+                logger.info("Config name created: %s" % fname)
             self.txt = (
                 start.generate_cfg()
             )  # the derived class already created the skeleton
@@ -368,7 +371,7 @@ class cm_cfg(object):
         self.txt = re.sub(regex, sub, self.txt)
 
         if saved_txt == self.txt:
-            print(
+            logger.error(
                 "WARN: no regex sub was made for %s, to be replaced with %s"
                 % (regex, sub)
             )
@@ -433,7 +436,7 @@ class mta_cfg(cm_cfg):
                     new_val = val.replace(mib_name, "." + mib_oid)
                     final_list.append(new_val)
             self.txt = "\n".join(final_list)
-            print("Config name created: %s" % fname)
+            logger.info("Config name created: %s" % fname)
             self.original_fname = fname
             self.encoded_fname = self.original_fname.replace(
                 ".txt", self.encoded_suffix
@@ -483,18 +486,18 @@ def check_provisioning(board, mta=False):
     try:
         sha3_on_board = board.cfg_sha3()
         sha3_on_fw = _shortname(board.cm_cfg)
-        print(sha3_on_board)
-        print(sha3_on_fw)
+        logger.debug(sha3_on_board)
+        logger.debug(sha3_on_fw)
         out = [sha3_on_board == sha3_on_fw]
         if mta:
             sha3_on_board = board.cfg_sha3(mta)
             sha3_on_fw = _shortname(board.mta_cfg)
-            print(sha3_on_board)
-            print(sha3_on_fw)
+            logger.debug(sha3_on_board)
+            logger.debug(sha3_on_fw)
             out.append(sha3_on_board == sha3_on_fw)
         return all(out)
     except BftCommandNotFound:
-        print("NOTE: Ignoring provisioning check: sha3Sum command not found")
+        logger.error("NOTE: Ignoring provisioning check: sha3Sum command not found")
         return True
 
 
@@ -668,7 +671,7 @@ def factoryreset(s, board, method="SNMP"):
     :raise Assertion: Asserts when FactoryReset failed or arg error
     :return: returns bool True if FactoryReset successful
     """
-    print("=======Begin FactoryReset via {}=======".format(method))
+    logger.debug("=======Begin FactoryReset via {}=======".format(method))
 
     try:
         wan = board.dev.by_type(device_type.wan)
@@ -686,7 +689,7 @@ def factoryreset(s, board, method="SNMP"):
             try:
                 board.dev.acs_server.FactoryReset()
             except Exception as e:
-                print(
+                logger.error(
                     "Failed: FactoryReset through ACS '{}'"
                     "\n Restarting tr069 and retry Factory Reset again..".format(str(e))
                 )
@@ -697,7 +700,7 @@ def factoryreset(s, board, method="SNMP"):
             if board.env_helper.has_image():
                 cm_fm = board.env_helper.get_image(mirror=False)
                 if "nosh" in cm_fm.lower():
-                    print(
+                    logger.error(
                         "Failed FactoryReset via CONSOLE on NOSH Image is not possible"
                     )
                     raise CodeError(
@@ -718,11 +721,13 @@ def factoryreset(s, board, method="SNMP"):
 
         board.check_valid_docsis_ip_networking()
 
-        print("=======End FactoryReset via {}=======".format(method))
+        logger.debug("=======End FactoryReset via {}=======".format(method))
         return True
 
     except Exception as e:
-        print("Failed Board FactoryReset using '{}' \n {}".format(method, str(e)))
+        logger.error(
+            "Failed Board FactoryReset using '{}' \n {}".format(method, str(e))
+        )
         raise BootFail("Failed Board FactoryReset: {}".format(str(e)))
 
 

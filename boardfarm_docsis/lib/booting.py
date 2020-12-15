@@ -271,7 +271,7 @@ def post_boot_env(config, env_helper, devices):
                 devices.board.get_cpeid()
                 break
             except Exception as e:
-                print(e)
+                logger.error(e)
                 warnings.warn("Failed to connect to ACS, retrying")
                 time.sleep(10)
         else:

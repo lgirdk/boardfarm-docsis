@@ -42,7 +42,7 @@ class Docsis(openwrt_router.OpenWrtRouter):
                     cmts.mac_domain
                 )
         except AttributeError:
-            print("Failed on get_cm_mgmt_cfg: has_cmts no set")
+            logger.error("Failed on get_cm_mgmt_cfg: has_cmts no set")
             pass
         return mac_dom_config
 

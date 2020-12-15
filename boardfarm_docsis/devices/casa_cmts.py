@@ -8,6 +8,7 @@
 
 import collections
 import ipaddress
+import logging
 import re
 import sys
 
@@ -21,6 +22,8 @@ from boardfarm.lib.regexlib import (
 )
 
 from . import base_cmts
+
+logger = logging.getLogger("bft")
 
 
 class CasaCMTS(base_cmts.BaseCmts):
@@ -123,7 +126,7 @@ class CasaCMTS(base_cmts.BaseCmts):
                 return False
         if ignore_partial is False:
             if self.check_PartialService() == 1:
-                print("Cable modem in partial service")
+                logger.debug("Cable modem in partial service")
                 return False
         if ignore_cpe is False:
             if re.search(r"online\(d", b) or re.search(r"online\(p.d", b):
@@ -176,7 +179,9 @@ class CasaCMTS(base_cmts.BaseCmts):
         :type cmmac: string
         """
         if "c3000" in self.get_cmts_type():
-            print("clear offline feature is not supported on casa product name c3000")
+            logger.error(
+                "clear offline feature is not supported on casa product name c3000"
+            )
             return
         self.sendline("clear cable modem %s offline" % cmmac)
         self.expect(self.prompt)
@@ -192,9 +197,9 @@ class CasaCMTS(base_cmts.BaseCmts):
         online_state = self.check_online(cmmac)
         self.expect(pexpect.TIMEOUT, timeout=5)
         if online_state is True:
-            print("CM is still online after 5 seconds.")
+            logger.debug("CM is still online after 5 seconds.")
         else:
-            print("CM reset is initiated.")
+            logger.debug("CM reset is initiated.")
 
     @base_cmts.deco_get_mac
     def check_PartialService(self, cmmac):
@@ -511,9 +516,9 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.sendline('show interface ip-bundle %s | include "ip address"' % index)
         self.expect(self.prompt)
         if str(ipaddr.ip) in self.before:
-            print("The ip bundle is successfully set.")
+            logger.info("The ip bundle is successfully set.")
         else:
-            print("An error occured while setting the ip bundle.")
+            logger.error("An error occured while setting the ip bundle.")
 
     def add_ipv6_bundle_addrs(self, index, helper_ip, ip, secondary_ips=None):
         """This function is to add ipv6 bundle to a cable mac.
@@ -544,9 +549,9 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.sendline('show interface ip-bundle %s | include "ipv6 address"' % index)
         self.expect(self.prompt)
         if str(ipaddress.ip_address(six.text_type(ip[:-3])).compressed) in self.before:
-            print("The ipv6 bundle is successfully set.")
+            logger.info("The ipv6 bundle is successfully set.")
         else:
-            print("An error occured while setting the ipv6 bundle.")
+            logger.error("An error occured while setting the ipv6 bundle.")
 
     def add_route(self, ipaddr, gw):
         """This function adds an ipv4 network route entry.
@@ -566,13 +571,13 @@ class CasaCMTS(base_cmts.BaseCmts):
         )
         self.expect(self.prompt)
         if "error" in self.before.lower():
-            print("An error occured while adding the route.")
+            logger.error("An error occured while adding the route.")
         self.sendline("show ip route")
         self.expect(self.prompt)
         if gw in self.before:
-            print("The route is available on cmts.")
+            logger.debug("The route is available on cmts.")
         else:
-            print("The route is not available on cmts.")
+            logger.debug("The route is not available on cmts.")
 
     def add_route6(self, net, gw):
         """This function adds an ipv6 network route entry.
@@ -585,13 +590,13 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.sendline("route6 net %s gw %s" % (net, gw))
         self.expect(self.prompt)
         if "error" in self.before.lower():
-            print("An error occured while adding the route.")
+            logger.error("An error occured while adding the route.")
         self.sendline("show ipv6 route")
         self.expect(self.prompt)
         if str(ipaddress.IPv6Address(six.text_type(gw))).lower() in self.before.lower():
-            print("The route is available on cmts.")
+            logger.debug("The route is available on cmts.")
         else:
-            print("The route is not available on cmts.")
+            logger.debug("The route is not available on cmts.")
 
     def del_route(self, ipaddr, gw):
         """This function removes an ipv4 network route entry.
@@ -611,16 +616,16 @@ class CasaCMTS(base_cmts.BaseCmts):
         )
         self.expect(self.prompt)
         if "error" in self.before.lower():
-            print("An error occured while deleting the route.")
+            logger.error("An error occured while deleting the route.")
         self.expect(pexpect.TIMEOUT, timeout=10)
         self.sendline("show ip route")
         self.expect(self.prompt)
         if gw in self.before:
-            print(
+            logger.debug(
                 "The route is still available on cmts might be delayed to reflect on cmts."
             )
         else:
-            print("The route is not available on cmts.")
+            logger.debug("The route is not available on cmts.")
 
     def del_route6(self, net, gw):
         """This function removes an ipv6 network route entry.
@@ -633,7 +638,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.sendline("no route6 net %s gw %s" % (net, gw))
         self.expect(self.prompt)
         if "error" in self.before.lower():
-            print("An error occured while deleting the route.")
+            logger.error("An error occured while deleting the route.")
         self.sendline("show ipv6 route")
         self.expect(self.prompt)
         if (
@@ -641,9 +646,9 @@ class CasaCMTS(base_cmts.BaseCmts):
             in self.before.lower()
             or gw.lower() in self.before.lower()
         ):
-            print("The route is still available on cmts.")
+            logger.debug("The route is still available on cmts.")
         else:
-            print("The route is not available on cmts.")
+            logger.debug("The route is not available on cmts.")
 
     def get_qam_module(self):
         """Get the module of the qam
@@ -869,9 +874,9 @@ class CasaCMTS(base_cmts.BaseCmts):
             self.check_docsis_mac_ip_provisioning_mode(index)
         )
         if check_docsis_mac_ip_provisioning_mode in ip_pvmode:
-            print("The ip provision mode is successfully set.")
+            logger.info("The ip provision mode is successfully set.")
         else:
-            print("An error occured while setting the ip provision mode.")
+            logger.error("An error occured while setting the ip provision mode.")
 
     def add_service_class(
         self, index, name, max_rate, max_burst, max_tr_burst=None, downstream=False

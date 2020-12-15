@@ -1,10 +1,13 @@
 import collections
 import copy
 import json
+import logging
 import os
 from collections import OrderedDict
 
 import boardfarm_docsis
+
+logger = logging.getLogger("bft")
 
 
 def get_base_cfg(cfg_name):
@@ -78,7 +81,7 @@ def dict_to_str(d, name=None, indent=4):
                     # recursively parse the dictionary
                     s += dict_to_str(dict_val, k, indent)
             else:
-                print(
+                logger.error(
                     "Skipping list {} as not all elements are of the same type".format(
                         k
                     )
@@ -864,8 +867,8 @@ class GlobalParameters(object):
         for i, v in enumerate(val_list):
             mib_name = v.split(" ", 1)[0]
             if mib_name.count(".") > 1:
-                print("No numeric OIDs allowed in SnmpMibObject")
-                print("SnmpMibObject = %s" % val_list)
+                logger.error("No numeric OIDs allowed in SnmpMibObject")
+                logger.debug("SnmpMibObject = %s" % val_list)
                 assert 0, (
                     "SnmpMibObject at position "
                     + str(i)
@@ -1177,28 +1180,28 @@ if __name__ == "__main__":
     kwargs = {'DsServiceFlowRef':4}
 
     dsServiceFlow = DsServiceFlow(**kwargs)
-    print(dsServiceFlow)
+    logger.info(dsServiceFlow)
 
     usServiceFlow = UsServiceFlow()
-    print(usServiceFlow)
+    logger.info(usServiceFlow)
 
     llcPacketClassifier = LLCPacketClassifier()
-    print(llcPacketClassifier)
+    logger.info(llcPacketClassifier)
 
     globalParams = GlobalParameters()
-    print(globalParams)
+    logger.info(globalParams)
 
     baselinePrivacy = BaselinePrivacy()
-    print(baselinePrivacy)
+    logger.info(baselinePrivacy)
 
     gbase_cfg = [GlobalParameters(), DsServiceFlow(**kwargs), UsServiceFlow(), BaselinePrivacy()]
 
-    print("From List:")
+    logger.info("From List:")
     for i in gbase_cfg:
-        print(i)
+        logger.info(i)
     """
 
-    print("Using: CfgGenerator")
+    logger.info("Using: CfgGenerator")
     kwargs = {"GlobalPrivacyEnable": 0}
     c = CfgGenerator()
 
@@ -1209,11 +1212,11 @@ if __name__ == "__main__":
             c.cm_base_cfg[i] = newGlobalParameters
             break
     c.gen_dual_stack_cfg(kwargs)
-    print("=====================================================================")
-    print("Dual stack")
-    print(c.generate_cfg("dual-stack-config"))
-    print("=====================================================================")
-    print(
+    logger.info("=====================================================================")
+    logger.info("Dual stack")
+    logger.info(c.generate_cfg("dual-stack-config"))
+    logger.info("=====================================================================")
+    logger.info(
         UsServiceFlow(
             **{
                 "UsServiceFlowRef": 1,
@@ -1239,7 +1242,7 @@ if __name__ == "__main__":
             },
         }
     )
-    print(k)
+    logger.info(k)
     k = UsPacketClass(
         **{
             "ClassifierRef": 132,
@@ -1253,39 +1256,39 @@ if __name__ == "__main__":
             },
         }
     )
-    print(k)
+    logger.info(k)
     """
     GlobalParameters.sys_log_ip = None
     c = CfgGenerator()
     c.gen_bridge_cfg()
-    print('=====================================================================')
-    print('Bridge')
-    print(c.generate_cfg('bridge-config'))
-    print('=====================================================================')
+    logger.info('=====================================================================')
+    logger.info('Bridge')
+    logger.info(c.generate_cfg('bridge-config'))
+    logger.info('=====================================================================')
     """
     """
     c = CfgGenerator()
     c.gen_ipv4_cfg()
-    print('=====================================================================')
-    print('IPv4')
-    print(c.generate_cfg('ipv4-stack-config'))
-    print('=====================================================================')
+    logger.info('=====================================================================')
+    logger.info('IPv4')
+    logger.info(c.generate_cfg('ipv4-stack-config'))
+    logger.info('=====================================================================')
 
     c = CfgGenerator()
     c.gen_ipv6_cfg()
 
-    print('=====================================================================')
-    print('IPv6')
-    print(c.generate_cfg('ipv6-stack-config'))
-    print('=====================================================================')
+    logger.info('=====================================================================')
+    logger.info('IPv6')
+    logger.info(c.generate_cfg('ipv6-stack-config'))
+    logger.info('=====================================================================')
 
     c = CfgGenerator()
     c.gen_bridge_cfg()
 
-    print('=====================================================================')
-    print('bridge')
-    print(c.generate_cfg('bridge-config'))
-    print('=====================================================================')
+    logger.info('=====================================================================')
+    logger.info('bridge')
+    logger.info(c.generate_cfg('bridge-config'))
+    logger.info('=====================================================================')
     """
     """
     configObj = CfgGenerator()
@@ -1307,8 +1310,8 @@ if __name__ == "__main__":
     # the snmp mibs are multiline values too
 
     d = configObj.json_to_cfg()
-    print('##############################################')
-    print(d)
-    print('##############################################')
+    logger.info('##############################################')
+    logger.info(d)
+    logger.info('##############################################')
     """
-    print("Done.")
+    logger.info("Done.")
