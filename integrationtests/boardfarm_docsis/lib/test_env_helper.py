@@ -19,7 +19,7 @@ class TestEnvHelper:
                         "config_boot": {},
                     }
                 },
-                "version": 2.3,
+                "version": "2.3",
             },
             {
                 "environment_def": {
@@ -53,7 +53,7 @@ class TestEnvHelper:
                         },
                     },
                 },
-                "version": 2.3,
+                "version": "2.3",
             },
             {
                 "environment_def": {
@@ -86,7 +86,7 @@ class TestEnvHelper:
                         },
                     },
                 },
-                "version": 2.3,
+                "version": "2.3",
             },
             {
                 "environment_def": {
@@ -119,7 +119,7 @@ class TestEnvHelper:
                         },
                     },
                 },
-                "version": 2.3,
+                "version": "2.3",
             },
             {
                 "environment_def": {
@@ -155,7 +155,7 @@ class TestEnvHelper:
                         },
                     },
                 },
-                "version": 2.3,
+                "version": "2.3",
             },
             {
                 "environment_def": {
@@ -195,7 +195,7 @@ class TestEnvHelper:
                         },
                     },
                 },
-                "version": 2.3,
+                "version": "2.3",
             },
             {
                 "environment_def": {
