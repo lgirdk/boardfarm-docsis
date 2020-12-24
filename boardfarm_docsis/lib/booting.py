@@ -16,6 +16,7 @@ from boardfarm.exceptions import (
 from boardfarm.library import check_devices
 from termcolor import colored
 
+from boardfarm_docsis.devices.base_devices.board import DocsisCPE
 from boardfarm_docsis.exceptions import VoiceSetupConfigureFailure
 from boardfarm_docsis.lib.dns_helper import dns_acs_config
 
@@ -47,7 +48,7 @@ def pre_boot_wan_clients(config, env_helper, devices):
     # should we run configure for all the wan devices? or just wan?
     for x in devices:
         # if isinstance(x, DebianWAN): # does not work for mitm
-        if "wan" in x.name:
+        if hasattr(x, "name") and "wan" in x.name:
             logger.info(f"Configuring {x.name}")
             x.configure(config=config)
     # if more than 1 tftp server should we start them all?
@@ -137,19 +138,22 @@ def boot_board(config, env_helper, devices):
     try:
         devices.board.reset()
         if env_helper.get_software():
-            boardfarm.lib.booting.boot_image(
-                config,
-                env_helper,
-                devices.board,
-                devices.lan,
-                devices.wan,
-                devices.board.tftp_device,
-            )
-        # store the timestamp, for uptime check later (in case the board
-        # crashes on boot)
-        devices.board.__reset__timestamp = time.time()
-        devices.cmts.clear_cm_reset(devices.board.cm_mac)
-        time.sleep(20)
+            if isinstance(devices.board, DocsisCPE):
+                devices.board.flash(env_helper)
+            else:
+                boardfarm.lib.booting.boot_image(
+                    config,
+                    env_helper,
+                    devices.board,
+                    devices.lan,
+                    devices.wan,
+                    devices.board.tftp_device,
+                )
+                # store the timestamp, for uptime check later (in case the board
+                # crashes on boot)
+                devices.board.__reset__timestamp = time.time()
+                devices.cmts.clear_cm_reset(devices.board.cm_mac)
+                time.sleep(20)
     except Exception as e:
         logger.critical(colored("\n\nFailed to Boot", color="red", attrs=["bold"]))
         logger.error(e)
@@ -175,7 +179,7 @@ def post_boot_board(config, env_helper, devices):
         raise BootFail(msg)
     devices.board.login_atom_root()
     devices.board.login_arm_root()
-    devices.board.set_printk()
+    devices.board.atom.set_printk()
     board_uptime = devices.board.get_seconds_uptime()
     logger.info(f"Time up: {board_uptime}")
     if hasattr(devices.board, "__reset__timestamp"):
@@ -191,8 +195,11 @@ def post_boot_board(config, env_helper, devices):
                     attrs=["bold"],
                 )
             )
-
-    devices.board.check_valid_docsis_ip_networking(strict=False)
+    if isinstance(devices.board, DocsisCPE):
+        pass  # maybe new method to be added
+    else:
+        # the old way for legacy
+        devices.board.check_valid_docsis_ip_networking(strict=False)
 
 
 def post_boot_wan_clients(config, env_helper, devices):

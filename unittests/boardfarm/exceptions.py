@@ -16,3 +16,11 @@ class BootFail(BftBaseException):
 
 class NoTFTPServer(BftBaseException):
     pass
+
+
+class BftEnvExcKeyError(BftBaseException):
+    pass
+
+
+class BftEnvMismatch(BftBaseException):
+    pass

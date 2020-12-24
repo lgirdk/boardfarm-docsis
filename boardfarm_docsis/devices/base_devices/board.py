@@ -205,7 +205,11 @@ class InterceptDocsisCPE(object):
         try:
             attr = object.__getattribute__(self, name)
         except Exception:
-            attr = self.sw.__getattribute__(name)
+            try:
+                attr = self.hw.__getattribute__(name)
+            except Exception:
+                attr = self.sw.__getattribute__(name)
+
         if callable(attr):
 
             def newfunc(*args, **kwargs):
@@ -222,6 +226,13 @@ class DocsisCPE(InterceptDocsisCPE, BaseBoard):
 
     sw: BaseDevice = None  # is this right?
     hw: DocsisCPEHw = None
+    cm_cfg = None
+    mta_cfg = None
+    # there must be a better way of finding the mib files!
+    mibs_paths = [
+        "boardfarm/boardfarm/resources/mibs",
+        "boardfarm-docsis/boardfarm_docsis/mibs/",
+    ]
 
     def __init__(self, *args, **kwargs):
         self.hw = DocsisCPEHw(*args, **kwargs)
