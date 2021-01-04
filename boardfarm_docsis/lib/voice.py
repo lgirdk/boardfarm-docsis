@@ -59,7 +59,9 @@ def check_peer_registration(board, num_list, sipserver):
     """
     mta_ip = board.get_interface_ipaddr(board.mta_iface)
     return_list = [
-        True if sipserver.peer_reg_status(user, mta_ip) == "Registered" else False
+        True
+        if sipserver.sipserver_user_registration_status(user, mta_ip) == "Registered"
+        else False
         for user in num_list
     ]
 
