@@ -34,10 +34,16 @@ def activate_mitm(devices, env_helper):
 
 
 def pre_boot_wan_clients(config, env_helper, devices):
+
+    if env_helper.get_dns_dict():
+        # to get reachable and unreachable ips for ACS DNS
+        devices.wan.auth_dns = True
+        dns_acs_config(devices, env_helper.get_dns_dict())
+
     tftp_device, tftp_servers = boardfarm.lib.booting.get_tftp(config)
     if not tftp_servers:
         logger.error(colored("No tftp server found", color="red", attrs=["bold"]))
-        # currrently we must have at least 1 tftp server configured
+        # currently we must have at least 1 tftp server configured
         raise NoTFTPServer
     if len(tftp_servers) > 1:
         msg = f"Found more than 1 tftp server: {tftp_servers}, using {tftp_device.name}"
@@ -80,9 +86,6 @@ def pre_boot_env(config, env_helper, devices):
         raise DeviceDoesNotExistError("No mitm device (requested by environment)")
 
     devices.board.env_config()
-
-    # to get recahbale and unreachable ips for ACS DNS
-    dns_acs_config(devices, env_helper.get_dns_dict())
 
     if env_helper.voice_enabled():
         boardfarm.lib.voice.voice_configure(

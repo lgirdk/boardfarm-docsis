@@ -154,8 +154,10 @@ class device_manager(UserList):
 def test_pre_boot_wan_clients_no_tftp(mocker):
     mocker.patch("boardfarm.lib.booting")
     mocker.patch("boardfarm.lib.booting.get_tftp", return_value=(None, []))
+    devices = dev_helper()
+
     with pytest.raises(NoTFTPServer):
-        boardfarm_docsis.lib.booting.pre_boot_wan_clients(Dummy(), Dummy(), Dummy())
+        boardfarm_docsis.lib.booting.pre_boot_wan_clients(Dummy(), Dummy(), devices)
 
 
 def dev_helper():
