@@ -69,6 +69,17 @@ class DocsisEnvHelper(EnvHelper):
         except (KeyError, AttributeError):
             raise BftEnvExcKeyError
 
+    def wifi_clients(self) -> list:
+        """Returns list of wifi clients from environment definition
+
+        :rtype: list
+        """
+        try:
+            clients = self.env["environment_def"]["board"]["wifi_clients"]
+        except (KeyError, AttributeError):
+            return list()
+        return clients
+
     def has_lan_advertise_identity(self, idx):
         """Return lan identity value defined in lan_clients of env else return False.
 
