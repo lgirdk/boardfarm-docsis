@@ -8,8 +8,6 @@ sys.path.insert(0, os.getcwd() + "/unittests/")
 import boardfarm
 from boardfarm.exceptions import BootFail, CodeError, NoTFTPServer
 
-from boardfarm_docsis.exceptions import VoiceSetupConfigureFailure
-
 sys.path.pop(0)
 
 import boardfarm.lib.voice
@@ -212,58 +210,6 @@ def test_pre_boot_wan_clients__1_tftp(mocker):
 def test_pre_boot_lan_clients():
     devices = dev_helper()
     boardfarm_docsis.lib.booting.pre_boot_lan_clients(Dummy(), Dummy(), devices)
-
-
-def test_pre_boot_env__voice_enabled_failed_dns_setup_sipserver(mocker):
-    devices = dev_helper()
-    env_helper = Dummy()
-    mocker.patch.object(env_helper, "voice_enabled", return_value=True, autospec=True)
-    mocker.patch(
-        "boardfarm.lib.voice.dns_setup_sipserver",
-        side_effect=pexpect.TIMEOUT("FakeTimeoutException"),
-        autospec=True,
-    )
-    with pytest.raises(VoiceSetupConfigureFailure):
-        boardfarm_docsis.lib.booting.pre_boot_env(Dummy(), env_helper, devices)
-
-
-def test_pre_boot_env__voice_enabled_failed_voice_devices_configure(mocker):
-    devices = dev_helper()
-    env_helper = Dummy()
-    mocker.patch.object(env_helper, "voice_enabled", return_value=True, autospec=True)
-    mocker.patch(
-        "boardfarm.lib.voice.voice_devices_configure",
-        side_effect=Exception("FakeDeviceConfigurationFailure"),
-        autospec=True,
-    )
-    with pytest.raises(VoiceSetupConfigureFailure):
-        boardfarm_docsis.lib.booting.pre_boot_env(Dummy(), env_helper, devices)
-
-
-def test_pre_boot_env__voice_enabled_provisioning_exception(mocker):
-    devices = dev_helper()
-    devices.board.tftp_device = "something"
-    env_helper = Dummy()
-    config = Dummy()
-    config.provisioner = "something"
-    mocker.patch.object(env_helper, "voice_enabled", return_value=True, autospec=True)
-    mocker.patch(
-        "boardfarm.lib.booting.provision",
-        side_effect=Exception("FakeProvisioningFailure"),
-        autospec=True,
-    )
-    with pytest.raises(Exception):
-        boardfarm_docsis.lib.booting.pre_boot_env(config, env_helper, devices)
-
-
-def test_pre_boot_env__voice_enabled_provisioning_ok(mocker):
-    devices = dev_helper()
-    devices.board.tftp_device = "something"
-    env_helper = Dummy()
-    config = Dummy()
-    config.provisioner = "something"
-    mocker.patch.object(env_helper, "voice_enabled", return_value=True, autospec=True)
-    boardfarm_docsis.lib.booting.pre_boot_env(config, env_helper, devices)
 
 
 def test_boot_board(mocker):

@@ -17,7 +17,6 @@ from boardfarm.library import check_devices
 from termcolor import colored
 
 from boardfarm_docsis.devices.base_devices.board import DocsisCPE
-from boardfarm_docsis.exceptions import VoiceSetupConfigureFailure
 from boardfarm_docsis.lib.dns_helper import dns_acs_config
 
 logger = logging.getLogger("bft")
@@ -86,28 +85,11 @@ def pre_boot_env(config, env_helper, devices):
     dns_acs_config(devices, env_helper.get_dns_dict())
 
     if env_helper.voice_enabled():
-        # could this be moved inside boardfar.lib.voice.voice_devices_configure?
-        # and here only invoke
-        # voice_devices_configure(voice_devices_list, devices.sipcenter)?
-        try:
-            sipserver = devices.sipcenter
-            sipserver.stop()
-            boardfarm.lib.voice.dns_setup_sipserver(sipserver, config)
-            sipserver.kill_asterisk()
-            boardfarm.lib.voice.dns_setup_sipserver(sipserver, config)
-            voice_devices_list = [
-                sipserver,
-                devices.softphone,
-                devices.lan,
-                devices.lan2,
-            ]
-            boardfarm.lib.voice.voice_devices_configure(
-                voice_devices_list, devices.sipcenter
-            )
-        except Exception as e:
-            logger.error("\n\nFailed to configure voice setup")
-            logger.error(e)
-            raise VoiceSetupConfigureFailure
+        boardfarm.lib.voice.voice_configure(
+            [devices.sipcenter, devices.softphone, devices.lan, devices.lan2],
+            devices.sipcenter,
+            config,
+        )
     prov = getattr(config, "provisioner", None)
     if prov:
         logger.info("Provisioning board")
