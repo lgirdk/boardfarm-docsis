@@ -237,14 +237,6 @@ def post_boot_wlan_clients(config, env_helper, devices):
 
 
 def post_boot_env(config, env_helper, devices):
-    sku = env_helper.get_board_sku()
-    if sku:
-        if not devices.board.deploy_board_sku_via_dmcli(sku):
-            raise BootFail("Failed to set the SKU via dmcli")
-        # the setting of the sku triggers a reboot!
-        devices.cmts.clear_cm_reset(devices.board.cm_mac)
-        devices.cmts.wait_for_cm_online(ignore_partial=True, time_to_sleep=30)
-
     if env_helper.mitm_enabled():
         activate_mitm(devices, env_helper)
     if env_helper.voice_enabled():
