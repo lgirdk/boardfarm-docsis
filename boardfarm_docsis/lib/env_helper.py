@@ -277,3 +277,29 @@ class DocsisEnvHelper(EnvHelper):
             return self.env["environment_def"]["board"]["SKU"]
         except (KeyError, AttributeError):
             return None
+
+    def dhcp_options(self):
+        """Returns the ["environment_def"]["provisioner"]["options"].
+
+        :return:  return list of DHCPv4 and DHCPv6 option
+        :rtype: dict
+        """
+        try:
+            return self.env["environment_def"]["provisioner"]["options"]
+        except (KeyError, AttributeError):
+            return dict()
+
+    def vendor_encap_opts(self):
+        """Check vendor specific option for ACS URL is specified in env
+
+        :return: return True if dhcp option for acs url is configured
+        :rtype: bool
+        """
+        if self.dhcp_options():
+            return (
+                True
+                if 125 in self.dhcp_options()["dhcpv4"]
+                and 17 in self.dhcp_options()["dhcpv6"]
+                else False
+            )
+        return False

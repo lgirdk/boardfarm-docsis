@@ -173,6 +173,8 @@ def pre_boot_env(config, env_helper, devices):
         )
     prov = getattr(config, "provisioner", None)
     if prov:
+        if env_helper.vendor_encap_opts():
+            devices.provisioner.vendor_opts_acs_url = True
         logger.info("Provisioning board")
         boardfarm.lib.booting.provision(
             devices.board, prov, devices.wan, devices.board.tftp_device
