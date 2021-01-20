@@ -273,9 +273,11 @@ def post_boot_lan_clients(config, env_helper, devices):
     for i, v in enumerate(devices.board.dev.lan_clients):
         if getattr(env_helper, "has_lan_advertise_identity", None):
             if env_helper.has_lan_advertise_identity(i):
-                v.configure_dhclient((["125", True],))
+                for option in ["125", "17"]:
+                    v.configure_dhclient(([option, True],))
             else:
-                v.configure_dhclient((["125", False],))
+                for option in ["125", "17"]:
+                    v.configure_dhclient(([option, False],))
     if devices.board.routing and config.setup_device_networking:
         for x in devices.board.dev.lan_clients:
             if isinstance(x, DebianLAN):  # should this use devices.lan_clients?
