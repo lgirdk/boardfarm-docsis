@@ -944,6 +944,8 @@ class eRouter(object):
     RATransmissionInterval = "RATransmissionInterval"
     TopologyModeEncoding = "TopologyModeEncoding"
     VendorSpecific = "VendorSpecific"  # dictionary
+    GenericTLV = "GenericTLV"
+
     eRouter_defaults = {
         InitializationMode: None,
         TR69ManagementServer: None,
@@ -951,6 +953,7 @@ class eRouter(object):
         RATransmissionInterval: None,
         TopologyModeEncoding: None,
         VendorSpecific: None,
+        GenericTLV: None,
     }
 
     @classmethod

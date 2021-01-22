@@ -201,6 +201,12 @@ class DocsisEnvHelper(EnvHelper):
                 or req_cfg_boot["vendor_specific"] != cfg_boot["vendor_specific"]
             ):
                 raise BftEnvMismatch('"vendor_specific" mismatch')
+        if "eRouter" in req_cfg_boot and "tlvs" in req_cfg_boot["eRouter"]:
+            if (
+                "eRouter" not in cfg_boot
+                or req_cfg_boot["eRouter"]["tlvs"] != cfg_boot["eRouter"]["tlvs"]
+            ):
+                raise BftEnvMismatch('"eRouter" mismatch')
 
     def env_check(self, test_environment):
         """Test environment check (overrides behaviour).
