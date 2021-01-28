@@ -136,7 +136,7 @@ def pre_boot_wan_clients(config, env_helper, devices):
             x.configure(config=config)
     # if more than 1 tftp server should we start them all?
     # currently starting the 1 being used
-    logger.info(f"Starting FTP server on {tftp_device}")
+    logger.info(f"Starting TFTP server on {tftp_device.name}")
     tftp_device.start_tftp_server()
     devices.board.tftp_device = tftp_device
 
