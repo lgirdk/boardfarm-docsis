@@ -304,8 +304,6 @@ class cm_cfg(object):
             # no snmp objs, no CVCs, nothing vendor specific!
             # only CM RF minimal config
             # (i.e.: only the RF side configured, no client side, see Prasada)
-            if fname is None:
-                fname = "default_config.txt"
             start = CfgGenerator()
             start.gen_dual_stack_cfg()
             self.txt = start.generate_cfg(fname)
@@ -348,6 +346,23 @@ class cm_cfg(object):
 
         with open(cm_txt, "r") as txt:
             self.txt = txt.read()
+
+    def load_from_string(self, cm_str_txt: str, name_prefix: str = "") -> None:
+        """Load CM cfg from text string (e.g. the file is stored in a multiline
+        string).
+        :parameter cm_str_txt: s string containing the config file
+        :type cm_str_txt: string
+        :parameter name: name of config file (optional)
+        """
+        self.txt = cm_str_txt
+        num = self.shortname(10)
+        self.original_file = None
+        if name_prefix:
+            name_prefix += "-"
+        else:
+            name_prefix = "cm-config-"
+        self.original_fname = name_prefix + num + ".txt"
+        self.encoded_fname = self.original_fname.replace(".txt", self.encoded_suffix)
 
     def __str__(self):
         """String repr of CM txt"""

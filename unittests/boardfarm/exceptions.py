@@ -24,3 +24,7 @@ class BftEnvExcKeyError(BftBaseException):
 
 class BftEnvMismatch(BftBaseException):
     pass
+
+
+class BftSysExit(BftBaseException):
+    pass

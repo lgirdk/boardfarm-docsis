@@ -1,15 +1,43 @@
-from boardfarm.exceptions import BftEnvExcKeyError, BftEnvMismatch
+import logging
+import re
+
+from boardfarm.exceptions import BftEnvExcKeyError, BftEnvMismatch, BftSysExit
 from boardfarm.lib.env_helper import EnvHelper
 from nested_lookup import nested_lookup
+from termcolor import colored
 
 from boardfarm_docsis.devices.docsis import Docsis
 from boardfarm_docsis.exceptions import EnvKeyError
+
+logger = logging.getLogger("bft")
 
 
 class DocsisEnvHelper(EnvHelper):
     """
     Docsis specific env helper, adds more options such as  "eRouter_Provisioning_mode": "Bridge"
     """
+
+    mode_dict = {"0": "disabled", "1": "ipv4", "2": "ipv6", "3": "dual"}
+
+    def __init__(self, env, mirror=None):
+        super().__init__(env, mirror)
+        if self.has_board_boot_file() is False:
+            return
+        # the InitializationMode in the boot file must match the
+        # erotuer mode in the json!
+        cfg_str = self.get_board_boot_file()
+        match = re.search(r"InitializationMode((\s|\t){1,}([0-3])\;)", cfg_str)
+        mode = "none"
+        if match:
+            mode = self.mode_dict.get(match.group(3))
+        if self.env["environment_def"]["board"]["eRouter_Provisioning_mode"] != mode:
+            raise BftSysExit(
+                colored(
+                    f'Conflicting modes: eRouter_Provisioning_mode: {self.env["environment_def"]["board"]["eRouter_Provisioning_mode"]} <-> boot_file: {mode}',
+                    color="red",
+                    attrs=["bold"],
+                )
+            )
 
     def get_prov_mode(self):
         """
@@ -303,3 +331,22 @@ class DocsisEnvHelper(EnvHelper):
                 else False
             )
         return False
+
+    def get_board_boot_file(self):
+        """Returns the ["environment_def"]["board"]["boot_file"] value
+        :return: the boot file value as a string
+        :rtype: String"""
+        try:
+            return self.env["environment_def"]["board"]["boot_file"]
+        except (KeyError, AttributeError):
+            raise BftEnvExcKeyError
+
+    def has_board_boot_file(self):
+        """Returns True if  ["environment_def"]["board"]["boot_file"] exists
+        :return: possible values are True/False
+        :rtype: bool"""
+        try:
+            self.get_board_boot_file()
+            return True
+        except BftEnvExcKeyError:
+            return False
