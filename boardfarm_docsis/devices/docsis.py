@@ -202,8 +202,13 @@ class Docsis(openwrt_router.OpenWrtRouter):
         """
         if "snmp" == method:
             ip = self.dev.cmts.get_cmip(self.cm_mac)
-            out = SnmpHelper.snmp_v2(self.dev.wan, ip, "esafeErouterInitModeControl")
-            return "5" == out
+            if ip == "None":
+                raise CodeError("Failed to get cm ip")
+            else:
+                out = SnmpHelper.snmp_v2(
+                    self.dev.wan, ip, "esafeErouterInitModeControl"
+                )
+                return "5" == out
         elif "dmcli" == method:
             param = "Device.X_LGI-COM_Gateway.ErouterModeControl"
             out = self.dmcli.GPV(param)
