@@ -350,3 +350,14 @@ class DocsisEnvHelper(EnvHelper):
             return True
         except BftEnvExcKeyError:
             return False
+
+    def get_external_voip(self):
+        """Return the ["environment_def"]["voice"]["EXT_VOIP"] value
+
+        :return: External VoIP entries
+        :rtype: list
+        """
+        try:
+            return self.env["environment_def"]["voice"]["EXT_VOIP"]
+        except (KeyError, AttributeError):
+            return False

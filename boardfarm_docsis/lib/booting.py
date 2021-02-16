@@ -166,8 +166,16 @@ def pre_boot_env(config, env_helper, devices):
     devices.board.env_config()
 
     if env_helper.voice_enabled():
+        dev_list = [
+            devices.sipcenter,
+            devices.softphone,
+            devices.lan,
+            devices.lan2,
+        ]
+        if env_helper.get_external_voip():
+            dev_list.append(devices.softphone2)
         boardfarm.lib.voice.voice_configure(
-            [devices.sipcenter, devices.softphone, devices.lan, devices.lan2],
+            dev_list,
             devices.sipcenter,
             config,
         )
