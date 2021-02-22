@@ -233,17 +233,25 @@ def boot_board(config, env_helper, devices):
         raise BootFail
 
 
-boot_actions = {
-    "board": boot_board,
-}
+boot_actions = {"board": boot_board}
 
 
 def post_boot_board(config, env_helper, devices):
-    for _ in range(50):
+    no_of_reboot = devices.board.get_no_of_reboots()
+    for _ in range(80):
         if devices.cmts.is_cm_online(ignore_partial=True):
-            break
+            no_of_reboot -= 1
+            if no_of_reboot <= 0:
+                break
+            else:
+                devices.board.wait_for_reboot(timeout=500)
+                logger.info("######Rebooting######")
+                devices.board.__reset__timestamp = time.time()
+                devices.cmts.clear_cm_reset(devices.board.cm_mac)
+                time.sleep(20)
         else:
             # show the arm prompt as it is a log in itself
+            devices.board.atom.expect(pexpect.TIMEOUT, timeout=0.5)
             devices.board.arm.expect(pexpect.TIMEOUT, timeout=0.5)
             time.sleep(15)
     else:

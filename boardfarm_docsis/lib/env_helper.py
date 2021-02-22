@@ -297,6 +297,19 @@ class DocsisEnvHelper(EnvHelper):
         except (KeyError, AttributeError):
             return False
 
+    def has_board_sku(self):
+        try:
+            if self.env["environment_def"]["board"].get("boot_file", None):
+                return (
+                    self.env["environment_def"]["board"]["boot_file"].find("CustomerId")
+                    != -1
+                )
+            else:
+                self.env["environment_def"]["board"]["SKU"]
+                return True
+        except (AttributeError, KeyError):
+            return False
+
     def get_board_sku(self):
         """Returns the ["environment_def"]["board"]["SKU"] value
         :return: SKU values from eval list
