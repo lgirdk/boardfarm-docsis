@@ -374,3 +374,14 @@ class DocsisEnvHelper(EnvHelper):
             return self.env["environment_def"]["voice"]["EXT_VOIP"]
         except (KeyError, AttributeError):
             return False
+
+    def get_cwmp_version(self):
+        """Return the ["environment_def"]["board"]["cwmp_version"]
+
+        :return: CWMP version of DUT
+        :rtype: str
+        """
+        try:
+            return self.env["environment_def"]["board"]["cwmp_version"]
+        except (KeyError, AttributeError):
+            return False

@@ -14,6 +14,7 @@ from boardfarm.exceptions import (
     NoTFTPServer,
 )
 from boardfarm.library import check_devices
+from packaging.version import Version
 from termcolor import colored
 
 from boardfarm_docsis.devices.base_devices.board import DocsisCPE
@@ -153,7 +154,11 @@ def pre_boot_wlan_clients(config, env_helper, devices):
 
 
 def pre_boot_board(config, env_helper, devices):
-    pass
+    env_cwmp_v = env_helper.get_cwmp_version()
+    if env_cwmp_v:
+        assert Version(env_cwmp_v) == Version(
+            devices.board.cwmp_version()
+        ), f"CWMP version mismatch, Expected version {env_cwmp_v}"
 
 
 def pre_boot_env(config, env_helper, devices):
