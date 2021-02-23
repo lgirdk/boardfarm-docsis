@@ -3,10 +3,11 @@
 import json
 import logging
 
-from boardfarm.exceptions import BftSysExit
+from boardfarm.exceptions import BftSysExit, SkipTest
 from boardfarm.lib.DeviceManager import device_type
 from boardfarm.lib.hooks import contingency_impl, hookimpl
 from boardfarm.plugins import BFPluginManager
+from nested_lookup import nested_lookup
 from termcolor import colored
 
 from boardfarm_docsis.lib.docsis import (
@@ -56,6 +57,9 @@ class ContingencyCheck:
             plugins_to_register.append(all_impls["boardfarm_docsis.Voice"])
 
         plugins_to_register.append(all_impls["boardfarm_docsis.CheckInterface"])
+
+        if nested_lookup("cwmp_version", env_req.get("environment_def", {})):
+            plugins_to_register.append(all_impls["boardfarm_docsis.Cwmp"])
 
         for i in reversed(plugins_to_register):
             pm.register(i)
@@ -174,3 +178,18 @@ class Voice:
         check_peer_registration(board, num_list, sipserver)
 
         print("Voice service checks executed", end=("\n" + "-" * 80 + "\n"))
+
+
+class Cwmp:
+
+    impl_type = "feature"
+
+    @contingency_impl
+    def service_check(self, env_req, dev_mgr, env_helper):
+        """Contingency check for CWMP version"""
+        print("Executing service check for CWMP", end=("\n" + "-" * 80 + "\n"))
+        board = dev_mgr.by_type(device_type.DUT)
+        env_cwmp_v = nested_lookup("cwmp_version", env_req["environment_def"])
+        if env_cwmp_v[0] != board.cwmp_version():
+            raise SkipTest("Skipping Test: CWMP version mismatch")
+        print("CWMP service check executed", end=("\n" + "-" * 80 + "\n"))
