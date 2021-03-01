@@ -359,6 +359,9 @@ def post_boot_env(config, env_helper, devices):
         devices.board.enable_logs(component="pacm")
         devices.board.wait_for_mta_provisioning()
         devices.board.enable_logs(component="voice")
+    eMTA_interface_status = env_helper.get_emta_interface_status()
+    if eMTA_interface_status:
+        devices.board.set_eMTA_interface(devices.board.mta_iface, eMTA_interface_status)
     cfg = env_helper.get_prov_mode()
     tr069check = cfg not in ["disabled", "bridge", "none"]
     tr069provision = env_helper.get_tr069_provisioning()

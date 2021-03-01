@@ -320,6 +320,16 @@ class DocsisEnvHelper(EnvHelper):
         except (KeyError, AttributeError):
             return False
 
+    def get_emta_interface_status(self):
+        """Return the ["environment_def"]["board"]["emta"]["interface_status"] value
+        :return: emta interface status ex: "down"
+        :rtype: string
+        """
+        try:
+            return self.env["environment_def"]["board"]["emta"]["interface_status"]
+        except (KeyError, AttributeError):
+            return False
+
     def get_dns_dict(self):
         """Returns the dict of reachable and unreachable IP address from DNS.
 
