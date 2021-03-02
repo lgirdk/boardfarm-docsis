@@ -1,5 +1,6 @@
 import logging
 
+import boardfarm
 import pytest
 from boardfarm.exceptions import BftEnvMismatch
 
@@ -474,3 +475,118 @@ class TestEnvHelper:
                 env_helper.env_check(requested)
         else:
             env_helper.env_check(requested)
+
+
+class TestEnvHelperBootFileCheck:
+
+    env_boot_file = {
+        "environment_def": {
+            "board": {
+                "boot_file": 'Main \n{\n\t/* eRouter Mode */\n        VendorSpecific\n        {\n                VendorIdentifier 0x02a613;\n                eRouter\n                {\n                        InitializationMode 3;\n                }\n        }\n        /* TR69 Management Server */\n        VendorSpecific\n        {\n                VendorIdentifier 0x02a613;\n                eRouter\n                {\n                        TR69ManagementServer\n                        {\n                                URL "http://acs_server.boardfarm.com:9675";\n                                ACSOverride 1;\n                        }\n                }\n        }\n}',
+                "eRouter_Provisioning_mode": "dual",
+            },
+        },
+        "version": "1.0",
+    }
+
+    env_with_boot_file = DocsisEnvHelper(env_boot_file)
+
+    def test_boot_file_not_contains_regex(self):
+        test_req = {
+            "environment_def": {
+                "board": {
+                    "boot_file": {
+                        "not_contains_regex": r"\s*eRouter\s*\n\s*{\s*\n\s*TR69ManagementServer\s*\n\s*{\s*\n(.*;\s*\n)*\s*EnableCWMP\s*[0-9].*"
+                    }
+                }
+            }
+        }
+        assert self.env_with_boot_file.env_check(test_req)
+
+    def test_boot_file_contains_regex(self):
+        test_req = {
+            "environment_def": {
+                "board": {
+                    "boot_file": {
+                        "contains_regex": r"\s*eRouter\s*\n\s*{\s*\n\s*TR69ManagementServer\s*\n\s*{\s*\n(.*;\s*\n)*\s*ACSOverride\s*[0-9].*"
+                    }
+                }
+            }
+        }
+        assert self.env_with_boot_file.env_check(test_req)
+
+    def test_boot_file_contains_exact(self):
+        test_req = {
+            "environment_def": {
+                "board": {
+                    "boot_file": {
+                        "contains_exact": 'eRouter\n                {\n                        TR69ManagementServer\n                        {\n                                URL "http://acs_server.boardfarm.com:9675";'
+                    }
+                }
+            }
+        }
+        assert self.env_with_boot_file.env_check(test_req)
+
+    def test_boot_file_not_contains_exact(self):
+        test_req = {
+            "environment_def": {
+                "board": {
+                    "boot_file": {
+                        "not_contains_exact": "Dummy\n                {\n                        TR69ManagementServer\n                        {\n                                EnableCWMP "
+                    }
+                }
+            }
+        }
+        assert self.env_with_boot_file.env_check(test_req)
+
+    def test_boot_file_not_contains_regex_negative_negative(self):
+        test_req = {
+            "environment_def": {
+                "board": {
+                    "boot_file": {
+                        "not_contains_regex": r"\s*eRouter\s*\n\s*{\s*\n\s*TR69ManagementServer\s*\n\s*{\s*\n(.*;\s*\n)*\s*ACSOverride\s*[0-9].*"
+                    }
+                }
+            }
+        }
+        with pytest.raises(boardfarm.exceptions.BftEnvMismatch):
+            assert self.env_with_boot_file.env_check(test_req)
+
+    def test_boot_file_contains_regex_negative(self):
+        test_req = {
+            "environment_def": {
+                "board": {
+                    "boot_file": {
+                        "contains_regex": r"\s*eRouter\s*\n\s*{\s*\n\s*TR69ManagementServer\s*\n\s*{\s*\n(.*;\s*\n)*\s*EnableCWMP\s*[0-9].*"
+                    }
+                }
+            }
+        }
+        with pytest.raises(boardfarm.exceptions.BftEnvMismatch):
+            assert self.env_with_boot_file.env_check(test_req)
+
+    def test_boot_file_contains_exact_negative(self):
+        test_req = {
+            "environment_def": {
+                "board": {
+                    "boot_file": {
+                        "contains_exact": "eRouter\n                {\n                        TR69ManagementServer\n                        {\n                                URL Dummy;"
+                    }
+                }
+            }
+        }
+        with pytest.raises(boardfarm.exceptions.BftEnvMismatch):
+            assert self.env_with_boot_file.env_check(test_req)
+
+    def test_boot_file_not_contains_exact_negative(self):
+        test_req = {
+            "environment_def": {
+                "board": {
+                    "boot_file": {
+                        "not_contains_exact": 'eRouter\n                {\n                        TR69ManagementServer\n                        {\n                                URL "http://acs_server.boardfarm.com:9675";'
+                    }
+                }
+            }
+        }
+        with pytest.raises(boardfarm.exceptions.BftEnvMismatch):
+            assert self.env_with_boot_file.env_check(test_req)

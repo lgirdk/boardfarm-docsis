@@ -247,6 +247,31 @@ class DocsisEnvHelper(EnvHelper):
             ):
                 raise BftEnvMismatch('"eRouter" mismatch')
 
+    def _check_boot_file_conditions(self, req_boot_file_checks):
+        """Checks the boot_file string provided in the env based on either the regex match or the exact match provided in test_environment
+        :param req_boot_file_checks: checks provided in test_environment to be performed on boot_file of env
+        :type req_boot_file_conditions: dict
+        .. note:: raises BftEnvMismatch exception if the boot_file in test_environment does not match the requirement in env helper environment
+        .. note:: checks for key values of contains_regex, not_contains_regex, contains_exact, not_contains_exact in boot_file parameter
+        """
+        env = self.env["environment_def"]["board"]["boot_file"]
+        boot_contains_regex = req_boot_file_checks.get("contains_regex", None)
+        boot_not_contains_regex = req_boot_file_checks.get("not_contains_regex", None)
+        boot_contains_exact = req_boot_file_checks.get("contains_exact", None)
+        boot_not_contains_exact = req_boot_file_checks.get("not_contains_exact", None)
+        if boot_contains_regex:
+            if not re.search(boot_contains_regex, env):
+                raise BftEnvMismatch('"bootfile" mismatch')
+        if boot_not_contains_regex:
+            if re.search(boot_not_contains_regex, env):
+                raise BftEnvMismatch('"bootfile" mismatch')
+        if boot_contains_exact:
+            if boot_contains_exact not in env:
+                raise BftEnvMismatch('"bootfile" mismatch')
+        if boot_not_contains_exact:
+            if boot_not_contains_exact in env:
+                raise BftEnvMismatch('"bootfile" mismatch')
+
     def env_check(self, test_environment):
         """Test environment check (overrides behaviour).
 
@@ -264,6 +289,15 @@ class DocsisEnvHelper(EnvHelper):
                 "config_boot", {}
             )
             self._check_config_boot(req_cfg_boot)
+
+        if nested_lookup("boot_file", test_environment) and nested_lookup(
+            "boot_file", self.env
+        ):
+            req_boot_file_checks = test_environment["environment_def"]["board"].get(
+                "boot_file", {}
+            )
+            self._check_boot_file_conditions(req_boot_file_checks)
+            test_environment["environment_def"]["board"].pop("boot_file")
         return super().env_check(test_environment)
 
     def get_mta_config(self):
