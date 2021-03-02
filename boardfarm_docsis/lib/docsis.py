@@ -801,3 +801,19 @@ class docsis(docsis_encoder):
             category=UserWarning,
         )
         super(docsis, self).__init__(*args, **kw)
+
+
+def reprovision_board(device_mgr, boot_file_txt):
+    """Full reprovisioning of the board with the given boot file passed as a string.
+    The board is then rebooted and expected to come online (on the CMTS side).
+
+    :param device_mgr: the device manager
+    :type device_mgr: object
+    :param boot_file_txt: a string containing the boot file (not the file name)
+    :type boot_file_txt: string (multiline)
+    """
+    device_mgr.board.cm_cfg.load_from_string(boot_file_txt)
+    device_mgr.board.reprovision(device_mgr.provisioner)
+    device_mgr.board.reset()
+    device_mgr.cmts.clear_cm_reset(device_mgr.board.cm_mac)
+    device_mgr.cmts.wait_for_cm_online(ignore_partial=True, iterations=50)
