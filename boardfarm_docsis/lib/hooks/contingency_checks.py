@@ -147,7 +147,8 @@ class CheckInterface:
 
         try:
             # validate if all collected ip addresses are as per provisioning mode.
-            check_interface(board, ip, prov_mode, [])
+            if not prov_mode == "none":
+                check_interface(board, ip, prov_mode, [])
         except Exception as e:
             print("Interface check failed.\nReason: %s" % e)
             print(json.dumps(ip, indent=4))
