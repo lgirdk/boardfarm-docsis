@@ -135,7 +135,7 @@ class MiniCMTS(BaseCmts):
             skipfooter=skipfooter,
             names=columns,
             header=None,
-            sep=r"\s+",
+            delim_whitespace=True,
             engine="python",
             index_col=index,
         )
