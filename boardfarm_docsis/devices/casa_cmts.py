@@ -21,7 +21,7 @@ from boardfarm.lib.regexlib import (
     ValidIpv4AddressRegex,
 )
 
-from . import base_cmts
+from boardfarm_docsis.devices import base_cmts
 
 logger = logging.getLogger("bft")
 
@@ -1388,3 +1388,15 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.current_time_cmd = "show clock"
         self.dateformat = "%a %b %d %H:%M:%S %Z %Y"
         return super().get_current_time(fmt)
+
+
+# Small test to verify basic CasaCMTS connectivity.
+# Will be run once someone runs this file directly, e.g. python3 casa_cmts.py
+# Just add your local casa cmts details
+if __name__ == "__main__":
+    cmts = CasaCMTS(
+        conn_cmd="your_connection_cmd",
+        username="your_cmts_username",
+        password="your_cmts_password",
+    )
+    print(cmts.check_output("show cable modem"))
