@@ -42,10 +42,8 @@ class ContingencyCheck:
         :param env_req: ENV request provided by a test
         :type env_req: dict
         """
-        print(
-            "Executing BF Docsis contingency service check",
-            end=("\n" + "-" * 80 + "\n"),
-        )
+        # print("Executing all contingency service checks under BF Docsis", end=("\n" + "-" * 80 + "\n"))
+        logger.info("Executing all contingency service checks under BF Docsis")
 
         pm = BFPluginManager("contingency")
         pm.load_hook_specs("feature")
@@ -80,10 +78,9 @@ class DefaultChecks:
     @contingency_impl
     def service_check(self, env_req, dev_mgr, env_helper):
         """Implement Default Contingency Hook."""
-        print(
-            "Executing Default service check for BF Docsis",
-            end=("\n" + "-" * 80 + "\n"),
-        )
+
+        # print("Executing Default service check for BF Docsis", end=("\n" + "-" * 80 + "\n"))
+        logger.info("Executing Default service check for BF Docsis")
 
         if not dev_mgr.board.is_erouter_honouring_config():
             msg = colored(
@@ -105,10 +102,8 @@ class DefaultChecks:
         check_provisioning(dev_mgr.board, mta=voice)
         check_cm_firmware_version(board, wan, env_helper)
 
-        print(
-            "Default service checks for BF DOCSIS executed",
-            end=("\n" + "-" * 80 + "\n"),
-        )
+        # print("Default service checks for BF Docsis executed", end=("\n" + "-" * 80 + "\n"))
+        logger.info("Default service checks for BF Docsis executed")
 
 
 class CheckInterface:
@@ -119,10 +114,9 @@ class CheckInterface:
     @contingency_impl(trylast=True)
     def service_check(self, env_req, dev_mgr, env_helper):
         """Implement Default Contingency Hook."""
-        print(
-            "Executing service check for BF DOCSIS CheckInterface",
-            end=("\n" + "-" * 80 + "\n"),
-        )
+
+        # print("Executing CheckInterface service check for BF Docsis",end=("\n" + "-" * 80 + "\n"))
+        logger.info("Executing CheckInterface service check for BF Docsis")
 
         ip = {}
         board = dev_mgr.by_type(device_type.DUT)
@@ -154,10 +148,8 @@ class CheckInterface:
             print(json.dumps(ip, indent=4))
             raise (e)
 
-        print(
-            "Service checks for BF DOCSIS CheckInterface executed",
-            end=("\n" + "-" * 80 + "\n"),
-        )
+        # print("CheckInterface service checks for BF Docsis executed",end=("\n" + "-" * 80 + "\n"))
+        logger.info("CheckInterface service checks for BF Docsis executed")
 
         return ip
 
@@ -169,7 +161,8 @@ class Voice:
     @contingency_impl
     def service_check(self, env_req, dev_mgr, env_helper):
         """Implement contingency check for voice."""
-        print("Executing service check for Voice", end=("\n" + "-" * 80 + "\n"))
+        # print("Executing Voice service check for BF Docsis", end=("\n" + "-" * 80 + "\n"))
+        logger.info("Executing Voice service check for BF Docsis")
 
         sipserver = dev_mgr.by_type(device_type.sipcenter)
         board = dev_mgr.by_type(device_type.DUT)
@@ -178,7 +171,8 @@ class Voice:
 
         check_peer_registration(board, num_list, sipserver)
 
-        print("Voice service checks executed", end=("\n" + "-" * 80 + "\n"))
+        # print("Voice service checks for BF Docsis executed", end=("\n" + "-" * 80 + "\n"))
+        logger.info("Voice service checks for BF Docsis executed")
 
 
 class Cwmp:
@@ -188,9 +182,13 @@ class Cwmp:
     @contingency_impl
     def service_check(self, env_req, dev_mgr, env_helper):
         """Contingency check for CWMP version"""
-        print("Executing service check for CWMP", end=("\n" + "-" * 80 + "\n"))
+        # print("Executing CWMP service check for BF Docsis", end=("\n" + "-" * 80 + "\n"))
+        logger.info("Executing CWMP service check for BF Docsis")
+
         board = dev_mgr.by_type(device_type.DUT)
         env_cwmp_v = nested_lookup("cwmp_version", env_req["environment_def"])
         if env_cwmp_v[0] != board.cwmp_version():
             raise SkipTest("Skipping Test: CWMP version mismatch")
-        print("CWMP service check executed", end=("\n" + "-" * 80 + "\n"))
+
+        # print("CWMP service check executed for BF Docsis", end=("\n" + "-" * 80 + "\n"))
+        logger.info("CWMP service check executed for BF Docsis")
