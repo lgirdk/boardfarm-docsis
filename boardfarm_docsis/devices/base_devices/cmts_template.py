@@ -44,7 +44,7 @@ class CmtsTemplate(PexpectHelper, metaclass=__MetaSignatureChecker):
             self.username = kwargs.get("username", "DEFAULT_USERNAME")
             self.password = kwargs.get("password", "DEFAULT_PASSWORD")
         Be sure to add
-            self.spawn_device()
+            self.spawn_device(**kwargs)
             self.connect()
         at the end in order to properly initialize device prompt on init step
         """
@@ -71,6 +71,4 @@ class CmtsTemplate(PexpectHelper, metaclass=__MetaSignatureChecker):
         """Spawns a console device based on the class type specified in
         the paramter device_type. Currently the communication with the console
         occurs via the pexpect module."""
-        self.connection = conn_dec.connection(
-            self.conn_type, device=self, conn_cmd=self.conn_cmd
-        )
+        self.connection = conn_dec.connection(self.conn_type, device=self, **kwargs)
