@@ -18,7 +18,7 @@ from boardfarm_docsis.lib.docsis import (
 )
 from boardfarm_docsis.lib.voice import check_peer_registration
 
-logger = logging.getLogger("bft")
+logger = logging.getLogger("tests_logger")
 
 
 class ContingencyCheck:
@@ -42,7 +42,7 @@ class ContingencyCheck:
         :param env_req: ENV request provided by a test
         :type env_req: dict
         """
-        # print("Executing all contingency service checks under BF Docsis", end=("\n" + "-" * 80 + "\n"))
+
         logger.info("Executing all contingency service checks under BF Docsis")
 
         pm = BFPluginManager("contingency")
@@ -79,8 +79,9 @@ class DefaultChecks:
     def service_check(self, env_req, dev_mgr, env_helper):
         """Implement Default Contingency Hook."""
 
-        # print("Executing Default service check for BF Docsis", end=("\n" + "-" * 80 + "\n"))
-        logger.info("Executing Default service check for BF Docsis")
+        logger.info(
+            "Executing Default service checks[check_board,check_provisioning,check_cm_firmware_version] for BF Docsis"
+        )
 
         if not dev_mgr.board.is_erouter_honouring_config():
             msg = colored(
@@ -102,8 +103,9 @@ class DefaultChecks:
         check_provisioning(dev_mgr.board, mta=voice)
         check_cm_firmware_version(board, wan, env_helper)
 
-        # print("Default service checks for BF Docsis executed", end=("\n" + "-" * 80 + "\n"))
-        logger.info("Default service checks for BF Docsis executed")
+        logger.info(
+            "Default service checks[check_board,check_provisioning,check_cm_firmware_version] for BF Docsis executed"
+        )
 
 
 class CheckInterface:
@@ -115,7 +117,6 @@ class CheckInterface:
     def service_check(self, env_req, dev_mgr, env_helper):
         """Implement Default Contingency Hook."""
 
-        # print("Executing CheckInterface service check for BF Docsis",end=("\n" + "-" * 80 + "\n"))
         logger.info("Executing CheckInterface service check for BF Docsis")
 
         ip = {}
@@ -148,7 +149,6 @@ class CheckInterface:
             print(json.dumps(ip, indent=4))
             raise (e)
 
-        # print("CheckInterface service checks for BF Docsis executed",end=("\n" + "-" * 80 + "\n"))
         logger.info("CheckInterface service checks for BF Docsis executed")
 
         return ip
@@ -161,7 +161,7 @@ class Voice:
     @contingency_impl
     def service_check(self, env_req, dev_mgr, env_helper):
         """Implement contingency check for voice."""
-        # print("Executing Voice service check for BF Docsis", end=("\n" + "-" * 80 + "\n"))
+
         logger.info("Executing Voice service check for BF Docsis")
 
         sipserver = dev_mgr.by_type(device_type.sipcenter)
@@ -171,7 +171,6 @@ class Voice:
 
         check_peer_registration(board, num_list, sipserver)
 
-        # print("Voice service checks for BF Docsis executed", end=("\n" + "-" * 80 + "\n"))
         logger.info("Voice service checks for BF Docsis executed")
 
 
@@ -182,7 +181,7 @@ class Cwmp:
     @contingency_impl
     def service_check(self, env_req, dev_mgr, env_helper):
         """Contingency check for CWMP version"""
-        # print("Executing CWMP service check for BF Docsis", end=("\n" + "-" * 80 + "\n"))
+
         logger.info("Executing CWMP service check for BF Docsis")
 
         board = dev_mgr.by_type(device_type.DUT)
@@ -190,5 +189,4 @@ class Cwmp:
         if env_cwmp_v[0] != board.cwmp_version():
             raise SkipTest("Skipping Test: CWMP version mismatch")
 
-        # print("CWMP service check executed for BF Docsis", end=("\n" + "-" * 80 + "\n"))
         logger.info("CWMP service check executed for BF Docsis")
