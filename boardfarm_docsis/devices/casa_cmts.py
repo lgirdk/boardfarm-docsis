@@ -39,6 +39,9 @@ class CasaCMTS(base_cmts.BaseCmts):
         "CASA-C10G>",
         "CASA-C10G#",
         r"CASA-C10G\(.*\)#",
+        "CASA-C2200>",
+        "CASA-C2200#",
+        r"CASA-C2200\(.*\)#",
     ]
     model = "casa_cmts"
 
@@ -59,7 +62,7 @@ class CasaCMTS(base_cmts.BaseCmts):
             raise Exception("No command specified to connect to Casa CMTS")
 
         self.connection = connection_decider.connection(
-            connection_type, device=self, conn_cmd=conn_cmd
+            connection_type, device=self, conn_cmd=conn_cmd, password=self.password
         )
         if kwargs.get("debug", False):
             self.logfile_read = sys.stdout
@@ -76,7 +79,11 @@ class CasaCMTS(base_cmts.BaseCmts):
         :raises Exception: Unable to get prompt on CASA device
         """
         try:
-            if 2 != self.expect(["\r\n(.*) login:", "(.*) login:", pexpect.TIMEOUT]):
+            self.sendline()
+            result = self.expect(
+                ["\r\n(.*) login:", "(.*) login:", pexpect.TIMEOUT] + self.prompt
+            )
+            if result == 0 or result == 1:
                 hostname = (
                     self.match.group(1).replace("\n", "").replace("\r", "").strip()
                 )
@@ -87,7 +94,7 @@ class CasaCMTS(base_cmts.BaseCmts):
                 self.expect("assword:")
                 self.sendline(self.password)
                 self.expect(self.prompt)
-            else:
+            elif result == 2:
                 # Over telnet we come in at the right prompt
                 # over serial it could be stale so we try to recover
                 self.sendline("q")
