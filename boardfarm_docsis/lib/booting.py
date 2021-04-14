@@ -265,6 +265,9 @@ def post_boot_wlan_clients(config, env_helper, devices):
         for client in wifi_clients:
             check_and_connect_to_wifi(devices, client)
 
+        logger.info(colored("\nWlan clients:", color="green"))
+        devices.wlan_clients.registered_clients_summary()
+
 
 def post_boot_env(config, env_helper, devices):
     if env_helper.mitm_enabled():
@@ -327,18 +330,24 @@ def run_actions(actions_dict, actions_name, *args, **kwargs):
     for key, func in actions_dict.items():
         try:
             logger.info(colored(f"Action {key} start", color="green", attrs=["bold"]))
+            start_time = time.time()
             func(*args, **kwargs)
             logger.info(
-                colored(f"Action {key} completed", color="green", attrs=["bold"])
+                colored(
+                    f"\nAction {key} completed. Took {int(time.time() - start_time)} seconds to complete.",
+                    color="green",
+                    attrs=["bold"],
+                )
             )
         except Exception as e:
-            msg = f"Failed at: {actions_name}: {key} with exception {e}"
+            msg = f"\nFailed at: {actions_name}: {key} after {int(time.time() - start_time)} seconds with exception {e}"
             logger.error(colored(msg, color="red", attrs=["bold"]))
             raise e
     logger.info(colored(f"{actions_name} COMPLETED", color="green", attrs=["bold"]))
 
 
 def boot(config, env_helper, devices, logged=None, actions_list=None):
+    start_time = time.time()
     if not actions_list:
         actions_list = ["pre", "boot", "post"]
     try:
@@ -348,7 +357,21 @@ def boot(config, env_helper, devices, logged=None, actions_list=None):
             run_actions(boot_actions, "BOOT", config, env_helper, devices)
         if "post" in actions_list:
             run_actions(post_boot_actions, "POST-BOOT", config, env_helper, devices)
+        logger.info(
+            colored(
+                f"Boot completed in {int(time.time() - start_time)} seconds.",
+                color="green",
+                attrs=["bold"],
+            )
+        )
     except Exception:
         traceback.print_exc()
         check_devices(devices)
+        logger.info(
+            colored(
+                f"Boot failed after {int(time.time() - start_time)} seconds.",
+                color="red",
+                attrs=["bold"],
+            )
+        )
         raise
