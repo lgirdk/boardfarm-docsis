@@ -43,7 +43,6 @@ class Docsis(openwrt_router.OpenWrtRouter):
                 )
         except AttributeError:
             logger.error("Failed on get_cm_mgmt_cfg: has_cmts no set")
-            pass
         return mac_dom_config
 
     def get_cmStatus(self, wan, wan_ip, status_string=None):
@@ -59,14 +58,14 @@ class Docsis(openwrt_router.OpenWrtRouter):
         :rtype: string
         """
         status = ["Timeout: No Response from", r"(INTEGER: \d+)"]
-        for _not_used in range(100):
+        for _ in range(100):
             # TODO: wan ip could change after reboot?
             wan.sendline(
                 "snmpget -v 2c -t 2 -r 10 -c public %s %s.2"
                 % (wan_ip, self.mib["docsIf3CmStatusValue"])
             )
             i = wan.expect(status)
-            match = wan.match.group() if i == 1 or i == 0 else None
+            match = wan.match.group() if i in [1, 0] else None
             wan.expect(wan.prompt)
 
             # wait up to 100 * 5 seconds for board to come online
@@ -204,11 +203,8 @@ class Docsis(openwrt_router.OpenWrtRouter):
             ip = self.dev.cmts.get_cmip(self.cm_mac)
             if ip == "None":
                 raise CodeError("Failed to get cm ip")
-            else:
-                out = SnmpHelper.snmp_v2(
-                    self.dev.wan, ip, "esafeErouterInitModeControl"
-                )
-                return "5" == out
+            out = SnmpHelper.snmp_v2(self.dev.wan, ip, "esafeErouterInitModeControl")
+            return "5" == out
         elif "dmcli" == method:
             param = "Device.X_LGI-COM_Gateway.ErouterModeControl"
             out = self.dmcli.GPV(param)

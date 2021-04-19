@@ -254,7 +254,7 @@ class docsis_encoder:
 
         if "tftp_cfg_files" in board_config:
             for cfg in board_config["tftp_cfg_files"]:
-                if isinstance(cfg, cm_cfg) or isinstance(cfg, mta_cfg):
+                if isinstance(cfg, (cm_cfg, mta_cfg)):
                     cfg_list.append(cfg)
                 else:
                     for path in paths:
@@ -396,7 +396,7 @@ class cm_cfg(object):
         """0-Disable/Bridge, 1-IPv4, 2-IPv6 (IPv6 | dslite), 3-IPv4 and IPv6(Dual)"""
         modeset = ["0x010100", "0x010101", "0x010102", "0x010103"]
         modestr = ["disabled", "ipv4", "ipv6", "dual-stack"]
-        for mode in range(0, len(modeset)):
+        for mode in range(len(modeset)):
             tlv_check = "GenericTLV TlvCode 202 TlvLength 3 TlvValue " + modeset[mode]
             initmode_check = "InitializationMode " + str(mode)
             if (tlv_check in self.txt) or (initmode_check in self.txt):
@@ -623,8 +623,7 @@ def generate_cfg_file(board, test_args, cfg_mode, filename=None, cfg_args=None):
                 extra_snmp_default_mibs += eval("board.cm_cfg." + dict_name)
         test_args["extra_snmp"] = extra_snmp_default_mibs
 
-    cfg_file = board.generate_cfg(cfg_mode, fname=filename, kwargs=test_args)
-    return cfg_file
+    return board.generate_cfg(cfg_mode, fname=filename, kwargs=test_args)
 
 
 def configure_board_v2(provisioner, board, test_args, test_data, **kwargs):
@@ -768,23 +767,19 @@ def configure_cm_dhcp_server(board, mode="dual", enable=True):
         board.restart_tr069(board.dev.wan, board.get_interface_ipaddr(board.wan_iface))
     r_status = False
 
-    if mode in ["dual", "ipv4"]:
-        if (
-            enable
-            != board.dev.acs_server.GPV("Device.DHCPv4.Server.Enable")[0]["value"]
-        ):
-            r_status = 0 == board.dev.acs_server.SPV(
-                {"Device.DHCPv4.Server.Enable": enable}
-            )
+    if mode in ["dual", "ipv4"] and (
+        enable != board.dev.acs_server.GPV("Device.DHCPv4.Server.Enable")[0]["value"]
+    ):
+        r_status = (
+            board.dev.acs_server.SPV({"Device.DHCPv4.Server.Enable": enable}) == 0
+        )
 
-    if mode in ["dual", "ipv6"]:
-        if (
-            enable
-            != board.dev.acs_server.GPV("Device.DHCPv6.Server.Enable")[0]["value"]
-        ):
-            r_status = 0 == board.dev.acs_server.SPV(
-                {"Device.DHCPv6.Server.Enable": enable}
-            )
+    if mode in ["dual", "ipv6"] and (
+        enable != board.dev.acs_server.GPV("Device.DHCPv6.Server.Enable")[0]["value"]
+    ):
+        r_status = (
+            board.dev.acs_server.SPV({"Device.DHCPv6.Server.Enable": enable}) == 0
+        )
 
     return r_status
 

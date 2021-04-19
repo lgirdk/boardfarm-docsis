@@ -89,11 +89,7 @@ class DocsisEnvHelper(EnvHelper):
         :rtype: boolean
         """
         try:
-            if "voice" in self.env["environment_def"]:
-                return True
-            else:
-                return False
-
+            return "voice" in self.env["environment_def"]
         except (KeyError, AttributeError):
             raise BftEnvExcKeyError
 
@@ -140,9 +136,7 @@ class DocsisEnvHelper(EnvHelper):
 
         :return: True if at least 1 device mitm'ed, False otherwise
         """
-        if self.get_mitm_devices():
-            return True
-        return False
+        return bool(self.get_mitm_devices())
 
     def get_tr069_provisioning(self):
         """Return list of ACS APIs to be executed during tr069 provisioning.
@@ -192,7 +186,7 @@ class DocsisEnvHelper(EnvHelper):
                 for key, val in subset.items()
             )
 
-        if isinstance(subset, list) or isinstance(subset, set):
+        if isinstance(subset, (list, set)):
             return all(
                 any(self._is_subset(subitem, superitem) for superitem in superset)
                 for subitem in subset
@@ -224,28 +218,34 @@ class DocsisEnvHelper(EnvHelper):
         except BftEnvExcKeyError:
             raise BftEnvMismatch('"config_boot" mismatch')
 
-        if "llc" in req_cfg_boot:
-            if "llc" not in cfg_boot or not self._is_subset(
-                req_cfg_boot["llc"], cfg_boot["llc"]
-            ):
-                raise BftEnvMismatch('"llc" mismatch')
-        if "snmp" in req_cfg_boot:
-            if "snmp" not in cfg_boot or not self._is_subset(
-                req_cfg_boot["snmp"], cfg_boot["snmp"]
-            ):
-                raise BftEnvMismatch('"snmp" mismatch')
-        if "vendor_specific" in req_cfg_boot:
-            if (
+        if "llc" in req_cfg_boot and (
+            "llc" not in cfg_boot
+            or not self._is_subset(req_cfg_boot["llc"], cfg_boot["llc"])
+        ):
+            raise BftEnvMismatch('"llc" mismatch')
+        if "snmp" in req_cfg_boot and (
+            "snmp" not in cfg_boot
+            or not self._is_subset(req_cfg_boot["snmp"], cfg_boot["snmp"])
+        ):
+            raise BftEnvMismatch('"snmp" mismatch')
+        if "vendor_specific" in req_cfg_boot and (
+            (
                 "vendor_specific" not in cfg_boot
                 or req_cfg_boot["vendor_specific"] != cfg_boot["vendor_specific"]
-            ):
-                raise BftEnvMismatch('"vendor_specific" mismatch')
-        if "eRouter" in req_cfg_boot and "tlvs" in req_cfg_boot["eRouter"]:
-            if (
-                "eRouter" not in cfg_boot
-                or req_cfg_boot["eRouter"]["tlvs"] != cfg_boot["eRouter"]["tlvs"]
-            ):
-                raise BftEnvMismatch('"eRouter" mismatch')
+            )
+        ):
+            raise BftEnvMismatch('"vendor_specific" mismatch')
+        if (
+            "eRouter" in req_cfg_boot
+            and "tlvs" in req_cfg_boot["eRouter"]
+            and (
+                (
+                    "eRouter" not in cfg_boot
+                    or req_cfg_boot["eRouter"]["tlvs"] != cfg_boot["eRouter"]["tlvs"]
+                )
+            )
+        ):
+            raise BftEnvMismatch('"eRouter" mismatch')
 
     def _check_boot_file_conditions(self, req_boot_file_checks):
         """Checks the boot_file string provided in the env based on either the regex match or the exact match provided in test_environment
@@ -259,18 +259,14 @@ class DocsisEnvHelper(EnvHelper):
         boot_not_contains_regex = req_boot_file_checks.get("not_contains_regex", None)
         boot_contains_exact = req_boot_file_checks.get("contains_exact", None)
         boot_not_contains_exact = req_boot_file_checks.get("not_contains_exact", None)
-        if boot_contains_regex:
-            if not re.search(boot_contains_regex, env):
-                raise BftEnvMismatch('"bootfile" mismatch')
-        if boot_not_contains_regex:
-            if re.search(boot_not_contains_regex, env):
-                raise BftEnvMismatch('"bootfile" mismatch')
-        if boot_contains_exact:
-            if boot_contains_exact not in env:
-                raise BftEnvMismatch('"bootfile" mismatch')
-        if boot_not_contains_exact:
-            if boot_not_contains_exact in env:
-                raise BftEnvMismatch('"bootfile" mismatch')
+        if boot_contains_regex and not re.search(boot_contains_regex, env):
+            raise BftEnvMismatch('"bootfile" mismatch')
+        if boot_not_contains_regex and re.search(boot_not_contains_regex, env):
+            raise BftEnvMismatch('"bootfile" mismatch')
+        if boot_contains_exact and boot_contains_exact not in env:
+            raise BftEnvMismatch('"bootfile" mismatch')
+        if boot_not_contains_exact and boot_not_contains_exact in env:
+            raise BftEnvMismatch('"bootfile" mismatch')
 
     def env_check(self, test_environment):
         """Test environment check (overrides behaviour).
@@ -348,9 +344,8 @@ class DocsisEnvHelper(EnvHelper):
                     self.env["environment_def"]["board"]["boot_file"].find("CustomerId")
                     != -1
                 )
-            else:
-                self.env["environment_def"]["board"]["SKU"]
-                return True
+            self.env["environment_def"]["board"]["SKU"]
+            return True
         except (AttributeError, KeyError):
             return False
 

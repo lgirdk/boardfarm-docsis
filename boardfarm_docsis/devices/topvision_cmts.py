@@ -155,8 +155,7 @@ class MiniCMTS(BaseCmts):
             "ONLINE_TIME",
         ]
         cmd = f"show cable modem {additional_args}"
-        scm = self.__run_and_return_df(cmd=cmd, columns=columns, index="MAC_ADDRESS")
-        return scm
+        return self.__run_and_return_df(cmd=cmd, columns=columns, index="MAC_ADDRESS")
 
     @BaseCmts.convert_mac_to_cmts_type
     def _show_cable_modem_cpe(self, cm_mac: str) -> pd.DataFrame:
@@ -172,10 +171,9 @@ class MiniCMTS(BaseCmts):
             "LEARNED",
         ]
         cmd = f"show cable modem {cm_mac} cpe"
-        cpe_list = self.__run_and_return_df(
+        return self.__run_and_return_df(
             cmd=cmd, columns=columns, index="CPE_MAC", skiprows=1, skipfooter=6
         )
-        return cpe_list
 
     @BaseCmts.connect_and_run
     def is_cm_online(self, ignore_bpi=False, ignore_partial=False, ignore_cpe=False):
@@ -206,20 +204,15 @@ class MiniCMTS(BaseCmts):
             logger.debug(f"Cable modem in unkown state: {status} ")
             return False
         # now it must be in some sort of online state
-        if ignore_bpi is False:
-            if not re.search(r"online\(p(t|k)", status):
-                logger.debug(f"Cable modem in BPI is disabled: {status}")
-                return False
-        if ignore_partial is False:
-            if re.search(r"p-online", status):
-                logger.debug(f"Cable modem in partial service: {status}")
-                return False
-        if ignore_cpe is False:
-            if re.search(r"online\(d", status):
-                logger.debug(
-                    f"Cable modem is prohibited from forwarding data: {status}"
-                )
-                return False
+        if ignore_bpi is False and not re.search(r"online\(p(t|k)", status):
+            logger.debug(f"Cable modem in BPI is disabled: {status}")
+            return False
+        if ignore_partial is False and re.search(r"p-online", status):
+            logger.debug(f"Cable modem in partial service: {status}")
+            return False
+        if ignore_cpe is False and re.search(r"online\(d", status):
+            logger.debug(f"Cable modem is prohibited from forwarding data: {status}")
+            return False
         logger.debug(f"Cable modem is online: {status}")
         return True
 
@@ -463,8 +456,7 @@ class MiniCMTS(BaseCmts):
                     ValidIpv4AddressRegex, cpe_details["CPE_IP_ADDRESS"]
                 )
                 if ertr_ipv6:
-                    ipv6 = ertr_ipv6.group()
-                    return ipv6
+                    return ertr_ipv6.group()
         return None
 
     def get_ertr_ipv6(self, mac: str, offset=2) -> [str, None]:
@@ -487,8 +479,7 @@ class MiniCMTS(BaseCmts):
                     AllValidIpv6AddressesRegex, cpe_details["CPE_IP_ADDRESS"]
                 )
                 if ertr_ipv6:
-                    ipv6 = ertr_ipv6.group()
-                    return ipv6
+                    return ertr_ipv6.group()
         return None
 
     def is_cm_bridged(self, mac, offset=2):
@@ -504,10 +495,7 @@ class MiniCMTS(BaseCmts):
         # eRouter mac address is always +2 from CM mac address by convention
         ertr_mac = netaddr.EUI(int(mac) + offset)
         ertr_mac.dialect = netaddr.mac_cisco
-        for cpe_mac, _ in cpe.iterrows():
-            if cpe_mac == ertr_mac:
-                return False
-        return True
+        return all(cpe_mac != ertr_mac for cpe_mac, _ in cpe.iterrows())
 
     def _get_current_time(self, fmt="%Y-%m-%dT%H:%M:%S%z"):
         """used for unittests"""

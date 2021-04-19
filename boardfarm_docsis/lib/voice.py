@@ -59,9 +59,7 @@ def check_peer_registration(board, num_list, sipserver):
     """
     mta_ip = board.get_interface_ipaddr(board.mta_iface)
     return_list = [
-        True
-        if sipserver.sipserver_user_registration_status(user, mta_ip) == "Registered"
-        else False
+        sipserver.sipserver_user_registration_status(user, mta_ip) == "Registered"
         for user in num_list
     ]
 
@@ -86,11 +84,11 @@ def fetch_mta_interfaces(wan, mta_ip):
         walk_cmd="awk /{}/".format(get_mib_oid("ifDescr")),
     )
     out_dict = mibstring2dict(snmp_output, "ifDescr")
-    index_list = []
-    for k, v in out_dict.items():
-        if v == "Voice Over Cable Interface":
-            index_list.append(int(k.split(".")[-1]))
-    return index_list
+    return [
+        int(k.split(".")[-1])
+        for k, v in out_dict.items()
+        if v == "Voice Over Cable Interface"
+    ]
 
 
 def cleanup_voice_prompt(self, devices):
@@ -113,10 +111,9 @@ def cleanup_voice_prompt(self, devices):
                 if dev in [self.dev.lan, self.dev.lan2]:
                     dev.sendline("set.close()")
                     dev.sendline("exit()")
-                    dev.expect(dev.prompt, timeout=5)
                 else:
                     dev.sendline("q")
-                    dev.expect(dev.prompt, timeout=5)
+                dev.expect(dev.prompt, timeout=5)
             else:
                 result.append(True)
                 break

@@ -54,7 +54,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
         :raises Exception: Unable to get prompt on CBR8 device
         """
         try:
-            if 1 != self.expect(["User Access Verification", pexpect.TIMEOUT]):
+            if self.expect(["User Access Verification", pexpect.TIMEOUT]) != 1:
                 self.expect("assword:")
                 self.sendline(self.password)
                 self.expect(self.prompt)
@@ -65,7 +65,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
                 self.sendline("exit")
                 self.expect([pexpect.TIMEOUT] + self.prompt, timeout=20)
             self.sendline("enable")
-            if 0 == self.expect(["Password:"] + self.prompt):
+            if self.expect(["Password:"] + self.prompt) == 0:
                 self.sendline(self.password_admin)
                 self.expect(self.prompt)
             return
@@ -93,17 +93,14 @@ class CBR8CMTS(base_cmts.BaseCmts):
         match = re.search(r"\w+/\w+/\w+/\w+\s+((\w+\-?\(?\)?)+)", result)
         if match:
             status = match.group(1)
-            if (
-                status == "w-online(pt)"
-                or status == "w-online"
-                or status == "w-online(d)"
-            ):
-                output = True
-            elif (
-                status == "p-online(pt)"
-                or status == "p-online"
-                or status == "p-online(d)"
-            ):
+            if status in [
+                "w-online(pt)",
+                "w-online",
+                "w-online(d)",
+                "p-online(pt)",
+                "p-online",
+                "p-online(d)",
+            ]:
                 output = True
             elif "online" not in status and status is not None:
                 output = status
@@ -154,10 +151,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
         self.sendline("show cable modem %s" % cmmac)
         self.expect(cmmac + r"\s+([\d\.]+)")
         result = self.match.group(1)
-        if self.match is not None:
-            output = result
-        else:
-            output = "None"
+        output = result if self.match is not None else "None"
         self.expect(self.prompt)
         return output
 
@@ -172,11 +166,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
         self.sendline("show cable modem %s ipv6" % cmmac)
         self.expect(self.prompt)
         match = re.search(AllValidIpv6AddressesRegex, self.before)
-        if match:
-            output = match.group(0)
-        else:
-            output = "None"
-        return output
+        return match.group(0) if match else "None"
 
     def get_mtaip(self, cmmac, mtamac):
         """Get the MTA IP from CMTS
@@ -197,8 +187,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
             "(%s) .* (%s)" % (ertr_mac, ValidIpv4AddressRegex), self.before
         )
         if ertr_ipv4:
-            ipv4 = ertr_ipv4.group(2)
-            return ipv4
+            return ertr_ipv4.group(2)
         else:
             return None
 
@@ -216,10 +205,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
         self.sendline("show controllers integrated-Cable %s rf-ch 0" % mac_domain)
         self.expect(r".*UP\s+(\d+)\s+DOCSIS")
         freq = self.match.group(1)
-        if self.match is not None:
-            output = freq
-        else:
-            output = "None"
+        output = freq if self.match is not None else "None"
         self.expect(self.prompt)
         return output
 
@@ -241,8 +227,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
             "(%s) .* (%s)" % (ertr_mac, ValidIpv4AddressRegex), self.before
         )
         if ertr_ipv4:
-            ipv4 = ertr_ipv4.group(2)
-            return ipv4
+            return ertr_ipv4.group(2)
         else:
             return None
 
@@ -259,7 +244,6 @@ class CBR8CMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         ertr_ipv6 = re.search(AllValidIpv6AddressesRegex, self.before)
         if ertr_ipv6:
-            ipv6 = ertr_ipv6.group()
-            return ipv6
+            return ertr_ipv6.group()
         else:
             return None

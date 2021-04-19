@@ -19,10 +19,7 @@ def get_base_cfg(cfg_name):
     :rtype : dict
     """
     base_dir = os.path.dirname(str(boardfarm_docsis.__path__[0]))
-    global_mta_config_file = json.load(
-        open(os.path.join(base_dir, "json_payload/" + cfg_name), "r")
-    )
-    return global_mta_config_file
+    return json.load(open(os.path.join(base_dir, "json_payload/" + cfg_name), "r"))
 
 
 def indent_str(string, indent, pad=" "):
@@ -38,8 +35,7 @@ def indent_str(string, indent, pad=" "):
     :rtype : string
     """
     string_length = len(string) + indent
-    indented_string = string.rjust(string_length, pad)
-    return indented_string
+    return string.rjust(string_length, pad)
 
 
 def update_dict(d, **kwargs):
@@ -99,9 +95,8 @@ def dict_to_str(d, name=None, indent=4):
             + "\n"
             + indent_str("{", indent)
             + "\n"
-            + "\n".join([indent_str(i, indent) for i in s.split("\n")])
-            + "}\n"
-        )
+            + "\n".join(indent_str(i, indent) for i in s.split("\n"))
+        ) + "}\n"
 
     return s
 
@@ -876,7 +871,6 @@ class GlobalParameters(object):
                     + mib_name
                     + "' has numeric OID!!!!"
                 )
-        pass
 
     @classmethod
     def name(cls):
@@ -1170,10 +1164,7 @@ class CfgGenerator:
         :return : Multiline string
         :rtype : string
         """
-        cfg_file_str = ""
-        for i in self.mta_base_cfg:
-            cfg_file_str += i.to_str()
-        return cfg_file_str
+        return "".join(i.to_str() for i in self.mta_base_cfg)
 
 
 ##############################################################################################

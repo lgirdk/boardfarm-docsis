@@ -57,12 +57,15 @@ else:
             ]
 
             for attr in dir(self):
-                if "tear" in attr.lower() and "down" in attr.lower():
-                    if attr not in blacklist:
-                        func = getattr(self, attr)
-                        func = run_once(func)
-                        self.legacy_td = func
-                        break
+                if (
+                    "tear" in attr.lower()
+                    and "down" in attr.lower()
+                    and attr not in blacklist
+                ):
+                    func = getattr(self, attr)
+                    func = run_once(func)
+                    self.legacy_td = func
+                    break
 
         @run_once
         def test_main(self):

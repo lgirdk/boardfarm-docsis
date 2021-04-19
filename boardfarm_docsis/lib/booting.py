@@ -210,11 +210,10 @@ def post_boot_wan_clients(config, env_helper, devices):
 def post_boot_lan_clients(config, env_helper, devices):
     for i, v in enumerate(devices.board.dev.lan_clients):
         if getattr(env_helper, "has_lan_advertise_identity", None):
-            if env_helper.has_lan_advertise_identity(i):
-                for option in ["125", "17"]:
+            for option in ["125", "17"]:
+                if env_helper.has_lan_advertise_identity(i):
                     v.configure_dhclient(([option, True],))
-            else:
-                for option in ["125", "17"]:
+                else:
                     v.configure_dhclient(([option, False],))
     if devices.board.routing and config.setup_device_networking:
         for x in devices.board.dev.lan_clients:
@@ -307,13 +306,12 @@ def post_boot_env(config, env_helper, devices):
                     "Factory reset has to performed for tr069 provisioning. Env json with factory reset true should be used."
                 )
     # should this be here?
-    if hasattr(devices.board, "gui_password"):
-        if not devices.board.trigger_dmcli_cmd(
-            operation="setvalues",
-            param="Device.Users.User.3.X_CISCO_COM_Password",
-            value_for_set=devices.board.gui_password,
-        ):
-            raise BootFail("Failed to set the GUI password via dmcli")
+    if hasattr(devices.board, "gui_password") and not devices.board.trigger_dmcli_cmd(
+        operation="setvalues",
+        param="Device.Users.User.3.X_CISCO_COM_Password",
+        value_for_set=devices.board.gui_password,
+    ):
+        raise BootFail("Failed to set the GUI password via dmcli")
 
 
 post_boot_actions = {

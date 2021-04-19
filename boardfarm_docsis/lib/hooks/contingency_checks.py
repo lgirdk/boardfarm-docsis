@@ -142,13 +142,12 @@ class CheckInterface:
 
         try:
             # validate if all collected ip addresses are as per provisioning mode.
-            if not prov_mode == "none":
+            if prov_mode != "none":
                 check_interface(board, ip, prov_mode, [])
         except Exception as e:
             print("Interface check failed.\nReason: %s" % e)
             print(json.dumps(ip, indent=4))
-            raise (e)
-
+            raise e
         logger.info("CheckInterface service checks for BF Docsis executed")
 
         return ip
