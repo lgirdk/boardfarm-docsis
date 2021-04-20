@@ -119,11 +119,11 @@ def pre_boot_env(config, env_helper, devices):
 
 
 pre_boot_actions = {
-    "wan_clients": pre_boot_wan_clients,
-    "lan_clients": pre_boot_lan_clients,
-    "wlan_clients": pre_boot_wlan_clients,
-    "board": pre_boot_board,
-    "environment": pre_boot_env,
+    "wan_clients_pre_boot": pre_boot_wan_clients,
+    "lan_clients_pre_boot": pre_boot_lan_clients,
+    "wlan_clients_pre_boot": pre_boot_wlan_clients,
+    "board_pre_boot": pre_boot_board,
+    "environment_pre_boot": pre_boot_env,
 }
 
 
@@ -153,7 +153,7 @@ def boot_board(config, env_helper, devices):
         raise BootFail
 
 
-boot_actions = {"board": boot_board}
+boot_actions = {"board_boot": boot_board}
 
 
 def post_boot_board(config, env_helper, devices):
@@ -315,11 +315,11 @@ def post_boot_env(config, env_helper, devices):
 
 
 post_boot_actions = {
-    "board": post_boot_board,
-    "wan_clients": post_boot_wan_clients,
-    "lan_clients": post_boot_lan_clients,
-    "environment": post_boot_env,
-    "wlan_clients": post_boot_wlan_clients,
+    "board_post_boot": post_boot_board,
+    "wan_clients_post_boot": post_boot_wan_clients,
+    "lan_clients_post_boot": post_boot_lan_clients,
+    "environment_post_boot": post_boot_env,
+    "wlan_clients_connection": post_boot_wlan_clients,
 }
 
 
