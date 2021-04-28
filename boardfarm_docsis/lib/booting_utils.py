@@ -86,12 +86,15 @@ def check_and_connect_to_wifi(devices, wifi_client_data: dict) -> None:
 
     # Connect appropriate client to the network
     try:
-        devices.wlan_clients.filter(network, band)[0].wifi_client_connect(
+        wlan_client = devices.wlan_clients.filter(network, band)[0]
+        wlan_client.wifi_client_connect(
             ssid_name=ssid,
             password=password,
             bssid=bssid,
             security_mode=authentication,
         )
+        wlan_client.configure_proxy_pkgs()
+
     except AssertionError as e:
         logger.error(e)
         logger.error(
