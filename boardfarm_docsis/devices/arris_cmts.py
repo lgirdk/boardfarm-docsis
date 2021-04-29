@@ -200,7 +200,7 @@ class ArrisCMTS(BaseCmts):
         """
         self.sendline("exit")
         self.expect(self.prompt)
-        self.sendline("clear cable modem %s delete" % cmmac)
+        self.sendline("clear cable modem delete %s" % cmmac)
         self.expect(self.prompt)
         self.sendline("configure")
         self.expect(self.prompt)
@@ -216,7 +216,7 @@ class ArrisCMTS(BaseCmts):
         self.sendline("exit")
         self.expect(self.prompt)
         """ NB: this command does not reboot the CM, but forces it to reinitialise """
-        self.sendline("clear cable modem %s reset" % cmmac)
+        self.sendline("clear cable modem delete %s" % cmmac)
         self.expect(self.prompt)
         self.sendline("configure")
         self.expect(self.prompt)
