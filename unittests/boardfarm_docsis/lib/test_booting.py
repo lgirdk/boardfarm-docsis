@@ -211,6 +211,7 @@ def test_pre_boot_wan_clients__1_tftp(mocker):
 
 def test_pre_boot_lan_clients():
     devices = dev_helper()
+    devices.lan_clients = []
     boardfarm_docsis.lib.booting.pre_boot_lan_clients(Dummy(), Dummy(), devices)
 
 

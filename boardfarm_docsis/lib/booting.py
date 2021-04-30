@@ -58,14 +58,16 @@ def pre_boot_wan_clients(config, env_helper, devices):
 
 
 def pre_boot_lan_clients(config, env_helper, devices):
-    for x in devices:
+    for x in devices.lan_clients:
         if isinstance(x, DebianLAN):
             logger.info(f"Configuring {x.name}")
             x.configure()
 
 
 def pre_boot_wlan_clients(config, env_helper, devices):
-    pass
+    for x in getattr(devices, "wlan_clients", []):
+        logger.info(f"Configuring {x.name}")
+        x.configure()
 
 
 def pre_boot_board(config, env_helper, devices):
