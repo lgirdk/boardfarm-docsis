@@ -8,20 +8,20 @@
 
 import logging
 import re
-import sys
 from datetime import datetime
 from io import StringIO
 
 import netaddr
 import pandas as pd
 import pexpect
-from boardfarm.devices import connection_decider
-from boardfarm.exceptions import CodeError
+from boardfarm.exceptions import CodeError, PexpectErrorTimeout
+from boardfarm.lib.bft_pexpect_helper import bft_pexpect_helper
 from boardfarm.lib.regexlib import (
     AllValidIpv6AddressesRegex,
     ValidIpv4AddressRegex,
 )
 from tabulate import tabulate
+from termcolor import colored
 
 from .base_cmts import BaseCmts
 
@@ -49,13 +49,10 @@ class MiniCMTS(BaseCmts):
         self.password = kwargs.get("password", "admin")
         self.password_admin = kwargs.get("password_admin", "admin")
         self.mac_domain = kwargs.get("mac_domain", None)
-
-        if self.conn_cmd is None:
-            # TODO: try to parse from ipaddr, etc
-            raise Exception("No command specified to connect to Topvision mini CMTS")
+        self.port = kwargs.get("port", 22)
 
         self.connlock = None
-        self.name = kwargs.get("name", "mini_cmts")
+        self.name = kwargs.get("name", "cmts")
 
     @BaseCmts.connect_and_run
     def interact(self):
@@ -68,16 +65,63 @@ class MiniCMTS(BaseCmts):
         :raises Exception: Unable to get prompt on Topvision device
         """
 
-        self.connection = connection_decider.connection(
-            self.connection_type, device=self, conn_cmd=self.conn_cmd
-        )
+        for run in range(3):
+            try:
+                bft_pexpect_helper.spawn.__init__(
+                    self,
+                    command="ssh",
+                    args=[
+                        "%s@%s" % (self.username, self.ipaddr),
+                        "-p",
+                        str(self.port),
+                        "-o",
+                        "StrictHostKeyChecking=no",
+                        "-o",
+                        "UserKnownHostsFile=/dev/null",
+                        "-o",
+                        "ServerAliveInterval=60",
+                        "-o",
+                        "ServerAliveCountMax=5",
+                    ],
+                )
 
-        self.logfile_read = sys.stdout
-        self.connection.connect()
+                try:
+                    i = self.expect(
+                        [
+                            "yes/no",
+                            "assword:",
+                            "Last login",
+                            self.username + ".*'s password:",
+                        ]
+                        + self.prompt,
+                        timeout=30,
+                    )
+                    break
+                except PexpectErrorTimeout:
+                    raise Exception("Unable to connect to %s." % self.name)
+                except pexpect.EOF:
+                    if hasattr(self, "before"):
+                        logger.debug(self.before)
+                        raise Exception("Unable to connect to %s." % self.name)
+
+            except Exception as e:
+                logger.error(e)
+                logger.error(
+                    colored(
+                        f"Failed to connect to CMTS. Attempt {run+1}",
+                        color="red",
+                        attrs=["bold"],
+                    )
+                )
+                self.close()
+                self.pid = None
+        else:
+            raise Exception("Unable to connect to %s." % self.name)
         try:
-            if self.expect([pexpect.TIMEOUT, "Username:"]):
-                self.sendline(self.username)
-                self.expect("Password:")
+            if i == 0:
+                self.sendline("yes")
+                i = self.expect(["Last login", "assword:"])
+            if i in [1, 3]:
                 self.sendline(self.password)
                 self.expect(self.prompt[0])
                 self.sendline("enable")
