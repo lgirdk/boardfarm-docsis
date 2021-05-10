@@ -159,23 +159,24 @@ boot_actions = {"board_boot": boot_board}
 
 
 def post_boot_board(config, env_helper, devices):
-    no_of_reboot = devices.board.get_no_of_reboots()
-    for _ in range(80):
-        if devices.cmts.is_cm_online(ignore_partial=True):
-            no_of_reboot -= 1
-            if no_of_reboot <= 0:
-                break
-            else:
-                devices.board.wait_for_reboot(timeout=500)
-                logger.info("######Rebooting######")
-                devices.board.__reset__timestamp = time.time()
-                devices.cmts.clear_cm_reset(devices.board.cm_mac)
-                time.sleep(20)
-        else:
+
+    for _ in range(180):
+        if devices.cmts.is_cm_online(ignore_partial=True) is False:
             # show the arm prompt as it is a log in itself
             devices.board.atom.expect(pexpect.TIMEOUT, timeout=0.5)
             devices.board.arm.expect(pexpect.TIMEOUT, timeout=0.5)
             time.sleep(15)
+            continue
+        if devices.board.finalize_boot():
+            break
+
+        else:
+            devices.board.wait_for_reboot(timeout=900)
+            logger.info("######Rebooting######")
+            devices.board.__reset__timestamp = time.time()
+            devices.cmts.clear_cm_reset(devices.board.cm_mac)
+            time.sleep(20)
+
     else:
         msg = "\n\nFailed to Boot: board not online on CMTS"
         logger.critical(msg)
