@@ -353,10 +353,63 @@ class DocsisEnvHelper(EnvHelper):
         """Returns the ["environment_def"]["board"]["SKU"] value
         :return: SKU values from eval list
         :rtype: String"""
+
         try:
             return self.env["environment_def"]["board"]["SKU"]
         except (KeyError, AttributeError):
-            return None
+            raise BftEnvMismatch("SKU is not defined")
+
+    def has_customer_id(self):
+        """Check if ["environment_def"]["board"]["boot_file"] exist and has customer_id defined
+        :rtype: boolean"""
+        try:
+            return (
+                self.env["environment_def"]["board"]["boot_file"].find(
+                    "CustomerId|unsignedInt|"
+                )
+                != -1
+            )
+        except (AttributeError, KeyError):
+            raise BftEnvMismatch("Bootfile not defined")
+
+    def verify_customer_id(self, mapped_customer_id):
+        """Verify if customer_id value matches defined SKU
+        :rtype: boolean"""
+        if (
+            self.env["environment_def"]["board"]["boot_file"].find(
+                "CustomerId|unsignedInt|" + str(mapped_customer_id)
+            )
+            != -1
+        ):
+            return True
+        else:
+            raise BftEnvMismatch("Customer ID mismatch")
+
+    def is_production_image(self):
+        return (
+            self.env["environment_def"]["board"]["software"]["image_uri"].find("NOSH")
+            != -1
+        )
+
+    def add_customerid_to_bootfile(self):
+        # Add customer id to bootfile
+        pass
+
+    def verify_sku_customer_id(self, sku_dict):
+        """Verify if SKU and Customer_id are available in env json and match them
+        :rtype value: boolean"""
+
+        board_sku = self.get_board_sku()
+
+        if self.has_customer_id():
+            return self.verify_customer_id(sku_dict[board_sku])
+        else:
+            if self.is_production_image():
+                # returns True until there is a method to check inventory json
+                return True
+            else:
+                self.add_customerid_to_bootfile()
+                return True
 
     def dhcp_options(self):
         """Returns the ["environment_def"]["provisioner"]["options"].
