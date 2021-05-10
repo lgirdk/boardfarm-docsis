@@ -358,7 +358,7 @@ class MiniCMTS(BaseCmts):
         """
         return self._get_cable_modem_ip(cm_mac, ipv6=True)
 
-    def _get_cable_modem_ip(self, cm_mac: str, ipv6=False) -> [str, None]:
+    def _get_cable_modem_ip(self, cm_mac: str, ipv6=False) -> str:
         """Internal function to get cable modem ip
 
         :param cm_mac: mac address of the CM
@@ -366,11 +366,11 @@ class MiniCMTS(BaseCmts):
         :param ipv6: flag to return ipv6 address
         :type ipv6: bool
         :return: ip address of cable modem or "None"
-        :rtype: string, None
+        :rtype: string
         """
         if not self.check_online(cm_mac):
             logger.debug(f"Modem {cm_mac} is not online. Can not get ip.")
-            return None
+            return "None"
         additional_args = "ipv6" if ipv6 else ""
         scm = self._show_cable_modem(additional_args)
         try:
