@@ -1212,7 +1212,7 @@ class ArrisCMTS(BaseCmts):
 
     @BaseCmts.connect_and_run
     def check_output(self, cmd):
-        """get check_output out from parent class """
+        """get check_output out from parent class"""
         return super().check_output(cmd)
 
     def get_current_time(self, fmt="%Y-%m-%dT%H:%M:%S%z"):
