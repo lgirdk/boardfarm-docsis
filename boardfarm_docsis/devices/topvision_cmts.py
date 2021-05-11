@@ -10,6 +10,7 @@ import logging
 import re
 from datetime import datetime
 from io import StringIO
+from typing import List
 
 import netaddr
 import pandas as pd
@@ -218,6 +219,46 @@ class MiniCMTS(BaseCmts):
         return self.__run_and_return_df(
             cmd=cmd, columns=columns, index="CPE_MAC", skiprows=1, skipfooter=6
         )
+
+    @BaseCmts.convert_mac_to_cmts_type
+    def _show_cable_modem_bonded_channels(self, cm_mac: str) -> pd.DataFrame:
+        """Internal api to return scm bonded channels dataframe"""
+        columns = [
+            "MAC_ADDRESS",
+            "IP_ADDRESS",
+            "I/F",
+            "MAC_STATE",
+            "PRIMARY_SID",
+            "UPSTREAM_PRIMARY",
+            "DOWNSTREAM_PRIMARY",
+        ]
+        cmd = f"show cable modem {cm_mac} primary-channel"
+        result = self.__run_and_return_df(
+            cmd=cmd, columns=columns, index="MAC_ADDRESS", skiprows=2, skipfooter=0
+        )
+        return result
+
+    @BaseCmts.convert_mac_to_cmts_type
+    def DUT_chnl_lock(self, cm_mac: str) -> List[int]:
+        """Return amount of upstream / downstream channels that modem is bonded to
+
+        :param cm_mac: cable modem mac address
+        :return: [upstream_channels_count, downstream_channels_count]
+        """
+        scm = self._show_cable_modem_bonded_channels(cm_mac)
+
+        upstream_list = str(scm.loc[cm_mac]["UPSTREAM_PRIMARY"])
+        downstream_list = str(scm.loc[cm_mac]["DOWNSTREAM_PRIMARY"])
+
+        # 4(1,2,3,5,6,7,8) 1(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24)
+        upstream_channels_count = len(
+            upstream_list.replace("(", ",").replace(")", "").split(",")
+        )
+        downstream_channels_count = len(
+            downstream_list.replace("(", ",").replace(")", "").split(",")
+        )
+
+        return [upstream_channels_count, downstream_channels_count]
 
     @BaseCmts.connect_and_run
     def is_cm_online(self, ignore_bpi=False, ignore_partial=False, ignore_cpe=False):
