@@ -1,4 +1,5 @@
 import logging
+import re
 import time
 
 import pexpect
@@ -7,14 +8,20 @@ from boardfarm.exceptions import CodeError
 from boardfarm.lib import SnmpHelper
 from boardfarm.lib.DeviceManager import device_type
 from boardfarm.lib.network_helper import valid_ipv4, valid_ipv6
+from boardfarm.lib.SNMPv2 import SNMPv2
 from netaddr import EUI, mac_unix_expanded
+
+from boardfarm_docsis.lib.docsis import cm_cfg as cm_cfg_cls
+from boardfarm_docsis.lib.docsis import docsis_encoder
 
 logger = logging.getLogger("bft")
 
 
 # TODO: probably the wrong parent
-class Docsis(openwrt_router.OpenWrtRouter):
+class DocsisInterface:
     """Docsis class used to perform generic operations"""
+
+    cm_cfg = None
 
     # The possible configurations for the CM
     cm_mgmt_config_modes = {"dual", "ipv4", "ipv6"}
@@ -211,3 +218,160 @@ class Docsis(openwrt_router.OpenWrtRouter):
             return "honoreRouterInitMode" == out.rval
         else:
             raise CodeError(f"Failed to get esafeErouterInitModeControl via {method}")
+
+    reprovisionFirstRun = True
+
+    def reprovision(self, provisioner, cm_cfg=None, mta_cfg=None, erouter_cfg=None):
+        """Provision the board with config file
+        :param provisioner: provisioner device
+        :param cm_cfg: cable modem config, defaults to None
+        :type cm_cfg: string, optional
+        :param mta_cfg: MTA config, defaults to None
+        :type mta_cfg: string, optional
+        :param erouter_cfg: erouter config, defaults to None
+        :type erouter_cfg: string, optional
+        """
+        if cm_cfg is None:
+            cm_cfg = self.env_helper.get_board_boot_file()
+
+        # if mta_cfg is None:
+        #    # to check where to get the mta config from
+
+        if type(cm_cfg) is str:
+            self.cm_cfg = cm_cfg_cls(cfg_file=cm_cfg)
+
+        self.update_config()
+
+        provisioner.tftp_device = self.dev.board.tftp_dev
+
+        docsis_encoder.copy_cmts_provisioning_files(self.config, self.tftp_dev, self)
+        if self.reprovisionFirstRun:
+            self.reprovisionFirstRun = False
+            provisioner.provision_board(self.config)
+        else:
+            provisioner.reprovision_board(self.config)
+
+    def update_config(self):
+        """Get the mac address of CM, MTA and erouter, add extra provisioning to the config"""
+        config = self.config
+        cm_cfg = self.cm_cfg
+        if cm_cfg is None:
+            cm_cfg = self.env_helper.get_board_boot_file()
+            self.cm_cfg = cm_cfg_cls(cfg_file=cm_cfg)
+        mta_cfg = None
+        # TODO: use EUI to parse cm_mac
+        if "cm_mac" not in config:
+            print("MAC addresses not in config, some provisioning might not work!")
+            return
+
+        if "mta_mac" not in config:
+            from netaddr import EUI, mac_unix_expanded
+
+            mac = EUI(config["cm_mac"])
+            config["mta_mac"] = "%s" % EUI(int(mac) + 1, dialect=mac_unix_expanded)
+
+        if "erouter_mac" not in config:
+            from netaddr import EUI, mac_unix_expanded
+
+            mac = EUI(config["cm_mac"])
+            config["erouter_mac"] = "%s" % EUI(int(mac) + 2, dialect=mac_unix_expanded)
+
+        config["tftp_cfg_files"] = [cm_cfg, mta_cfg]
+
+        if hasattr(self.dev, "provisioner") and hasattr(
+            self.dev.provisioner, "prov_ip"
+        ):
+            wan = self.dev.wan
+            provisioner = self.dev.provisioner
+
+            config["extra_provisioning"] = {
+                "mta": {
+                    "hardware ethernet": config["mta_mac"],
+                    "filename": '"' + "mta-config-d41d8cd98f.bin" '"',
+                    "options": {
+                        "bootfile-name": '"' + "mta-config-d41d8cd98f.bin" '"',
+                        "dhcp-parameter-request-list": "3, 6, 7, 12, 15, 43, 122",
+                        "domain-name": '"sipcenter.com"',
+                        "domain-name-servers": wan.gw,
+                        "routers": provisioner.mta_gateway,
+                        "log-servers": provisioner.prov_ip,
+                        "host-name": '"' + config.get_station() + '"',
+                    },
+                },
+                "cm": {
+                    "hardware ethernet": config["cm_mac"],
+                    "filename": '"' + self.cm_cfg.encoded_fname + '"',
+                    "options": {
+                        "bootfile-name": '"' + self.cm_cfg.encoded_fname + '"',
+                        "dhcp-parameter-request-list": "2, 3, 4, 6, 7, 12, 43, 122",
+                        "docsis-mta.dhcp-server-1": provisioner.prov_ip,
+                        "docsis-mta.dhcp-server-2": provisioner.prov_ip,
+                        "docsis-mta.provision-server": "0 08:54:43:4F:4D:4C:41:42:53:03:43:4F:4D:00",
+                        "docsis-mta.kerberos-realm": "05:42:41:53:49:43:01:31:00",
+                        "domain-name-servers": wan.gw,
+                        "time-offset": "-25200",
+                    },
+                },
+            }
+            # No ipv6 for this device, so let's zero out the config so it comes up ipv4 properly
+            if "extra_provisioning_v6" not in config:
+                config["extra_provisioning_v6"] = {}
+            config["extra_provisioning_v6"] = {
+                "cm": {
+                    "host-identifier option dhcp6.client-id": "00:03:00:01:"
+                    + config["cm_mac"],
+                    "options": {
+                        "docsis.configuration-file": '"%s"' % self.cm_cfg.encoded_fname,
+                        "dhcp6.name-servers": wan.gwv6,
+                    },
+                },
+                "erouter": {
+                    "host-identifier option dhcp6.client-id": "00:03:00:01:"
+                    + config["erouter_mac"],
+                    "options": {"dhcp6.name-servers": wan.gwv6},
+                },
+            }
+
+    def flash(self, meta, method="snmp"):
+        if method == "snmp":
+            self.flash_with_snmp(meta)
+
+    def flash_with_snmp(self, image: str):
+        if image is None:
+            raise Exception("No firware image was provided to flash DUT using snmp")
+
+        wan = self.dev.wan
+        cm_ip = self.dev.cmts.get_cmip(self.cm_mac)
+        snmp = SNMPv2(wan, cm_ip)
+
+        protocol = "1"  # Default protocol to tftp
+        server_ip = wan.get_interface_ipaddr(wan.iface_dut)
+        filename = re.search("LG-RDK.*", image).group()
+        # Copying the file to tftpserver
+        wan.sendline("wget -nc {} -O /tftpboot/{}".format(image, filename))
+        wan.expect(["saved"] + ["already there; not retrieving"])
+        wan.expect_prompt()
+
+        self.dev.cmts.clear_cm_reset(self.cm_mac)
+        for _ in range(20):
+            if self.dev.cmts.is_cm_online(ignore_partial=True):
+                break
+            time.sleep(20)
+
+        wan.sendline(
+            f"snmpset -v 2c -c private {cm_ip} .1.3.6.1.4.1.1038.28.1.1.5.0 i 2"
+        )  # noqa: E501
+        wan.expect_prompt()
+
+        snmp.snmpset("docsDevSwServer", server_ip, "a")
+
+        snmp.snmpset("docsDevSwFilename", filename, "string")
+
+        snmp.snmpset("docsDevSwServerTransportProtocol", protocol, "integer")
+
+        status = "1"
+        snmp.snmpset("docsDevSwAdminStatus", status, "integer")
+
+
+class Docsis(DocsisInterface, openwrt_router.OpenWrtRouter):
+    pass
