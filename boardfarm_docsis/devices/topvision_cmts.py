@@ -6,6 +6,7 @@
 # This file is distributed under the Clear BSD license.
 # The full text can be found in LICENSE in the root directory.
 
+import ipaddress
 import logging
 import re
 from datetime import datetime
@@ -403,17 +404,28 @@ class MiniCMTS(BaseCmts):
         return "p-online" in scm.loc[cm_mac]["MAC_STATE"]
 
     @BaseCmts.connect_and_run
-    def get_cmts_ip_bundle(self) -> [str, None]:
-        """Get CMTS bundle IP"""
-        # Only one ip bundle present for now on cmts, so just searching for all
-        cmd = 'show interface bundle all | include "ip address"'
+    def get_cmts_ip_bundle(self, cm_mac: str = None, gw_ip: str = None) -> [str]:
+        """Get CMTS bundle IP, Validate if Gateway IP is configured in CMTS and both are in same network
+        The first host address within the network will be assumed to be gateway for Mini CMTS
+
+        :param cm_mac: cm mac
+        :type cm_mac: str
+        :param gw_ip: gateway ip
+        :type gw_ip: str
+        :raises assertion error: ERROR: Failed to get the CMTS bundle IP
+        :return: gateway ip if address configured on mini cmts else return all ip bundles
+        :rtype: str
+        """
+        cmd = 'show running-config | include "ip address"'
         output = self.check_output(cmd)
-        ipv4 = re.search(ValidIpv4AddressRegex, output)
-        if ipv4:
-            # Default address is always first one in the output
-            return ipv4.group(0)
-        else:
-            assert 0, "ERROR: Failed to get the CMTS bundle IP"
+        if gw_ip is None:
+            return output
+        for line in output.splitlines():
+            addr, mask = line.split()[2:-1]
+            cmts_ip = ipaddress.ip_interface(addr + "/" + mask)
+            if gw_ip == str(next(cmts_ip.network.hosts())):
+                return gw_ip
+        assert 0, "ERROR: Failed to get the CMTS bundle IP"
 
     @BaseCmts.convert_mac_to_cmts_type
     def get_qos_parameter(self, cm_mac):
