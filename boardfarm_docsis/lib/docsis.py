@@ -293,13 +293,16 @@ class cm_cfg(object):
     # place so let's allow for that for now
     legacy_search_path = None
 
-    def __init__(self, start=None, fname=None):
+    def __init__(self, start=None, fname=None, cfg_file_str=None):
         """Creates a default basic CM cfg file for modification"""
         self.dslite = False
 
         self._start = start
-        # TODO: we require loading a file for the moment
-        if start is None:
+
+        if cfg_file_str:
+            # This is a config file in a long string format (multiline string)
+            self.load_from_string(cm_str_txt=cfg_file_str)
+        elif start is None:
             # create a default config file with bare minimum config,
             # no snmp objs, no CVCs, nothing vendor specific!
             # only CM RF minimal config
@@ -410,11 +413,14 @@ class mta_cfg(cm_cfg):
 
     encoded_suffix = ".bin"
 
-    def __init__(self, start=None, fname=None):
+    def __init__(self, start=None, fname=None, mta_file_str=None):
         """
         Creates a default basic mta  cfg file for modification
         """
-        if type(start) is str:
+
+        if mta_file_str:
+            self.load_from_string(cm_str_txt=mta_file_str)
+        elif type(start) is str:
             # OLD fashined: this is a file name, load the contents from the file
             self.original_file = start
             self.original_fname = os.path.split(start)[1]
