@@ -5,7 +5,6 @@ import warnings
 
 import boardfarm.lib.booting
 import boardfarm.lib.voice
-import pexpect
 from boardfarm.devices.debian_lan import DebianLAN
 from boardfarm.exceptions import (
     BootFail,
@@ -23,12 +22,12 @@ from boardfarm_docsis.lib.booting_utils import (
     check_and_connect_to_wifi,
 )
 from boardfarm_docsis.lib.dns_helper import dns_acs_config
+from boardfarm_docsis.use_cases.provision_helper import ProvisionHelper
 
 logger = logging.getLogger("bft")
 
 
 def pre_boot_wan_clients(config, env_helper, devices):
-
     if env_helper.get_dns_dict():
         # to get reachable and unreachable ips for ACS DNS
         devices.wan.auth_dns = True
@@ -106,9 +105,7 @@ def pre_boot_env(config, env_helper, devices):
         if env_helper.vendor_encap_opts():
             devices.provisioner.vendor_opts_acs_url = True
         logger.info("Provisioning board")
-        boardfarm.lib.booting.provision(
-            devices.board, prov, devices.wan, devices.board.tftp_device
-        )
+        ProvisionHelper(devices).provision_board("provisioner", "board")
     else:
         # should this be an error?
         logger.error(
@@ -142,7 +139,7 @@ def boot_board(config, env_helper, devices):
                     devices.board,
                     devices.lan,
                     devices.wan,
-                    devices.board.tftp_device,
+                    devices.board.tftp_dev,
                 )
                 # store the timestamp, for uptime check later (in case the board
                 # crashes on boot)
@@ -163,8 +160,7 @@ def post_boot_board(config, env_helper, devices):
     for _ in range(180):
         if devices.cmts.is_cm_online(ignore_partial=True) is False:
             # show the arm prompt as it is a log in itself
-            devices.board.atom.expect(pexpect.TIMEOUT, timeout=0.5)
-            devices.board.arm.expect(pexpect.TIMEOUT, timeout=0.5)
+            devices.board.touch()
             time.sleep(15)
             continue
         if devices.board.finalize_boot():
@@ -179,9 +175,7 @@ def post_boot_board(config, env_helper, devices):
         msg = "\n\nFailed to Boot: board not online on CMTS"
         logger.critical(msg)
         raise BootFail(msg)
-    devices.board.login_atom_root()
-    devices.board.login_arm_root()
-    devices.board.atom.set_printk()
+    devices.board.post_boot_init()
     board_uptime = devices.board.get_seconds_uptime()
     logger.info(f"Time up: {board_uptime}")
     if hasattr(devices.board, "__reset__timestamp"):
@@ -189,7 +183,7 @@ def post_boot_board(config, env_helper, devices):
         logger.info(f"Time since reboot: {time_elapsed}")
         if time_elapsed < board_uptime:
             raise BootFail("Error: board did not reset!")
-        if (time_elapsed - board_uptime) > 30:
+        if (time_elapsed - board_uptime) > 60:
             logger.warning(
                 colored(
                     "Board may have rebooted multiple times after flashing process",
