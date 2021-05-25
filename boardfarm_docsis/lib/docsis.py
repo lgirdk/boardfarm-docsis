@@ -14,6 +14,7 @@ import logging
 import os
 import re
 import tempfile
+from pathlib import Path
 
 import boardfarm
 from aenum import Enum
@@ -419,7 +420,7 @@ class mta_cfg(cm_cfg):
         """
 
         if mta_file_str:
-            self.load_from_string(cm_str_txt=mta_file_str)
+            self.load_from_string(mta_str_txt=mta_file_str)
         elif type(start) is str:
             # OLD fashined: this is a file name, load the contents from the file
             self.original_file = start
@@ -435,28 +436,7 @@ class mta_cfg(cm_cfg):
             self.txt = (
                 start.gen_mta_cfg()
             )  # the derived class already created the skeleton
-
-            high, low = [], []
-            for line in self.txt.splitlines():
-                if "pktcSigDevCIDFskAfterRing" in line:
-                    low.append(line)
-                else:
-                    high.append(line)
-            self.txt = "\n".join(high + low)
-            new_list = (
-                self.txt.replace("SnmpMibObject", "")
-                .replace(";", "")
-                .replace(" ", "")
-                .split("\n")
-            )
-            final_list = []
-            for val in new_list:
-                if val != "":
-                    mib_name = val.split()[0].split(".")[0]
-                    mib_oid = SnmpHelper.get_mib_oid(mib_name)
-                    new_val = val.replace(mib_name, "." + mib_oid)
-                    final_list.append(new_val)
-            self.txt = "\n".join(final_list)
+            self.reformatted_txt = self.reformat(self.txt)
             logger.info("Config name created: %s" % fname)
             self.original_fname = fname
             self.encoded_fname = self.original_fname.replace(
@@ -464,6 +444,56 @@ class mta_cfg(cm_cfg):
             )
         else:
             raise Exception("Wrong type %s received" % type(start))
+
+    def load_from_string(self, mta_str_txt: str, name_prefix: str = "") -> None:
+        """Load CM cfg from text string (e.g. the file is stored in a multiline
+        string).
+        :parameter cm_str_txt: s string containing the config file
+        :type cm_str_txt: string
+        :parameter name: name of config file (optional)
+        """
+        self.txt = mta_str_txt
+        num = self.shortname(10)
+
+        self.original_file = None
+        name_prefix = name_prefix or "cm-config"
+
+        self.reformatted_txt = self.reformat(self.txt)
+
+        self.original_fname = f"{name_prefix}-{num}.txt"
+        self.encoded_fname = self.original_fname.replace(".txt", self.encoded_suffix)
+
+    def reformat(self, txt: str) -> str:
+        """In-case the generic MTA config text needs to be reformatted as per
+        Vendor Specific requirements
+
+        :returns: string, reformatted text
+        """
+        high, low = [], []
+        for line in txt.splitlines():
+            if "pktcSigDevCIDFskAfterRing" in line:
+                low.append(line)
+            else:
+                high.append(line)
+        txt = "\n".join(high + low)
+        oid_texts = []
+        for val in (
+            txt.replace("SnmpMibObject", "")
+            .replace(";", "")
+            .replace(" ", "")
+            .splitlines()
+        ):
+            if val != "":
+                mib_name = val.split()[0].split(".")[0]
+                mib_oid = SnmpHelper.get_mib_oid(mib_name)
+                oid_val = val.replace(mib_name, "." + mib_oid)
+                oid_texts.append(oid_val)
+        return "\n".join(oid_texts)
+
+    def save(self, full_path: str) -> None:
+        path = Path(full_path)
+        txt = getattr(self, "reformatted_txt", "") or self.txt
+        path.write_text(txt)
 
 
 # -----------------------------------Library Methods-----------------------------------
