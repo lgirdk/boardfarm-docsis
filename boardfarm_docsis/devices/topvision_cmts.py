@@ -9,9 +9,10 @@
 import ipaddress
 import logging
 import re
+from collections import defaultdict
 from datetime import datetime
 from io import StringIO
-from typing import List
+from typing import Dict, List
 
 import netaddr
 import pandas as pd
@@ -163,7 +164,7 @@ class MiniCMTS(BaseCmts):
 
     @BaseCmts.connect_and_run
     def __run_and_return_df(
-        self, cmd, columns, index, skiprows=2, skipfooter=1
+        self, cmd, columns, index, skiprows=2, skipfooter=1, dtype=None
     ) -> pd.DataFrame:
         """Internal wrapper for (tabbed output->dataframe) parsing
 
@@ -172,6 +173,7 @@ class MiniCMTS(BaseCmts):
         :param index: column to be dataframe index
         :param skiprows: how many rows to skip in header
         :param skipfooter: how many rows to skip in footer
+        :param dtype: columns types dict
         :return: parsed dataframe
         """
         output = self.check_output(cmd)
@@ -184,6 +186,7 @@ class MiniCMTS(BaseCmts):
             delim_whitespace=True,
             engine="python",
             index_col=index,
+            dtype=dtype,
         )
 
     def _show_cable_modem(self, additional_args="") -> pd.DataFrame:
@@ -428,27 +431,37 @@ class MiniCMTS(BaseCmts):
         assert 0, "ERROR: Failed to get the CMTS bundle IP"
 
     @BaseCmts.convert_mac_to_cmts_type
-    def get_qos_parameter(self, cm_mac):
-        columns = [
-            "SFID",
-            "SF_REF",
-            "DIRECTION",
-            "CURR_STATE",
-            "SID",
-            "SCHED_TYPE",
-            "PRORITY",
-            "MAX_SUS_RATE",
-            "MAX_BURST",
-            "MIN_RATE",
-            "PEAK_RATE",
-            "FLAGS",
-        ]
+    def get_qos_parameter(self, cm_mac) -> Dict[str, List[dict]]:
+        columns = (
+            [  # Renamed columns to keep output backward compatible with legacy tests
+                "Sfid",
+                "SF_REF",
+                "Direction",
+                "Current State",
+                "Sid",
+                "Scheduling Type",
+                "Traffic Priority",
+                "Maximum Sustained rate",
+                "Maximum Burst",
+                "Minimum Reserved rate",
+                "Peak rate",
+                "FLAGS",
+            ]
+        )
         cmd = f"show cable modem {cm_mac} qos"
         qos_response = self.__run_and_return_df(
-            cmd=cmd, columns=columns, index="DIRECTION", skiprows=3, skipfooter=0
+            cmd=cmd,
+            columns=columns,
+            index=["Sfid", "Direction"],
+            skiprows=3,
+            skipfooter=0,
+            dtype={"Sid": "object"},
         )
-        print_dataframe(qos_response)
-        return qos_response.to_dict(orient="index")
+        result = defaultdict(list)
+        for key, data in qos_response.to_dict("index").items():
+            data.update({"Sfid": str(key[0])})
+            result[key[1]].append(data)
+        return result
 
     @BaseCmts.convert_mac_to_cmts_type
     def get_mtaip(self, cm_mac: str, mta_mac: str = None) -> str:
