@@ -12,7 +12,7 @@ import re
 from collections import defaultdict
 from datetime import datetime
 from io import StringIO
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import netaddr
 import pandas as pd
@@ -487,17 +487,27 @@ class MiniCMTS(BaseCmts):
         return mtaip
 
     @BaseCmts.connect_and_run
-    def ping(self, ping_ip: str) -> bool:
-        """This function to ping the device from cmts
-        :param ping_ip: device ip which needs to be verified
-        :ping_ip type: string
-        :return: True if ping passed else False
-        :rtype: bool
+    def ping(
+        self,
+        ping_ip: str,
+        ping_count: Optional[int] = 4,
+        timeout: Optional[int] = 4000,
+    ) -> bool:
+        """Ping the device from cmts
+        :param ping_ip: device ip which needs to be pinged.
+        :param ping_count: optional. Number of ping packets.
+        :param timeout: optional, ms. Timeout for each packet.
+        :return: True if all ping packets passed else False
         """
-
-        output = self.check_output(f"ping {ping_ip}")
-        # Ping command does not have arguments on CC8800, so checking hardcoded
-        return "4 packets transmitted, 4 packets received, 0% packet loss" in output
+        command_timeout = (ping_count * timeout) / 1000 + 5  # Seconds
+        output = self.check_output(
+            f"ping {ping_ip} timeout {timeout} pktnum {ping_count}",
+            timeout=command_timeout,
+        )
+        match = re.search(
+            f"{ping_count} packets transmitted, {ping_count} packets received", output
+        )
+        return bool(match)
 
     def run_tcpdump(self, time, iface="any", opts=""):
         """tcpdump capture on the cmts interface
