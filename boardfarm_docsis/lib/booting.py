@@ -309,9 +309,8 @@ def post_boot_env(config, env_helper, devices):
     # should this be here?
     if hasattr(devices.board, "gui_password") and not devices.board.trigger_dmcli_cmd(
         operation="setvalues",
-        param="Device.Users.User.3.X_CISCO_COM_Password",
+        param="Device.Users.User.3.Password",
         value_for_set=devices.board.gui_password,
-        console=devices.board.atom,
     ):
         raise BootFail("Failed to set the GUI password via dmcli")
 
