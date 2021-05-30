@@ -337,18 +337,6 @@ class DocsisEnvHelper(EnvHelper):
         except (KeyError, AttributeError):
             return False
 
-    def has_board_sku(self):
-        try:
-            if self.env["environment_def"]["board"].get("boot_file", None):
-                return (
-                    self.env["environment_def"]["board"]["boot_file"].find("CustomerId")
-                    != -1
-                )
-            self.env["environment_def"]["board"]["SKU"]
-            return True
-        except (AttributeError, KeyError):
-            return False
-
     def get_board_sku(self):
         """Returns the ["environment_def"]["board"]["SKU"] value
         :return: SKU values from eval list
@@ -357,7 +345,17 @@ class DocsisEnvHelper(EnvHelper):
         try:
             return self.env["environment_def"]["board"]["SKU"]
         except (KeyError, AttributeError):
-            raise BftEnvMismatch("SKU is not defined")
+            raise BftEnvExcKeyError
+
+    def has_board_sku(self):
+        """Returns True if  ["environment_def"]["board"]["SKU"] exists
+        :return: possible values are True/False
+        :rtype: bool"""
+        try:
+            self.get_board_sku()
+            return True
+        except BftEnvExcKeyError:
+            return False
 
     def has_customer_id(self):
         """Check if ["environment_def"]["board"]["boot_file"] exist and has customer_id defined
@@ -370,7 +368,7 @@ class DocsisEnvHelper(EnvHelper):
                 != -1
             )
         except (AttributeError, KeyError):
-            raise BftEnvMismatch("Bootfile not defined")
+            raise BftEnvMismatch("Customer_id not defined")
 
     def verify_customer_id(self, mapped_customer_id):
         """Verify if customer_id value matches defined SKU
@@ -383,7 +381,7 @@ class DocsisEnvHelper(EnvHelper):
         ):
             return True
         else:
-            raise BftEnvMismatch("Customer ID mismatch")
+            return False
 
     def is_production_image(self):
         return (
@@ -391,25 +389,20 @@ class DocsisEnvHelper(EnvHelper):
             != -1
         )
 
-    def add_customerid_to_bootfile(self):
-        # Add customer id to bootfile
-        pass
+    def add_customerid_to_bootfile(self, customer_id):
+        """Verify if customer_id value matches defined SKU"""
 
-    def verify_sku_customer_id(self, sku_dict):
-        """Verify if SKU and Customer_id are available in env json and match them
-        :rtype value: boolean"""
+        bootfile = self.env["environment_def"]["board"]["boot_file"]
+        customer_id_to_add = f'\n\t\t\tGenericTLV TlvCode 12 TlvString "Device.X_LGI-COM_General_Internal.CustomerId|unsignedInt|{customer_id}";'
 
-        board_sku = self.get_board_sku()
+        last_index = re.search(
+            r"InitializationMode(\s{1,}|\t{1,})[0-3];", bootfile
+        ).end()
 
-        if self.has_customer_id():
-            return self.verify_customer_id(sku_dict[board_sku])
-        else:
-            if self.is_production_image():
-                # returns True until there is a method to check inventory json
-                return True
-            else:
-                self.add_customerid_to_bootfile()
-                return True
+        temp_list = [bootfile[:last_index], bootfile[last_index:]]
+        temp_list.insert(1, customer_id_to_add)
+
+        self.env["environment_def"]["board"]["boot_file"] = ("").join(temp_list)
 
     def dhcp_options(self):
         """Returns the ["environment_def"]["provisioner"]["options"].
