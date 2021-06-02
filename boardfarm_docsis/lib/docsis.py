@@ -456,7 +456,7 @@ class mta_cfg(cm_cfg):
         num = self.shortname(10)
 
         self.original_file = None
-        name_prefix = name_prefix or "cm-config"
+        name_prefix = name_prefix or "mta-config"
 
         self.reformatted_txt = self.reformat(self.txt)
 
@@ -834,7 +834,7 @@ class docsis(docsis_encoder):
         super(docsis, self).__init__(*args, **kw)
 
 
-def reprovision_board(device_mgr, boot_file_txt):
+def reprovision_board(device_mgr, boot_file_txt=None, mta_file_txt=None):
     """Full reprovisioning of the board with the given boot file passed as a string.
     The board is then rebooted and expected to come online (on the CMTS side).
 
@@ -842,8 +842,13 @@ def reprovision_board(device_mgr, boot_file_txt):
     :type device_mgr: object
     :param boot_file_txt: a string containing the boot file (not the file name)
     :type boot_file_txt: string (multiline)
+    :param mta_file_txt: a string containing the MTA boot file (not the file name)
+    :type mta_file_txt: string (multiline)
     """
-    device_mgr.board.cm_cfg.load_from_string(boot_file_txt)
+    if boot_file_txt:
+        device_mgr.board.cm_cfg.load_from_string(boot_file_txt)
+    if mta_file_txt:
+        device_mgr.board.mta_cfg.load_from_string(mta_file_txt)
     device_mgr.board.reprovision(device_mgr.provisioner)
     device_mgr.board.reset()
     device_mgr.cmts.clear_cm_reset(device_mgr.board.cm_mac)
