@@ -1,5 +1,4 @@
 import logging
-import re
 import time
 
 import pexpect
@@ -10,6 +9,7 @@ from boardfarm.lib.DeviceManager import device_type
 from boardfarm.lib.network_helper import valid_ipv4, valid_ipv6
 from boardfarm.lib.SNMPv2 import SNMPv2
 from netaddr import EUI, mac_unix_expanded
+from termcolor import colored
 
 from boardfarm_docsis.lib.docsis import cm_cfg as cm_cfg_cls
 from boardfarm_docsis.lib.docsis import docsis_encoder
@@ -17,7 +17,6 @@ from boardfarm_docsis.lib.docsis import docsis_encoder
 logger = logging.getLogger("bft")
 
 
-# TODO: probably the wrong parent
 class DocsisInterface:
     """Docsis class used to perform generic operations"""
 
@@ -85,15 +84,6 @@ class DocsisInterface:
             # this can be a lot longer than 5 minutes so let's touch each pass
             self.touch()
         return False
-
-    def tr069_connected(self):
-        """This method validates if the TR069 client is running on CM
-
-        :raises Exception: to be implemented
-        """
-        raise AssertionError(
-            "Code to detect if tr069 client is running, to be implemented"
-        )
 
     def check_valid_docsis_ip_networking(self, strict=True, time_for_provisioning=240):
         """This method is to check the docsis provision on CM
@@ -221,6 +211,10 @@ class DocsisInterface:
 
     reprovisionFirstRun = True
 
+    def copy_cmts_provisioning_files(self, config, tftp_dev, board):
+        """This can be overridden to cater for special encoding methods"""
+        docsis_encoder.copy_cmts_provisioning_files(config, tftp_dev, board)
+
     def reprovision(self, provisioner, cm_cfg=None, mta_cfg=None, erouter_cfg=None):
         """Provision the board with config file
         :param provisioner: provisioner device
@@ -232,19 +226,30 @@ class DocsisInterface:
         :type erouter_cfg: string, optional
         """
         if cm_cfg is None:
-            cm_cfg = self.env_helper.get_board_boot_file()
+            cm_cfg = self.dev.board.env_helper.get_board_boot_file()
 
-        # if mta_cfg is None:
-        #    # to check where to get the mta config from
+        if mta_cfg is None:
+            if hasattr(self.dev.board, "mta_cfg"):
+                mta_cfg = self.dev.board.mta_cfg
+            else:
+                logger.warning(
+                    colored(
+                        "WARNING: MTA config file missing. MTA will not be configured at boot!",
+                        color="red",
+                        attrs=["bold"],
+                    )
+                )
 
         if type(cm_cfg) is str:
-            self.cm_cfg = cm_cfg_cls(cfg_file=cm_cfg)
+            self.cm_cfg = cm_cfg_cls(cfg_file_str=cm_cfg)
 
         self.update_config()
 
         provisioner.tftp_device = self.dev.board.tftp_dev
 
-        docsis_encoder.copy_cmts_provisioning_files(self.config, self.tftp_dev, self)
+        self.copy_cmts_provisioning_files(
+            self.config, self.dev.board.tftp_dev, self.dev.board
+        )
         if self.reprovisionFirstRun:
             self.reprovisionFirstRun = False
             provisioner.provision_board(self.config)
@@ -254,11 +259,9 @@ class DocsisInterface:
     def update_config(self):
         """Get the mac address of CM, MTA and erouter, add extra provisioning to the config"""
         config = self.config
-        cm_cfg = self.cm_cfg
-        if cm_cfg is None:
-            cm_cfg = self.env_helper.get_board_boot_file()
-            self.cm_cfg = cm_cfg_cls(cfg_file=cm_cfg)
-        mta_cfg = None
+        cm_cfg = self.dev.board.env_helper.get_board_boot_file()
+        self.cm_cfg = cm_cfg_cls(cfg_file_str=cm_cfg)
+        mta_cfg = self.dev.board.mta_cfg
         # TODO: use EUI to parse cm_mac
         if "cm_mac" not in config:
             print("MAC addresses not in config, some provisioning might not work!")
@@ -276,7 +279,7 @@ class DocsisInterface:
             mac = EUI(config["cm_mac"])
             config["erouter_mac"] = "%s" % EUI(int(mac) + 2, dialect=mac_unix_expanded)
 
-        config["tftp_cfg_files"] = [cm_cfg, mta_cfg]
+        config["tftp_cfg_files"] = [self.cm_cfg, mta_cfg]
 
         if hasattr(self.dev, "provisioner") and hasattr(
             self.dev.provisioner, "prov_ip"
@@ -287,9 +290,9 @@ class DocsisInterface:
             config["extra_provisioning"] = {
                 "mta": {
                     "hardware ethernet": config["mta_mac"],
-                    "filename": '"' + "mta-config-d41d8cd98f.bin" '"',
+                    "filename": '"' + mta_cfg.encoded_fname + '"',
                     "options": {
-                        "bootfile-name": '"' + "mta-config-d41d8cd98f.bin" '"',
+                        "bootfile-name": '"' + mta_cfg.encoded_fname + '"',
                         "dhcp-parameter-request-list": "3, 6, 7, 12, 15, 43, 122",
                         "domain-name": '"sipcenter.com"',
                         "domain-name-servers": wan.gw,
@@ -331,26 +334,22 @@ class DocsisInterface:
                     "options": {"dhcp6.name-servers": wan.gwv6},
                 },
             }
+        self.dev.board.cm_cfg = self.cm_cfg
 
     def flash(self, meta, method="snmp"):
         if method == "snmp":
             self.flash_with_snmp(meta)
 
+    def flash_with_snmp_docsis_comands(self, wan, cm_ip, server_ip, filename, protocol):
+        snmp = SNMPv2(wan, cm_ip)
+        snmp.snmpset("docsDevSwServer", server_ip, "a")
+        snmp.snmpset("docsDevSwFilename", filename, "string")
+        snmp.snmpset("docsDevSwServerTransportProtocol", protocol, "integer")
+        snmp.snmpset("docsDevSwAdminStatus", "1", "integer")
+
     def flash_with_snmp(self, image: str):
         if image is None:
             raise Exception("No firware image was provided to flash DUT using snmp")
-
-        wan = self.dev.wan
-        cm_ip = self.dev.cmts.get_cmip(self.cm_mac)
-        snmp = SNMPv2(wan, cm_ip)
-
-        protocol = "1"  # Default protocol to tftp
-        server_ip = wan.get_interface_ipaddr(wan.iface_dut)
-        filename = re.search("LG-RDK.*", image).group()
-        # Copying the file to tftpserver
-        wan.sendline("wget -nc {} -O /tftpboot/{}".format(image, filename))
-        wan.expect(["saved"] + ["already there; not retrieving"])
-        wan.expect_prompt()
 
         self.dev.cmts.clear_cm_reset(self.cm_mac)
         for _ in range(20):
@@ -358,20 +357,21 @@ class DocsisInterface:
                 break
             time.sleep(20)
 
-        wan.sendline(
-            f"snmpset -v 2c -c private {cm_ip} .1.3.6.1.4.1.1038.28.1.1.5.0 i 2"
-        )  # noqa: E501
+        wan = self.dev.wan
+        cm_ip = self.dev.cmts.get_cmip(self.cm_mac)
+
+        protocol = "1"  # Default protocol to tftp
+        server_ip = wan.get_interface_ipaddr(wan.iface_dut)
+        filename = image.split("/")[-1]
+        # Copying the file to tftpserver
+        wan.sendline("wget -nc {} -O /tftpboot/{}".format(image, filename))
+        wan.expect(["saved"] + ["already there; not retrieving"])
         wan.expect_prompt()
 
-        snmp.snmpset("docsDevSwServer", server_ip, "a")
-
-        snmp.snmpset("docsDevSwFilename", filename, "string")
-
-        snmp.snmpset("docsDevSwServerTransportProtocol", protocol, "integer")
-
-        status = "1"
-        snmp.snmpset("docsDevSwAdminStatus", status, "integer")
+        self.flash_with_snmp_docsis_comands(wan, cm_ip, server_ip, filename, protocol)
 
 
 class Docsis(DocsisInterface, openwrt_router.OpenWrtRouter):
+    """Legacy class used in previous vendors implementations"""
+
     pass

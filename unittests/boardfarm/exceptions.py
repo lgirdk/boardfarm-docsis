@@ -28,3 +28,7 @@ class BftEnvMismatch(BftBaseException):
 
 class BftSysExit(BftBaseException):
     pass
+
+
+class BftCommandNotFound(BftBaseException):
+    pass

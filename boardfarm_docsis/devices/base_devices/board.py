@@ -10,7 +10,7 @@ from boardfarm.exceptions import CodeError
 from netaddr import EUI, mac_unix_expanded
 from termcolor import colored
 
-from boardfarm_docsis.devices.docsis import Docsis
+from boardfarm_docsis.devices.docsis import DocsisInterface
 from boardfarm_docsis.lib.env_helper import DocsisEnvHelper
 
 logger = logging.getLogger("bft")
@@ -28,14 +28,36 @@ def get_erouter_mac(cm_mac: str):
     return __calc_mac(cm_mac, 2)
 
 
-class DocsisCPEHw:
+class DocsisCPEHw(DocsisInterface):
     mac = {"cm": "", "mta": "", "ertr": "", "wifi2.4": "", "wifi5": ""}
     sr_no = None
     power = None  # port + credentials. Does it need to Power class object...?
     conn_type = None
 
-    @staticmethod
-    def _flash_docsis_image(config, env_helper, board, lan, wan, tftp_device):
+    def _meta_flash(self, img):
+        """Flash with image."""
+        try:
+            self.dev.board.dev.cmts.clear_cm_reset(self.dev.board.hw.mac["cm"])
+            self.dev.board.dev.cmts.wait_for_cm_online(ignore_partial=True)
+            self.dev.board.hw.flash_meta(
+                img, self.dev.wan, self.dev.lan, check_version=True
+            )
+        except Exception as e:
+            traceback.print_exc()
+            logger.error(
+                colored(
+                    f"Failed to flash meta image: {img}",
+                    color="red",
+                    attrs=["bold"],
+                )
+            )
+            logger.error(f"{e}")
+
+    def _factory_reset(self, img):
+        """Reset using factory_reset method."""
+        self.dev.board.hw.factory_reset()
+
+    def _flash_docsis_image(self, config, env_helper, board, lan, wan, tftp_device):
         """Given an environment spec and a board attempts to flash the HW following
         the strategy defined in the environment. The flashing process includes
         breaking into the bootloader if needed, getting the image (from a webserver
@@ -50,48 +72,18 @@ class DocsisCPEHw:
         comdined_meta: TBD (not from bootloader)
         """
 
-        def _meta_flash(img):
-            """Flash with image."""
-            try:
-                board.dev.cmts.clear_cm_reset(board.hw.mac["cm"])
-                board.dev.cmts.wait_for_cm_online(ignore_partial=True)
-                board.hw.login_arm_root()
-                board.hw.flash_meta(img, wan, lan, check_version=True)
-            except Exception as e:
-                traceback.print_exc()
-                logger.error(
-                    colored(
-                        f"Failed to flash meta image: {img}",
-                        color="green",
-                        attrs=["bold"],
-                    )
-                )
-                logger.error(f"{e}")
-
-        def _factory_reset(img):
-            """Reset using factory_reset method."""
-            board.hw.factory_reset()
-
-        methods = {
-            "meta_build": _meta_flash,
-            "atom": board.hw.flash_atom,
-            "arm": board.hw.flash_arm,
-            "all": board.hw.flash_all,
-            "factory_reset": _factory_reset,
-        }
-
         def _perform_flash(boot_sequence):
             """Perform Flash booting."""
             board.hw.reset()
             for i in boot_sequence:
                 for strategy, img in i.items():
                     if strategy in ["factory_reset", "meta_build"]:
-                        board.hw.wait_for_hw_boot()
+                        board.hw.wait_for_linux()
                     else:
                         board.hw.wait_for_boot()
 
                     board.hw.setup_uboot_network(tftp_device.gw)
-                    result = methods[strategy](img)
+                    result = self.methods[strategy](img)
 
                     if strategy in ["factory_reset", "meta_build"]:
                         if not result:
@@ -157,6 +149,12 @@ class DocsisCPEHw:
             _perform_flash(boot_sequence)
 
     def __init__(self, *args, **kwargs):
+        self.methods = {
+            "meta_build": self._meta_flash,
+            "factory_reset": self._factory_reset,
+        }
+
+        self.config = kwargs.get("config", None)
         self.power = kwargs.get("power_outlet", None)
         self.conn_type = kwargs.get("connection_type", None)
         self.sr_no = kwargs.get("serial_no", None)
@@ -191,7 +189,7 @@ class DocsisCPEHw:
         self.wait_for_hw_boot()
 
 
-class DocsisCPESw(Docsis):
+class DocsisCPESw:
     def get_sw_version(self):
         raise NotImplementedError
 
@@ -209,20 +207,11 @@ class InterceptDocsisCPE(object):
                 attr = self.hw.__getattribute__(name)
             except Exception:
                 attr = self.sw.__getattribute__(name)
-
-        if callable(attr):
-
-            def newfunc(*args, **kwargs):
-                result = attr(*args, **kwargs)
-                return result
-
-            return newfunc
-        else:
-            return attr
+        return attr
 
 
-class DocsisCPE(InterceptDocsisCPE, BaseBoard):
-    """Docsis CPE"""
+class DocsisCPEInterface(InterceptDocsisCPE):
+    """Docsis CPE Interface to be used by a derived class"""
 
     sw: BaseDevice = None  # is this right?
     hw: DocsisCPEHw = None
@@ -234,16 +223,32 @@ class DocsisCPE(InterceptDocsisCPE, BaseBoard):
         "boardfarm-docsis/boardfarm_docsis/mibs/",
     ]
 
-    def __init__(self, *args, **kwargs):
-        self.hw = DocsisCPEHw(*args, **kwargs)
-
     def flash(self, env_helper: DocsisEnvHelper):
         self.hw.dev = (
             self.dev
         )  # FIX ME: hack, to be removed when puma6 can import HW manager
         self.hw.flash(self.config, env_helper)
         sw = env_helper.get_software()
-        self.reload_sw_object(sw["image_uri"].split("/")[-1])
+        if "image_uri" in sw:
+            image = sw["image_uri"].split("/")[-1]
+        elif "load_image" in sw:
+            image = sw["load_image"].split("/")[-1]
+        else:
+            raise CodeError(
+                colored(
+                    f"Failed to get image from : {sw}",
+                    color="red",
+                    attrs=["bold"],
+                )
+            )
+        logger.info(
+            colored(
+                f"Loading SW class for image: {image}",
+                color="green",
+                attrs=["bold"],
+            )
+        )
+        self.reload_sw_object(image)
 
     def power_cycle(self):
         self.hw.reset()
@@ -261,3 +266,8 @@ class DocsisCPE(InterceptDocsisCPE, BaseBoard):
         else:
             raise CodeError(f"class for {sw} not found")
         self.sw.version = self.sw.get_sw_version()
+
+
+class DocsisCPE(DocsisCPEInterface, BaseBoard):
+    def __init__(self, *args, **kwargs):
+        self.hw = DocsisCPEHw(*args, **kwargs)
