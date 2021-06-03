@@ -465,30 +465,11 @@ class mta_cfg(cm_cfg):
 
     def reformat(self, txt: str) -> str:
         """In-case the generic MTA config text needs to be reformatted as per
-        Vendor Specific requirements
+        Vendor Specific requirements.
 
         :returns: string, reformatted text
         """
-        high, low = [], []
-        for line in txt.splitlines():
-            if "pktcSigDevCIDFskAfterRing" in line:
-                low.append(line)
-            else:
-                high.append(line)
-        txt = "\n".join(high + low)
-        oid_texts = []
-        for val in (
-            txt.replace("SnmpMibObject", "")
-            .replace(";", "")
-            .replace(" ", "")
-            .splitlines()
-        ):
-            if val != "":
-                mib_name = val.split()[0].split(".")[0]
-                mib_oid = SnmpHelper.get_mib_oid(mib_name)
-                oid_val = val.replace(mib_name, "." + mib_oid)
-                oid_texts.append(oid_val)
-        return "\n".join(oid_texts)
+        return txt
 
     def save(self, full_path: str) -> None:
         path = Path(full_path)
