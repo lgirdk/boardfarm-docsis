@@ -9,6 +9,7 @@
 import ipaddress
 import logging
 import re
+import sys
 from collections import defaultdict
 from datetime import datetime
 from io import StringIO
@@ -121,6 +122,7 @@ class MiniCMTS(BaseCmts):
         else:
             raise Exception("Unable to connect to %s." % self.name)
         try:
+            self.logfile_read = sys.stdout
             if i == 0:
                 self.sendline("yes")
                 i = self.expect(["Last login", "assword:"])
