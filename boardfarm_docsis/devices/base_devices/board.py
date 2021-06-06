@@ -42,6 +42,7 @@ class DocsisCPEHw(DocsisInterface):
             self.dev.board.hw.flash_meta(
                 img, self.dev.wan, self.dev.lan, check_version=True
             )
+            return True
         except Exception as e:
             traceback.print_exc()
             logger.error(
@@ -52,6 +53,7 @@ class DocsisCPEHw(DocsisInterface):
                 )
             )
             logger.error(f"{e}")
+            return False
 
     def _factory_reset(self, img):
         """Reset using factory_reset method."""
