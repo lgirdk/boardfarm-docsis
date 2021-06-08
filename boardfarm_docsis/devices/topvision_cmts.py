@@ -493,14 +493,17 @@ class MiniCMTS(BaseCmts):
         self,
         ping_ip: str,
         ping_count: Optional[int] = 4,
-        timeout: Optional[int] = 4000,
+        timeout: Optional[int] = 4,
     ) -> bool:
         """Ping the device from cmts
         :param ping_ip: device ip which needs to be pinged.
         :param ping_count: optional. Number of ping packets.
-        :param timeout: optional, ms. Timeout for each packet.
+        :param timeout: optional, seconds. Timeout for each packet.
         :return: True if all ping packets passed else False
         """
+        timeout = (
+            timeout * 1000
+        )  # Convert timeout from seconds to milliseconds for backward compatibility
         command_timeout = (ping_count * timeout) / 1000 + 5  # Seconds
         output = self.check_output(
             f"ping {ping_ip} timeout {timeout} pktnum {ping_count}",
