@@ -443,6 +443,131 @@ class TestEnvHelper:
             },
             False,
         ],
+        [
+            {
+                "environment_def": {
+                    "board": {
+                        "eRouter_Provisioning_mode": "none",
+                        "boot_file": "\n".join(
+                            [
+                                "Main ",
+                                "{",
+                                "\tNetworkAccess 1;",
+                                "\tGlobalPrivacyEnable 1;",
+                                "\tMaxCPE 16;",
+                                "\tMaxClassifiers 16;",
+                                "\tBaselinePrivacy",
+                                "\t{",
+                                "\t\tAuthTimeout 10;",
+                                "\t\tReAuthTimeout 10;",
+                                "\t\tAuthGraceTime 600;",
+                                "\t\tOperTimeout 10;",
+                                "\t\tReKeyTimeout 10;",
+                                "\t\tTEKGraceTime 600;",
+                                "\t\tAuthRejectTimeout 60;",
+                                "\t}",
+                                "\t/* Service flows and classifiers */",
+                                "        UsServiceFlow",
+                                "        {",
+                                "                UsServiceFlowRef 1;",
+                                "                QosParamSetType 7;",
+                                "                TrafficPriority 1;",
+                                "                MaxRateSustained 300000000; ",
+                                "                SchedulingType 2;",
+                                "                MaxTrafficBurst 42600;",
+                                "                MaxConcatenatedBurst 42600;",
+                                "        }",
+                                "        DsServiceFlow",
+                                "        {",
+                                "                DsServiceFlowRef 101;",
+                                "                QosParamSetType 7;",
+                                "                TrafficPriority 1;",
+                                "                MaxRateSustained 1000000000; ",
+                                "                MaxTrafficBurst 42600;",
+                                "        }\t/* TR69 Management Server */",
+                                "\tVendorSpecific",
+                                "\t{",
+                                "\t\tVendorIdentifier 0x02a613;",
+                                "\t\teRouter",
+                                "\t\t{",
+                                "\t\t\tTR69ManagementServer",
+                                "\t\t\t{",
+                                "\t\t\t\tEnableCWMP 1;",
+                                '\t\t\t\tURL "http://acs_server.boardfarm.com:9675";',
+                                "\t\t\t\tACSOverride 1;",
+                                "\t\t\t}",
+                                "\t\t}",
+                                "\t}",
+                                "\tVendorSpecific",
+                                "\t{",
+                                "\t\tVendorIdentifier 0x02a613;",
+                                "\t\teRouter",
+                                "\t\t{",
+                                '\t\t\tGenericTLV TlvCode 12 TlvString "Device.DSLite.Enable|boolean|true";',
+                                '\t\t\tGenericTLV TlvCode 12 TlvString "Device.DSLite.InterfaceSetting.1.Enable|boolean|true";',
+                                '\t\t\tGenericTLV TlvCode 12 TlvString "Device.DSLite.InterfaceSetting.1.X_LGI-COM_MssClampingEnable|boolean|true";',
+                                '\t\t\tGenericTLV TlvCode 12 TlvString "Device.DSLite.InterfaceSetting.1.X_LGI-COM_Tcpmss|unsigned|1420";',
+                                "\t\t}",
+                                "\t}",
+                                "}",
+                            ]
+                        ),
+                    },
+                },
+                "version": "2.11",
+            },
+            [
+                {
+                    "environment_def": {
+                        "board": {
+                            "boot_file": [
+                                {
+                                    "contains_exact": 'Device.DSLite.InterfaceSetting.1.Enable|boolean|true";'
+                                },
+                                {
+                                    "contains_exact": 'URL "http://acs_server.boardfarm.com:9675";'
+                                },
+                            ],
+                        }
+                    }
+                },
+                False,
+            ],
+            [
+                {
+                    "environment_def": {
+                        "board": {
+                            "boot_file": [
+                                {
+                                    "contains_exact": 'Device.DSLite.InterfaceSetting.1.Enable|boolean|true";'
+                                },
+                                {
+                                    "not_contains_exact": 'URL "http://acs.boardfarm.com:9675";'
+                                },
+                            ],
+                        }
+                    }
+                },
+                False,
+            ],
+            [
+                {
+                    "environment_def": {
+                        "board": {
+                            "boot_file": [
+                                {
+                                    "contains_exact": 'Device.DSLite.InterfaceSetting.1.Enable|boolean|true";'
+                                },
+                                {
+                                    "contains_exact": 'URL "http://acs.boardfarm.com:9675";'
+                                },
+                            ],
+                        }
+                    }
+                },
+                True,
+            ],
+        ],
     ]
 
     """
@@ -466,6 +591,9 @@ class TestEnvHelper:
             (environments[9][0], environments[9][1], environments[9][2]),
             (environments[10][0], environments[10][1], environments[10][2]),
             (environments[11][0], environments[11][1], environments[11][2]),
+            (environments[12][0], environments[12][1][0], environments[12][1][1]),
+            (environments[12][0], environments[12][2][0], environments[12][2][1]),
+            (environments[12][0], environments[12][3][0], environments[12][3][1]),
         ],
     )
     def test_env_check(self, environment, requested, raises):

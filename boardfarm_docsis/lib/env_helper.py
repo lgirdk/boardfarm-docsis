@@ -3,6 +3,7 @@ import re
 
 from boardfarm.exceptions import BftEnvExcKeyError, BftEnvMismatch, BftSysExit
 from boardfarm.lib.env_helper import EnvHelper
+from debtcollector import deprecate
 from nested_lookup import nested_lookup
 from termcolor import colored
 
@@ -292,7 +293,16 @@ class DocsisEnvHelper(EnvHelper):
             req_boot_file_checks = test_environment["environment_def"]["board"].get(
                 "boot_file", {}
             )
-            self._check_boot_file_conditions(req_boot_file_checks)
+            if type(req_boot_file_checks) is dict:
+                deprecate(
+                    prefix="Using boot_file checks in env_req via a Dict is deprecated",
+                    postfix=" Must be passed as a List.",
+                    removal_version="2.0.0",
+                )
+                self._check_boot_file_conditions(req_boot_file_checks)
+            else:
+                for boot_checks in req_boot_file_checks:
+                    self._check_boot_file_conditions(boot_checks)
             test_environment["environment_def"]["board"].pop("boot_file")
         return super().env_check(test_environment)
 
