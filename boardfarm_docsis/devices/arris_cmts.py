@@ -48,7 +48,6 @@ class ArrisCMTS(BaseCmts):
             # TODO: try to parse from ipaddr, etc
             raise Exception("No command specified to connect to Arris CMTS")
 
-        self.logfile_read = sys.stdout
         self.name = kwargs.get("name", self.model)
 
     @BaseCmts.connect_and_run
@@ -107,6 +106,7 @@ class ArrisCMTS(BaseCmts):
             self.expect(self.prompt)
             self.sendline("no pagination")
             self.expect(self.prompt)
+            self.logfile_read = sys.stdout
             return
         except Exception:
             self.close()
