@@ -300,12 +300,27 @@ def post_boot_env(config, env_helper, devices):
                     "Factory reset has to performed for tr069 provisioning. Env json with factory reset true should be used."
                 )
     # should this be here?
-    if hasattr(devices.board, "gui_password") and not devices.board.trigger_dmcli_cmd(
-        operation="setvalues",
-        param="Device.Users.User.3.Password",
-        value_for_set=devices.board.gui_password,
-    ):
-        raise BootFail("Failed to set the GUI password via dmcli")
+    if hasattr(devices.board, "gui_password"):
+        for _ in range(10):
+            try:
+                devices.board.trigger_dmcli_cmd(
+                    operation="setvalues",
+                    param="Device.Users.User.3.Password",
+                    value_for_set=devices.board.gui_password,
+                )
+                break
+            except Exception as e:
+                logger.warning(
+                    colored(
+                        f"{e}\nFailed to set the GUI password via dmcli,"
+                        " retrying in 30s",
+                        color="yellow",
+                        attrs=["bold"],
+                    )
+                )
+                time.sleep(30)
+        else:
+            raise BootFail("Failed to set the GUI password via dmcli")
 
 
 post_boot_actions = {
