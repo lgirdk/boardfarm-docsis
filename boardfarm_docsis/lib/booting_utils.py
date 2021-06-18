@@ -5,6 +5,9 @@ Created in order to keep booting.py implementation as clean as possible
 import logging
 import time
 
+from boardfarm.exceptions import CodeError
+from termcolor import colored
+
 logger = logging.getLogger("bft")
 
 
@@ -100,3 +103,16 @@ def check_and_connect_to_wifi(devices, wifi_client_data: dict) -> None:
         logger.error(
             f"Unable to connect to {band} GHz {network} network: connection error"
         )
+
+
+def register_fxs_details(fxs_devices, board):
+    # this raises an exception, will clear this later.
+    try:
+        board.mta_prov_check()
+    except Exception:
+        print(colored("MTA is not provisioned properly!!", color="red", attrs=["bold"]))
+    for fxs in fxs_devices:
+        try:
+            fxs.own_number, fxs.tcid = board.get_fxs_details(fxs.fxs_port)
+        except CodeError as e:
+            raise CodeError(f"FXS registration failure.\nReason:{e}")

@@ -20,6 +20,7 @@ from boardfarm_docsis.devices.base_devices.board import DocsisCPE
 from boardfarm_docsis.lib.booting_utils import (
     activate_mitm,
     check_and_connect_to_wifi,
+    register_fxs_details,
 )
 from boardfarm_docsis.lib.dns_helper import dns_acs_config
 from boardfarm_docsis.use_cases.provision_helper import ProvisionHelper
@@ -96,9 +97,7 @@ def pre_boot_env(config, env_helper, devices):
         dev_list = [
             devices.sipcenter,
             devices.softphone,
-            devices.lan,
-            devices.lan2,
-        ]
+        ] + getattr(devices, "FXS", [devices.lan, devices.lan2])
         if env_helper.get_external_voip():
             dev_list.append(devices.softphone2)
         boardfarm.lib.voice.voice_configure(
@@ -270,6 +269,7 @@ def post_boot_env(config, env_helper, devices):
         devices.board.enable_logs(component="pacm")
         devices.board.wait_for_mta_provisioning()
         devices.board.enable_logs(component="voice")
+        register_fxs_details(getattr(devices, "FXS", []), devices.board)
     eMTA_interface_status = env_helper.get_emta_interface_status()
     if eMTA_interface_status:
         devices.board.set_eMTA_interface(devices.board.mta_iface, eMTA_interface_status)
