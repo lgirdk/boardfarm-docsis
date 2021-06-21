@@ -20,7 +20,6 @@ from boardfarm_docsis.devices.base_devices.board import DocsisCPE
 from boardfarm_docsis.lib.booting_utils import (
     activate_mitm,
     check_and_connect_to_wifi,
-    register_fxs_details,
 )
 from boardfarm_docsis.lib.dns_helper import dns_acs_config
 from boardfarm_docsis.use_cases.provision_helper import ProvisionHelper
@@ -265,14 +264,12 @@ def post_boot_env(config, env_helper, devices):
     if env_helper.mitm_enabled():
         activate_mitm(devices, env_helper.get_mitm_devices())
 
-    if env_helper.voice_enabled():
-        devices.board.enable_logs(component="pacm")
+    eMTA_iface_status = env_helper.get_emta_interface_status()
+    if eMTA_iface_status:
+        devices.board.set_eMTA_interface(devices.board.mta_iface, eMTA_iface_status)
+    if env_helper.voice_enabled() and eMTA_iface_status != "down":
         devices.board.wait_for_mta_provisioning()
-        devices.board.enable_logs(component="voice")
-        register_fxs_details(getattr(devices, "FXS", []), devices.board)
-    eMTA_interface_status = env_helper.get_emta_interface_status()
-    if eMTA_interface_status:
-        devices.board.set_eMTA_interface(devices.board.mta_iface, eMTA_interface_status)
+
     cfg = env_helper.get_prov_mode()
     tr069check = cfg not in ["disabled", "bridge", "none"]
     tr069provision = env_helper.get_tr069_provisioning()
@@ -299,28 +296,8 @@ def post_boot_env(config, env_helper, devices):
                 raise BootFail(
                     "Factory reset has to performed for tr069 provisioning. Env json with factory reset true should be used."
                 )
-    # should this be here?
-    if hasattr(devices.board, "gui_password"):
-        for _ in range(10):
-            try:
-                devices.board.trigger_dmcli_cmd(
-                    operation="setvalues",
-                    param="Device.Users.User.3.Password",
-                    value_for_set=devices.board.gui_password,
-                )
-                break
-            except Exception as e:
-                logger.warning(
-                    colored(
-                        f"{e}\nFailed to set the GUI password via dmcli,"
-                        " retrying in 30s",
-                        color="yellow",
-                        attrs=["bold"],
-                    )
-                )
-                time.sleep(30)
-        else:
-            raise BootFail("Failed to set the GUI password via dmcli")
+    if hasattr(devices.board, "post_boot_env"):
+        devices.board.post_boot_env()
 
 
 post_boot_actions = {
