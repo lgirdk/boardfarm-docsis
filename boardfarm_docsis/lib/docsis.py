@@ -675,6 +675,11 @@ def check_cm_firmware_version(board, wan, env_helper):
     """
     if env_helper.has_image():
         fm_ver = env_helper.get_image(mirror=False).rpartition(".")[0]
+
+        if hasattr(board, "check_fw_version"):
+            assert board.check_fw_version(fm_ver)
+            return True  # is this needed?
+
         cm_ip = board.get_interface_ipaddr(board.wan_iface)
         result = retry_on_exception(
             SnmpHelper.snmp_v2, [wan, cm_ip, "docsDevSwCurrentVers"], retries=2
