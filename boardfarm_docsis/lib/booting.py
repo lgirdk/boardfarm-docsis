@@ -20,6 +20,7 @@ from boardfarm_docsis.devices.base_devices.board import DocsisCPE
 from boardfarm_docsis.lib.booting_utils import (
     activate_mitm,
     check_and_connect_to_wifi,
+    register_fxs_details,
 )
 from boardfarm_docsis.lib.dns_helper import dns_acs_config
 from boardfarm_docsis.use_cases.provision_helper import ProvisionHelper
@@ -269,6 +270,7 @@ def post_boot_env(config, env_helper, devices):
         devices.board.set_eMTA_interface(devices.board.mta_iface, eMTA_iface_status)
     if env_helper.voice_enabled() and eMTA_iface_status != "down":
         devices.board.wait_for_mta_provisioning()
+        register_fxs_details(getattr(devices, "FXS", []), devices.board)
 
     cfg = env_helper.get_prov_mode()
     tr069check = cfg not in ["disabled", "bridge", "none"]
