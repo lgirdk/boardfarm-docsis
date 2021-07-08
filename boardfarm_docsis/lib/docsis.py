@@ -483,7 +483,7 @@ class mta_cfg(cm_cfg):
 def check_board(board, cmts, cm_mac):
     assert board.is_online(), "CM show not OPERATIONAL on console"
     assert (
-        cmts.check_online(cm_mac) is True
+        cmts.is_cm_online(ignore_partial=True) is True
     ), "CM is not online"  # check cm online on CMTS
     """
     Removing this assert for the time being.

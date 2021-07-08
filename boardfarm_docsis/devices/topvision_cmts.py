@@ -374,7 +374,7 @@ class MiniCMTS(BaseCmts):
         :return: ip address of cable modem or "None"
         :rtype: string
         """
-        if not self.check_online(cm_mac):
+        if not self.is_cm_online(ignore_partial=True):
             logger.debug(f"Modem {cm_mac} is not online. Can not get ip.")
             return "None"
         additional_args = "ipv6" if ipv6 else ""
