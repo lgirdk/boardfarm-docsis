@@ -196,7 +196,7 @@ class DocsisCPESw:
         raise NotImplementedError
 
 
-class InterceptDocsisCPE(object):
+class InterceptDocsisCPE:
     """Any pexpect call made using self will be redirected to self.sw
     if the method is not implemented
     """

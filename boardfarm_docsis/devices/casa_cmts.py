@@ -14,7 +14,6 @@ import sys
 
 import netaddr
 import pexpect
-import six
 from boardfarm.devices import connection_decider
 from boardfarm.lib.regexlib import (
     AllValidIpv6AddressesRegex,
@@ -428,9 +427,9 @@ class CasaCMTS(base_cmts.BaseCmts):
         """
         if "/" not in ipaddr:
             ipaddr += "/24"
-            ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
+            ipaddr = ipaddress.IPv4Interface(str(ipaddr))
         else:
-            ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
+            ipaddr = ipaddress.IPv4Interface(str(ipaddr))
         self.sendline(f"interface {iface}")
         self.expect(self.prompt)
         self.sendline(f"ip address {ipaddr.ip} {ipaddr.netmask}")
@@ -500,9 +499,9 @@ class CasaCMTS(base_cmts.BaseCmts):
 
         if "/" not in ipaddr:
             ipaddr += "/24"
-            ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
+            ipaddr = ipaddress.IPv4Interface(str(ipaddr))
         else:
-            ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
+            ipaddr = ipaddress.IPv4Interface(str(ipaddr))
         self.sendline(f"interface ip-bundle {index}")
         self.expect(self.prompt)
         self.sendline(f"ip address {ipaddr.ip} {ipaddr.netmask}")
@@ -510,9 +509,9 @@ class CasaCMTS(base_cmts.BaseCmts):
         for ip2 in secondary_ips:
             if "/" not in ip2:
                 ip2 += "/24"
-                ip2 = ipaddress.IPv4Interface(six.text_type(ip2))
+                ip2 = ipaddress.IPv4Interface(str(ip2))
             else:
-                ip2 = ipaddress.IPv4Interface(six.text_type(ip2))
+                ip2 = ipaddress.IPv4Interface(str(ip2))
             self.sendline(f"ip address {ip2.ip} {ip2.netmask} secondary")
             self.expect(self.prompt)
         self.sendline(f"cable helper-address {helper_ip} cable-modem")
@@ -558,7 +557,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         self.sendline(f'show interface ip-bundle {index} | include "ipv6 address"')
         self.expect(self.prompt)
-        if str(ipaddress.ip_address(six.text_type(ip[:-3])).compressed) in self.before:
+        if str(ipaddress.ip_address(str(ip[:-3])).compressed) in self.before:
             logger.info("The ipv6 bundle is successfully set.")
         else:
             logger.error("An error occured while setting the ipv6 bundle.")
@@ -573,9 +572,9 @@ class CasaCMTS(base_cmts.BaseCmts):
         """
         if "/" not in ipaddr:
             ipaddr += "/24"
-            ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
+            ipaddr = ipaddress.IPv4Interface(str(ipaddr))
         else:
-            ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
+            ipaddr = ipaddress.IPv4Interface(str(ipaddr))
         self.sendline(f"route net {ipaddr.ip} {ipaddr.network.prefixlen} gw {gw}")
         self.expect(self.prompt)
         if "error" in self.before.lower():
@@ -601,7 +600,7 @@ class CasaCMTS(base_cmts.BaseCmts):
             logger.error("An error occured while adding the route.")
         self.sendline("show ipv6 route")
         self.expect(self.prompt)
-        if str(ipaddress.IPv6Address(six.text_type(gw))).lower() in self.before.lower():
+        if str(ipaddress.IPv6Address(str(gw))).lower() in self.before.lower():
             logger.debug("The route is available on cmts.")
         else:
             logger.debug("The route is not available on cmts.")
@@ -616,9 +615,9 @@ class CasaCMTS(base_cmts.BaseCmts):
         """
         if "/" not in ipaddr:
             ipaddr += "/24"
-            ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
+            ipaddr = ipaddress.IPv4Interface(str(ipaddr))
         else:
-            ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
+            ipaddr = ipaddress.IPv4Interface(str(ipaddr))
         self.sendline(f"no route net {ipaddr.ip} {ipaddr.network.prefixlen} gw {gw}")
         self.expect(self.prompt)
         if "error" in self.before.lower():
@@ -648,8 +647,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.sendline("show ipv6 route")
         self.expect(self.prompt)
         if (
-            str(ipaddress.ip_address(six.text_type(gw)).compressed).lower()
-            in self.before.lower()
+            str(ipaddress.ip_address(str(gw)).compressed).lower() in self.before.lower()
             or gw.lower() in self.before.lower()
         ):
             logger.debug("The route is still available on cmts.")
@@ -743,7 +741,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.sendline(f"show interface docsis-mac {mac_domain} | inc downstream")
         self.expect(self.prompt)
         tmp = re.findall(r"downstream\s\d+\sinterface\sqam\s(.*)/\d+", self.before)
-        downs = set([x for x in tmp if tmp.count(x) > 1])
+        downs = {x for x in tmp if tmp.count(x) > 1}
         get_iface_qam_freq = collections.OrderedDict()
         for index_sub in sorted(downs):
             self.sendline(f'show interface qam {index_sub} | inc "channel"')
@@ -1084,7 +1082,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         ertr_mac.dialect = netaddr.mac_cisco
         output = self.before.replace("\r", "").replace("\n", "")
         ertr_ipv6 = re.search(
-            r"(%s) .* (%s)" % (AllValidIpv6AddressesRegex, ertr_mac), output
+            fr"({AllValidIpv6AddressesRegex}) .* ({ertr_mac})", output
         )
         if ertr_ipv6:
             ipv6 = ertr_ipv6.group(1)
@@ -1113,11 +1111,9 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         assert "downstream 1 interface qam" in self.before
         major, minor, sub = self.before.strip().split(" ")[-1].split("/")
-        self.sendline(
-            r"show interface qam %s/%s | inc channel\s%s\sfreq" % (major, minor, sub)
-        )
+        self.sendline(fr"show interface qam {major}/{minor} | inc channel\s{sub}\sfreq")
         self.expect_exact(
-            r"show interface qam %s/%s | inc channel\s%s\sfreq" % (major, minor, sub)
+            fr"show interface qam {major}/{minor} | inc channel\s{sub}\sfreq"
         )
         self.expect(self.prompt)
         assert f"channel {sub} frequency" in self.before
@@ -1198,7 +1194,7 @@ class CasaCMTS(base_cmts.BaseCmts):
             qos_dict_flow = {}
             for service in service_flow_list:
                 service = service.split(":")
-                key, value = [i.strip() for i in service]
+                key, value = (i.strip() for i in service)
                 for i in strip_units:
                     value = value.replace(i, "").strip()
 
@@ -1325,7 +1321,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.sendline(f"show interface docsis-mac {mac_domain} | inc downstream")
         self.expect(self.prompt)
         tmp = re.findall(r"downstream\s\d+\sinterface\sqam\s(.*)/\d+", self.before)
-        downs = set([x for x in tmp if tmp.count(x) > 1])
+        downs = {x for x in tmp if tmp.count(x) > 1}
         get_downstream_qam = dict()
         for i in downs:
             self.sendline(f'show interface qam {i} | inc "modulation"')

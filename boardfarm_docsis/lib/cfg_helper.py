@@ -19,7 +19,7 @@ def get_base_cfg(cfg_name):
     :rtype : dict
     """
     base_dir = os.path.dirname(str(boardfarm_docsis.__path__[0]))
-    return json.load(open(os.path.join(base_dir, "json_payload/" + cfg_name), "r"))
+    return json.load(open(os.path.join(base_dir, "json_payload/" + cfg_name)))
 
 
 def indent_str(string, indent, pad=" "):
@@ -105,7 +105,7 @@ def dict_to_str(d, name=None, indent=4):
 # Or the whole obj could be jsonised maybe
 
 
-class GeneralServiceFlow(object):
+class GeneralServiceFlow:
     """Class to create the service flow parameters in config file"""
 
     GeneralServiceFlow_dict = OrderedDict()
@@ -164,7 +164,7 @@ class GeneralServiceFlow(object):
         return self.GeneralServiceFlow_dict
 
 
-class GeneralClassifierParameters(object):
+class GeneralClassifierParameters:
     """Class to create the classifier parameters in config file"""
 
     GeneralClassifierParameters_dict = OrderedDict()
@@ -239,7 +239,7 @@ class LLCPacketClassifier(GeneralClassifierParameters):
         """Constructor method to copy the LLC packet classifier params and update the dict
         of general classifire params
         """
-        super(LLCPacketClassifier, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.LLCPacketClassifier_dict = copy.deepcopy(self.LLCPacketClassifier_defaults)
         update_dict(self.LLCPacketClassifier_dict, **kwargs)
         self.LLCPacketClassifier_dict.update(self.GeneralClassifierParameters_dict)
@@ -304,7 +304,7 @@ class IpPacketClassifier(GeneralClassifierParameters):
         """Constructor method to copy the IP packet classifier params and update the dict
         of general classifier params
         """
-        super(IpPacketClassifier, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.IpPacketClassifier_dict = copy.deepcopy(
             self.IpPacketClassifier_dict_defaults
         )
@@ -382,7 +382,7 @@ class UsPacketClass(GeneralClassifierParameters):
         return "UsPacketClass"
 
     def __str__(self):
-        return super(UsPacketClass, self).__str__()
+        return super().__str__()
 
     def to_str(self):
         return dict_to_str(self.get_dict(), name=self.__class__.__name__)
@@ -423,7 +423,7 @@ class UsServiceFlow(GeneralServiceFlow):
         """Constructor method to copy the US service flow params and update the dict of
         general service flow
         """
-        super(UsServiceFlow, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.UsServiceFlow_dict = copy.deepcopy(self.UsServiceFlow_defaults)
         update_dict(self.UsServiceFlow_dict, **kwargs)
         self.UsServiceFlow_dict.update(self.GeneralServiceFlow_dict)
@@ -473,7 +473,7 @@ class DsServiceFlow(GeneralServiceFlow):
         """Constructor method to copy the DS service flow params and update the dict of
         general service flow
         """
-        super(DsServiceFlow, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.DsServiceFlow_dict = copy.deepcopy(self.DsServiceFlow_defaults)
         update_dict(self.DsServiceFlow_dict, **kwargs)
         self.DsServiceFlow_dict.update(self.GeneralServiceFlow_dict)
@@ -503,7 +503,7 @@ class DsServiceFlow(GeneralServiceFlow):
         return self.DsServiceFlow_dict
 
 
-class BaselinePrivacy(object):
+class BaselinePrivacy:
     """Class to create the baseline privacy parameters"""
 
     BaselinePrivacy_dict = OrderedDict()
@@ -564,7 +564,7 @@ class BaselinePrivacy(object):
         return self.BaselinePrivacy_dict
 
 
-class GlobalMTAParams(object):
+class GlobalMTAParams:
     """
     This class fetches global mta mibs from the json file
     """
@@ -643,7 +643,7 @@ class GlobalMTAParams(object):
         return self.global_mta_params_dict
 
 
-class VendorSpecific(object):
+class VendorSpecific:
     VendorSpecific_dict = OrderedDict()
 
     VendorIdentifier = "VendorIdentifier"
@@ -672,7 +672,7 @@ class VendorSpecific(object):
         return self.VendorSpecific_dict
 
 
-class SNMPv1v2cCoexistenceConfig(object):
+class SNMPv1v2cCoexistenceConfig:
     SNMPv1v2cCoexistenceConfig_dict = OrderedDict()
     SNMPv1v2cCoexistenceConfig_defaults = {}
 
@@ -701,7 +701,7 @@ class SNMPv1v2cCoexistenceConfig(object):
         return self.SNMPv1v2cCoexistenceConfig_dict
 
 
-class GlobalParameters(object):
+class GlobalParameters:
     """
     This class groups the values found at the root level
     of the configuration file
@@ -924,7 +924,7 @@ class GlobalParameters(object):
         return self.GlobalParameters_dict
 
 
-class eRouter(object):
+class eRouter:
     """Class to create the eRouter related parameters"""
 
     eRouter_dict = OrderedDict()

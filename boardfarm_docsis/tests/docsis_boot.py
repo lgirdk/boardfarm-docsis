@@ -37,7 +37,7 @@ else:
             self.check_bootmode()
             self.decorate_teardown()
 
-            super(DocsisBootStub, self).__init__(*args, **kw)
+            super().__init__(*args, **kw)
 
         def check_bootmode(self):
             if not isinstance(self, DocsisBootFromEnv):
@@ -126,7 +126,7 @@ class DocsisBootFromEnv(DocsisBootStub):
     env_req = {}
 
     def test_main(self):
-        super(DocsisBootFromEnv, self).test_main()
+        super().test_main()
 
     def runTest(self):
         """This exists for backwards compatability.

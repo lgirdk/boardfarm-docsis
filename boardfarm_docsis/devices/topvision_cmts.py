@@ -60,7 +60,7 @@ class MiniCMTS(BaseCmts):
 
     @BaseCmts.connect_and_run
     def interact(self):
-        super(MiniCMTS, self).interact()
+        super().interact()
 
     def connect(self):
         """This method is used to connect to cmts.

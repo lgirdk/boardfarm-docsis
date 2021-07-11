@@ -264,7 +264,7 @@ class docsis_encoder:
             tftp_device.copy_file_to_server(ret)
 
 
-class cm_cfg(object):
+class cm_cfg:
     """
     Class for generating CM cfg from nothing, or even importing from a file
     They later need to be encoded via a compiler
@@ -339,7 +339,7 @@ class cm_cfg(object):
         if self.legacy_search_path is not None:
             cm_txt = os.path.join(self.legacy_search_path, cm_txt)
 
-        with open(cm_txt, "r") as txt:
+        with open(cm_txt) as txt:
             self.txt = txt.read()
 
     def load_from_string(self, cm_str_txt: str, name_prefix: str = "") -> None:
@@ -801,7 +801,7 @@ class docsis(docsis_encoder):
             message="Use docis_encoder to encode/validate the Docsis related files",
             category=UserWarning,
         )
-        super(docsis, self).__init__(*args, **kw)
+        super().__init__(*args, **kw)
 
 
 def reprovision_board(device_mgr, boot_file_txt=None, mta_file_txt=None):

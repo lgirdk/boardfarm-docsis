@@ -230,20 +230,16 @@ class DocsisEnvHelper(EnvHelper):
         ):
             raise BftEnvMismatch('"snmp" mismatch')
         if "vendor_specific" in req_cfg_boot and (
-            (
-                "vendor_specific" not in cfg_boot
-                or req_cfg_boot["vendor_specific"] != cfg_boot["vendor_specific"]
-            )
+            "vendor_specific" not in cfg_boot
+            or req_cfg_boot["vendor_specific"] != cfg_boot["vendor_specific"]
         ):
             raise BftEnvMismatch('"vendor_specific" mismatch')
         if (
             "eRouter" in req_cfg_boot
             and "tlvs" in req_cfg_boot["eRouter"]
             and (
-                (
-                    "eRouter" not in cfg_boot
-                    or req_cfg_boot["eRouter"]["tlvs"] != cfg_boot["eRouter"]["tlvs"]
-                )
+                "eRouter" not in cfg_boot
+                or req_cfg_boot["eRouter"]["tlvs"] != cfg_boot["eRouter"]["tlvs"]
             )
         ):
             raise BftEnvMismatch('"eRouter" mismatch')

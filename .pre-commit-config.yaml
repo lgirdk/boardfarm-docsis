@@ -3,31 +3,48 @@
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
     - repo: https://github.com/pre-commit/pre-commit-hooks
-      rev: v3.4.0
+      rev: v4.0.1
       hooks:
           - id: check-ast
+            stages: [commit]
           - id: end-of-file-fixer
+            stages: [commit]
           - id: mixed-line-ending
+            stages: [commit]
           - id: trailing-whitespace
+            stages: [commit]
           - id: check-docstring-first
+            stages: [commit]
           - id: check-yaml
+            stages: [commit]
           - id: check-json
+            stages: [commit]
           - id: pretty-format-json
             args: [--autofix, --indent=4]
+            stages: [commit]
           - id: check-added-large-files
+            stages: [commit]
           - id: requirements-txt-fixer
+            stages: [commit]
           - id: check-merge-conflict
+            stages: [commit]
           - id: debug-statements
+            stages: [commit]
           - id: check-executables-have-shebangs
             language: python
             files: \.py$
+            stages: [commit]
     - repo: https://github.com/Lucas-C/pre-commit-hooks
       rev: v1.1.10
       hooks:
           - id: remove-crlf
+            stages: [commit]
           - id: remove-tabs
+            stages: [commit]
           - id: forbid-crlf
+            stages: [commit]
           - id: forbid-tabs
+            stages: [commit]
     - repo: https://github.com/myint/eradicate
       rev: v2.0.0
       hooks:
@@ -38,8 +55,9 @@ repos:
             language: python
             files: \.py$
             args: [--in-place]
+            stages: [commit]
     - repo: https://github.com/timothycrosley/isort
-      rev: 5.8.0
+      rev: 5.9.2
       hooks:
           - id: isort
             name: isort
@@ -47,27 +65,61 @@ repos:
             require_serial: true
             language: python
             types: [python]
+            stages: [commit]
+    - repo: https://github.com/asottile/pyupgrade
+      rev: v2.21.0
+      hooks:
+          - id: pyupgrade
+            args: [--py36-plus]
+    - repo: https://github.com/ikamensh/flynt/
+      rev: '0.63'
+      hooks:
+          - id: flynt
     - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
       rev: 0.1.0
       hooks:
           - id: yamlfmt
+            stages: [commit]
     - repo: https://github.com/adrienverge/yamllint.git
       rev: v1.26.1
       hooks:
           - id: yamllint
             args: [--format, parsable, --strict]
+            stages: [commit]
     - repo: https://github.com/psf/black
-      rev: 21.5b1
+      rev: 21.6b0
       hooks:
           - id: black
             description: 'Black: The uncompromising Python code formatter'
             args: [--safe]
+            stages: [commit]
     - repo: https://gitlab.com/pycqa/flake8
       rev: 3.9.2
       hooks:
           - id: flake8
             additional_dependencies:
                 # - flake8-docstrings
-                - flake8-bugbear
                 - flake8-rst
                 - flake8-rst-docstrings
+                - flake8-bugbear
+            stages: [commit]
+    - repo: local
+      hooks:
+          - id: unittests
+            name: unittests
+            entry: pytest
+            language: python
+            pass_filenames: false
+            args: [--disable-warnings, -r N, unittests]
+            stages: [push]
+            verbose: true
+    - repo: local
+      hooks:
+          - id: integrationtests
+            name: integrationtests
+            entry: pytest
+            language: python
+            pass_filenames: false
+            args: [--disable-warnings, -r N, integrationtests]
+            stages: [push]
+            verbose: true
