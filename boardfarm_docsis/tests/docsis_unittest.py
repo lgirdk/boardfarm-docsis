@@ -16,16 +16,14 @@ class selftest_test_cmts_functions(rootfs_boot.RootFSBootTest):
         ip_provisioning_mode = cmts.check_docsis_mac_ip_provisioning_mode(
             cmts.mac_domain
         )
-        print(
-            "The ip provisioning mode on given mac domain is %s" % ip_provisioning_mode
-        )
+        print(f"The ip provisioning mode on given mac domain is {ip_provisioning_mode}")
         cmts.wait_for_ready()
         is_cm_bridged = cmts.is_cm_bridged(board.config["cm_mac"])
-        print("The status of cm bridged is %s" % is_cm_bridged)
+        print(f"The status of cm bridged is {is_cm_bridged}")
         ertr_ipv4 = cmts.get_ertr_ipv4(board.config["cm_mac"])
-        print("The erouter Ipv4 address is %s" % ertr_ipv4)
+        print(f"The erouter Ipv4 address is {ertr_ipv4}")
         ertr_ipv6 = cmts.get_ertr_ipv6(board.config["cm_mac"])
-        print("The erouter Ipv6 address is %s" % ertr_ipv6)
+        print(f"The erouter Ipv6 address is {ertr_ipv6}")
 
 
 class selftest_snmpv2(rootfs_boot.RootFSBootTest):
@@ -37,17 +35,17 @@ class selftest_snmpv2(rootfs_boot.RootFSBootTest):
         for mib in mib_list:
             try:
                 value_1 = snmp_v2(wan, ip, mib)
-                print("snmpget on mib: %s\nvalue: %s" % (mib, value_1))
+                print(f"snmpget on mib: {mib}\nvalue: {value_1}")
 
                 # In case of SNMP set, script first performs a get, loads the mib details and then performs a set.
                 value_2 = snmp_v2(wan, ip, mib, value=value_1 + "error")
-                print("snmpset on mib: %s\nvalue: %s" % (mib, value_2))
+                print(f"snmpset on mib: {mib}\nvalue: {value_2}")
 
             except Exception as e:
                 print(e)
             finally:
                 value_2 = snmp_v2(wan, ip, mib, value=value_1)
-                print("snmpset on mib: %s\nvalue: %s" % (mib, value_2))
+                print(f"snmpset on mib: {mib}\nvalue: {value_2}")
 
 
 class selftest_check_online(rootfs_boot.RootFSBootTest):
@@ -59,5 +57,5 @@ class selftest_check_online(rootfs_boot.RootFSBootTest):
         if v is True:
             print("CM is online")
         else:
-            print("cmts.check_online returned: {}".format(v))
+            print(f"cmts.check_online returned: {v}")
         # no need to verify, we just don't want exceptions

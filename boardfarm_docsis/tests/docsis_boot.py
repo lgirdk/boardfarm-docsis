@@ -76,7 +76,7 @@ else:
             # to ensure that only DocsisBoot prefixed test cases can run the below implementation
             if "DocsisBoot" not in self.__class__.__name__:
                 raise boardfarm.exceptions.CodeError(
-                    "{} cannot call boot method".format(self.__class__.__name__)
+                    f"{self.__class__.__name__} cannot call boot method"
                 )
             try:
                 boardfarm_docsis.lib.booting.boot(
@@ -110,7 +110,7 @@ else:
 
             if not obj.td_step.td_result:
                 deprecate(
-                    "teardown for test [{}] needs to re-worked".format(cls.__name__),
+                    f"teardown for test [{cls.__name__}] needs to re-worked",
                     removal_version="> 2",
                     category=UserWarning,
                 )

@@ -87,7 +87,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
         :return: True if the CM is operational else actual status on cmts
         :rtype: boolean or string
         """
-        self.sendline("show cable modem %s" % cmmac)
+        self.sendline(f"show cable modem {cmmac}")
         self.expect(self.prompt)
         result = self.before
         match = re.search(r"\w+/\w+/\w+/\w+\s+((\w+\-?\(?\)?)+)", result)
@@ -121,7 +121,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
                 "clear offline feature is not supported on cbr8 product name c3000"
             )
             return
-        self.sendline("clear cable modem %s offline" % cmmac)
+        self.sendline(f"clear cable modem {cmmac} offline")
         self.expect(self.prompt)
 
     def clear_cm_reset(self, cmmac):
@@ -130,7 +130,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
         :param cmmac: mac address of the CM
         :type cmmac: string
         """
-        self.sendline("clear cable modem %s reset" % cmmac)
+        self.sendline(f"clear cable modem {cmmac} reset")
         self.expect(self.prompt)
         online_state = self.check_online(cmmac)
         self.expect(pexpect.TIMEOUT, timeout=5)
@@ -148,7 +148,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
         :rtype: string
         """
         cmmac = self.get_cm_mac_cmts_format(cmmac)
-        self.sendline("show cable modem %s" % cmmac)
+        self.sendline(f"show cable modem {cmmac}")
         self.expect(cmmac + r"\s+([\d\.]+)")
         result = self.match.group(1)
         output = result if self.match is not None else "None"
@@ -163,7 +163,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
         :return: ipv6 address(str) of cable modem or "None"
         :rtype: string
         """
-        self.sendline("show cable modem %s ipv6" % cmmac)
+        self.sendline(f"show cable modem {cmmac} ipv6")
         self.expect(self.prompt)
         match = re.search(AllValidIpv6AddressesRegex, self.before)
         return match.group(0) if match else "None"
@@ -178,14 +178,12 @@ class CBR8CMTS(base_cmts.BaseCmts):
         :return: MTA ip address or "None" if ip not found
         :rtype: string
         """
-        self.sendline("show cable modem %s cpe" % cmmac)
+        self.sendline(f"show cable modem {cmmac} cpe")
         self.expect(self.prompt)
         mac = netaddr.EUI(mtamac)
         ertr_mac = netaddr.EUI(int(mac) + 0)
         ertr_mac.dialect = netaddr.mac_cisco
-        ertr_ipv4 = re.search(
-            "(%s) .* (%s)" % (ertr_mac, ValidIpv4AddressRegex), self.before
-        )
+        ertr_ipv4 = re.search(f"({ertr_mac}) .* ({ValidIpv4AddressRegex})", self.before)
         if ertr_ipv4:
             return ertr_ipv4.group(2)
         else:
@@ -202,7 +200,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
         if mac_domain is None:
             mac_domain = self.mac_domain
         assert mac_domain is not None, "get_center_freq() requires mac_domain to be set"
-        self.sendline("show controllers integrated-Cable %s rf-ch 0" % mac_domain)
+        self.sendline(f"show controllers integrated-Cable {mac_domain} rf-ch 0")
         self.expect(r".*UP\s+(\d+)\s+DOCSIS")
         freq = self.match.group(1)
         output = freq if self.match is not None else "None"
@@ -218,14 +216,12 @@ class CBR8CMTS(base_cmts.BaseCmts):
         :return: returns ipv4 address of erouter else None
         :rtype: string
         """
-        self.sendline("show cable modem %s cpe" % mac)
+        self.sendline(f"show cable modem {mac} cpe")
         self.expect(self.prompt)
         mac = netaddr.EUI(mac)
         ertr_mac = netaddr.EUI(int(mac) + offset)
         ertr_mac.dialect = netaddr.mac_cisco
-        ertr_ipv4 = re.search(
-            "(%s) .* (%s)" % (ertr_mac, ValidIpv4AddressRegex), self.before
-        )
+        ertr_ipv4 = re.search(f"({ertr_mac}) .* ({ValidIpv4AddressRegex})", self.before)
         if ertr_ipv4:
             return ertr_ipv4.group(2)
         else:
@@ -240,7 +236,7 @@ class CBR8CMTS(base_cmts.BaseCmts):
         :return: returns ipv6 address of erouter else None
         :rtype: string
         """
-        self.sendline("show cable modem %s ipv6 cpe" % mac)
+        self.sendline(f"show cable modem {mac} ipv6 cpe")
         self.expect(self.prompt)
         ertr_ipv6 = re.search(AllValidIpv6AddressesRegex, self.before)
         if ertr_ipv6:

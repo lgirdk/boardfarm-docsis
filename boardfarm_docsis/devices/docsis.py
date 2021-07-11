@@ -271,13 +271,13 @@ class DocsisInterface:
             from netaddr import EUI, mac_unix_expanded
 
             mac = EUI(config["cm_mac"])
-            config["mta_mac"] = "%s" % EUI(int(mac) + 1, dialect=mac_unix_expanded)
+            config["mta_mac"] = f"{EUI(int(mac) + 1, dialect=mac_unix_expanded)}"
 
         if "erouter_mac" not in config:
             from netaddr import EUI, mac_unix_expanded
 
             mac = EUI(config["cm_mac"])
-            config["erouter_mac"] = "%s" % EUI(int(mac) + 2, dialect=mac_unix_expanded)
+            config["erouter_mac"] = f"{EUI(int(mac) + 2, dialect=mac_unix_expanded)}"
 
         config["tftp_cfg_files"] = [self.cm_cfg, mta_cfg]
 
@@ -324,7 +324,7 @@ class DocsisInterface:
                     "host-identifier option dhcp6.client-id": "00:03:00:01:"
                     + config["cm_mac"],
                     "options": {
-                        "docsis.configuration-file": '"%s"' % self.cm_cfg.encoded_fname,
+                        "docsis.configuration-file": f'"{self.cm_cfg.encoded_fname}"',
                         "dhcp6.name-servers": wan.gwv6,
                     },
                 },
@@ -364,7 +364,7 @@ class DocsisInterface:
         server_ip = wan.get_interface_ipaddr(wan.iface_dut)
         filename = image.split("/")[-1]
         # Copying the file to tftpserver
-        wan.sendline("wget -nc {} -O /tftpboot/{}".format(image, filename))
+        wan.sendline(f"wget -nc {image} -O /tftpboot/{filename}")
         wan.expect(["saved"] + ["already there; not retrieving"])
         wan.expect_prompt()
 

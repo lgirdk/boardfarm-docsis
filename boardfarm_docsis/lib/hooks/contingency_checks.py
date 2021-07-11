@@ -145,7 +145,7 @@ class CheckInterface:
             if prov_mode != "none":
                 check_interface(board, ip, prov_mode, [])
         except Exception as e:
-            print("Interface check failed.\nReason: %s" % e)
+            print(f"Interface check failed.\nReason: {e}")
             print(json.dumps(ip, indent=4))
             raise e
         logger.info("CheckInterface service checks for BF Docsis executed")

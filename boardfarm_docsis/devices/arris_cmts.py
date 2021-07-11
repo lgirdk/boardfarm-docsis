@@ -56,9 +56,9 @@ class ArrisCMTS(BaseCmts):
 
     def __str__(self):
         txt = [
-            "name: {}".format(self.name),
-            "command: {}".format(self.conn_cmd),
-            "class: {}".format(type(self).__name__),
+            f"name: {self.name}",
+            f"command: {self.conn_cmd}",
+            f"class: {type(self).__name__}",
         ]
 
         return "\n".join(txt)
@@ -165,7 +165,7 @@ class ArrisCMTS(BaseCmts):
         """
         self.sendline("no pagination")
         self.expect_prompt()
-        self.sendline("show cable modem | include %s" % cmmac)
+        self.sendline(f"show cable modem | include {cmmac}")
         self.expect_prompt()
 
         if "Operational" in self.before:
@@ -200,7 +200,7 @@ class ArrisCMTS(BaseCmts):
         """
         self.sendline("exit")
         self.expect(self.prompt)
-        self.sendline("clear cable modem delete %s" % cmmac)
+        self.sendline(f"clear cable modem delete {cmmac}")
         self.expect(self.prompt)
         self.sendline("configure")
         self.expect(self.prompt)
@@ -216,7 +216,7 @@ class ArrisCMTS(BaseCmts):
         self.sendline("exit")
         self.expect(self.prompt)
         """ NB: this command does not reboot the CM, but forces it to reinitialise """
-        self.sendline("clear cable modem delete %s" % cmmac)
+        self.sendline(f"clear cable modem delete {cmmac}")
         self.expect(self.prompt)
         self.sendline("configure")
         self.expect(self.prompt)
@@ -239,7 +239,7 @@ class ArrisCMTS(BaseCmts):
         :return: MTA ip address or "None" if ip not found
         :rtype: string
         """
-        self.sendline("show cable modem %s detail | include MTA" % (cmmac))
+        self.sendline(f"show cable modem {cmmac} detail | include MTA")
         self.expect(r"CPE\(MTA\)\s+.*IPv4=(" + ValidIpv4AddressRegex + ")\r\n")
         result = self.match.group(1)
         output = result if self.match is not None else "None"
@@ -258,7 +258,7 @@ class ArrisCMTS(BaseCmts):
         :return: ip addr (ipv4/6 according to regexpr) or None if not found
         :rtype: string
         """
-        self.sendline("show cable modem | include %s" % cmmac)
+        self.sendline(f"show cable modem | include {cmmac}")
         if (
             self.expect(
                 [cmmac + r"\s+(" + ip_regexpr + ")", pexpect.TIMEOUT], timeout=2
@@ -304,7 +304,7 @@ class ArrisCMTS(BaseCmts):
         :rtype: string
         """
         mac_domain = None
-        self.sendline("show cable modem %s detail | include Cable-Mac=" % cm_mac)
+        self.sendline(f"show cable modem {cm_mac} detail | include Cable-Mac=")
         if self.expect(["Cable-Mac= ([0-9]{1,3}),", pexpect.TIMEOUT], timeout=5) == 0:
             mac_domain = self.match.group(1)
         self.expect(self.prompt)
@@ -312,7 +312,7 @@ class ArrisCMTS(BaseCmts):
 
     def _check_PartialService(self, cmmac):
         """Helper function for check_PartialService"""
-        self.sendline("show cable modem %s" % cmmac)
+        self.sendline(f"show cable modem {cmmac}")
         self.expect(self.prompt)
         return 1 if "impaired" in self.before else 0
 
@@ -339,11 +339,11 @@ class ArrisCMTS(BaseCmts):
         :returns: Locked channels of upstream and downstream
         :rtype: list
         """
-        self.sendline("show cable modem  %s bonded-impaired" % cm_mac)
+        self.sendline(f"show cable modem  {cm_mac} bonded-impaired")
         self.expect(self.prompt)
         bonded_impared_status = self.before
         if "No CMs were found" in bonded_impared_status:
-            self.sendline("show cable modem  %s " % cm_mac)
+            self.sendline(f"show cable modem  {cm_mac} ")
             self.expect(r"(\d+)x(\d+)")
             downstream = int(self.match.group(1))
             upstream = int(self.match.group(2))
@@ -413,9 +413,9 @@ class ArrisCMTS(BaseCmts):
         if "/" not in ipaddr:
             ipaddr += "/24"
         ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
-        self.sendline("interface %s" % iface)
+        self.sendline(f"interface {iface}")
         self.expect(self.prompt)
-        self.sendline("ip address %s %s" % (ipaddr.ip, ipaddr.netmask))
+        self.sendline(f"ip address {ipaddr.ip} {ipaddr.netmask}")
         self.expect(self.prompt)
         self.sendline("no shutdown")
         self.expect(self.prompt)
@@ -431,9 +431,9 @@ class ArrisCMTS(BaseCmts):
         :param ipaddr: ipaddress to configure
         :type ipaddr: string
         """
-        self.sendline("interface %s" % iface)
+        self.sendline(f"interface {iface}")
         self.expect(self.prompt)
-        self.sendline("ipv6 address %s" % ipaddr)
+        self.sendline(f"ipv6 address {ipaddr}")
         self.expect(self.prompt)
         self.sendline("no shutdown")
         self.expect(self.prompt)
@@ -447,7 +447,7 @@ class ArrisCMTS(BaseCmts):
         :param iface: interface name
         :type iface: string
         """
-        self.sendline("interface %s" % iface)
+        self.sendline(f"interface {iface}")
         self.expect(self.prompt)
         self.sendline("no ip address")
         self.expect(self.prompt)
@@ -461,7 +461,7 @@ class ArrisCMTS(BaseCmts):
         :param iface: interface name.
         :type iface: string
         """
-        self.sendline("interface %s" % iface)
+        self.sendline(f"interface {iface}")
         self.expect(self.prompt)
         self.sendline("no ipv6 address")
         self.expect(self.prompt)
@@ -477,7 +477,7 @@ class ArrisCMTS(BaseCmts):
         """
         self.sendline("exit")
         self.expect(self.prompt)
-        self.sendline("delete %s" % f)
+        self.sendline(f"delete {f}")
         self.expect(self.prompt)
 
     @BaseCmts.connect_and_run
@@ -490,8 +490,7 @@ class ArrisCMTS(BaseCmts):
         :rtype: string
         """
         self.sendline(
-            "show running-config interface cable-mac %s | include cm-ip-prov-mode"
-            % index
+            f"show running-config interface cable-mac {index} | include cm-ip-prov-mode"
         )
         self.expect(self.prompt)
         result = self.before.split("\n")[1].split(" ")[-1]
@@ -519,15 +518,14 @@ class ArrisCMTS(BaseCmts):
                 "dual-stack ip provisioning modem is not supported on Chassis Type : C4 please choose apm"
             )
             return
-        self.sendline("interface cable-mac %s" % index)
+        self.sendline(f"interface cable-mac {index}")
         self.expect(self.prompt)
-        self.sendline("cable cm-ip-prov-mode %s" % ip_pvmode)
+        self.sendline(f"cable cm-ip-prov-mode {ip_pvmode}")
         self.expect(self.prompt)
         self.sendline("exit")
         self.expect(self.prompt)
         self.sendline(
-            "show running-config interface cable-mac %s | include cm-ip-prov-mode"
-            % index
+            f"show running-config interface cable-mac {index} | include cm-ip-prov-mode"
         )
         self.expect(self.prompt)
         check_docsis_mac_ip_provisioning_mode = (
@@ -550,7 +548,7 @@ class ArrisCMTS(BaseCmts):
         if "/" not in ipaddr:
             ipaddr += "/24"
         ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
-        self.sendline("ip route %s %s %s" % (ipaddr.ip, ipaddr.netmask, gw))
+        self.sendline(f"ip route {ipaddr.ip} {ipaddr.netmask} {gw}")
         self.expect(self.prompt)
         if "error" in self.before.lower():
             logger.error("An error occured while adding the route.")
@@ -570,7 +568,7 @@ class ArrisCMTS(BaseCmts):
         :param gw: gateway ip.
         :type gw: string
         """
-        self.sendline("ipv6 route %s %s" % (net, gw))
+        self.sendline(f"ipv6 route {net} {gw}")
         self.expect(self.prompt)
         if "error" in self.before.lower():
             logger.error("An error occured while adding the route.")
@@ -593,7 +591,7 @@ class ArrisCMTS(BaseCmts):
         if "/" not in ipaddr:
             ipaddr += "/24"
         ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
-        self.sendline("no ip route %s %s %s" % (ipaddr.ip, ipaddr.netmask, gw))
+        self.sendline(f"no ip route {ipaddr.ip} {ipaddr.netmask} {gw}")
         self.expect(self.prompt)
         if "error" in self.before.lower():
             logger.error("An error occured while deleting the route.")
@@ -614,7 +612,7 @@ class ArrisCMTS(BaseCmts):
         :param gw: gateway ip
         :type gw: string
         """
-        self.sendline("no ipv6 route %s %s" % (net, gw))
+        self.sendline(f"no ipv6 route {net} {gw}")
         self.expect(self.prompt)
         if "error" in self.before.lower():
             logger.error("An error occured while deleting the route.")
@@ -649,26 +647,26 @@ class ArrisCMTS(BaseCmts):
         if "/" not in ipaddr:
             ipaddr += "/24"
         ipaddr = ipaddress.IPv4Interface(six.text_type(ipaddr))
-        self.sendline("interface cable-mac %s" % index)
+        self.sendline(f"interface cable-mac {index}")
         self.expect(self.prompt)
-        self.sendline("ip address %s %s" % (ipaddr.ip, ipaddr.netmask))
+        self.sendline(f"ip address {ipaddr.ip} {ipaddr.netmask}")
         self.expect(self.prompt)
         for ip2 in secondary_ips:
             if "/" not in ip2:
                 ip2 += "/24"
             ip2 = ipaddress.IPv4Interface(six.text_type(ip2))
-            self.sendline("ip address %s %s secondary" % (ip2.ip, ip2.netmask))
+            self.sendline(f"ip address {ip2.ip} {ip2.netmask} secondary")
             self.expect(self.prompt)
-        self.sendline("cable helper-address %s cable-modem" % helper_ip)
+        self.sendline(f"cable helper-address {helper_ip} cable-modem")
         self.expect(self.prompt)
-        self.sendline("cable helper-address %s mta" % helper_ip)
+        self.sendline(f"cable helper-address {helper_ip} mta")
         self.expect(self.prompt)
-        self.sendline("cable helper-address %s host" % helper_ip)
+        self.sendline(f"cable helper-address {helper_ip} host")
         self.expect(self.prompt)
         self.sendline("exit")
         self.expect(self.prompt)
         self.sendline(
-            "show running-config interface cable-mac %s | include ip address" % index
+            f"show running-config interface cable-mac {index} | include ip address"
         )
         self.expect(self.prompt)
         if str(ipaddr.ip) in self.before:
@@ -692,16 +690,16 @@ class ArrisCMTS(BaseCmts):
         if secondary_ips is None:
             secondary_ips = []
 
-        self.sendline("interface cable-mac %s" % index)
+        self.sendline(f"interface cable-mac {index}")
         self.expect(self.prompt)
-        self.sendline("ipv6 address %s" % ip)
+        self.sendline(f"ipv6 address {ip}")
         self.expect(self.prompt)
-        self.sendline("ipv6 dhcp relay destination %s" % helper_ip)
+        self.sendline(f"ipv6 dhcp relay destination {helper_ip}")
         self.expect(self.prompt)
         self.sendline("exit")
         self.expect(self.prompt)
         self.sendline(
-            "show running-config interface cable-mac %s | include ipv6 address" % index
+            f"show running-config interface cable-mac {index} | include ipv6 address"
         )
         self.expect(self.prompt)
         if str(ipaddress.ip_address(six.text_type(ip[:-3])).compressed) in self.before:
@@ -724,9 +722,9 @@ class ArrisCMTS(BaseCmts):
         :param power: power level
         :type power: string
         """
-        self.sendline("interface cable-downstream %s/%s" % (index, sub))
+        self.sendline(f"interface cable-downstream {index}/{sub}")
         self.expect(self.prompt)
-        self.sendline("cable power %s" % power)
+        self.sendline(f"cable power {power}")
         self.expect(self.prompt)
         self.sendline("no shutdown")
         self.expect(self.prompt)
@@ -757,9 +755,9 @@ class ArrisCMTS(BaseCmts):
         :param freq: frequency for the channel
         :type freq: string
         """
-        self.sendline("interface cable-downstream %s/%s" % (index, sub))
+        self.sendline(f"interface cable-downstream {index}/{sub}")
         self.expect(self.prompt)
-        self.sendline("cable frequency %s" % freq)
+        self.sendline(f"cable frequency {freq}")
         self.expect(self.prompt)
         self.sendline("no shutdown")
         self.expect(self.prompt)
@@ -830,7 +828,7 @@ class ArrisCMTS(BaseCmts):
         :return: Returns True if the modem is bridged else False.
         :rtype: boolean
         """
-        self.sendline("show cable modem %s detail" % mac)
+        self.sendline(f"show cable modem {mac} detail")
         self.expect(self.prompt)
         mac = netaddr.EUI(mac)
         ertr_mac = netaddr.EUI(int(mac) + offset)
@@ -848,14 +846,12 @@ class ArrisCMTS(BaseCmts):
         :return: returns ipv4 address of erouter else None
         :rtype: string
         """
-        self.sendline("show cable modem %s detail" % mac)
+        self.sendline(f"show cable modem {mac} detail")
         self.expect(self.prompt)
         mac = netaddr.EUI(mac)
         ertr_mac = netaddr.EUI(int(mac) + offset)
         ertr_mac.dialect = netaddr.mac_cisco
-        ertr_ipv4 = re.search(
-            "(%s) .*=(%s)" % (ertr_mac, ValidIpv4AddressRegex), self.before
-        )
+        ertr_ipv4 = re.search(f"({ertr_mac}) .*=({ValidIpv4AddressRegex})", self.before)
         if ertr_ipv4:
             return ertr_ipv4.group(2)
         else:
@@ -872,13 +868,13 @@ class ArrisCMTS(BaseCmts):
         :return: returns ipv6 address of erouter else None
         :rtype: string
         """
-        self.sendline("show cable modem %s detail" % mac)
+        self.sendline(f"show cable modem {mac} detail")
         self.expect(self.prompt)
         mac = netaddr.EUI(mac)
         ertr_mac = netaddr.EUI(int(mac) + offset)
         ertr_mac.dialect = netaddr.mac_cisco
         ertr_ipv6 = re.search(
-            "(%s) IPv6=(%s)" % (ertr_mac, AllValidIpv6AddressesRegex), self.before
+            f"({ertr_mac}) IPv6=({AllValidIpv6AddressesRegex})", self.before
         )
         if ertr_ipv6:
             return ertr_ipv6.group(2)
@@ -926,13 +922,13 @@ class ArrisCMTS(BaseCmts):
         :param power: power of the qam
         :type power: string
         """
-        self.sendline("interface cable-upstream %s/%s" % (ups_idx, ups_ch))
+        self.sendline(f"interface cable-upstream {ups_idx}/{ups_ch}")
         self.expect(self.prompt)
-        self.sendline("cable frequency %s" % freq)
+        self.sendline(f"cable frequency {freq}")
         self.expect(self.prompt)
-        self.sendline("cable channel-width %s" % width)
+        self.sendline(f"cable channel-width {width}")
         self.expect(self.prompt)
-        self.sendline("cable power-level %s" % power)
+        self.sendline(f"cable power-level {power}")
         self.expect(self.prompt)
         self.sendline("cable modulation-profile 64")
         self.expect(self.prompt)
@@ -976,11 +972,10 @@ class ArrisCMTS(BaseCmts):
         mac_domain = self.get_cm_mac_domain(cm_mac)
         self.get_cm_bundle(mac_domain)
         self.sendline(
-            "show running-config interface cable-mac %s | include secondary"
-            % mac_domain
+            f"show running-config interface cable-mac {mac_domain} | include secondary"
         )
         self.expect(self.prompt)
-        cmts_ip = re.search("ip address (%s) .* secondary" % gw_ip, self.before)
+        cmts_ip = re.search(f"ip address ({gw_ip}) .* secondary", self.before)
 
         if gw_ip is None:
             return self.before
@@ -1024,7 +1019,7 @@ class ArrisCMTS(BaseCmts):
         )
         self.expect(self.prompt)
         if downstream:
-            self.sendline("qos-sc name %s dir 1" % name)
+            self.sendline(f"qos-sc name {name} dir 1")
             self.expect(self.prompt)
 
     @BaseCmts.connect_and_run
@@ -1061,7 +1056,7 @@ class ArrisCMTS(BaseCmts):
         if "/" not in ip_bundle:
             ip_bundle += "/24"
         ip_bundle = ipaddress.IPv4Interface(six.text_type(ip_bundle))
-        self.sendline("interface cable-mac %s" % index)
+        self.sendline(f"interface cable-mac {index}")
         self.expect(self.prompt)
         self.sendline("no shutdown")
         self.expect(self.prompt)
@@ -1071,7 +1066,7 @@ class ArrisCMTS(BaseCmts):
         self.expect(self.prompt)
         self.sendline("cable dynamic-secret reject")
         self.expect(self.prompt)
-        self.sendline("cable cm-ip-prov-mode %s" % prov_mode)
+        self.sendline(f"cable cm-ip-prov-mode {prov_mode}")
         self.expect(self.prompt)
         self.sendline("cable mcast-fwd-by-dsid no")
         self.expect(self.prompt)
@@ -1085,27 +1080,23 @@ class ArrisCMTS(BaseCmts):
         self.expect(self.prompt)
         self.sendline("cable privacy mandatory bpi-plus")
         self.expect(self.prompt)
-        self.sendline("ip address %s %s" % (ip_bundle.ip, ip_bundle.netmask))
+        self.sendline(f"ip address {ip_bundle.ip} {ip_bundle.netmask}")
         self.expect(self.prompt)
         self.sendline("exit")
         self.expect(self.prompt)
         for ch in qam_ch:
             self.sendline(
-                "interface cable-downstream %s/%s cable cable-mac %s"
-                % (qam_idx, ch, index)
+                f"interface cable-downstream {qam_idx}/{ch} cable cable-mac {index}"
             )
             self.expect(self.prompt)
-            self.sendline(
-                "interface cable-downstream %s/%s no shutdown" % (qam_idx, ch)
-            )
+            self.sendline(f"interface cable-downstream {qam_idx}/{ch} no shutdown")
             self.expect(self.prompt)
         for ch in ups_ch:
             self.sendline(
-                "interface cable-upstream %s/%s cable cable-mac %s"
-                % (qam_idx, ch, index)
+                f"interface cable-upstream {qam_idx}/{ch} cable cable-mac {index}"
             )
             self.expect(self.prompt)
-            self.sendline("interface cable-upstream %s/%s no shutdown" % (qam_idx, ch))
+            self.sendline(f"interface cable-upstream {qam_idx}/{ch} no shutdown")
             self.expect(self.prompt)
 
     @BaseCmts.connect_and_run
@@ -1148,7 +1139,7 @@ class ArrisCMTS(BaseCmts):
         self.sendline("no pagination")
         self.expect(self.prompt)
         qos_dict = {"US": [], "DS": []}
-        self.sendline("show cable modem qos %s verbose" % (cm_mac))
+        self.sendline(f"show cable modem qos {cm_mac} verbose")
         self.expect(self.prompt)
         service_flows = re.split(r"\n\s*\n", self.before)[1:-1]
         strip_units = ["bits/sec", "bytes", "seconds", "packets/sec", "usecs"]
@@ -1192,20 +1183,18 @@ class ArrisCMTS(BaseCmts):
         :return: True if ping passed else False
         """
 
-        mode = "ipv%s" % ipaddress.ip_address(ping_ip).version
+        mode = f"ipv{ipaddress.ip_address(ping_ip).version}"
         basic_ping = (
-            "ping repeat-count {} timeout {}".format(ping_count, timeout)
+            f"ping repeat-count {ping_count} timeout {timeout}"
             if mode == "ipv4"
             else "ping ipv6"
         )
 
         self.check_output("end")
-        self.sendline("{} {}".format(basic_ping, ping_ip))
+        self.sendline(f"{basic_ping} {ping_ip}")
         self.expect(self.prompt)
         match = re.search(
-            "{} packets transmitted, {} packets received".format(
-                ping_count, ping_count
-            ),
+            f"{ping_count} packets transmitted, {ping_count} packets received",
             self.before,
         )
         return bool(match)

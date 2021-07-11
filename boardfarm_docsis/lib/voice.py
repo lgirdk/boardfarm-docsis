@@ -81,7 +81,7 @@ def fetch_mta_interfaces(wan, mta_ip):
         mta_ip,
         "ifEntry",
         index=2,
-        walk_cmd="awk /{}/".format(get_mib_oid("ifDescr")),
+        walk_cmd=f"awk /{get_mib_oid('ifDescr')}/",
     )
     out_dict = mibstring2dict(snmp_output, "ifDescr")
     return [

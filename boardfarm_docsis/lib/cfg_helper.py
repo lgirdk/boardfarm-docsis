@@ -78,9 +78,7 @@ def dict_to_str(d, name=None, indent=4):
                     s += dict_to_str(dict_val, k, indent)
             else:
                 logger.error(
-                    "Skipping list {} as not all elements are of the same type".format(
-                        k
-                    )
+                    f"Skipping list {k} as not all elements are of the same type"
                 )
         elif type(v) is collections.OrderedDict or type(v) is dict:
             # recursively parse the dictionary
@@ -605,9 +603,7 @@ class GlobalMTAParams(object):
                 if "line2" in sub_section:
                     line_suffix = "." + line2
                 snmp_mta_global = [
-                    "\t{}{}{}\t{}\t{}\t".format(
-                        k, line_suffix, v["suffix"], v["data"], v["data_type"]
-                    )
+                    f"\t{k}{line_suffix}{v['suffix']}\t{v['data']}\t{v['data_type']}\t"
                     for k, v in tmp.items()
                 ]
                 final_list.extend(snmp_mta_global)
@@ -863,7 +859,7 @@ class GlobalParameters(object):
             mib_name = v.split(" ", 1)[0]
             if mib_name.count(".") > 1:
                 logger.error("No numeric OIDs allowed in SnmpMibObject")
-                logger.debug("SnmpMibObject = %s" % val_list)
+                logger.debug(f"SnmpMibObject = {val_list}")
                 assert 0, (
                     "SnmpMibObject at position "
                     + str(i)

@@ -75,7 +75,7 @@ class MiniCMTS(BaseCmts):
                     self,
                     command="ssh",
                     args=[
-                        "%s@%s" % (self.username, self.ipaddr),
+                        f"{self.username}@{self.ipaddr}",
                         "-p",
                         str(self.port),
                         "-o",
@@ -102,11 +102,11 @@ class MiniCMTS(BaseCmts):
                     )
                     break
                 except PexpectErrorTimeout:
-                    raise Exception("Unable to connect to %s." % self.name)
+                    raise Exception(f"Unable to connect to {self.name}.")
                 except pexpect.EOF:
                     if hasattr(self, "before"):
                         logger.debug(self.before)
-                        raise Exception("Unable to connect to %s." % self.name)
+                        raise Exception(f"Unable to connect to {self.name}.")
 
             except Exception as e:
                 logger.error(e)
@@ -120,7 +120,7 @@ class MiniCMTS(BaseCmts):
                 self.close()
                 self.pid = None
         else:
-            raise Exception("Unable to connect to %s." % self.name)
+            raise Exception(f"Unable to connect to {self.name}.")
         try:
             self.logfile_read = sys.stdout
             if i == 0:
