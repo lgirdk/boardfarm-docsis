@@ -1,11 +1,13 @@
 import logging
 import traceback
 from collections import OrderedDict
+from pathlib import Path
 
 import debtcollector
 from boardfarm.devices import get_device_mapping_class
 from boardfarm.devices.base import BaseDevice
 from boardfarm.devices.base_devices.board import BaseBoard
+from boardfarm.devices.base_devices.board_templates import BoardHWTemplate
 from boardfarm.exceptions import CodeError
 from netaddr import EUI, mac_unix_expanded
 from termcolor import colored
@@ -172,6 +174,12 @@ class DocsisCPEHw(DocsisInterface):
         self.mac["wifi5.0"] = kwargs.get("wifi5.0", None)
 
     @property
+    def get_mibs_path(self):
+        return BoardHWTemplate.get_mibs_path(self) + [
+            str(Path(__file__).parent.parent.parent.joinpath("mibs"))
+        ]
+
+    @property
     def cm_mac(self):
         return self.mac["cm"]
 
@@ -189,6 +197,10 @@ class DocsisCPEHw(DocsisInterface):
         )
         self.reset()
         self.wait_for_hw_boot()
+
+    def env_config(self, cm_boot_file, mta_boot_file, mibs_path):
+        self.cm_cfg = self.cm_cfg(cfg_file_str=cm_boot_file, mibs_path=mibs_path)
+        self.mta_cfg = self.mta_cfg(mta_file_str=mta_boot_file, mibs_path=mibs_path)
 
 
 class DocsisCPESw:

@@ -9,10 +9,10 @@ from boardfarm.lib.DeviceManager import device_type
 from boardfarm.lib.network_helper import valid_ipv4, valid_ipv6
 from boardfarm.lib.SNMPv2 import SNMPv2
 from netaddr import EUI, mac_unix_expanded
-from termcolor import colored
 
+from boardfarm_docsis.lib.docsis import base_cfg
 from boardfarm_docsis.lib.docsis import cm_cfg as cm_cfg_cls
-from boardfarm_docsis.lib.docsis import docsis_encoder
+from boardfarm_docsis.lib.docsis import mta_cfg as mta_cfg_cls
 
 logger = logging.getLogger("bft")
 
@@ -20,7 +20,8 @@ logger = logging.getLogger("bft")
 class DocsisInterface:
     """Docsis class used to perform generic operations"""
 
-    cm_cfg = None
+    cm_cfg = cm_cfg_cls
+    mta_cfg = mta_cfg_cls
 
     # The possible configurations for the CM
     cm_mgmt_config_modes = {"dual", "ipv4", "ipv6"}
@@ -209,13 +210,11 @@ class DocsisInterface:
         else:
             raise CodeError(f"Failed to get esafeErouterInitModeControl via {method}")
 
-    reprovisionFirstRun = True
-
     def copy_cmts_provisioning_files(self, config, tftp_dev, board):
         """This can be overridden to cater for special encoding methods"""
-        docsis_encoder.copy_cmts_provisioning_files(config, tftp_dev, board)
+        base_cfg.copy_cmts_provisioning_files(config, tftp_dev, board)
 
-    def reprovision(self, provisioner, cm_cfg=None, mta_cfg=None, erouter_cfg=None):
+    def reprovision(self, provisioner):
         """Provision the board with config file
         :param provisioner: provisioner device
         :param cm_cfg: cable modem config, defaults to None
@@ -225,43 +224,22 @@ class DocsisInterface:
         :param erouter_cfg: erouter config, defaults to None
         :type erouter_cfg: string, optional
         """
-        if cm_cfg is None:
+        if self.cm_cfg is None:
             cm_cfg = self.dev.board.env_helper.get_board_boot_file()
-
-        if mta_cfg is None:
-            if hasattr(self.dev.board, "mta_cfg"):
-                mta_cfg = self.dev.board.mta_cfg
-            else:
-                logger.warning(
-                    colored(
-                        "WARNING: MTA config file missing. MTA will not be configured at boot!",
-                        color="red",
-                        attrs=["bold"],
-                    )
-                )
-
-        if type(cm_cfg) is str:
             self.cm_cfg = cm_cfg_cls(cfg_file_str=cm_cfg)
+        if self.mta_cfg is None:
+            if self.dev.board.env_helper.has_board_boot_file_mta():
+                mta_cfg = self.dev.board.env_helper.get_board_boot_file_mta()
+                self.mta_cfg = mta_cfg_cls(mta_file_str=mta_cfg)
 
-        self.update_config()
+        self._update_config()
 
         provisioner.tftp_device = self.dev.board.tftp_dev
+        return self.cm_cfg, self.mta_cfg
 
-        self.copy_cmts_provisioning_files(
-            self.config, self.dev.board.tftp_dev, self.dev.board
-        )
-        if self.reprovisionFirstRun:
-            self.reprovisionFirstRun = False
-            provisioner.provision_board(self.config)
-        else:
-            provisioner.reprovision_board(self.config)
-
-    def update_config(self):
+    def _update_config(self):
         """Get the mac address of CM, MTA and erouter, add extra provisioning to the config"""
         config = self.config
-        cm_cfg = self.dev.board.env_helper.get_board_boot_file()
-        self.cm_cfg = cm_cfg_cls(cfg_file_str=cm_cfg)
-        mta_cfg = self.dev.board.mta_cfg
         # TODO: use EUI to parse cm_mac
         if "cm_mac" not in config:
             print("MAC addresses not in config, some provisioning might not work!")
@@ -279,7 +257,7 @@ class DocsisInterface:
             mac = EUI(config["cm_mac"])
             config["erouter_mac"] = f"{EUI(int(mac) + 2, dialect=mac_unix_expanded)}"
 
-        config["tftp_cfg_files"] = [self.cm_cfg, mta_cfg]
+        config["tftp_cfg_files"] = [self.cm_cfg, self.mta_cfg]
 
         if hasattr(self.dev, "provisioner") and hasattr(
             self.dev.provisioner, "prov_ip"
@@ -290,9 +268,9 @@ class DocsisInterface:
             config["extra_provisioning"] = {
                 "mta": {
                     "hardware ethernet": config["mta_mac"],
-                    "filename": '"' + mta_cfg.encoded_fname + '"',
+                    "filename": '"' + self.mta_cfg.encoded_fname + '"',
                     "options": {
-                        "bootfile-name": '"' + mta_cfg.encoded_fname + '"',
+                        "bootfile-name": '"' + self.mta_cfg.encoded_fname + '"',
                         "dhcp-parameter-request-list": "3, 6, 7, 12, 15, 43, 122",
                         "domain-name": '"sipcenter.com"',
                         "domain-name-servers": wan.gw,
@@ -334,7 +312,6 @@ class DocsisInterface:
                     "options": {"dhcp6.name-servers": wan.gwv6},
                 },
             }
-        self.dev.board.cm_cfg = self.cm_cfg
 
     def flash(self, meta, method="snmp"):
         if method == "snmp":
@@ -369,6 +346,12 @@ class DocsisInterface:
         wan.expect_prompt()
 
         self.flash_with_snmp_docsis_comands(wan, cm_ip, server_ip, filename, protocol)
+
+    def encode_mta(self):
+        self.mta_cfg.encode()
+
+    def encode_cfg(self):
+        self.cm_cfg.encode()
 
 
 class Docsis(DocsisInterface, openwrt_router.OpenWrtRouter):

@@ -455,6 +455,25 @@ class DocsisEnvHelper(EnvHelper):
         except BftEnvExcKeyError:
             return False
 
+    def get_board_boot_file_mta(self):
+        """Returns the ["environment_def"]["board"]["emta"]["boot_file_mta"] value
+        :return: the emta boot file value as a string
+        :rtype: String"""
+        try:
+            return self.env["environment_def"]["board"]["emta"]["boot_file_mta"]
+        except (KeyError, AttributeError):
+            raise BftEnvExcKeyError
+
+    def has_board_boot_file_mta(self):
+        """Returns True if  ["environment_def"]["board"]["emta"]["boot_file_mta"] exists
+        :return: possible values are True/False
+        :rtype: bool"""
+        try:
+            self.get_board_boot_file_mta()
+            return True
+        except BftEnvExcKeyError:
+            return False
+
     def get_external_voip(self):
         """Return the ["environment_def"]["voice"]["EXT_VOIP"] value
 

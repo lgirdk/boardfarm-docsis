@@ -53,7 +53,7 @@ class cfg_type(Enum):
     MTA = 2
 
 
-class docsis_encoder:
+class base_cfg:
     """
     Name: docsis module
     Purpose: docsis operating.
@@ -61,26 +61,27 @@ class docsis_encoder:
     Fuction:
         decode():
             return output file name(.txt)
-        encode(output_type='cm_cfg')
+        encode()
             return output file name(.cfg or .bin)
     """
 
     mibs_path_arg = ""
 
-    def __init__(self, file_or_obj, tmpdir=None, mibs_paths=None, board=None):
+    def __init__(self, file_or_obj, tmpdir=None, mibs_paths=None):
         # TODO: fix at some point, this tmpdir is already relative to the CM config you
         # are grabbing? Not ideal as that dir might not be writeable, or a tftp or http URL
         # at some point - need to use a real local tmpdir or maybe even results so we can
         # save the resulting artifacts in other tools
+
+        self.init_copy(file_or_obj, tmpdir=tmpdir, mibs_paths=mibs_paths)
+
+    def init_copy(self, file_or_obj, tmpdir=None, mibs_paths=None):
         if mibs_paths is None:
             mibs_paths = []
 
         if tmpdir is None:
             tmpdir = tempfile.mkdtemp()
 
-        assert board, "board is a required argument"
-        if mibs_paths == []:
-            mibs_paths = getattr(board, "mibs_paths", [])
         if mibs_paths != []:
             mibs_path_arg = "-M "
             for mibs_path in mibs_paths:
@@ -94,6 +95,12 @@ class docsis_encoder:
             # TODO: this seems like the wrong place to store these but OK
             self.dir_path = os.path.join(os.path.split(__file__)[0], tmpdir)
             self.file = self.cm_cfg.original_fname
+            self.file_path = os.path.join(self.dir_path, self.file)
+        elif isinstance(file_or_obj, mta_cfg):
+            self.mta_cfg = file_or_obj
+            # TODO: this seems like the wrong place to store these but OK
+            self.dir_path = os.path.join(os.path.split(__file__)[0], tmpdir)
+            self.file = self.mta_cfg.original_fname
             self.file_path = os.path.join(self.dir_path, self.file)
         else:
             self.file_path = file_or_obj
@@ -112,6 +119,8 @@ class docsis_encoder:
 
         if isinstance(file_or_obj, cm_cfg):
             self.cm_cfg.save(self.file_path)
+        if isinstance(file_or_obj, mta_cfg):
+            self.mta_cfg.save(self.file_path)
 
         assert cmd_exists("docsis")
         assert cmd_exists("tclsh")
@@ -161,7 +170,7 @@ class docsis_encoder:
             raise CMCfgEncodeFailed()
         return cmcfg_path
 
-    def encode(self, output_type="cm_cfg"):
+    def encode(self):
         def encode_mta():
             mtacfg_name = self.file.replace(".txt", ".bin")
             mtacfg_path = os.path.join(self.dir_path, mtacfg_name)
@@ -176,15 +185,21 @@ class docsis_encoder:
                 os.remove(cmcfg_path)
             return self.encode_cm(self.mibs_path_arg, self.file_path, cmcfg_path)
 
-        if output_type == "mta_cfg" or isinstance(self.cm_cfg, mta_cfg):
-            return encode_mta()
-
         if self.get_cfg_type() == cfg_type.CM:
             return encode_cm()
         elif self.get_cfg_type() == cfg_type.MTA:
             return encode_mta()
         else:
             raise CfgUnknownType()
+
+    def load(self, cfg_data, method="txt"):
+        """Load cfg from txt file, for modification"""
+
+        if method == "txt":
+            self.txt = cfg_data
+        if method == "file":
+            with open(cfg_data) as txt:
+                self.txt = txt.read()
 
     # this is old. This would go eventually.
     @staticmethod
@@ -259,12 +274,19 @@ class docsis_encoder:
 
         # Copy binary files to tftp server
         for cfg in cfg_set:
-            d = cls(cfg, board=board)
+            d = cls(cfg, mibs_paths=board.mibs_path)
             ret = d.encode()
             tftp_device.copy_file_to_server(ret)
 
+    def shortname(self, num_digits=None):
+        """short name for displaying in summary"""
+        h = hashlib.md5(self.txt.encode()).hexdigest()
+        if num_digits:
+            h = h[0:num_digits]
+        return h
 
-class cm_cfg:
+
+class cm_cfg(base_cfg):
     """
     Class for generating CM cfg from nothing, or even importing from a file
     They later need to be encoded via a compiler
@@ -285,7 +307,7 @@ class cm_cfg:
     # place so let's allow for that for now
     legacy_search_path = None
 
-    def __init__(self, start=None, fname=None, cfg_file_str=None):
+    def __init__(self, start=None, fname=None, cfg_file_str=None, mibs_path=None):
         """Creates a default basic CM cfg file for modification"""
         self.dslite = False
 
@@ -332,6 +354,14 @@ class cm_cfg:
             )
         else:
             raise Exception(f"Wrong type {type(start)} received")
+        super().init_copy(file_or_obj=self, mibs_paths=mibs_path)
+
+    def encode(self):
+        cfg_name = self.file.replace(".txt", ".cfg")
+        cfg_path = os.path.join(self.dir_path, cfg_name)
+        if os.path.isfile(cfg_path):
+            os.remove(cfg_path)
+        return self.encode_cm(self.mibs_path_arg, self.file_path, cfg_path)
 
     def load(self, cm_txt):
         """Load CM cfg from txt file, for modification"""
@@ -363,13 +393,6 @@ class cm_cfg:
         """String repr of CM txt"""
         return self.txt
 
-    def shortname(self, num_digits=None):
-        """short name for displaying in summary"""
-        h = hashlib.md5(self.txt.encode()).hexdigest()
-        if num_digits:
-            h = h[0:num_digits]
-        return h
-
     def save(self, full_path):
         with open(full_path, "w") as txt:
             txt.write(self.txt)
@@ -399,12 +422,13 @@ class cm_cfg:
     cm_configmode = property(_cm_configmode)
 
 
-class mta_cfg(cm_cfg):
+class mta_cfg(base_cfg):
     """MTA specific class for cfgs"""
 
     encoded_suffix = ".bin"
+    txt = ""
 
-    def __init__(self, start=None, fname=None, mta_file_str=None):
+    def __init__(self, start=None, fname=None, mta_file_str=None, mibs_path=None):
         """
         Creates a default basic mta  cfg file for modification
         """
@@ -434,6 +458,14 @@ class mta_cfg(cm_cfg):
             )
         else:
             raise Exception(f"Wrong type {type(start)} received")
+        super().init_copy(file_or_obj=self, mibs_paths=mibs_path)
+
+    def encode(self):
+        cfg_name = self.file.replace(".txt", ".bin")
+        cfg_path = os.path.join(self.dir_path, cfg_name)
+        if os.path.isfile(cfg_path):
+            os.remove(cfg_path)
+        return self.encode_mta(self.mibs_path_arg, self.file_path, cfg_path)
 
     def load_from_string(self, mta_str_txt: str, name_prefix: str = "") -> None:
         """Load CM cfg from text string (e.g. the file is stored in a multiline
@@ -790,15 +822,15 @@ def configure_cm_dhcp_server(board, mode="dual", enable=True):
     return r_status
 
 
-class docsis(docsis_encoder):
+class docsis(base_cfg):
     """
-    Deprecated use docsis_encoder, eventually this will be removed.
+    Deprecated use base_cfg, eventually this will be removed.
     """
 
     def __init__(self, *args, **kw):
         deprecate(
             "Warning!",
-            message="Use docis_encoder to encode/validate the Docsis related files",
+            message="Use base_cfg to encode/validate the Docsis related files",
             category=UserWarning,
         )
         super().__init__(*args, **kw)

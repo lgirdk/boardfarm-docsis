@@ -91,7 +91,13 @@ def pre_boot_env(config, env_helper, devices):
     if env_helper.mitm_enabled() and not hasattr(devices, "mitm"):
         raise DeviceDoesNotExistError("No mitm device (requested by environment)")
 
-    devices.board.env_config()
+    cm_boot_file = None
+    mta_boot_file = None
+    if env_helper.has_board_boot_file():
+        cm_boot_file = env_helper.get_board_boot_file()
+    if env_helper.has_board_boot_file_mta():
+        mta_boot_file = env_helper.get_board_boot_file_mta()
+    devices.board.env_config(cm_boot_file, mta_boot_file, devices.board.mibs_path)
 
     if env_helper.voice_enabled():
         dev_list = [
@@ -110,7 +116,7 @@ def pre_boot_env(config, env_helper, devices):
         if env_helper.vendor_encap_opts():
             devices.provisioner.vendor_opts_acs_url = True
         logger.info("Provisioning board")
-        ProvisionHelper(devices).provision_board("provisioner", "board")
+        ProvisionHelper(devices).provision_board()
     else:
         # should this be an error?
         logger.error(
