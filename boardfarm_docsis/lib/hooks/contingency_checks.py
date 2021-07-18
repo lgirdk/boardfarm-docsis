@@ -168,6 +168,12 @@ class Voice:
         lan_devices = [dev_mgr.lan, dev_mgr.lan2]
         num_list = [lan.own_number for lan in lan_devices]
 
+        assert board.mta_prov_check(), "MTA is not provisioned!"
+        assert (
+            board.check_sip_endpoints_registration()
+        ), "SIP endpoints are not registered"
+        assert board.is_sip_endpoint_idle(), "MTA endpoints on board are not idle"
+
         check_peer_registration(board, num_list, sipserver)
 
         logger.info("Voice service checks for BF Docsis executed")
