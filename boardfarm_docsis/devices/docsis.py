@@ -1,6 +1,5 @@
 import logging
 import time
-from typing import Literal
 
 import pexpect
 from boardfarm.devices import openwrt_router
@@ -362,12 +361,12 @@ class DocsisInterface:
         """To check if MTA endpoint of DOCSIS board are registered"""
         raise NotImplementedError
 
-    def is_sip_endpoint_idle(self, lines: Literal["0", "1", "both"] = "both") -> bool:
+    def is_sip_endpoint_idle(self, lines: str = "both") -> bool:
         """To validate the status of the sip endpoint(s) connected
         to the MTA lines 0 and/or 1 are idle.
 
         :param lines: index value, can be either 0/1/both, defaults to 'both'
-        :type lines: Literal, optional
+        :type lines: Literal["0", "1", "both"], optional
         :raises Exception: In case fails to enter voice mode
         :return: True if idle, else False.
         :rtype: bool
