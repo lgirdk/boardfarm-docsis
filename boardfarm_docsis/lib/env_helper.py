@@ -421,19 +421,17 @@ class DocsisEnvHelper(EnvHelper):
         except (KeyError, AttributeError):
             return dict()
 
-    def vendor_encap_opts(self):
+    def vendor_encap_opts(self, ip_proto=None):
         """Check vendor specific option for ACS URL is specified in env
 
         :return: return True if dhcp option for acs url is configured
         :rtype: bool
         """
-        if self.dhcp_options():
-            return (
-                True
-                if 125 in self.dhcp_options()["dhcpv4"]
-                and 17 in self.dhcp_options()["dhcpv6"]
-                else False
-            )
+        dhcp_options = self.dhcp_options()
+        if ip_proto == "ipv4" and 125 in dhcp_options.get("dhcpv4", []):
+            return True
+        elif ip_proto == "ipv6" and 17 in dhcp_options.get("dhcpv6", []):
+            return True
         return False
 
     def get_board_boot_file(self):

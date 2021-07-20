@@ -113,8 +113,10 @@ def pre_boot_env(config, env_helper, devices):
         )
     prov = getattr(config, "provisioner", None)
     if prov:
-        if env_helper.vendor_encap_opts():
-            devices.provisioner.vendor_opts_acs_url = True
+        if env_helper.vendor_encap_opts(ip_proto="ipv4"):
+            devices.provisioner.vendor_opts_acsv4_url = True
+        if env_helper.vendor_encap_opts(ip_proto="ipv6"):
+            devices.provisioner.vendor_opts_acsv6_url = True
         logger.info("Provisioning board")
         ProvisionHelper(devices).provision_board()
     else:
