@@ -59,7 +59,20 @@ class DocsisCPEHw(DocsisInterface):
 
     def _factory_reset(self, img):
         """Reset using factory_reset method."""
-        self.dev.board.hw.factory_reset()
+        try:
+            self.dev.board.hw.factory_reset()
+            return True
+        except Exception as e:
+            traceback.print_exc()
+            logger.error(
+                colored(
+                    "Failed to perform reset using factory reset method",
+                    color="red",
+                    attrs=["bold"],
+                )
+            )
+            logger.error(f"{e}")
+            return False
 
     def _flash_docsis_image(self, config, env_helper, board, lan, wan, tftp_device):
         """Given an environment spec and a board attempts to flash the HW following
@@ -92,6 +105,13 @@ class DocsisCPEHw(DocsisInterface):
                     if strategy in ["factory_reset", "meta_build"]:
                         if not result:
                             board.hw.reset()
+                            raise Exception(
+                                colored(
+                                    f"Failed to perform '{strategy}' boot sequence",
+                                    color="red",
+                                    attrs=["bold"],
+                                )
+                            )
                     else:
                         board.hw.boot_linux()
 
