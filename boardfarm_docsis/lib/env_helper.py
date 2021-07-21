@@ -495,3 +495,21 @@ class DocsisEnvHelper(EnvHelper):
             return self.env["environment_def"]["board"]["cwmp_version"]
         except (KeyError, AttributeError):
             return False
+
+    def get_board_model(self) -> str:
+        """Return the ["environment_def"]["board"]["model"]
+
+        :return: Board model
+        """
+        try:
+            return self.env["environment_def"]["board"]["model"]
+        except (KeyError, AttributeError):
+            raise BftEnvExcKeyError("Unable to find board.model entry in env.")
+
+    def get_board_hardware_type(self):
+        """Returns board hardware type according to
+        ["environment_def"]["board"]["model"]
+        :return: mv1/mv2/mv2+ etc. or unknown if not found in mapping
+        """
+        board_model = self.get_board_model()
+        return {"F3896LG": "mv2+", "CH7465LG": "mv1"}.get(board_model, "unknown")
