@@ -708,7 +708,7 @@ class BaseCmts(base.BaseDevice):
         ignore_partial=False,
         ignore_cpe=False,
         time_to_sleep=10,
-        iterations=20,
+        iterations=50,
     ):
         """Waits for a CM to come online in an iterate-check-sleep loop. A CM
         is online when the its status is OPERATIONAL.
@@ -728,5 +728,6 @@ class BaseCmts(base.BaseDevice):
         for _ in range(iterations):
             if self.dev.cmts.is_cm_online(ignore_bpi, ignore_partial, ignore_cpe):
                 return
+            self.dev.board.touch()
             time.sleep(time_to_sleep)
         raise CodeError(f"CM {self.board_wan_mac} is not online!!")
