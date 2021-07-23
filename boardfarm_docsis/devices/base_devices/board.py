@@ -184,6 +184,7 @@ class DocsisCPEHw(DocsisInterface):
         self.sr_no = kwargs.get("serial_no", None)
         # the cm_mac is in config["cm_mac"] but really should be in line with
         # the other attrs, see board_decider is invoked
+        self.mac = dict(DocsisCPEHw.mac)
         self.mac["cm"] = kwargs.get("cm_mac", None)
         if self.mac["cm"] is None:
             # old way
