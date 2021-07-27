@@ -13,6 +13,7 @@ from boardfarm.exceptions import (
     NoTFTPServer,
 )
 from boardfarm.library import check_devices
+from boardfarm.use_cases.voice import initialize_phone, shutdown_phone
 from packaging.version import Version
 from termcolor import colored
 
@@ -111,6 +112,10 @@ def pre_boot_env(config, env_helper, devices):
             devices.sipcenter,
             config,
         )
+        for dev in devices.FXS:
+            value = initialize_phone(dev.name)
+            shutdown_phone(value)
+
     prov = getattr(config, "provisioner", None)
     if prov:
         if env_helper.vendor_encap_opts(ip_proto="ipv4"):
