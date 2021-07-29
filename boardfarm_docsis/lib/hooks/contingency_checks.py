@@ -137,6 +137,8 @@ class CheckInterface:
             ip_ifaces.append(board.aftr_iface)
         elif prov_mode.lower() in ["disabled", "bridge"]:
             ip_ifaces.append(board.lan0_iface)
+        else:
+            ip_ifaces.append(board.lan_iface)
 
         ip["board"] = board.get_ifaces_ip_dict(ip_ifaces)
 
