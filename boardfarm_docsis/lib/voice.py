@@ -1,9 +1,9 @@
 import datetime
 import re
+from typing import Dict
 
 import pexpect
 from boardfarm.lib.SnmpHelper import get_mib_oid, snmp_v2
-from boardfarm_lgi.tests.lib.lgi_lib import mibstring2dict
 
 
 def get_tone_time(tones_file, out, tone):
@@ -117,3 +117,31 @@ def cleanup_voice_prompt(self, devices):
         else:
             result.append(False)
     return all(result)
+
+
+def mibstring2dict(result_string: str, mib: str) -> Dict[str, str]:
+    """
+    This function is to converts the snmpwalk output to dictionary
+    :param result_string: pass the snmp output
+    :type result_string: string
+    :param mib: Mib name which is used for SNMPwalk
+    :type mib: string
+    :return: it returns the snmp out in dictionary format
+    :rtype: dictionary
+    : ex: "from: ('10.15.78.14', 161), 1.3.6.1.2.1.69.1.6.2.1.2.1 = 1
+                               from: ('10.15.78.14', 161), 1.3.6.1.2.1.69.1.6.2.1.2.2 = 1"
+    :return dict() result. ex: {"1.3.6.1.2.1.69.1.6.2.1.2.1" = "1",
+                                "1.3.6.1.2.1.69.1.6.2.1.2.2": "1"}
+    """
+    result = {}
+    str_cut = result_string.split("\r\n")
+    oid = (get_mib_oid(mib)).split(".", 1)
+    oid_pattern = "(?:iso|1)." + oid[1]
+    for line in str_cut:
+        match = re.search(r"(%s.*)\s+\=\s+(.*)" % oid_pattern, line)
+        if match:
+            key = re.sub("iso", "1", match.group(1))
+            # to remove datatype e.g. INTEGER: 1 to return only 1
+            value = re.sub(r"^\w+:\s+", "", match.group(2), 1)
+            result.update({key: value})
+    return result
