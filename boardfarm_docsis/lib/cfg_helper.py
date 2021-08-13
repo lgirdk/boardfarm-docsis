@@ -2,15 +2,16 @@ import collections
 import copy
 import json
 import logging
-import os
 from collections import OrderedDict
-
-import boardfarm_docsis
+from pathlib import Path
+from typing import Dict
 
 logger = logging.getLogger("bft")
 
 
-def get_base_cfg(cfg_name):
+def get_base_cfg(
+    cfg_name: str = "mta_config.json",
+) -> Dict[str, Dict[str, Dict[str, str]]]:
     """Helper function to get base config from json
 
     :param cfg_name : json file name
@@ -18,8 +19,7 @@ def get_base_cfg(cfg_name):
     :return : json file extracted as dict
     :rtype : dict
     """
-    base_dir = os.path.dirname(str(boardfarm_docsis.__path__[0]))
-    return json.load(open(os.path.join(base_dir, "json_payload/" + cfg_name)))
+    return json.loads(Path(__file__).parent.joinpath(cfg_name).read_text())
 
 
 def indent_str(string, indent, pad=" "):
