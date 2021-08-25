@@ -94,15 +94,23 @@ class DocsisCPEHw(DocsisInterface):
             board.hw.reset()
             for i in boot_sequence:
                 for strategy, img in i.items():
-                    if strategy in ["factory_reset", "meta_build"]:
-                        board.hw.wait_for_linux()
-                    else:
-                        board.hw.wait_for_boot()
+                    if strategy != "pre_flash_factory_reset":
+                        if strategy in [
+                            "factory_reset",
+                            "meta_build",
+                        ]:
+                            board.hw.wait_for_linux()
+                        else:
+                            board.hw.wait_for_boot()
 
                     board.hw.setup_uboot_network(tftp_device.gw)
                     result = self.methods[strategy](img)
 
-                    if strategy in ["factory_reset", "meta_build"]:
+                    if strategy in [
+                        "pre_flash_factory_reset",
+                        "factory_reset",
+                        "meta_build",
+                    ]:
                         if not result:
                             board.hw.reset()
                             raise Exception(
@@ -158,6 +166,9 @@ class DocsisCPEHw(DocsisInterface):
                         strategy != "meta_build"
                     ), "meta_build strategy needs to run alone!!!"
 
+                pbfr = d.get("pre_flash_factory_reset", False)
+                if pbfr:
+                    stage[2]["pre_flash_factory_reset"] = pbfr
                 if stage[1].get(strategy, None) != img:
                     stage[2][strategy] = img
                 fr = d.get("factory_reset", False)
@@ -176,6 +187,7 @@ class DocsisCPEHw(DocsisInterface):
         self.methods = {
             "meta_build": self._meta_flash,
             "factory_reset": self._factory_reset,
+            "pre_flash_factory_reset": self._factory_reset,
         }
 
         self.config = kwargs.get("config", None)
