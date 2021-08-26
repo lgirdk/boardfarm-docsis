@@ -20,10 +20,7 @@ import pandas as pd
 import pexpect
 from boardfarm.exceptions import CodeError, PexpectErrorTimeout
 from boardfarm.lib.bft_pexpect_helper import bft_pexpect_helper
-from boardfarm.lib.regexlib import (
-    AllValidIpv6AddressesRegex,
-    ValidIpv4AddressRegex,
-)
+from boardfarm.lib.regexlib import AllValidIpv6AddressesRegex, ValidIpv4AddressRegex
 from tabulate import tabulate
 from termcolor import colored
 

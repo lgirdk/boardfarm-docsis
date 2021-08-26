@@ -20,11 +20,7 @@ import boardfarm
 from aenum import Enum
 from boardfarm.exceptions import BftCommandNotFound, BootFail, CodeError
 from boardfarm.lib import SnmpHelper
-from boardfarm.lib.common import (
-    cmd_exists,
-    keccak512_checksum,
-    retry_on_exception,
-)
+from boardfarm.lib.common import cmd_exists, keccak512_checksum, retry_on_exception
 from boardfarm.lib.DeviceManager import device_type
 from debtcollector import deprecate
 

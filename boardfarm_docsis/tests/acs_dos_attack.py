@@ -1,8 +1,4 @@
-from boardfarm.lib.network_testing import (
-    kill_process,
-    tcpdump_capture,
-    tshark_read,
-)
+from boardfarm.lib.network_testing import kill_process, tcpdump_capture, tshark_read
 from boardfarm.orchestration import TestStep as TS
 from requests import HTTPError
 
