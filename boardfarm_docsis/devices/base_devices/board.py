@@ -307,7 +307,8 @@ class DocsisCPEInterface(InterceptDocsisCPE):
         pass
 
     def reload_sw_object(self, sw):
-        sw_class = get_device_mapping_class(sw)
+        # Though the right arguments passed to the method and the method has return pylint throws some false positive error, hence added disable
+        sw_class = get_device_mapping_class(sw)  # pylint: disable=E1121, E1111
         if sw_class:
             self.sw = sw_class(self.hw)
         else:

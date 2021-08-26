@@ -118,8 +118,9 @@ class base_cfg:
         if isinstance(file_or_obj, mta_cfg):
             self.mta_cfg.save(self.file_path)
 
-        assert cmd_exists("docsis")
-        assert cmd_exists("tclsh")
+        # Though the method requires an arg pylint throws some false positive error, hence added disable
+        assert cmd_exists("docsis")  # pylint: disable=E1121
+        assert cmd_exists("tclsh")  # pylint: disable=E1121
         tclsh = Tkinter.Tcl()
         assert tclsh.eval(
             "package require sha1"
@@ -531,7 +532,8 @@ def check_provisioning(board, mta=False):
     def _shortname(cfg):
         d = board.get_docsis(cfg)
         ret = d.encode()
-        return keccak512_checksum(ret)
+        # Though the method requires an arg pylint throws some false positive error, hence added disable
+        return keccak512_checksum(ret)  # pylint: disable=E1121
 
     try:
         sha3_on_board = board.cfg_sha3()
@@ -697,8 +699,9 @@ def check_cm_firmware_version(board, wan, env_helper):
 
         # TODO: remove the following code once clean arch is used
         cm_ip = board.get_interface_ipaddr(board.wan_iface)
-        result = retry_on_exception(
-            SnmpHelper.snmp_v2, [wan, cm_ip, "docsDevSwCurrentVers"], retries=2
+        # Though the right arguments passed to the method and the method has return pylint throws some false positive error, hence added disable
+        result = retry_on_exception(  # pylint: disable=E1111, E1121
+            SnmpHelper.snmp_v2, [wan, cm_ip, "docsDevSwCurrentVers"], 2
         )
         # temporary fix, needs rework  to being vendor independent
         assert (

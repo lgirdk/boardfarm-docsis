@@ -15,7 +15,7 @@ class CmtsTemplate(PexpectHelper, metaclass=__MetaSignatureChecker):
 
     @property
     @abstractmethod
-    def model(cls):
+    def model(self):
         """This attribute is used by boardfarm to select the class to be used
         to create the object that allows the test fixutes to access the CMTS.
         This property shall be a value that matches the "type"
@@ -24,7 +24,7 @@ class CmtsTemplate(PexpectHelper, metaclass=__MetaSignatureChecker):
 
     @property
     @abstractmethod
-    def prompt(cls):
+    def prompt(self):
         """This attribute is used by boardfarm to understand how does device's prompt look like.
         E.g. for CASA3200 CMTS this class atribute may be:
         prompt = [

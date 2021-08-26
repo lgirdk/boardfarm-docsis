@@ -43,6 +43,8 @@ class CasaCMTS(base_cmts.BaseCmts):
 
     def __init__(self, *args, **kwargs):
         """Constructor method"""
+        # self.before is set to empty list to avoid the pylint unsupported-membership-test
+        self.before = []
         super().__init__(*args, **kwargs)
         conn_cmd = kwargs.get("conn_cmd", None)
         connection_type = kwargs.get("connection_type", "local_serial")
@@ -521,7 +523,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         self.sendline(f'show interface ip-bundle {index} | include "ip address"')
         self.expect(self.prompt)
-        if str(ipaddr.ip) in self.before:  # pylint: disable=unsupported-membership-test
+        if str(ipaddr.ip) in self.before:
             logger.info("The ip bundle is successfully set.")
         else:
             logger.error("An error occured while setting the ip bundle.")
@@ -554,9 +556,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.expect(self.prompt)
         self.sendline(f'show interface ip-bundle {index} | include "ipv6 address"')
         self.expect(self.prompt)
-        if (
-            str(ipaddress.ip_address(str(ip[:-3])).compressed) in self.before
-        ):  # pylint: disable=unsupported-membership-test
+        if str(ipaddress.ip_address(str(ip[:-3])).compressed) in self.before:
             logger.info("The ipv6 bundle is successfully set.")
         else:
             logger.error("An error occured while setting the ipv6 bundle.")
@@ -580,7 +580,7 @@ class CasaCMTS(base_cmts.BaseCmts):
             logger.error("An error occured while adding the route.")
         self.sendline("show ip route")
         self.expect(self.prompt)
-        if gw in self.before:  # pylint: disable=unsupported-membership-test
+        if gw in self.before:
             logger.debug("The route is available on cmts.")
         else:
             logger.debug("The route is not available on cmts.")
@@ -624,7 +624,7 @@ class CasaCMTS(base_cmts.BaseCmts):
         self.expect(pexpect.TIMEOUT, timeout=10)
         self.sendline("show ip route")
         self.expect(self.prompt)
-        if gw in self.before:  # pylint: disable=unsupported-membership-test
+        if gw in self.before:
             logger.debug(
                 "The route is still available on cmts might be delayed to reflect on cmts."
             )
@@ -1108,18 +1108,14 @@ class CasaCMTS(base_cmts.BaseCmts):
             r"show interface docsis-mac %s | inc downstream\s1\s" % mac_domain
         )
         self.expect(self.prompt)
-        assert (
-            "downstream 1 interface qam" in self.before
-        )  # pylint: disable=unsupported-membership-test
+        assert "downstream 1 interface qam" in self.before
         major, minor, sub = self.before.strip().split(" ")[-1].split("/")
         self.sendline(fr"show interface qam {major}/{minor} | inc channel\s{sub}\sfreq")
         self.expect_exact(
             fr"show interface qam {major}/{minor} | inc channel\s{sub}\sfreq"
         )
         self.expect(self.prompt)
-        assert (
-            f"channel {sub} frequency" in self.before
-        )  # pylint: disable=unsupported-membership-test
+        assert f"channel {sub} frequency" in self.before
         return str(int(self.before.split(" ")[-1]))
 
     def get_ip_from_regexp(self, cmmac, ip_regexpr):

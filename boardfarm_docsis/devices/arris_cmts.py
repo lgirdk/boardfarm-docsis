@@ -29,6 +29,8 @@ class ArrisCMTS(BaseCmts):
 
     def __init__(self, *args, **kwargs):
         """Constructor method"""
+        # self.before is set to empty list to avoid the pylint unsupported-membership-test
+        self.before = []
         super().__init__(*args, **kwargs)
         self.conn_cmd = kwargs.get("conn_cmd", None)
         self.connection_type = kwargs.get("connection_type", "local_serial")
@@ -164,7 +166,7 @@ class ArrisCMTS(BaseCmts):
         self.sendline(f"show cable modem | include {cmmac}")
         self.expect_prompt()
 
-        if "Operational" in self.before:  # pylint: disable=unsupported-membership-test
+        if "Operational" in self.before:
             return True
         else:
             try:
@@ -310,9 +312,7 @@ class ArrisCMTS(BaseCmts):
         """Helper function for check_PartialService"""
         self.sendline(f"show cable modem {cmmac}")
         self.expect(self.prompt)
-        return (
-            1 if "impaired" in self.before else 0
-        )  # pylint: disable=unsupported-membership-test
+        return 1 if "impaired" in self.before else 0
 
     @base_cmts.deco_get_mac
     @BaseCmts.connect_and_run
@@ -340,9 +340,7 @@ class ArrisCMTS(BaseCmts):
         self.sendline(f"show cable modem  {cm_mac} bonded-impaired")
         self.expect(self.prompt)
         bonded_impared_status = self.before
-        if (
-            "No CMs were found" in bonded_impared_status
-        ):  # pylint: disable=unsupported-membership-test
+        if "No CMs were found" in bonded_impared_status:
             self.sendline(f"show cable modem  {cm_mac} ")
             self.expect(r"(\d+)x(\d+)")
             downstream = int(self.match.group(1))
@@ -554,7 +552,7 @@ class ArrisCMTS(BaseCmts):
             logger.error("An error occured while adding the route.")
         self.sendline("show ip route")
         self.expect(self.prompt)
-        if gw in self.before:  # pylint: disable=unsupported-membership-test
+        if gw in self.before:
             logger.info("The route is available on cmts.")
         else:
             logger.info("The route is not available on cmts.")
@@ -598,7 +596,7 @@ class ArrisCMTS(BaseCmts):
         self.expect(pexpect.TIMEOUT, timeout=10)
         self.sendline("show ip route")
         self.expect(self.prompt)
-        if gw in self.before:  # pylint: disable=unsupported-membership-test
+        if gw in self.before:
             logger.debug("The route is still available on cmts.")
         else:
             logger.info("The route is not available on cmts.")
@@ -668,7 +666,7 @@ class ArrisCMTS(BaseCmts):
             f"show running-config interface cable-mac {index} | include ip address"
         )
         self.expect(self.prompt)
-        if str(ipaddr.ip) in self.before:  # pylint: disable=unsupported-membership-test
+        if str(ipaddr.ip) in self.before:
             logger.info("The ip bundle is successfully set.")
         else:
             logger.error("An error occured while setting the ip bundle.")
@@ -701,9 +699,7 @@ class ArrisCMTS(BaseCmts):
             f"show running-config interface cable-mac {index} | include ipv6 address"
         )
         self.expect(self.prompt)
-        if (
-            str(ipaddress.ip_address(str(ip[:-3])).compressed) in self.before
-        ):  # pylint: disable=unsupported-membership-test
+        if str(ipaddress.ip_address(str(ip[:-3])).compressed) in self.before:
             logger.info("The ipv6 bundle is successfully set.")
         else:
             logger.error("An error occured while setting the ipv6 bundle.")
@@ -834,9 +830,7 @@ class ArrisCMTS(BaseCmts):
         mac = netaddr.EUI(mac)
         ertr_mac = netaddr.EUI(int(mac) + offset)
         ertr_mac.dialect = netaddr.mac_cisco
-        return (
-            str(ertr_mac) not in self.before
-        )  # pylint: disable=unsupported-membership-test
+        return str(ertr_mac) not in self.before
 
     @BaseCmts.connect_and_run
     @BaseCmts.convert_mac_to_cmts_type
