@@ -1,49 +1,49 @@
 [build-system]
-build-backend = "flit_core.buildapi"
-requires      = ["flit_core >=3.2,<4"]
+    build-backend = "flit_core.buildapi"
+    requires      = ["flit_core >=3.2,<4"]
 
 [project]
-name = "boardfarm_docsis"
-authors = [
-    { name = "Various", email = "t&iconnectivityboardfarm@libertyglobal.com" },
-]
-readme = "README.md"
-classifiers = [
-    "Intended Audience :: Developers",
-    "Intended Audience :: Information Technology",
-    "Intended Audience :: Telecommunications Industry",
-    "License :: OSI Approved :: BSD License",
-    "Programming Language :: Python :: 3",
-    "Topic :: Software Development :: Embedded Systems",
-    "Topic :: Software Development :: Quality Assurance",
-    "Topic :: Software Development :: Testing",
-    "Topic :: Software Development :: Testing :: Acceptance",
-]
-requires-python = ">=3.6"
-dynamic = ['version', 'description']
+    authors = [
+        { name = "Various", email = "t&iconnectivityboardfarm@libertyglobal.com" },
+    ]
+    classifiers = [
+        "Intended Audience :: Developers",
+        "Intended Audience :: Information Technology",
+        "Intended Audience :: Telecommunications Industry",
+        "License :: OSI Approved :: BSD License",
+        "Programming Language :: Python :: 3",
+        "Topic :: Software Development :: Embedded Systems",
+        "Topic :: Software Development :: Quality Assurance",
+        "Topic :: Software Development :: Testing",
+        "Topic :: Software Development :: Testing :: Acceptance",
+    ]
+    dynamic = ['version', 'description']
+    name = "boardfarm_docsis"
+    readme = "README.md"
+    requires-python = ">=3.6"
 
-dependencies = [
-    "packaging",
-    "tabulate",
-]
+    dependencies = [
+        "packaging",
+        "tabulate",
+    ]
 
-[project.optional-dependencies]
-dev = [
-    "black",
-    "flake8",
-    "mypy",
-    "pre-commit",
-    "pylint",
-]
-doc = ["sphinx"]
-test = [
-    "pytest",
-    "pytest-cov",
-    "pytest-html",
-    "pytest-mock",
-    "pytest-randomly",
-    "pytest-xdist",
-]
+    [project.optional-dependencies]
+        dev = [
+            "black",
+            "flake8",
+            "mypy",
+            "pre-commit",
+            "pylint",
+        ]
+        doc = ["sphinx"]
+        test = [
+            "pytest",
+            "pytest-cov",
+            "pytest-html",
+            "pytest-mock",
+            "pytest-randomly",
+            "pytest-xdist",
+        ]
 
-[project.urls]
-Source = "https://github.com/lgirdk/boardfarm-docsis"
+    [project.urls]
+        Source = "https://github.com/lgirdk/boardfarm-docsis"
