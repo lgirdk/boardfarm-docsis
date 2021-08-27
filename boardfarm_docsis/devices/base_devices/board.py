@@ -141,39 +141,37 @@ class DocsisCPEHw(DocsisInterface):
         stage = OrderedDict()
         stage[1] = OrderedDict()
         stage[2] = OrderedDict()
-        if not stage[2]:
-            d = env_helper.get_dependent_software()
-            if d:
-                fr = d.get("factory_reset", False)
-                if fr:
-                    stage[1]["factory_reset"] = fr
+        d = env_helper.get_dependent_software()
+        if d:
+            fr = d.get("factory_reset", False)
+            if fr:
+                stage[1]["factory_reset"] = fr
+            strategy = d.get("flash_strategy")
+            img = _check_override(strategy, d.get("image_uri"))
+            stage[1][strategy] = img
+
+        d = env_helper.get_software()
+        if d:
+            if "load_image" in d:
+                strategy = "meta_build"
+                img = _check_override(strategy, d.get("load_image"))
+            else:
                 strategy = d.get("flash_strategy")
                 img = _check_override(strategy, d.get("image_uri"))
-                stage[1][strategy] = img
 
-        if not stage[2]:
-            d = env_helper.get_software()
-            if d:
-                if "load_image" in d:
-                    strategy = "meta_build"
-                    img = _check_override(strategy, d.get("load_image"))
-                else:
-                    strategy = d.get("flash_strategy")
-                    img = _check_override(strategy, d.get("image_uri"))
+            if stage[1]:
+                assert (
+                    strategy != "meta_build"
+                ), "meta_build strategy needs to run alone!!!"
 
-                if stage[1]:
-                    assert (
-                        strategy != "meta_build"
-                    ), "meta_build strategy needs to run alone!!!"
-
-                pbfr = d.get("pre_flash_factory_reset", False)
-                if pbfr:
-                    stage[2]["pre_flash_factory_reset"] = pbfr
-                if stage[1].get(strategy, None) != img:
-                    stage[2][strategy] = img
-                fr = d.get("factory_reset", False)
-                if fr:
-                    stage[2]["factory_reset"] = fr
+            pbfr = d.get("pre_flash_factory_reset", False)
+            if pbfr:
+                stage[2]["pre_flash_factory_reset"] = pbfr
+            if stage[1].get(strategy, None) != img:
+                stage[2][strategy] = img
+            fr = d.get("factory_reset", False)
+            if fr:
+                stage[2]["factory_reset"] = fr
 
         for k, v in stage[1].items():
             boot_sequence.append({k: v})
