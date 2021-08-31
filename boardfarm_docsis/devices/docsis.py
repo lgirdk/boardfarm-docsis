@@ -341,7 +341,7 @@ class DocsisInterface:
         server_ip = wan.get_interface_ipaddr(wan.iface_dut)
         filename = image.split("/")[-1]
         # Copying the file to tftpserver
-        wan.sendline(f"wget -nc {image} -O /tftpboot/{filename}")
+        wan.sendline(f"mgmt wget -nc {image} -O /tftpboot/{filename}")
         wan.expect(["saved"] + ["already there; not retrieving"])
         wan.expect_prompt()
 
