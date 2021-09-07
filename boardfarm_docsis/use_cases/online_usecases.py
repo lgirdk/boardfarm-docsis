@@ -33,4 +33,5 @@ def is_board_online_after_reset() -> bool:
         logger.warning(colored(msg, color="yellow", attrs=["bold"]))
         return False
 
+    board.post_boot_init()
     return True
