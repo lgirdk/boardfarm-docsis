@@ -639,9 +639,15 @@ def check_interface(board, ip, prov_mode="dual", lan_devices=None):
     # since aftr iface does not have an IP address/mac address of it's own
     # just validate if the interface exists
     if prov_mode == "ipv6":
-        assert board.check_iface_exists(
-            board.aftr_iface
-        ), f"{board.aftr_iface} interface didn't come up in prov mode : {prov_mode}"
+        # OFW-1150 - DSLite service taking up to 14 minutes to come up
+        def _check_interface_exists(board, prov_mode):
+            assert board.check_iface_exists(
+                board.aftr_iface
+            ), f"{board.aftr_iface} interface didn't come up in prov mode : {prov_mode}"
+
+        retry_on_exception(
+            _check_interface_exists, (board, prov_mode), retries=30, tout=30
+        )
     if prov_mode != "ipv4":
         _validate_cpe("IPv6")  # validate ipv6 for CPEs
 
