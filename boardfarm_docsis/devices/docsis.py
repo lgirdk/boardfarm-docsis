@@ -9,6 +9,7 @@ from boardfarm.lib.DeviceManager import device_type
 from boardfarm.lib.network_helper import valid_ipv4, valid_ipv6
 from boardfarm.lib.SNMPv2 import SNMPv2
 from netaddr import EUI, mac_unix_expanded
+from termcolor import colored
 
 from boardfarm_docsis.lib.docsis import base_cfg
 from boardfarm_docsis.lib.docsis import cm_cfg as cm_cfg_cls
@@ -22,6 +23,12 @@ class DocsisInterface:
 
     cm_cfg = cm_cfg_cls
     mta_cfg = mta_cfg_cls
+
+    swdl_info = {
+        "tftp": {"proto": "1", "dest": "/tftpboot"},
+        "http": {"proto": "2", "dest": "/var/www/html"},
+    }
+    default_swdl_protocol = "http"  # either http(2) or tftp(1)
 
     # The possible configurations for the CM
     cm_mgmt_config_modes = {"dual", "ipv4", "ipv6"}
@@ -337,11 +344,26 @@ class DocsisInterface:
         wan = self.dev.wan
         cm_ip = self.dev.cmts.get_cmip(self.cm_mac)
 
-        protocol = "1"  # Default protocol to tftp
+        protocol = self.swdl_info[self.default_swdl_protocol]["proto"]
+        destination = self.swdl_info[self.default_swdl_protocol]["dest"]
         server_ip = wan.get_interface_ipaddr(wan.iface_dut)
         filename = image.split("/")[-1]
+        if self.default_swdl_protocol == "http":
+            wan.check_output("service lighttpd restart")
+            out = wan.check_output("service lighttpd status")
+            if "lighttpd is running" not in out:
+                logger.warning(
+                    colored(
+                        "SW download: failed to restart lighttpd on wan device"
+                        "\nFalling back to tftp protocol download.",
+                        color="yellow",
+                        attrs=["bold"],
+                    )
+                )
+                protocol = self.swdl_info["tftp"]["proto"]
+                destination = self.swdl_info["tftp"]["dest"]
         # Copying the file to tftpserver
-        wan.sendline(f"mgmt wget -nc {image} -O /tftpboot/{filename}")
+        wan.sendline(f"mgmt wget -nc {image} -O {destination}/{filename}")
         wan.expect(["saved"] + ["already there; not retrieving"])
         wan.expect_prompt()
 
