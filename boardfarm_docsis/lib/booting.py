@@ -24,7 +24,7 @@ from boardfarm_docsis.lib.booting_utils import (
     register_fxs_details,
 )
 from boardfarm_docsis.lib.dns_helper import dns_acs_config
-from boardfarm_docsis.use_cases.provision_helper import ProvisionHelper
+from boardfarm_docsis.use_cases.provision_helper import provision_board
 from boardfarm_docsis.use_cases.sku_handler import SkuHelper
 
 logger = logging.getLogger("bft")
@@ -123,7 +123,7 @@ def pre_boot_env(config, env_helper, devices):
         if env_helper.vendor_encap_opts(ip_proto="ipv6"):
             devices.provisioner.vendor_opts_acsv6_url = True
         logger.info("Provisioning board")
-        ProvisionHelper(devices).provision_board()
+        provision_board()
     else:
         # should this be an error?
         logger.error(
