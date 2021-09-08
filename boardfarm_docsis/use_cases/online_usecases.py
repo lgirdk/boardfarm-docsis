@@ -7,6 +7,11 @@ from termcolor import colored
 logger = logging.getLogger("bft")
 
 
+def wait_for_board_boot_start():
+    board = get_device_by_name("board")
+    board.wait_for_boot()
+
+
 def is_board_online_after_reset() -> bool:
     """Check board online after reset
 
