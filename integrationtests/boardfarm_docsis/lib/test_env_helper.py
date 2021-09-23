@@ -568,6 +568,62 @@ class TestEnvHelper:
                 True,
             ],
         ],
+        [
+            {
+                "environment_def": {
+                    "board": {
+                        "eRouter_Provisioning_mode": ["ipv6", "dual", "ipv4"],
+                        "config_boot": {},
+                    }
+                },
+                "version": "2.3",
+            },
+            {
+                "environment_def": {
+                    "board": {
+                        "eRouter_Provisioning_mode": ["ipv6", "dual", "ipv4"],
+                    }
+                }
+            },
+            False,
+        ],
+        [
+            {
+                "environment_def": {
+                    "board": {
+                        "config_boot": {
+                            "vendor_specific": {
+                                "tlvs": [
+                                    'TlvCode 12 TlvString "Device.X_LGI-COM_CloudUI.HideCustomerDhcpLanChange|boolean|false"',
+                                    'TlvCode 12 TlvString "Device.DHCPv4.Server.Pool.1.X_LGI-COM_LanAllowedSubnetTable.[alias_3].LanAllowedSubnetIP|string|172.16.0.0"',
+                                    'TlvCode 12 TlvString "Device.DHCPv4.Server.Pool.1.X_LGI-COM_LanAllowedSubnetTable.[alias_3].LanAllowedSubnetMask|string|255.255.0.0"',
+                                    'TlvCode 12 TlvString "Device.DHCPv4.Server.Pool.1.X_LGI-COM_LanAllowedSubnetTable.[alias_4].LanAllowedSubnetIP|string|10.0.0.0"',
+                                    'TlvCode 12 TlvString "Device.DHCPv4.Server.Pool.1.X_LGI-COM_LanAllowedSubnetTable.[alias_4].LanAllowedSubnetMask|string|255.0.0.0"',
+                                ],
+                            }
+                        },
+                    },
+                },
+                "version": "2.3",
+            },
+            {
+                "environment_def": {
+                    "board": {
+                        "config_boot": {
+                            "vendor_specific": {
+                                "tlvs": [
+                                    'TlvCode 12 TlvString "Device.X_LGI-COM_CloudUI.HideCustomerDhcpLanChange|boolean|false"',
+                                    'TlvCode 12 TlvString "Device.DHCPv4.Server.Pool.1.X_LGI-COM_LanAllowedSubnetTable.[alias_3].LanAllowedSubnetIP|string|172.16.0.0"',
+                                    'TlvCode 12 TlvString "Device.DHCPv4.Server.Pool.1.X_LGI-COM_LanAllowedSubnetTable.[alias_3].LanAllowedSubnetMask|string|255.255.0.0"',
+                                    'TlvCode 12 TlvString "Device.DHCPv4.Server.Pool.1.X_LGI-COM_LanAllowedSubnetTable.[alias_4].LanAllowedSubnetIP|string|10.0.0.0"',
+                                ],
+                            }
+                        },
+                    }
+                }
+            },
+            True,
+        ],
     ]
 
     """
@@ -594,6 +650,8 @@ class TestEnvHelper:
             (environments[12][0], environments[12][1][0], environments[12][1][1]),
             (environments[12][0], environments[12][2][0], environments[12][2][1]),
             (environments[12][0], environments[12][3][0], environments[12][3][1]),
+            (environments[13][0], environments[13][1], environments[13][2]),
+            (environments[14][0], environments[14][1], environments[14][2]),
         ],
     )
     def test_env_check(self, environment, requested, raises):
@@ -718,3 +776,236 @@ class TestEnvHelperBootFileCheck:
         }
         with pytest.raises(boardfarm.exceptions.BftEnvMismatch):
             assert self.env_with_boot_file.env_check(test_req)
+
+
+class TestEnvHelperDictList:
+
+    env_with_lan_clients = {
+        "environment_def": {
+            "board": {
+                "lan_clients": [{}, {}, {}, {}],
+            }
+        },
+        "version": "2.3",
+    }
+
+    env_with_wifi_clients = {
+        "environment_def": {
+            "board": {
+                "wifi_clients": [
+                    {
+                        "authentication": "WPA-PSK",
+                        "band": "5",
+                        "network": "private",
+                        "protocol": "802.11ac",
+                    },
+                    {
+                        "authentication": "WPA-PSK",
+                        "band": "5",
+                        "network": "private",
+                        "protocol": "802.11ac",
+                    },
+                    {
+                        "authentication": "WPA-PSK",
+                        "band": "2.4",
+                        "network": "private",
+                        "protocol": "802.11n",
+                    },
+                    {
+                        "authentication": "WPA-PSK",
+                        "band": "2.4",
+                        "network": "guest",
+                        "protocol": "802.11n",
+                    },
+                ]
+            }
+        },
+        "version": "2.3",
+    }
+
+    eh_with_lan_clients = DocsisEnvHelper(env_with_lan_clients)
+    eh_with_wifi_clients = DocsisEnvHelper(env_with_wifi_clients)
+
+    def test_env_check_lan_clients_matching(self):
+        test_req = {
+            "environment_def": {
+                "board": {
+                    "lan_clients": [{}, {}],
+                }
+            }
+        }
+        assert self.eh_with_lan_clients.env_check(test_req)
+
+    def test_env_check_lan_clients_exact_match(self):
+        test_req = {
+            "environment_def": {
+                "board": {
+                    "lan_clients": [{}, {}, {}, {}],
+                }
+            }
+        }
+        assert self.eh_with_lan_clients.env_check(test_req)
+
+    def test_env_check_lan_clients_not_matching(self):
+        test_req = {
+            "environment_def": {
+                "board": {
+                    "lan_clients": [
+                        {},
+                        {},
+                        {},
+                        {},
+                        {},
+                    ],  # requesting more clients than we have in env json
+                }
+            }
+        }
+        with pytest.raises(boardfarm.exceptions.BftEnvMismatch):
+            self.eh_with_lan_clients.env_check(test_req)
+
+    def test_env_check_wifi_clients_matching_partial_attributes_1(self):
+        test_req = {
+            "environment_def": {
+                "board": {
+                    "wifi_clients": [{"band": "5"}, {"band": "2.4"}],
+                }
+            }
+        }
+        assert self.eh_with_wifi_clients.env_check(test_req)
+
+    def test_env_check_wifi_clients_matching_partial_attributes_2(self):
+        test_req = {
+            "environment_def": {
+                "board": {
+                    "wifi_clients": [
+                        {"band": "5", "network": "private"},
+                        {"band": "2.4"},
+                    ],
+                }
+            }
+        }
+        assert self.eh_with_wifi_clients.env_check(test_req)
+
+    def test_env_check_wifi_clients_matching_empty_attributes(self):
+        test_req = {"environment_def": {"board": {"wifi_clients": [{}, {}]}}}
+        assert self.eh_with_wifi_clients.env_check(test_req)
+
+    def test_env_check_wifi_clients_matching_all_attributes(self):
+        test_req = {
+            "environment_def": {
+                "board": {
+                    "wifi_clients": [
+                        {
+                            "authentication": "WPA-PSK",
+                            "band": "5",
+                            "network": "private",
+                            "protocol": "802.11ac",
+                        },
+                        {
+                            "authentication": "WPA-PSK",
+                            "band": "2.4",
+                            "network": "private",
+                            "protocol": "802.11n",
+                        },
+                    ]
+                }
+            }
+        }
+        assert self.eh_with_wifi_clients.env_check(test_req)
+
+    def test_env_check_wifi_clients_not_matching_partial_attributes_1(self):
+        test_req = {
+            "environment_def": {
+                "board": {
+                    "wifi_clients": [
+                        {"band": "5"},
+                        {"band": "5"},
+                        {"band": "2.4"},
+                        {
+                            "band": "5"
+                        },  # requesting more clients than we have in env json
+                        {"band": "2.4"},
+                    ],
+                }
+            }
+        }
+        with pytest.raises(boardfarm.exceptions.BftEnvMismatch):
+            self.eh_with_wifi_clients.env_check(test_req)
+
+    def test_env_check_wifi_clients_not_matching_band(self):
+        test_req = {
+            "environment_def": {
+                "board": {
+                    "wifi_clients": [{"band": "2.5"}, {"band": "5"}],  # value mismatch
+                }
+            }
+        }
+        with pytest.raises(boardfarm.exceptions.BftEnvMismatch):
+            self.eh_with_wifi_clients.env_check(test_req)
+
+    def test_env_check_wifi_clients_key_mismatch(self):
+        test_req = {
+            "environment_def": {
+                "board": {
+                    "wifi_clients": [{"bnd": "5"}, {"band": "2.4"}],  # key mismatch
+                }
+            }
+        }
+        with pytest.raises(boardfarm.exceptions.BftEnvMismatch):
+            self.eh_with_wifi_clients.env_check(test_req)
+
+    def test_env_check_wifi_clients_not_matching_partial_attributes_2(self):
+        test_req = {
+            "environment_def": {
+                "board": {
+                    "wifi_clients": [
+                        {"band": "5", "authentication": "WPA-PSK2"},  # value mismatch
+                        {"band": "5"},
+                        {"band": "2.4"},
+                    ],
+                }
+            }
+        }
+        with pytest.raises(boardfarm.exceptions.BftEnvMismatch):
+            self.eh_with_wifi_clients.env_check(test_req)
+
+    def test_env_check_wifi_clients_not_matching_empty_attributes(self):
+        test_req = {
+            "environment_def": {
+                "board": {
+                    "wifi_clients": [
+                        {},
+                        {},
+                        {},
+                        {},
+                        {},
+                    ]  # requesting more clients than we have in env json
+                }
+            }
+        }
+        with pytest.raises(boardfarm.exceptions.BftEnvMismatch):
+            self.eh_with_wifi_clients.env_check(test_req)
+
+    def test_env_check_wifi_clients_not_matching_all_attributes(self):
+        test_req = {
+            "environment_def": {
+                "board": {
+                    "wifi_clients": [
+                        {
+                            "authentication": "WPA-PSK2",  # value mismatch
+                            "band": "5",
+                            "network": "private",
+                            "protocol": "802.11ac",
+                        },
+                        {
+                            "authentication": "WPA-PSK",
+                            "band": "2.4",
+                            "network": "private",
+                            "protocol": "802.11n",
+                        },
+                    ]
+                }
+            }
+        }
+        with pytest.raises(boardfarm.exceptions.BftEnvMismatch):
+            self.eh_with_wifi_clients.env_check(test_req)
