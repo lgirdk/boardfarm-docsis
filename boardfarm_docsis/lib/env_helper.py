@@ -363,52 +363,11 @@ class DocsisEnvHelper(EnvHelper):
         except BftEnvExcKeyError:
             return False
 
-    def has_customer_id(self):
-        """Check if ["environment_def"]["board"]["boot_file"] exist and has customer_id defined
-        :rtype: boolean"""
-        try:
-            return (
-                self.env["environment_def"]["board"]["boot_file"].find(
-                    "CustomerId|unsignedInt|"
-                )
-                != -1
-            )
-        except (AttributeError, KeyError):
-            raise BftEnvMismatch("Customer_id not defined")
-
-    def verify_customer_id(self, mapped_customer_id):
-        """Verify if customer_id value matches defined SKU
-        :rtype: boolean"""
-        if (
-            self.env["environment_def"]["board"]["boot_file"].find(
-                "CustomerId|unsignedInt|" + str(mapped_customer_id)
-            )
-            != -1
-        ):
-            return True
-        else:
-            return False
-
     def is_production_image(self):
         return (
             self.env["environment_def"]["board"]["software"]["image_uri"].find("NOSH")
             != -1
         )
-
-    def add_customerid_to_bootfile(self, customer_id):
-        """Verify if customer_id value matches defined SKU"""
-
-        bootfile = self.env["environment_def"]["board"]["boot_file"]
-        customer_id_to_add = f'\n\t\t\tGenericTLV TlvCode 12 TlvString "Device.X_LGI-COM_General_Internal.CustomerId|unsignedInt|{customer_id}";'
-
-        last_index = re.search(
-            r"InitializationMode(\s{1,}|\t{1,})[0-3];", bootfile
-        ).end()
-
-        temp_list = [bootfile[:last_index], bootfile[last_index:]]
-        temp_list.insert(1, customer_id_to_add)
-
-        self.env["environment_def"]["board"]["boot_file"] = ("").join(temp_list)
 
     def dhcp_options(self):
         """Returns the ["environment_def"]["provisioner"]["options"].

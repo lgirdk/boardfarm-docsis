@@ -24,14 +24,8 @@ from boardfarm_docsis.lib.booting_utils import (
 )
 from boardfarm_docsis.lib.dns_helper import dns_acs_config
 from boardfarm_docsis.use_cases.provision_helper import provision_board
-from boardfarm_docsis.use_cases.sku_handler import SkuHelper
 
 logger = logging.getLogger("bft")
-
-
-def validate_env(config, env_helper, devices):
-    sku_helper = SkuHelper(devices)
-    sku_helper.verify_sku_customer_id()
 
 
 def pre_boot_wan_clients(config, env_helper, devices):
@@ -131,7 +125,6 @@ def pre_boot_env(config, env_helper, devices):
 
 
 pre_boot_actions = {
-    "validate_env": validate_env,
     "wan_clients_pre_boot": pre_boot_wan_clients,
     "lan_clients_pre_boot": pre_boot_lan_clients,
     "wlan_clients_pre_boot": pre_boot_wlan_clients,
