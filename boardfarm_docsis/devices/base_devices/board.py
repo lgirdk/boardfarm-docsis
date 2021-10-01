@@ -2,6 +2,7 @@ import logging
 import traceback
 from collections import OrderedDict
 from pathlib import Path
+from typing import Optional
 
 import debtcollector
 from boardfarm.devices import get_device_mapping_class
@@ -12,6 +13,7 @@ from boardfarm.exceptions import CodeError
 from netaddr import EUI, mac_unix_expanded
 from termcolor import colored
 
+from boardfarm_docsis.devices.base_devices.mta_template import MTATemplate
 from boardfarm_docsis.devices.docsis import DocsisInterface
 from boardfarm_docsis.lib.env_helper import DocsisEnvHelper
 
@@ -235,6 +237,8 @@ class DocsisCPEHw(DocsisInterface):
 
 
 class DocsisCPESw:
+    voice: Optional[MTATemplate] = None
+
     def get_sw_version(self):
         raise NotImplementedError
 
@@ -258,8 +262,8 @@ class InterceptDocsisCPE:
 class DocsisCPEInterface(InterceptDocsisCPE):
     """Docsis CPE Interface to be used by a derived class"""
 
-    sw: BaseDevice = None  # is this right?
-    hw: DocsisCPEHw = None
+    sw: Optional[BaseDevice] = None
+    hw: Optional[DocsisCPEHw] = None
     cm_cfg = None
     mta_cfg = None
     # there must be a better way of finding the mib files!
@@ -268,11 +272,7 @@ class DocsisCPEInterface(InterceptDocsisCPE):
         "boardfarm-docsis/boardfarm_docsis/mibs/",
     ]
 
-    def flash(self, env_helper: DocsisEnvHelper):
-        self.hw.dev = (
-            self.dev
-        )  # FIX ME: hack, to be removed when puma6 can import HW manager
-        self.hw.flash(self.config, env_helper)
+    def _get_image(self, env_helper: DocsisEnvHelper):
         sw = env_helper.get_software()
         if "image_uri" in sw:
             image = sw["image_uri"].split("/")[-1]
@@ -293,6 +293,14 @@ class DocsisCPEInterface(InterceptDocsisCPE):
                 attrs=["bold"],
             )
         )
+        return image
+
+    def flash(self, env_helper: DocsisEnvHelper):
+        self.hw.dev = (
+            self.dev
+        )  # FIX ME: hack, to be removed when puma6 can import HW manager
+        self.hw.flash(self.config, env_helper)
+        image = self._get_image(env_helper)
         self.reload_sw_object(image)
 
     def power_cycle(self):

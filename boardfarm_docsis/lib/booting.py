@@ -13,7 +13,6 @@ from boardfarm.exceptions import (
     NoTFTPServer,
 )
 from boardfarm.library import check_devices
-from boardfarm.use_cases.voice import initialize_phone, shutdown_phone
 from packaging.version import Version
 from termcolor import colored
 
@@ -88,7 +87,6 @@ def pre_boot_board(config, env_helper, devices):
 def pre_boot_env(config, env_helper, devices):
     # this should take care of provisioner/tr069/voice/etc
     # depending on what the env_helperd has configured
-
     if env_helper.mitm_enabled() and not hasattr(devices, "mitm"):
         raise DeviceDoesNotExistError("No mitm device (requested by environment)")
 
@@ -112,9 +110,6 @@ def pre_boot_env(config, env_helper, devices):
             devices.sipcenter,
             config,
         )
-        for dev in devices.FXS:
-            value = initialize_phone(dev.name)
-            shutdown_phone(value)
 
     prov = getattr(config, "provisioner", None)
     if prov:
