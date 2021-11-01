@@ -288,7 +288,13 @@ def post_boot_env(config, env_helper, devices):
         else:
             raise BootFail("Failed to connect to ACS")
         if tr069provision:
-            reset_val = env_helper.get_software().get("factory_reset", False)
+            reset_val = any(
+                x in env_helper.get_software()
+                for x in [
+                    "factory_reset",
+                    "pre_flash_factory_reset",
+                ]
+            )
             if reset_val:
                 for i in tr069provision:
                     for acs_api in i:
