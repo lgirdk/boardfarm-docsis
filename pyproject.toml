@@ -38,6 +38,8 @@
             "mypy",
             "pre-commit",
             "pylint",
+            "types-requests",
+            "types-tabulate",
         ]
         doc = ["sphinx"]
         test = [
