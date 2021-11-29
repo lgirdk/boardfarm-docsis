@@ -114,6 +114,13 @@ repos:
             stages: [commit]
     - repo: local
       hooks:
+          - id: pylint
+            name: pylint
+            entry: pylint
+            language: system
+            types: [python]
+            exclude: unittests/
+            args: [-rn, -sn]
           - id: unittests
             name: unittests
             entry: pytest

@@ -25,6 +25,7 @@
     dependencies = [
         "packaging",
         "tabulate",
+        "boardfarm"
     ]
 
     [project.optional-dependencies]
