@@ -239,6 +239,22 @@ class DocsisCPEHw(DocsisInterface):
 class DocsisCPESw:
     voice: Optional[MTATemplate] = None
 
+    def __init__(self) -> None:
+        self._provisioning_messages = {
+            "verify_cm_cfg_file_download": "",
+            "verify_emta_cfg_file_download": "",
+            "verify_emta_config_apply": "",
+            "verify_emta_provisioning": "",
+        }
+
+    @property
+    def provisioning_messages(self):
+        return self._provisioning_messages
+
+    @provisioning_messages.setter
+    def provisioning_messages(self, value):
+        raise NotImplementedError
+
     def get_sw_version(self):
         raise NotImplementedError
 
