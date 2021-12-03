@@ -8,7 +8,10 @@ import debtcollector
 from boardfarm.devices import get_device_mapping_class
 from boardfarm.devices.base import BaseDevice
 from boardfarm.devices.base_devices.board import BaseBoard
-from boardfarm.devices.base_devices.board_templates import BoardHWTemplate
+from boardfarm.devices.base_devices.board_templates import (
+    BoardHWTemplate,
+    BoardSWTemplate,
+)
 from boardfarm.exceptions import CodeError
 from netaddr import EUI, mac_unix_expanded
 from termcolor import colored
@@ -236,10 +239,10 @@ class DocsisCPEHw(DocsisInterface):
         self.mta_cfg = self.mta_cfg(mta_file_str=mta_boot_file, mibs_path=mibs_path)
 
 
-class DocsisCPESw:
+class DocsisCPESw(BoardSWTemplate):
     voice: Optional[MTATemplate] = None
 
-    def __init__(self) -> None:
+    def __init__(self, hw: BoardHWTemplate, **kwargs):
         self._provisioning_messages = {
             "verify_cm_cfg_file_download": "",
             "verify_emta_cfg_file_download": "",
