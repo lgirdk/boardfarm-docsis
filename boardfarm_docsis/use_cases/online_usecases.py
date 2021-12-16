@@ -28,7 +28,6 @@ def is_board_online_after_reset() -> bool:
             continue
         if board.finalize_boot():
             break
-        board.wait_for_reboot(timeout=900)
         logger.info("######Rebooting######")
         cmts.clear_cm_reset(board.cm_mac)
         time.sleep(20)

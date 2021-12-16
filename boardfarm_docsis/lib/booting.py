@@ -161,7 +161,6 @@ def _wait_for_cm_online(config, env_helper, devices):
             continue
         if devices.board.finalize_boot():
             break
-        devices.board.wait_for_reboot(timeout=900)
         logger.info("######Rebooting######")
         devices.cmts.clear_cm_reset(devices.board.cm_mac)
         time.sleep(20)
