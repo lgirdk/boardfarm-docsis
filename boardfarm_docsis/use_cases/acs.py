@@ -1,6 +1,6 @@
 """ACS Use cases."""
 import logging
-from typing import Any, Dict, List, TypedDict, Union
+from typing import Any, Dict, List, Union
 
 import pexpect
 from boardfarm.exceptions import PexpectErrorTimeout, TR069FaultCode
@@ -9,17 +9,6 @@ from boardfarm.lib.DeviceManager import get_device_by_name
 from termcolor import colored
 
 logger = logging.getLogger("bft")
-
-
-class RPCOutput(TypedDict):
-    """Output of TR069 RPC operation on a paramter.
-
-    Resultant is a dictionary with keys specified as attribute of this class.
-    """
-
-    key: str
-    type: str
-    value: Any
 
 
 def is_dut_online_on_acs() -> bool:
@@ -54,7 +43,7 @@ def is_dut_online_on_acs() -> bool:
     return False
 
 
-def GPV(params: Union[str, List[str]]) -> List[RPCOutput]:
+def GPV(params: Union[str, List[str]]) -> List[Dict[str, Any]]:
     """Perform TR069 RPC call GetParameterValues.
 
     Usage:
@@ -72,7 +61,7 @@ def GPV(params: Union[str, List[str]]) -> List[RPCOutput]:
     return acs_server.GPV(params)
 
 
-def SPV(params: List[Dict[str, Any]]) -> List[RPCOutput]:
+def SPV(params: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """Perform TR069 RPC call SetParameterValues.
 
     Usage:
