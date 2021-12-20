@@ -38,4 +38,40 @@ def is_board_online_after_reset() -> bool:
         return False
     board.post_boot_init()
     board.post_boot_env()
+
+    logger.warning(
+        colored(
+            "This must be removed once OFW-2175 is fixed",
+            color="yellow",
+            attrs=["bold"],
+        )
+    )
+    if board.env_helper.get_prov_mode().lower() in ["dslite", "ipv6"]:
+        for _ in range(45):
+            if has_ipv6_tunnel_interface_address():
+                break
+            time.sleep(20)
+        else:
+            msg = f"\n\nFailed to fetch {board.aftr_iface} interface in IPV6 mode even after 15 min of successful reboot"
+            logger.warning(colored(msg, color="yellow", attrs=["bold"]))
+            return False
     return True
+
+
+def has_ipv6_tunnel_interface_address() -> bool:
+    """Check for the tunnel interface on DUT console
+
+    :return: True if tunnel interface is present else False
+    :rtype: bool
+    """
+    board = get_device_by_name("board")
+    try:
+        iptunv6 = board.get_interface_ip6addr(board.aftr_iface)
+        return True if iptunv6 else False
+    except Exception as e:
+        logger.warning(
+            colored(
+                f"Interface check failed.\nReason: {e}", color="yellow", attrs=["bold"]
+            )
+        )
+        return False
