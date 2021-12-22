@@ -306,7 +306,7 @@ class cm_cfg(base_cfg):
 
     def __init__(self, start=None, fname=None, cfg_file_str=None, mibs_path=None):
         """Creates a default basic CM cfg file for modification"""
-        self.dslite = False
+        self.dslite = True
 
         self._start = start
 
