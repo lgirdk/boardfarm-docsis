@@ -1,3 +1,13 @@
+## 2021.51.0 (2021-12-22)
+
+### Fix
+
+- **pylint**: Add pylint to pre-commit. Fix pylint issues.
+- **boardfarm_docsis:use_cases:online_usecases.py**: add a workaround to check ipiptun0 interface after DUT boot
+- **booting.py,-online_usecases.py**: moved wait_for_board into device specific finalize board function
+- Remove TypedDict until we upgrade to python >3.8
+- **use_cases:provision_helper.py**: fix the reprovision_board usecase to reboot after reprovisioning
+
 ## 2021.49.0 (2021-12-09)
 
 ### Feat
