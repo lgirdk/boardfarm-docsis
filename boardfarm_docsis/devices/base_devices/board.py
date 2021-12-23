@@ -196,6 +196,8 @@ class DocsisCPEHw(DocsisInterface):
         self.config = kwargs.get("config", None)
         self.power = kwargs.get("power_outlet", None)
         self.conn_type = kwargs.get("connection_type", None)
+        self.manufacturer = kwargs.get("manufacturer", None)
+        self.hardware_version = kwargs.get("hardware_version", None)
         self.sr_no = kwargs.get("serial_no", None)
         # the cm_mac is in config["cm_mac"] but really should be in line with
         # the other attrs, see board_decider is invoked
