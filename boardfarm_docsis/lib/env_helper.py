@@ -40,6 +40,23 @@ class DocsisEnvHelper(EnvHelper):
                 )
             )
 
+    def get_image(self, mirror=True):
+        """Get image.
+
+        returns the desired image for this to run against concatenated with the
+        site mirror for automated flashing without passing args to bft
+        """
+        try:
+            if mirror:
+                return (
+                    self.mirror
+                    + self.env["environment_def"]["board"]["software"]["load_image"]
+                )
+            else:
+                return self.env["environment_def"]["board"]["software"]["load_image"]
+        except (KeyError, AttributeError):
+            return super().get_image(mirror=mirror)
+
     def get_prov_mode(self):
         """
         returns the provisioning mode of the desired environment.
