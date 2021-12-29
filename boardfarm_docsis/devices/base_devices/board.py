@@ -46,9 +46,7 @@ class DocsisCPEHw(DocsisInterface):
         try:
             self.dev.board.dev.cmts.clear_cm_reset(self.dev.board.hw.mac["cm"])
             self.dev.board.dev.cmts.wait_for_cm_online(ignore_partial=True)
-            self.dev.board.hw.flash_meta(
-                img, self.dev.wan, self.dev.lan, check_version=True
-            )
+            self.dev.board.hw.flash_meta(img, self.dev.wan, self.dev.lan)
             return True
         except Exception as e:
             traceback.print_exc()
@@ -307,13 +305,6 @@ class DocsisCPEInterface(InterceptDocsisCPE):
                     attrs=["bold"],
                 )
             )
-        logger.info(
-            colored(
-                f"Loading SW class for image: {image}",
-                color="green",
-                attrs=["bold"],
-            )
-        )
         return image
 
     def flash(self, env_helper: DocsisEnvHelper):
@@ -321,7 +312,15 @@ class DocsisCPEInterface(InterceptDocsisCPE):
             self.dev
         )  # FIX ME: hack, to be removed when puma6 can import HW manager
         self.hw.flash(self.config, env_helper)
-        image = self._get_image(env_helper)
+        image = env_helper.get_image().split("/")[-1]
+        logger.info(
+            colored(
+                f"Loading SW class for image: {image}",
+                color="green",
+                attrs=["bold"],
+            )
+        )
+
         self.reload_sw_object(image)
 
     def power_cycle(self):
