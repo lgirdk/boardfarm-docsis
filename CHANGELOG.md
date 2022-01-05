@@ -1,3 +1,18 @@
+## 2022.01.0 (2022-01-05)
+
+### Feat
+
+- overrides env_helper.get_image
+- add manufacturer and hardware_version properties to board object
+
+### BREAKING CHANGE
+
+- Needs boardfarm_docsis commit for docsis devices
+
+### Fix
+
+- **docsis.py,booting.py**: change post boot lan conditions
+
 ## 2021.51.0 (2021-12-22)
 
 ### Fix
