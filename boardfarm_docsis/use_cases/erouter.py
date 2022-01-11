@@ -60,4 +60,8 @@ def get_erouter_addresses(retry_count: int) -> IPAddresses:
         board.get_interface_ip6addr, [board.erouter_iface], retry_count
     )
 
-    return IPAddresses(ipv4=ipv4, ipv6=ipv6)
+    # get link_local ipv6 address if assigned to erouter
+    link_local_ipv6 = _get_erouter_ip(
+        board.get_interface_link_local_ip6addr, [board.erouter_iface], retry_count
+    )
+    return IPAddresses(ipv4=ipv4, ipv6=ipv6, link_local_ipv6=link_local_ipv6)
