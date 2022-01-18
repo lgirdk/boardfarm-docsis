@@ -8,6 +8,8 @@ from boardfarm.lib.common import retry
 from boardfarm.lib.DeviceManager import get_device_by_name
 from termcolor import colored
 
+from boardfarm_docsis.use_cases.descriptors import AddObjectResponse
+
 logger = logging.getLogger("bft")
 
 
@@ -77,3 +79,37 @@ def SPV(params: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """
     acs_server = get_device_by_name("acs_server")
     return acs_server.SPV(params)
+
+
+def add_object(object_name: str) -> AddObjectResponse:
+    """Perform TR069 RPC call AddObject
+    Usage:
+    ..code-block:: python
+        out = add_object(object_name)
+        instance_number = out.instance_number
+        response = out.response
+    :param object_name: Name of the object to be added
+    :type object_name: str
+    :raises TR069FaultCode: incase AddObject operation fails
+    :raises UseCaseFailure: incase AddObjectResponseParser fails
+    :return: AddObjectResponse with values response & instance_number
+    :rtype: object
+    """
+    acs_server = get_device_by_name("acs_server")
+    return AddObjectResponse(acs_server.AddObject(object_name), object_name)
+
+
+def del_object(object_name: str) -> int:
+    """Perform TR069 RPC call DeleteObject.
+    Usage:
+    ..code-block:: python
+        del_object(object_name)
+    :param object_name: Name of the object to be added
+    :type object_name: str
+    :raises TR069FaultCode: incase DelObject operation fails
+    :return: int
+    :rtype: status
+    """
+    acs_server = get_device_by_name("acs_server")
+    result = acs_server.DelObject(object_name)
+    return int(result[0]["value"])
