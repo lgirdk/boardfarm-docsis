@@ -66,7 +66,7 @@ class MiniCMTS(BaseCmts):
         :raises Exception: Unable to get prompt on Topvision device
         """
 
-        for run in range(3):
+        for run in range(5):
             try:
                 bft_pexpect_helper.spawn.__init__(
                     self,
@@ -97,7 +97,6 @@ class MiniCMTS(BaseCmts):
                         + self.prompt,
                         timeout=30,
                     )
-                    break
                 except PexpectErrorTimeout:
                     raise Exception(f"Unable to connect to {self.name}.")
                 except pexpect.EOF:
@@ -116,30 +115,32 @@ class MiniCMTS(BaseCmts):
                 )
                 self.close()
                 self.pid = None
+            try:
+                self.logfile_read = sys.stdout
+                if i == 0:
+                    self.sendline("yes")
+                    i = self.expect(["Last login", "assword:"])
+                if i in [1, 3]:
+                    self.sendline(self.password)
+                    self.expect(self.prompt[0])
+                    self.sendline("enable")
+                    self.expect(self.prompt[1])
+                    self.additional_setup()
+                return
+            except pexpect.exceptions.TIMEOUT:
+                logger.error(
+                    "Unable to get prompt on Topvision mini CMTS device due to timeout."
+                )
+                self.close()
+            except Exception as e:
+                logger.error(
+                    "Something went wrong during CMTS initialisation. See exception below:"
+                )
+                logger.error(repr(e))
+                self.close()
+
         else:
             raise Exception(f"Unable to connect to {self.name}.")
-        try:
-            self.logfile_read = sys.stdout
-            if i == 0:
-                self.sendline("yes")
-                i = self.expect(["Last login", "assword:"])
-            if i in [1, 3]:
-                self.sendline(self.password)
-                self.expect(self.prompt[0])
-                self.sendline("enable")
-                self.expect(self.prompt[1])
-                self.additional_setup()
-            return
-        except pexpect.exceptions.TIMEOUT:
-            raise Exception(
-                "Unable to get prompt on Topvision mini CMTS device due to timeout."
-            )
-        except Exception as e:
-            logger.error(
-                "Something went wrong during CMTS initialisation. See exception below:"
-            )
-            logger.error(repr(e))
-            raise e
 
     def additional_setup(self):
         """Function to contain additional initialization steps"""
