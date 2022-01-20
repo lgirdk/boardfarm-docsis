@@ -1,6 +1,7 @@
 import ipaddress
 import logging
-from typing import Callable, List, Optional
+from ipaddress import IPv4Address, IPv6Address
+from typing import Callable, List, Optional, Union
 
 from boardfarm.exceptions import BftIfaceNoIpV6Addr, PexpectErrorTimeout
 from boardfarm.lib.common import retry_on_exception
@@ -13,7 +14,7 @@ logger = logging.getLogger("bft")
 
 def _get_erouter_ip(
     get_ip_method: Callable, board_interface: List[str], retry_count: int
-) -> Optional[str]:
+) -> Optional[Union[IPv4Address, IPv6Address]]:
     """Utility to get ip address based on get_ip_method
 
     :param get_ip_method: function to be be called to get ip
@@ -23,7 +24,7 @@ def _get_erouter_ip(
     :param retry_count: number of retries on failure to get ip
     :type retry_count: int
     :return: None if no ip found, ip string otherwise.
-    :rtype: Optional[str]
+    :rtype: Optional[Union[IPv4Address, IPv6Address]]
     """
     ip_addr = None
     try:
@@ -36,7 +37,7 @@ def _get_erouter_ip(
         msg = "\n\nFailed to get ip address"
         logger.warning(colored(msg, color="yellow", attrs=["bold"]))
     if ip_addr:
-        ipaddress.ip_address(ip_addr)
+        return ipaddress.ip_address(ip_addr)
     return ip_addr
 
 
