@@ -1,3 +1,19 @@
+## 2022.03.0 (2022-01-20)
+
+### Feat
+
+- **acs.py**: add usecases add_object and del_object
+- use env_helper.get_image instead of _get_image
+
+### BREAKING CHANGE
+
+- This is related to the changes added to allowd legacy CBN to boot from
+a OFw build.
+
+### Fix
+
+- **erouter.py**: modify get_erouter_addresses use case to return link local IPv6 address as well
+
 ## 2022.01.0 (2022-01-05)
 
 ### Feat
