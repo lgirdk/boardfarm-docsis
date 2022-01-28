@@ -39,22 +39,6 @@ def is_board_online_after_reset() -> bool:
     board.post_boot_init()
     board.post_boot_env()
 
-    logger.warning(
-        colored(
-            "This must be removed once OFW-2175 is fixed",
-            color="yellow",
-            attrs=["bold"],
-        )
-    )
-    if board.env_helper.get_prov_mode().lower() in ["dslite", "ipv6"]:
-        for _ in range(45):
-            if has_ipv6_tunnel_interface_address():
-                break
-            time.sleep(20)
-        else:
-            msg = f"\n\nFailed to fetch {board.aftr_iface} interface in IPV6 mode even after 15 min of successful reboot"
-            logger.warning(colored(msg, color="yellow", attrs=["bold"]))
-            return False
     return True
 
 
