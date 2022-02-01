@@ -5,7 +5,6 @@
 #
 # This file is distributed under the Clear BSD license.
 # The full text can be found in LICENSE in the root directory.
-
 import ipaddress
 import logging
 import re
@@ -24,12 +23,12 @@ from boardfarm.lib.regexlib import AllValidIpv6AddressesRegex, ValidIpv4AddressR
 from tabulate import tabulate
 from termcolor import colored
 
-from .base_cmts import BaseCmts
+from boardfarm_docsis.devices.base_devices.cmts_template import CmtsTemplate
 
 logger = logging.getLogger("bft")
 
 
-class MiniCMTS(BaseCmts):
+class MiniCMTS(CmtsTemplate):
     """Connects to and configures a Topvision 1U mini CMTS"""
 
     prompt = [
@@ -40,7 +39,7 @@ class MiniCMTS(BaseCmts):
     ]
     model = "mini_cmts"
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Constructor method"""
         super().__init__(*args, **kwargs)
         self.conn_cmd = kwargs.get("conn_cmd", None)
@@ -51,21 +50,14 @@ class MiniCMTS(BaseCmts):
         self.password_admin = kwargs.get("password_admin", "admin")
         self.mac_domain = kwargs.get("mac_domain", None)
         self.port = kwargs.get("port", 22)
-
-        self.connlock = None
         self.name = kwargs.get("name", "cmts")
+        self.connlock = None
 
-    @BaseCmts.connect_and_run
-    def interact(self):
-        super().interact()
-
-    def connect(self):
+    def connect(self) -> None:
         """This method is used to connect to cmts.
         Login to the cmts based on the connection type available
-
         :raises Exception: Unable to get prompt on Topvision device
         """
-
         for run in range(5):
             try:
                 bft_pexpect_helper.spawn.__init__(
@@ -85,7 +77,6 @@ class MiniCMTS(BaseCmts):
                         "ServerAliveCountMax=5",
                     ],
                 )
-
                 try:
                     i = self.expect(
                         [
@@ -97,14 +88,14 @@ class MiniCMTS(BaseCmts):
                         + self.prompt,
                         timeout=30,
                     )
-                except PexpectErrorTimeout:
-                    raise Exception(f"Unable to connect to {self.name}.")
+                except PexpectErrorTimeout as err:
+                    logger.error(err)
+                    raise
                 except pexpect.EOF:
                     if hasattr(self, "before"):
                         logger.debug(self.before)
-                        raise Exception(f"Unable to connect to {self.name}.")
-
-            except Exception as e:
+                        raise
+            except (PexpectErrorTimeout, pexpect.EOF) as e:
                 logger.error(e)
                 logger.error(
                     colored(
@@ -132,22 +123,47 @@ class MiniCMTS(BaseCmts):
                     "Unable to get prompt on Topvision mini CMTS device due to timeout."
                 )
                 self.close()
-            except Exception as e:
+            except pexpect.EOF as e:
                 logger.error(
                     "Something went wrong during CMTS initialisation. See exception below:"
                 )
                 logger.error(repr(e))
                 self.close()
-
+            break
         else:
             raise Exception(f"Unable to connect to {self.name}.")
+
+    def check_online(self, cm_mac: str) -> bool:
+        """Check the CM status from CMTS
+        Function checks the CM mode and returns True if online
+        :param cm_mac: mac address of the CM
+        :type cm_mac: str
+        :return: True if the CM is online False otherwise
+        :rtype: boolean
+        """
+        cm_mac = self.get_cm_mac_cmts_format(cm_mac)
+        scm = self._show_cable_modem()
+        try:
+            result = scm.loc[cm_mac]["MAC_STATE"] in ["online", "w-online(pt)"]
+        except KeyError:
+            logger.error(f"CM {cm_mac} is not found on cmts.")
+            result = False
+        return result
+
+    def logout(self) -> None:
+        """Logout of the CMTS device"""
+        self.sendline("quit")
+
+    @CmtsTemplate.connect_and_run
+    def interact(self, escape_character=None, input_filter=None, output_filter=None):
+        """To open interact session"""
+        super().interact()
 
     def additional_setup(self):
         """Function to contain additional initialization steps"""
         # Change terminal length to inf in order to avoid pagination
         self.sendline("terminal length 0")
         self.expect(self.prompt[1])
-
         # Increase connection timeout until better solution
         self.sendline("config terminal")
         self.expect(self.prompt)
@@ -158,22 +174,29 @@ class MiniCMTS(BaseCmts):
         self.sendline("end")
         self.expect(self.prompt)
 
-    def logout(self):
-        """Logout of the CMTS device"""
-        self.sendline("quit")
-
-    @BaseCmts.connect_and_run
+    @CmtsTemplate.connect_and_run
     def __run_and_return_df(
-        self, cmd, columns, index, skiprows=2, skipfooter=1, dtype=None
+        self,
+        cmd: str,
+        columns: str,
+        index: int,
+        skiprows: int = 2,
+        skipfooter: int = 1,
+        dtype: Optional[dict] = None,
     ) -> pd.DataFrame:
         """Internal wrapper for (tabbed output->dataframe) parsing
-
         :param cmd: cmd to read
+        :type cmd: str
         :param columns: name of columns in df (same order as in output)
+        :type columns: str
         :param index: column to be dataframe index
+        :type index: int
         :param skiprows: how many rows to skip in header
+        :type skiproews: int
         :param skipfooter: how many rows to skip in footer
-        :param dtype: columns types dict
+        :type skipfooter: int
+        :param dtype: columns
+        :types dtypr: dict or None
         :return: parsed dataframe
         """
         output = self.check_output(cmd)
@@ -189,7 +212,8 @@ class MiniCMTS(BaseCmts):
             dtype=dtype,
         )
 
-    def _show_cable_modem(self, additional_args="") -> pd.DataFrame:
+    @CmtsTemplate.connect_and_run
+    def _show_cable_modem(self, additional_args: str = "") -> pd.DataFrame:
         """Internal api to return scm dataframe"""
         columns = [
             "MAC_ADDRESS",
@@ -206,9 +230,13 @@ class MiniCMTS(BaseCmts):
         cmd = f"show cable modem {additional_args}"
         return self.__run_and_return_df(cmd=cmd, columns=columns, index="MAC_ADDRESS")
 
-    @BaseCmts.convert_mac_to_cmts_type
+    @CmtsTemplate.connect_and_run
     def _show_cable_modem_cpe(self, cm_mac: str) -> pd.DataFrame:
-        """Internal api to return scm cpe dataframe"""
+        """Internal api to return scm cpe dataframe
+        :param cm_mac: mac address of the CM
+        :type cm_mac: str
+        :return: dataframe"""
+        cm_mac = self.get_cm_mac_cmts_format(cm_mac)
         columns = [
             "CPE_MAC",
             "CMC_INDEX",
@@ -224,9 +252,14 @@ class MiniCMTS(BaseCmts):
             cmd=cmd, columns=columns, index="CPE_MAC", skiprows=1, skipfooter=6
         )
 
-    @BaseCmts.convert_mac_to_cmts_type
+    @CmtsTemplate.connect_and_run
     def _show_cable_modem_bonded_channels(self, cm_mac: str) -> pd.DataFrame:
-        """Internal api to return scm bonded channels dataframe"""
+        """Internal api to return scm bonded channels dataframe
+        :param cm_mac: mac address of the CM
+        :type cm_mac: str
+        :return: dataframe
+        """
+        cm_mac = self.get_cm_mac_cmts_format(cm_mac)
         columns = [
             "MAC_ADDRESS",
             "IP_ADDRESS",
@@ -236,24 +269,23 @@ class MiniCMTS(BaseCmts):
             "UPSTREAM_PRIMARY",
             "DOWNSTREAM_PRIMARY",
         ]
+        cm_mac = self.get_cm_mac_cmts_format(cm_mac)
         cmd = f"show cable modem {cm_mac} primary-channel"
         result = self.__run_and_return_df(
             cmd=cmd, columns=columns, index="MAC_ADDRESS", skiprows=2, skipfooter=0
         )
         return result
 
-    @BaseCmts.convert_mac_to_cmts_type
     def DUT_chnl_lock(self, cm_mac: str) -> List[int]:
         """Return amount of upstream / downstream channels that modem is bonded to
-
         :param cm_mac: cable modem mac address
+        :type cm_mac: str
         :return: [upstream_channels_count, downstream_channels_count]
         """
+        cm_mac = self.get_cm_mac_cmts_format(cm_mac)
         scm = self._show_cable_modem_bonded_channels(cm_mac)
-
         upstream_list = str(scm.loc[cm_mac]["UPSTREAM_PRIMARY"])
         downstream_list = str(scm.loc[cm_mac]["DOWNSTREAM_PRIMARY"])
-
         # 4(1,2,3,5,6,7,8) 1(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24)
         upstream_channels_count = len(
             upstream_list.replace("(", ",").replace(")", "").split(",")
@@ -261,11 +293,15 @@ class MiniCMTS(BaseCmts):
         downstream_channels_count = len(
             downstream_list.replace("(", ",").replace(")", "").split(",")
         )
-
         return [upstream_channels_count, downstream_channels_count]
 
-    @BaseCmts.connect_and_run
-    def is_cm_online(self, ignore_bpi=False, ignore_partial=False, ignore_cpe=False):
+    @CmtsTemplate.connect_and_run
+    def is_cm_online(
+        self,
+        ignore_bpi: bool = False,
+        ignore_partial: bool = False,
+        ignore_cpe: bool = False,
+    ) -> bool:
         """Returns True if the CM status is operational
         :param ignore_bpi: returns True even when BPI is disabled
         :type ignore_bpi: boolean
@@ -281,8 +317,7 @@ class MiniCMTS(BaseCmts):
             status = scm.loc[str(self.board_wan_mac)]["MAC_STATE"]
         except KeyError:
             logger.error(f"CM {self.board_wan_mac} is not found on cmts.")
-            raise CodeError
-
+            raise
         if "offline" in status:
             logger.debug(f"Cable modem is {status}")
             return False
@@ -305,66 +340,52 @@ class MiniCMTS(BaseCmts):
         logger.debug(f"Cable modem is online: {status}")
         return True
 
-    @BaseCmts.convert_mac_to_cmts_type
-    def check_online(self, cm_mac: str) -> bool:
-        """Check the CM status from CMTS
-        Function checks the CM mode and returns True if online
+    @CmtsTemplate.connect_and_run
+    def _clear_offline(self, cm_mac: str) -> None:
+        """Internal function to clear the CM entry from CMTS"""
+        cm_mac = self.get_cm_mac_cmts_format(cm_mac)
+        self.sendline(f"clear cable modem {cm_mac} delete")
+        self.expect(self.prompt)
 
-        :param cm_mac: mac address of the CM
-        :type cm_mac: str
-        :return: True if the CM is online False otherwise
-        :rtype: boolean
-        """
-        scm = self._show_cable_modem()
-        try:
-            result = scm.loc[cm_mac]["MAC_STATE"] in ["online", "w-online(pt)"]
-        except KeyError:
-            logger.error(f"CM {cm_mac} is not found on cmts.")
-            result = False
-        return result
-
-    @BaseCmts.convert_mac_to_cmts_type
-    @BaseCmts.connect_and_run
     def clear_offline(self, cm_mac: str) -> None:
         """Clear the CM entry from cmts which is offline -clear cable modem <cm_mac> delete
         :param cm_mac: mac address of the CM
         :type cm_mac: str
         """
-        self.sendline(f"clear cable modem {cm_mac} delete")
-        self.expect(self.prompt)
+        self._clear_offline(cm_mac)
 
-    @BaseCmts.convert_mac_to_cmts_type
-    @BaseCmts.connect_and_run
     def clear_cm_reset(self, cm_mac: str) -> None:
         """Reset the CM from cmts using cli -clear cable modem <cm_mac> reset
-
         :param cm_mac: mac address of the CM
         :type cm_mac: str
         """
+        self._clear_cm_reset(cm_mac)
+
+    @CmtsTemplate.connect_and_run
+    def _clear_cm_reset(self, cm_mac: str) -> None:
+        """Internal function to reset the CM from cmts"""
+        cm_mac = self.get_cm_mac_cmts_format(cm_mac)
         self.sendline(f"clear cable modem {cm_mac} reset")
         self.expect(self.prompt)
 
-    @BaseCmts.convert_mac_to_cmts_type
-    def get_cmip(self, cm_mac: str) -> [str, None]:
+    def get_cmip(self, cm_mac: str) -> Optional[str]:
         """API to get modem IPv4 address
-
         :param cm_mac: cable modem mac address
         :return: CM ip in case CM is online, None otherwise
         """
+        cm_mac = self.get_cm_mac_cmts_format(cm_mac)
         return self._get_cable_modem_ip(cm_mac, ipv6=False)
 
-    @BaseCmts.convert_mac_to_cmts_type
-    def get_cmipv6(self, cm_mac: str) -> [str, None]:
+    def get_cmipv6(self, cm_mac: str) -> Optional[str]:
         """PI to get modem IPv6 address
-
         :param cm_mac: cable modem mac address
         :return: CM ip in case CM is online, None otherwise
         """
+        cm_mac = self.get_cm_mac_cmts_format(cm_mac)
         return self._get_cable_modem_ip(cm_mac, ipv6=True)
 
     def _get_cable_modem_ip(self, cm_mac: str, ipv6=False) -> str:
         """Internal function to get cable modem ip
-
         :param cm_mac: mac address of the CM
         :type cm_mac: str
         :param ipv6: flag to return ipv6 address
@@ -393,24 +414,23 @@ class MiniCMTS(BaseCmts):
             logger.error(msg)
         return str(ip)
 
-    @BaseCmts.convert_mac_to_cmts_type
     def check_partial_service(self, cm_mac: str) -> bool:
         """Check the CM status from CMTS
         Function checks the show cable modem and returns True if p-online
-
         :param cm_mac: cm mac
         :type cm_mac: str
         :return: True if modem is in partial service, False otherwise
         :rtype: bool
         """
+        cm_mac = self.get_cm_mac_cmts_format(cm_mac)
         scm = self._show_cable_modem()
         return "p-online" in scm.loc[cm_mac]["MAC_STATE"]
 
-    @BaseCmts.connect_and_run
-    def get_cmts_ip_bundle(self, cm_mac: str = None, gw_ip: str = None) -> [str]:
+    def get_cmts_ip_bundle(
+        self, cm_mac: Optional[str] = None, gw_ip: Optional[str] = None
+    ) -> str:
         """Get CMTS bundle IP, Validate if Gateway IP is configured in CMTS and both are in same network
         The first host address within the network will be assumed to be gateway for Mini CMTS
-
         :param cm_mac: cm mac
         :type cm_mac: str
         :param gw_ip: gateway ip
@@ -419,6 +439,14 @@ class MiniCMTS(BaseCmts):
         :return: gateway ip if address configured on mini cmts else return all ip bundles
         :rtype: str
         """
+        return self._get_cmts_ip_bundle(cm_mac=cm_mac, gw_ip=gw_ip)
+
+    def _get_cmts_ip_bundle(
+        self, cm_mac: Optional[str] = None, gw_ip: Optional[str] = None
+    ) -> str:
+        """Internal function to get CMTS bundle IP"""
+        if cm_mac:
+            cm_mac = self.get_cm_mac_cmts_format(cm_mac)
         cmd = 'show running-config | include "ip address"'
         output = self.check_output(cmd)
         if gw_ip is None:
@@ -430,8 +458,8 @@ class MiniCMTS(BaseCmts):
                 return gw_ip
         assert 0, "ERROR: Failed to get the CMTS bundle IP"
 
-    @BaseCmts.convert_mac_to_cmts_type
-    def get_qos_parameter(self, cm_mac) -> Dict[str, List[dict]]:
+    def get_qos_parameter(self, cm_mac: str) -> Dict[str, List[dict]]:
+        cm_mac = self.get_cm_mac_cmts_format(cm_mac)
         columns = (
             [  # Renamed columns to keep output backward compatible with legacy tests
                 "Sfid",
@@ -463,10 +491,9 @@ class MiniCMTS(BaseCmts):
             result[key[1]].append(data)
         return result
 
-    @BaseCmts.convert_mac_to_cmts_type
-    def get_mtaip(self, cm_mac: str, mta_mac: str = None) -> str:
-        """Get the MTA IP from CMTS
+    def get_mtaip(self, cm_mac: str, mta_mac: str = None) -> Optional[str]:
 
+        """Get the MTA IP from CMTS
         :param cm_mac: mac address of the CM
         :type cm_mac: string
         :param mta_mac: mta mac address
@@ -474,6 +501,7 @@ class MiniCMTS(BaseCmts):
         :return: MTA ip address or "None" if ip not found
         :rtype: string
         """
+        cm_mac = self.get_cm_mac_cmts_format(cm_mac)
         if mta_mac:
             mta_mac = self.get_cm_mac_cmts_format(mta_mac)
         else:
@@ -486,47 +514,19 @@ class MiniCMTS(BaseCmts):
             mtaip = ""
         return mtaip
 
-    @BaseCmts.connect_and_run
-    def ping(
-        self,
-        ping_ip: str,
-        ping_count: Optional[int] = 4,
-        timeout: Optional[int] = 4,
-    ) -> bool:
-        """Ping the device from cmts
-        :param ping_ip: device ip which needs to be pinged.
-        :param ping_count: optional. Number of ping packets.
-        :param timeout: optional, seconds. Timeout for each packet.
-        :return: True if all ping packets passed else False
-        """
-        timeout = (
-            timeout * 1000
-        )  # Convert timeout from seconds to milliseconds for backward compatibility
-        command_timeout = (ping_count * timeout) / 1000 + 5  # Seconds
-        output = self.check_output(
-            f"ping {ping_ip} timeout {timeout} pktnum {ping_count}",
-            timeout=command_timeout,
-        )
-        match = re.search(
-            f"{ping_count} packets transmitted, {ping_count} packets received", output
-        )
-        return bool(match)
-
-    def run_tcpdump(self, time, iface="any", opts=""):
+    def run_tcpdump(self, timeout: int, iface: str = "any", opts: str = "") -> None:
         """tcpdump capture on the cmts interface
-
-        :param time: timeout to wait till gets prompt
-        :type time: integer
+        :param timeout: timeout to wait till gets prompt
+        :type timeout: integer
         :param iface: any specific interface, defaults to 'any'
         :type iface: string, optional
         :param opts: any other options to filter, defaults to ""
         :type opts: string
         """
-        logger.error("TCPDUMP feature is not supported in Topvision CMTS.")
+        raise NotImplementedError("TCPDUMP feature is not supported in Topvision CMTS.")
 
-    def get_cmts_type(self):
+    def get_cmts_type(self) -> str:
         """This function is to get the product type on cmts
-
         :return: Returns the cmts module type.
         :rtype: string
         """
@@ -535,21 +535,17 @@ class MiniCMTS(BaseCmts):
 
     def get_cm_mac_domain(self, cm_mac: str) -> str:
         """API stub. Not supported on Topvision CC8800
-
         :param cm_mac: CM mac string. Added for compatibility
         :return: empty string
         """
-        logger.error("Multiple mac domains not supported on Mini CMTS for now.")
-        return ""
+        raise NotImplementedError("Not supported on Topvision")
 
-    @BaseCmts.convert_mac_to_cmts_type
-    @BaseCmts.connect_and_run
     def get_center_freq(self, cm_mac: str) -> int:
         """Get center frequency for CM
-
         :param cm_mac: CM mac address
         :return:CM primary channel center frequency
         """
+        cm_mac = self.get_cm_mac_cmts_format(cm_mac)
         scm = self._show_cable_modem()
         primary_sid = scm.loc[cm_mac]["PRIMARY_SID"]
         # Only one ccmts configured for now, so index is hardcoded
@@ -559,9 +555,8 @@ class MiniCMTS(BaseCmts):
         # E.g. " cable downstream 1 frequency 440000000 modulation qam256 annex a power-level 25.0"
         return int(freq_config.split(" ")[4])
 
-    def get_ertr_ipv4(self, mac: str, offset=2) -> [str, None]:
+    def get_ertr_ipv4(self, mac: str, offset: int = 2) -> Optional[str]:
         """Get erouter ipv4 from CMTS
-
         :param mac: mac address of the cable modem
         :type mac: string
         :param offset: eRouter mac address offset, defaults to 2
@@ -582,9 +577,8 @@ class MiniCMTS(BaseCmts):
                     return ertr_ipv6.group()
         return None
 
-    def get_ertr_ipv6(self, mac: str, offset=2) -> [str, None]:
+    def get_ertr_ipv6(self, mac: str, offset: int = 2) -> Optional[str]:
         """Get erouter ipv4 from CMTS
-
         :param mac: mac address of the cable modem
         :type mac: string
         :param offset: eRouter mac address offset, defaults to 2
@@ -605,14 +599,14 @@ class MiniCMTS(BaseCmts):
                     return ertr_ipv6.group()
         return None
 
-    def is_cm_bridged(self, mac, offset=2):
+    def is_cm_bridged(self, mac: str, offset: int = 2) -> bool:
         """Check if the modem is in bridge mode
-
         :param mac: Mac address of the modem,
         :param offset: eRouter mac address offset, defaults to 2
         :return: True if the modem is bridged mode else False.
         :rtype: boolean
         """
+
         cpe = self._show_cable_modem_cpe(mac)
         mac = netaddr.EUI(mac)
         # eRouter mac address is always +2 from CM mac address by convention
@@ -620,7 +614,7 @@ class MiniCMTS(BaseCmts):
         ertr_mac.dialect = netaddr.mac_cisco
         return all(cpe_mac != ertr_mac for cpe_mac, _ in cpe.iterrows())
 
-    def _get_current_time(self, fmt="%Y-%m-%dT%H:%M:%S%z"):
+    def _get_current_time(self, fmt: str = "%Y-%m-%dT%H:%M:%S%z") -> str:
         """used for unittests"""
         output = self.check_output("show sys-date")
         # TO DO: get tiem timezone as well
@@ -633,21 +627,29 @@ class MiniCMTS(BaseCmts):
         else:
             raise CodeError("Failed to get CMTS current time")
 
-    @BaseCmts.connect_and_run
-    def get_current_time(self, fmt="%Y-%m-%dT%H:%M:%S%z"):
+    @CmtsTemplate.connect_and_run
+    def get_current_time(self, fmt: str = "%Y-%m-%dT%H:%M:%S%z") -> str:
         """Returns the current time on the CMTS
         This is full override as the topvision device is a little "different"
         NOTE: this is missing the timezone
-
         :return: the current time as a string formatted as "YYYY-MM-DD hh:mm:ss"
         :raises CodeError: if anything went wrong in getting the time
         """
         return self._get_current_time(fmt=fmt)
 
+    @CmtsTemplate.connect_and_run
+    def ping(self, ping_ip: str, ping_count: int = 4, timeout: int = 4) -> bool:
+        """Ping the device from cmts
+        :param ping_ip: device ip which needs to be pinged.
+        :param ping_count: optional. Number of ping packets.
+        :param timeout: optional, seconds. Timeout for each packet.
+        :return: True if all ping packets passed else False
+        """
+        return super().ping(ping_ip=ping_ip, ping_count=ping_count, timeout=timeout)
+
 
 def print_dataframe(dataframe: pd.DataFrame, column_number=15):
     """Util method to pretty print dataframes to log. Has nothing to do with CMTS itself.
-
     :param dataframe: dataframe to print
     :param column_number: amount of columns to print in one row
     """

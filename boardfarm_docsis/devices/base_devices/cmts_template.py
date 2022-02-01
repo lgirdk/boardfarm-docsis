@@ -1,8 +1,15 @@
+import re
+import time
 from abc import abstractmethod
+from datetime import datetime
+from typing import Dict, List, Optional
 
 import boardfarm.devices.connection_decider as conn_dec
+from boardfarm.exceptions import CodeError, PexpectErrorTimeout
+from boardfarm.lib import DeviceManager
 from boardfarm.lib.bft_pexpect_helper import bft_pexpect_helper as PexpectHelper
 from boardfarm.lib.signature_checker import __MetaSignatureChecker
+from netaddr import EUI, mac_cisco
 
 
 class CmtsTemplate(PexpectHelper, metaclass=__MetaSignatureChecker):
@@ -12,6 +19,9 @@ class CmtsTemplate(PexpectHelper, metaclass=__MetaSignatureChecker):
     All methods, marked with @abstractmethod annotation have to be implemented in derived
     class with the same signatures as in template.
     """
+
+    log = ""
+    log_calls = ""
 
     @property
     @abstractmethod
@@ -48,6 +58,17 @@ class CmtsTemplate(PexpectHelper, metaclass=__MetaSignatureChecker):
             self.connect()
         at the end in order to properly initialize device prompt on init step
         """
+        mgr = kwargs.get("mgr", None)
+        if mgr:
+            board = mgr.by_type(DeviceManager.device_type.DUT)
+            self.board_wan_mac = EUI(board.cm_mac, dialect=mac_cisco)
+            self.board_mta_mac = EUI(int(self.board_wan_mac) + 1, dialect=mac_cisco)
+
+        def spawn_device(self, **kwargs):
+            """Spawns a console device based on the class type specified in
+            the paramter device_type. Currently the communication with the console
+            occurs via the pexpect module."""
+            self.connection = conn_dec.connection(self.conn_type, device=self, **kwargs)
 
     @abstractmethod
     def connect(self) -> None:
@@ -59,16 +80,265 @@ class CmtsTemplate(PexpectHelper, metaclass=__MetaSignatureChecker):
         self.connection.connect()
 
     @abstractmethod
-    def check_online(self, dut_mac: str) -> bool:
-        """Return true if dut_mac modem is online.
+    def check_online(self, cm_mac: str) -> bool:
+        """Return true if cm_mac modem is online.
         Criteria of 'online' should be defined for concrete CMTS"""
+
+    @abstractmethod
+    def logout(self) -> None:
+        """Logout of the CMTS"""
+
+    @abstractmethod
+    def DUT_chnl_lock(self, cm_mac: str) -> List[int]:
+        """Return amount of upstream / downstream channels that modem is bonded to
+        :param cm_mac: cable modem mac address
+        :return: [upstream_channels_count, downstream_channels_count]
+        """
+
+    @abstractmethod
+    def clear_offline(self, cm_mac: str) -> None:
+        """Clear the CM entry from cmts which is offline -clear cable modem <cm_mac> delete
+        :param cm_mac: mac address of the CM
+        :type cm_mac: str
+        """
+
+    @abstractmethod
+    def clear_cm_reset(self, cm_mac: str) -> None:
+        """Reset the CM from cmts using cli -clear cable modem <cm_mac> reset
+        :param cm_mac: mac address of the CM
+        :type cm_mac: str
+        """
+
+    @abstractmethod
+    def get_cmip(self, cm_mac: str) -> Optional[str]:
+        """API to get modem IPv4 address
+        :param cm_mac: cable modem mac address
+        :return: CM ip in case CM is online, None otherwise
+        """
+
+    @abstractmethod
+    def get_cmipv6(self, cm_mac: str) -> Optional[str]:
+        """PI to get modem IPv6 address
+        :param cm_mac: cable modem mac address
+        :return: CM ip in case CM is online, None otherwise
+        """
+
+    @abstractmethod
+    def check_partial_service(self, cm_mac: str) -> bool:
+        """Check the CM status from CMTS
+        Function checks the show cable modem and returns True if p-online
+        :param cm_mac: cm mac
+        :type cm_mac: str
+        :return: True if modem is in partial service, False otherwise
+        :rtype: bool
+        """
+
+    @abstractmethod
+    def get_cmts_ip_bundle(
+        self, cm_mac: Optional[str] = None, gw_ip: Optional[str] = None
+    ) -> str:
+        """Get CMTS bundle IP, Validate if Gateway IP is configured in CMTS and both are in same network
+        The first host address within the network will be assumed to be gateway for Mini CMTS
+        :param cm_mac: cm mac
+        :type cm_mac: str
+        :param gw_ip: gateway ip
+        :type gw_ip: str
+        :raises assertion error: ERROR: Failed to get the CMTS bundle IP
+        :return: gateway ip if address configured on mini cmts else return all ip bundles
+        :rtype: str
+        """
+
+    @abstractmethod
+    def get_qos_parameter(self, cm_mac: str) -> Dict[str, List[dict]]:
+        """To get the qos related parameters of CM
+        Example output format : {'DS':  [{'Sfid': '1' ..},
+                                         {'Sfid': '2' ..}
+                                 'US': [{{'Sfid': '1' ..},
+                                  'Maximum Burst': '128000',
+                                  'IP ToS Overwrite [AND-msk, OR-mask]':
+                                  ['0x00', '0x00'], ...},
+                                  {'Sfid': '1' ..}}
+        The units for measuring are
+        1) Maximum Sustained rate, Minimum Reserved rate -- bits/sec
+        2) Maximum Burst, Minimum Packet Size, Maximum Concatenated Burst,
+            Bytes received, Packet dropped -- bytes
+        3) Admitted Qos Timeout, Active QoS Timeout -- seconds
+        4) Current Throughput -- [bits/sec, packets/sec]
+        :param cm_mac: mac address of the cable modem
+        :type cm_mac: string
+        :return: containing the qos related parameters.
+        :rtype: dictionary
+        """
+
+    @abstractmethod
+    def get_mtaip(self, cm_mac: str, mta_mac: str = None) -> Optional[str]:
+        """Get the MTA IP from CMTS
+        :param cm_mac: mac address of the CM
+        :type cm_mac: string
+        :param mta_mac: mta mac address
+        :type mta_mac: string
+        :return: MTA ip address or "None" if ip not found
+        :rtype: string
+        """
+
+    @abstractmethod
+    def run_tcpdump(self, timeout: int, iface: str = "any", opts: str = "") -> None:
+        """tcpdump capture on the cmts interface
+        :param timeout: timeout to wait till gets prompt
+        :type timeout: integer
+        :param iface: any specific interface, defaults to 'any'
+        :type iface: string, optional
+        :param opts: any other options to filter, defaults to ""
+        :type opts: string
+        """
+
+    @abstractmethod
+    def get_cmts_type(self) -> str:
+        """This function is to get the product type on cmts
+        :return: Returns the cmts module type.
+        :rtype: string
+        """
+
+    @abstractmethod
+    def get_ertr_ipv4(self, mac: str, offset: int = 2) -> Optional[str]:
+        """Get erouter ipv4 from CMTS
+        :param mac: mac address of the cable modem
+        :type mac: string
+        :param offset: eRouter mac address offset, defaults to 2
+        :type offset: int
+        :return: returns ipv4 address of erouter else None
+        :rtype: string, None
+        """
+
+    @abstractmethod
+    def get_ertr_ipv6(self, mac: str, offset: int = 2) -> Optional[str]:
+        """Get erouter ipv4 from CMTS
+        :param mac: mac address of the cable modem
+        :type mac: string
+        :param offset: eRouter mac address offset, defaults to 2
+        :return: returns ipv4 address of erouter else None
+        :rtype: string, None
+        """
+
+    @abstractmethod
+    def is_cm_bridged(self, mac: str, offset: int = 2) -> bool:
+        """Check if the modem is in bridge mode
+        :param mac: Mac address of the modem,
+        :param offset: eRouter mac address offset, defaults to 2
+        :return: True if the modem is bridged mode else False.
+        :rtype: boolean
+        """
 
     ######################################################
     # Util methods. Not abstract, can and should be reused
     ######################################################
+    def get_cm_mac_cmts_format(self, mac):
+        """to convert mac adress to the format that to be used on cmts
+        :param mac: mac address of CM in foramt XX:XX:XX:XX:XX:XX or XX-XX-XX-XX-XX-XX
+        :type mac: string
+        :return:  the cm_mac in cmts format xxxx.xxxx.xxxx (lowercase)
+        :rtype: string
+        """
+        if mac is None:
+            return None
+        mac = EUI(mac)
+        mac.dialect = mac_cisco
+        return str(mac)
 
-    def spawn_device(self, **kwargs):
-        """Spawns a console device based on the class type specified in
-        the paramter device_type. Currently the communication with the console
-        occurs via the pexpect module."""
-        self.connection = conn_dec.connection(self.conn_type, device=self, **kwargs)
+    def wait_for_cm_online(
+        self,
+        ignore_bpi=False,
+        ignore_partial=False,
+        ignore_cpe=False,
+        time_to_sleep=10,
+        iterations=50,
+    ):
+        """Waits for a CM to come online in an iterate-check-sleep loop. A CM
+        is online when the its status is OPERATIONAL.
+        The total timeout is 200s ca. (10s * 20 iterations). An ideal timeout
+        for a CM to come online should be around 90s max, but currently this is
+        not the case in our setup.
+        :param ignore_bpi: (optional) considers the CM online even when BPI is disabled
+        :type ignore_bpi: bool
+        :param ignore_partial: (optional) considers the CM online even when CM is oin
+        :type ignore_partial: bool
+        :param ignore_cpe: (optional) considers tje CM online even when LAN<->WAN forwarding is disabled
+        :type ignore_cpe: bool
+        :param :
+        :raises Execption: boardfarm.exception.CodeError on online failure
+        """
+        for _ in range(iterations):
+            if self.dev.cmts.is_cm_online(ignore_bpi, ignore_partial, ignore_cpe):
+                return
+            self.dev.board.touch()
+            time.sleep(time_to_sleep)
+        raise CodeError(f"CM {self.board_wan_mac} is not online!!")
+
+    def get_current_time(self, fmt="%Y-%m-%dT%H:%M:%S%z") -> str:
+        """Returns the current time on the CMTS
+        the derived class only needs to set the "current_time_cmd" and
+        "dateformat" strings (both specific to the cmts vendor) amd then call
+        super.
+        :return: the current time as a string formatted as "YYYY-MM-DD hh:mm:ss"
+        :raises ValueError: if the conversion failed for whatever reason
+        :raises CodeError: if there is no timestamp
+        """
+        if not self.current_time_cmd or not self.dateformat:
+            raise NotImplementedError
+        output = self.check_output(self.current_time_cmd)
+        if output != "":
+            return datetime.strptime(output, self.dateformat).strftime(fmt)
+        else:
+            raise CodeError("Failed to get CMTS current time")
+
+    def ping(
+        self,
+        ping_ip: str,
+        ping_count: int = 4,
+        timeout: int = 4,
+    ) -> bool:
+        """Ping the device from cmts
+        :param ping_ip: device ip which needs to be pinged.
+        :param ping_count: optional. Number of ping packets.
+        :param timeout: optional, seconds. Timeout for each packet.
+        :return: True if all ping packets passed else False
+        """
+
+        timeout = (
+            timeout * 1000
+        )  # Convert timeout from seconds to milliseconds for backward compatibility
+        command_timeout = (ping_count * timeout) / 1000 + 5  # Seconds
+        output = self.check_output(
+            f"ping {ping_ip} timeout {timeout} pktnum {ping_count}",
+            timeout=command_timeout,
+        )
+        match = re.search(
+            f"{ping_count} packets transmitted, {ping_count} packets received", output
+        )
+        return bool(match)
+
+    # this is only suppose to run with instance methods
+    @classmethod
+    def connect_and_run(cls, func):
+        def wrapper(*args, **kwargs):
+            instance = args[0]
+            exc_to_raise = None
+            # to ensure we don't connect/disconnect in case of nested
+            # API calls
+            check = [func.__name__, instance.connlock][bool(instance.connlock)]
+            if check == func.__name__:
+                instance.connect()
+                instance.connlock = check
+            try:
+                output = func(*args, **kwargs)
+            except (PexpectErrorTimeout, IndexError, KeyError) as e:
+                exc_to_raise = e
+            if func.__name__ == instance.connlock:
+                instance.logout()
+                instance.connlock = None
+                instance.pid = None
+            if exc_to_raise:
+                raise exc_to_raise
+            return output
+
+        return wrapper
