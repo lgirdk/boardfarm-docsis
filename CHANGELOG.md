@@ -1,3 +1,11 @@
+## 2022.05.0 (2022-02-02)
+
+### Fix
+
+- **use_cases:online_usecases.py**: revert the workaround added for OFW-2175 as it is fixed
+- **erouter.py**: fix a typo, update type hint
+- retries on cmts connection failure
+
 ## 2022.03.0 (2022-01-20)
 
 ### Feat
