@@ -23,9 +23,9 @@
     requires-python = ">=3.6"
 
     dependencies = [
-        "packaging",
-        "tabulate",
-        "boardfarm"
+        "boardfarm",
+        "pandas",
+        "pexpect"
     ]
 
     [project.optional-dependencies]
@@ -39,21 +39,20 @@
             "mypy",
             "pre-commit",
             "pylint",
-            "types-requests",
-            "types-tabulate",
         ]
         doc = ["sphinx"]
         test = [
             "pytest",
             "pytest-cov",
-            "pytest-html",
             "pytest-mock",
             "pytest-randomly",
-            "pytest-xdist",
         ]
 
     [project.urls]
         Source = "https://github.com/lgirdk/boardfarm-docsis"
+
+    [project.entry-points."boardfarm"]
+        docsis = "boardfarm_docsis.plugins.docsis"
 
 
 [tool.commitizen]
@@ -81,6 +80,10 @@
 
 [tool.isort]
     profile = "black"
+
+[tool.mypy]
+    no_strict_optional = true
+    ignore_missing_imports = true
 
 [tool.tbump]
     [tool.tbump.version]

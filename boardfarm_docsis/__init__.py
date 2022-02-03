@@ -1,7 +1,2 @@
-"""An add-on to boardfarm that contains DOCSIS specific libraries"""
-__version__ = "2022.03.0"
-
-from . import devices  # noqa: F401
-
-selftest_testsuite = "selftest-docsis"
-override_probe_devices = True
+"""An add-on to boardfarm that contains DOCSIS specific libraries."""
+__version__ = "2022.05.0"
