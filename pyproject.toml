@@ -82,8 +82,14 @@
     profile = "black"
 
 [tool.mypy]
+    pretty = true
     no_strict_optional = true
     ignore_missing_imports = true
+    warn_redundant_casts = true
+    warn_unused_ignores = true
+    warn_unreachable = true
+    disallow_untyped_defs = true
+    show_error_codes = true
 
 [tool.tbump]
     [tool.tbump.version]

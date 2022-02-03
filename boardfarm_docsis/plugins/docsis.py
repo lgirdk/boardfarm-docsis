@@ -1,0 +1,35 @@
+"""Boardfarm plugin for DOCSIS devices."""
+
+from argparse import ArgumentParser
+from typing import Dict, Type
+
+from boardfarm import hookimpl
+from boardfarm.devices.base_devices import BoardfarmDevice
+
+from boardfarm_docsis.devices.isc_provisioner import ISCProvisioner
+from boardfarm_docsis.devices.minicmts import MiniCMTS
+
+
+@hookimpl
+def boardfarm_add_cmdline_args(argparser: ArgumentParser) -> None:
+    """Add new command line arguments to boardfarm.
+
+    :param argparser: argument parser
+
+    """
+    docsis_group = argparser.add_argument_group("docsis")
+    docsis_group.add_argument(
+        "--ldap-credentials", default=None, help="LDAP credential <username;password>"
+    )
+
+
+@hookimpl
+def boardfarm_add_devices() -> Dict[str, Type[BoardfarmDevice]]:
+    """Add devices to known devices for deployment.
+
+    :returns: devices dictionary
+    """
+    return {
+        "mini_cmts": MiniCMTS,
+        "debian-isc-provisioner": ISCProvisioner,
+    }
