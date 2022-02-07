@@ -18,6 +18,7 @@ from typing import Dict, List, Optional
 import netaddr
 import pandas as pd
 import pexpect
+from boardfarm.devices.quagga_router import QuaggaRouter
 from boardfarm.exceptions import CodeError, ConnectionRefused, PexpectErrorTimeout
 from boardfarm.lib.bft_pexpect_helper import bft_pexpect_helper
 from boardfarm.lib.regexlib import AllValidIpv6AddressesRegex, ValidIpv4AddressRegex
@@ -51,8 +52,44 @@ class MiniCMTS(CmtsTemplate):
         self.password_admin = kwargs.get("password_admin", "admin")
         self.mac_domain = kwargs.get("mac_domain", None)
         self.port = kwargs.get("port", 22)
+
+        self.router_ipaddr = kwargs.get("router_ipaddr", None)
+        self.router_username = kwargs.get("router_username", "root")
+        self.router_password = kwargs.get("router_password", "bigfoot1")
+        self.router_port = kwargs.get("router_port", None)
+        if all(
+            [
+                self.router_ipaddr,
+                self.router_username,
+                self.router_password,
+                self.router_port,
+            ]
+        ):
+            self.__router = QuaggaRouter(
+                ipaddr=self.router_ipaddr,
+                port=self.router_port,
+                username=self.router_username,
+                password=self.router_password,
+            )
+        else:
+            self.__router = None
+
         self.name = kwargs.get("name", "cmts")
         self.connlock = None
+
+    @property
+    def _mini_cmts_router(self) -> Optional[QuaggaRouter]:
+
+        """To access mini cmts router object in order to perfrom operations
+
+        mini cmts router access is composed in cmts class as protected and
+        will be accessable in usecases using this protected property object.
+
+        :return: protected object of QuaggaRouter class if ip,passwd,user,port
+                configs are given else None
+        :rtype: QuaggaRouter
+        """
+        return self.__router
 
     def connect(self) -> None:
         """This method is used to connect to cmts.
