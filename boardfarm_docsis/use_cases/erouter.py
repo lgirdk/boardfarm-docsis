@@ -3,10 +3,11 @@ import logging
 from ipaddress import IPv4Address, IPv6Address
 from typing import Callable, List, Optional, Union
 
-from boardfarm.exceptions import BftIfaceNoIpV6Addr, PexpectErrorTimeout
+from boardfarm.exceptions import BftIfaceNoIpV6Addr
 from boardfarm.lib.common import retry_on_exception
 from boardfarm.lib.DeviceManager import get_device_by_name
 from boardfarm.use_cases.networking import IPAddresses
+from pexpect import TIMEOUT as pexpect_TIMEOUT
 from termcolor import colored
 
 logger = logging.getLogger("bft")
@@ -33,7 +34,7 @@ def _get_erouter_ip(
             board_interface,
             retry_count,
         )
-    except (PexpectErrorTimeout, BftIfaceNoIpV6Addr):
+    except (pexpect_TIMEOUT, BftIfaceNoIpV6Addr):
         msg = "\n\nFailed to get ip address"
         logger.warning(colored(msg, color="yellow", attrs=["bold"]))
     if ip_addr:
