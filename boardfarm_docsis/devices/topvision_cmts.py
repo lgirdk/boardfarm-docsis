@@ -12,12 +12,13 @@ import sys
 from collections import defaultdict
 from datetime import datetime
 from io import StringIO
+from time import sleep
 from typing import Dict, List, Optional
 
 import netaddr
 import pandas as pd
 import pexpect
-from boardfarm.exceptions import CodeError, PexpectErrorTimeout
+from boardfarm.exceptions import CodeError, ConnectionRefused, PexpectErrorTimeout
 from boardfarm.lib.bft_pexpect_helper import bft_pexpect_helper
 from boardfarm.lib.regexlib import AllValidIpv6AddressesRegex, ValidIpv4AddressRegex
 from tabulate import tabulate
@@ -106,6 +107,8 @@ class MiniCMTS(CmtsTemplate):
                 )
                 self.close()
                 self.pid = None
+                sleep(5)  # take a moment before retrying
+                continue
             try:
                 self.logfile_read = sys.stdout
                 if i == 0:
@@ -123,15 +126,16 @@ class MiniCMTS(CmtsTemplate):
                     "Unable to get prompt on Topvision mini CMTS device due to timeout."
                 )
                 self.close()
+                self.pid = None
             except pexpect.EOF as e:
                 logger.error(
                     "Something went wrong during CMTS initialisation. See exception below:"
                 )
                 logger.error(repr(e))
                 self.close()
-            break
-        else:
-            raise Exception(f"Unable to connect to {self.name}.")
+                self.pid = None
+
+        raise ConnectionRefused(f"Unable to connect to {self.name}.")
 
     def check_online(self, cm_mac: str) -> bool:
         """Check the CM status from CMTS
