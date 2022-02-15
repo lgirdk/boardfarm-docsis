@@ -947,25 +947,6 @@ class CasaCMTS(CmtsTemplate):
         self.sendline("exit")
         self.expect(self.prompt)
 
-    def run_tcpdump(self, timeout: int, iface: str = "any", opts: str = "") -> None:
-        """tcpdump capture on the cmts interface
-        :param timeout: timeout to wait till gets prompt
-        :type timeout: integer
-        :param iface: any specific interface, defaults to 'any'
-        :type iface: string, optional
-        :param opts: any other options to filter, defaults to ""
-        """
-        self.sendline("diag")
-        self.expect("Password:")
-        self.sendline("casadiag")
-        self.expect(self.prompt)
-        self.sendline(f'tcpdump "-i{iface} {opts}"')
-        self.expect(self.prompt + [pexpect.TIMEOUT], timeout=timeout)
-        self.sendcontrol("c")
-        self.expect(self.prompt)
-        self.sendline("exit")
-        self.expect(self.prompt)
-
     def del_file(self, f: str) -> None:
         """delete the file
         :param f: filename to delete from cmts

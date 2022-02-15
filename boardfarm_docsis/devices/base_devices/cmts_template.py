@@ -182,17 +182,6 @@ class CmtsTemplate(PexpectHelper, metaclass=__MetaSignatureChecker):
         """
 
     @abstractmethod
-    def run_tcpdump(self, timeout: int, iface: str = "any", opts: str = "") -> None:
-        """tcpdump capture on the cmts interface
-        :param timeout: timeout to wait till gets prompt
-        :type timeout: integer
-        :param iface: any specific interface, defaults to 'any'
-        :type iface: string, optional
-        :param opts: any other options to filter, defaults to ""
-        :type opts: string
-        """
-
-    @abstractmethod
     def get_cmts_type(self) -> str:
         """This function is to get the product type on cmts
         :return: Returns the cmts module type.
@@ -342,3 +331,68 @@ class CmtsTemplate(PexpectHelper, metaclass=__MetaSignatureChecker):
             return output
 
         return wrapper
+
+    def tcpdump_capture(
+        self,
+        fname: str,
+        interface: str = "any",
+        additional_args: Optional[str] = None,
+    ) -> None:
+        """Capture packets from specified interface
+
+        Packet capture using tcpdump utility at a specified interface.
+
+        :param fname: name of the file where packet captures will be stored
+        :type fname: str
+        :param interface: name of the interface, defaults to "all"
+        :type interface: str, optional
+        :param additional_args: argument arguments to tcpdump executable, defaults to None
+        :type additional_args: Optional[str], optional
+        :yield: process id of tcpdump process
+        :rtype: None
+        """
+        raise NotImplementedError("CMTS does not support tcpdump command")
+
+    def tcpdump_read_pcap(
+        self,
+        fname: str,
+        additional_args: Optional[str] = None,
+        timeout: int = 30,
+        rm_pcap: bool = False,
+    ) -> str:
+        """Read packet captures using tcpdump from a device given the file name
+
+        :param fname: name of file to read from
+        :type fname: str
+        :param additional_args: filter to apply on packet display, defaults to None
+        :type additional_args: Optional[str], optional
+        :param timeout: time for tcpdump read command to complete, defaults to 30
+        :type timeout: int, optional
+        :param rm_pcap: if True remove packet capture file after read, defaults to False
+        :type rm_pcap: bool, optional
+        :return: console output from the command execution
+        :rtype: str
+        """
+        raise NotImplementedError("CMTS does not support tcpdump command")
+
+    def tshark_read_pcap(
+        self,
+        fname: str,
+        additional_args: Optional[str] = None,
+        timeout: int = 30,
+        rm_pcap: bool = False,
+    ) -> str:
+        """Read packet captures from an existing file
+
+        :param fname: name of the file in which captures are saved
+        :type fname: str
+        :param additional_args: additional arguments for tshark command to display filtered output, defaults to None
+        :type additional_args: Optional[str], optional
+        :param timeout: time out for tshark command to be executed, defaults to 30
+        :type timeout: int, optional
+        :param rm_pcap: If True remove the packet capture file after reading it, defaults to False
+        :type rm_pcap: bool, optional
+        :return: return tshark read command console output
+        :rtype: str
+        """
+        raise NotImplementedError("CMTS does not support tshark command")

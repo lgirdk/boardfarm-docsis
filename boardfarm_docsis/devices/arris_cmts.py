@@ -802,17 +802,6 @@ class ArrisCMTS(CmtsTemplate):
             "Unmirror traffic feature is not supported in ARRIS unless we use lawful intercept functionality."
         )
 
-    def run_tcpdump(self, timeout: int, iface: str = "any", opts: str = "") -> None:
-        """tcpdump capture on the cmts interface
-        :param time: timeout to wait till gets prompt
-        :type time: integer
-        :param iface: any specific interface, defaults to 'any'
-        :type iface: string, optional
-        :param opts: any other options to filter, defaults to ""
-        :type opts: string
-        """
-        logger.error("TCPDUMP feature is not supported in ARRIS.")
-
     def is_cm_bridged(self, mac: str, offset: int = 2) -> bool:
         """This function is to check if the modem is in bridge mode
         :param mac: Mac address of the modem,

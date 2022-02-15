@@ -118,9 +118,6 @@ def test_can_instantiate_derived_cmts_with_correct_structure():
         def get_mtaip(self, cm_mac: str, mta_mac: str = None) -> Optional[str]:
             pass
 
-        def run_tcpdump(self, timeout: int, iface: str = "any", opts: str = "") -> None:
-            pass
-
         def get_cmts_type(self) -> str:
             pass
 
@@ -134,6 +131,32 @@ def test_can_instantiate_derived_cmts_with_correct_structure():
             pass
 
         def is_cm_bridged(self, mac: str, offset: int = 2) -> bool:
+            pass
+
+        def tcpdump_capture(
+            self,
+            fname: str,
+            interface: str = "any",
+            additional_args: Optional[str] = None,
+        ) -> None:
+            pass
+
+        def tcpdump_read_pcap(
+            self,
+            fname: str,
+            additional_args: Optional[str] = None,
+            timeout: int = 30,
+            rm_pcap: bool = False,
+        ) -> str:
+            pass
+
+        def tshark_read_pcap(
+            self,
+            fname: str,
+            additional_args: Optional[str] = None,
+            timeout: int = 30,
+            rm_pcap: bool = False,
+        ) -> str:
             pass
 
     cmts = MyCmts()  # noqa: F841
