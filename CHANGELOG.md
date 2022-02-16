@@ -1,3 +1,17 @@
+## 2022.07.0 (2022-02-16)
+
+### Feat
+
+- **base_cmts.py**: remove base cmts class as its not used anymore
+- **cmts-router-device-class**: add device class for mini cmts router update cmts classes
+- **casa_cmts.py**: inherit cmts_template and refactor
+- **cmts_template.py**: topvision class use cmts template
+
+### Fix
+
+- **erouter.py**: update exception handling to parent class pexpect.TIMEOUT
+- retry connecting on failure
+
 ## 2022.05.0 (2022-02-02)
 
 ### Fix
