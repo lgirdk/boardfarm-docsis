@@ -3,12 +3,16 @@ import logging
 from typing import Any, Dict, List, Union
 
 import pexpect
-from boardfarm.exceptions import PexpectErrorTimeout, TR069FaultCode
+from boardfarm.exceptions import PexpectErrorTimeout, TR069FaultCode, UseCaseFailure
 from boardfarm.lib.common import retry
 from boardfarm.lib.DeviceManager import get_device_by_name
 from termcolor import colored
 
 from boardfarm_docsis.use_cases.descriptors import AddObjectResponse
+from boardfarm_docsis.use_cases.online_usecases import (
+    is_board_online_after_reset,
+    wait_for_board_boot_start,
+)
 
 logger = logging.getLogger("bft")
 
@@ -113,3 +117,21 @@ def del_object(object_name: str) -> int:
     acs_server = get_device_by_name("acs_server")
     result = acs_server.DelObject(object_name)
     return int(result[0]["value"])
+
+
+def factory_reset() -> None:
+    """Perform TR-069 FactoryReset RPC call and guarantee the board is back online.
+
+    Usage:
+    ..code-block:: python
+        factory_reset()
+    :raises TR069FaultCode: in case Factory Reset operation fails with fault code
+    :raises HTTPError: in case Factory Reset operation fails with HTTP error code
+    :raises: UseCaseFailure: in case the board is not back online
+    """
+    acs = get_device_by_name("acs_server")
+    acs.FactoryReset()
+    wait_for_board_boot_start()
+    status = is_board_online_after_reset()
+    if not status:
+        raise UseCaseFailure("Board not Online after Factory Reset through ACS")
