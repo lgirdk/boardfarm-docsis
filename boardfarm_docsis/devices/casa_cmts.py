@@ -1315,6 +1315,17 @@ class CasaCMTS(CmtsTemplate):
         self.dateformat = "%a %b %d %H:%M:%S %Z %Y"
         return super().get_current_time(fmt)
 
+    def ip_route(self) -> str:
+        """Perfrom show ip route command and return output
+
+
+        :return: ip routes available on cmts
+        :rtype: str
+        """
+        self.sendline("show ip route")
+        self.expect(self.prompt)
+        return self.before
+
 
 # Small test to verify basic CasaCMTS connectivity.
 # Will be run once someone runs this file directly, e.g. python3 casa_cmts.py

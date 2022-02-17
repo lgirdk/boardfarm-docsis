@@ -389,3 +389,7 @@ class CmtsTemplate(PexpectHelper, metaclass=__MetaSignatureChecker):
         :rtype: str
         """
         raise NotImplementedError("CMTS does not support tshark command")
+
+    @abstractmethod
+    def ip_route(self) -> str:
+        """Execute ip router command and parse the output."""

@@ -777,6 +777,14 @@ class MiniCMTS(CmtsTemplate):
             rm_pcap=rm_pcap,
         )
 
+    def ip_route(self) -> str:
+        """Execute ip router command on cmts router and return output.
+
+        :return: ip route from router object
+        :rtype: str
+        """
+        return self._mini_cmts_router.ip_route()
+
 
 def print_dataframe(dataframe: pd.DataFrame, column_number=15):
     """Util method to pretty print dataframes to log. Has nothing to do with CMTS itself.

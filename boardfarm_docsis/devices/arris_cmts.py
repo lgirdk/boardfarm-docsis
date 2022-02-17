@@ -1184,3 +1184,14 @@ class ArrisCMTS(CmtsTemplate):
         self.current_time_cmd = "show clock"
         self.dateformat = "%Y %B %d %H:%M:%S"
         return super().get_current_time(fmt)
+
+    def ip_route(self) -> str:
+        """Perfrom show ip route command and return output
+
+
+        :return: ip routes available on cmts
+        :rtype: str
+        """
+        self.sendline("show ip route")
+        self.expect(self.prompt)
+        return self.before

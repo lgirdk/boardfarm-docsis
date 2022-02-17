@@ -159,4 +159,7 @@ def test_can_instantiate_derived_cmts_with_correct_structure():
         ) -> str:
             pass
 
+        def ip_route(self) -> str:
+            pass
+
     cmts = MyCmts()  # noqa: F841
