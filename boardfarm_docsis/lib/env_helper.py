@@ -1,5 +1,7 @@
 import logging
 import re
+from collections import ChainMap
+from typing import Dict, Optional, Union
 
 from boardfarm.exceptions import BftEnvExcKeyError, BftEnvMismatch, BftSysExit
 from boardfarm.lib.env_helper import EnvHelper
@@ -520,3 +522,38 @@ class DocsisEnvHelper(EnvHelper):
         """
         board_model = self.get_board_model()
         return {"F3896LG": "mv2+", "CH7465LG": "mv1"}.get(board_model, "unknown")
+
+    def get_dhcpv4_options(self) -> Dict[Optional[str], Optional[Union[str, int]]]:
+        """Return Dict of dhcpv4 options from environment definition
+
+        :return: List of dhcpv4 options
+        :rtype: Dict[Optional[str], Optional[Union[str, int]]]
+        """
+        dhcp_options = (
+            self.env.get("environment_def", {})
+            .get("provisioner", {})
+            .get("options", {})
+            .get("dhcpv4", {})
+        )
+
+        return dict(ChainMap(*dhcp_options))
+
+    def is_dhcpv4_enabled_on_lan(self) -> bool:
+        """Return dhcpv4 status based on env_req
+
+        :return: False if dhcpv4 is disabled else True
+        :rtype: boolean
+        """
+
+        boot_file = self.env["environment_def"]["board"]["boot_file"].lower()
+        enable_dhcpv4 = "Device.DHCPv4.Server.Enable|boolean|true"
+        enable_rip = "Device.Routing.RIP.Enable|boolean|true"
+        return enable_rip.lower() not in boot_file or enable_dhcpv4.lower() in boot_file
+
+    def is_route_gateway_valid(self) -> bool:
+        """check if valid dhcp gateways ip configurations should be deployed
+
+        :return: return True if dhcp option route_gateway is valid else False
+        :rtype: bool
+        """
+        return self.get_dhcpv4_options().get("route_gateway") != "invalid"

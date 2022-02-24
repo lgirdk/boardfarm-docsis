@@ -111,6 +111,7 @@ def pre_boot_env(config, env_helper, devices):
             devices.provisioner.vendor_opts_acsv4_url = True
         if env_helper.vendor_encap_opts(ip_proto="ipv6"):
             devices.provisioner.vendor_opts_acsv6_url = True
+        devices.provisioner.valid_route_gateway = env_helper.is_route_gateway_valid()
         logger.info("Provisioning board")
         provision_board()
     else:
@@ -232,12 +233,16 @@ def post_boot_lan_clients(config, env_helper, devices):
                         x.configure_docker_iface()
                         if env_helper.get_prov_mode() == "ipv6":
                             x.start_ipv6_lan_client(wan_gw=devices.wan.gw)
-                            if devices.board.cm_cfg.dslite:
+                            if (
+                                devices.board.cm_cfg.dslite
+                                and env_helper.is_dhcpv4_enabled_on_lan()
+                            ):
                                 x.start_ipv4_lan_client(wan_gw=devices.wan.gw)
                         elif env_helper.get_prov_mode() == "dual":
                             x.start_ipv6_lan_client(wan_gw=devices.wan.gw)
-                            x.start_ipv4_lan_client(wan_gw=devices.wan.gw)
-                        else:
+                            if env_helper.is_dhcpv4_enabled_on_lan():
+                                x.start_ipv4_lan_client(wan_gw=devices.wan.gw)
+                        elif env_helper.is_dhcpv4_enabled_on_lan():
                             x.start_ipv4_lan_client(wan_gw=devices.wan.gw)
                         x.configure_proxy_pkgs()
                         break
