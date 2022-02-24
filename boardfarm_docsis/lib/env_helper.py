@@ -57,6 +57,39 @@ class DocsisEnvHelper(EnvHelper):
         except (KeyError, AttributeError):
             return super().get_image(mirror=mirror)
 
+    def get_update_image(self, mirror=True):
+        """Get the image update uri.
+
+        returns the desired image to be updated for this to run against concatenated with the
+        site mirror for software upgrade/downgrade test
+        """
+        try:
+            if mirror:
+                return (
+                    self.mirror
+                    + self.env["environment_def"]["board"]["software_update"][
+                        "load_image"
+                    ]
+                )
+            else:
+                return self.env["environment_def"]["board"]["software_update"][
+                    "load_image"
+                ]
+        except (KeyError, AttributeError):
+            raise BftEnvExcKeyError
+
+    def get_update_image_version(self):
+        """Get the image version name from env for software update.
+
+        returns the image version name for software update uniquely defined for an image
+        """
+        try:
+            return self.env["environment_def"]["board"]["software_update"][
+                "image_version"
+            ]
+        except (KeyError, AttributeError):
+            raise BftEnvExcKeyError
+
     def get_prov_mode(self):
         """
         returns the provisioning mode of the desired environment.

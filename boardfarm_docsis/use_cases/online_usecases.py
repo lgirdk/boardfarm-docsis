@@ -1,6 +1,7 @@
 import logging
 import time
 
+from boardfarm.lib.common import retry
 from boardfarm.lib.DeviceManager import get_device_by_name
 from termcolor import colored
 
@@ -59,3 +60,16 @@ def has_ipv6_tunnel_interface_address() -> bool:
             )
         )
         return False
+
+
+def is_wan_accessible_on_client(who_access: str) -> bool:
+    """pings the wan ip address max with 2 retries from the lan/wifi client
+
+    :param who_access: name of the client who wants to ping wan side
+    :type who_access: str
+    :return: True if ping returns a success
+    :rtype: bool
+    """
+    wan = get_device_by_name("wan")
+    client = get_device_by_name("lan")
+    return retry(client.ping, 2, wan.ipaddr)

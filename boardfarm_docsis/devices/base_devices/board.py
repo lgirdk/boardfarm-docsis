@@ -12,6 +12,7 @@ from boardfarm.devices.base_devices.board_templates import (
     BoardHWTemplate,
     BoardSWTemplate,
 )
+from boardfarm.devices.base_devices.mib_template import MIBTemplate
 from boardfarm.exceptions import CodeError
 from netaddr import EUI, mac_unix_expanded
 from termcolor import colored
@@ -241,6 +242,7 @@ class DocsisCPEHw(DocsisInterface):
 
 class DocsisCPESw(BoardSWTemplate):
     voice: Optional[MTATemplate] = None
+    mib: Optional[MIBTemplate] = None
 
     def __init__(self, hw: BoardHWTemplate, **kwargs):
         self._provisioning_messages = {
