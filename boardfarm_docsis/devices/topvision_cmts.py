@@ -437,21 +437,25 @@ class MiniCMTS(CmtsTemplate):
             logger.debug(f"Modem {cm_mac} is not online. Can not get ip.")
             return "None"
         additional_args = "ipv6" if ipv6 else ""
-        scm = self._show_cable_modem(additional_args)
-        try:
-            ip_str = scm.loc[cm_mac]["IP_ADDRESS"].strip("*")
-            ip = netaddr.IPAddress(ip_str)
-        except KeyError:
-            logger.error(f"CM {cm_mac} is not found on cmts.")
-            ip = ""
-        except netaddr.core.AddrFormatError:
-            ip = ""
-            msg = (
-                "Modem {cm_mac} offline"
-                if ip_str == "--"
-                else f"Failed to convert {ip_str}"
-            )
-            logger.error(msg)
+        for _ in range(5):
+            scm = self._show_cable_modem(additional_args)
+            try:
+                ip_str = scm.loc[cm_mac]["IP_ADDRESS"].strip("*")
+                ip = netaddr.IPAddress(ip_str)
+                break
+            except KeyError:
+                logger.error(f"CM {cm_mac} is not found on cmts.")
+                ip = ""
+                break
+            except netaddr.core.AddrFormatError:
+                ip = ""
+                if ip_str == "--":
+                    logger.error(f"Modem {cm_mac} offline")
+                    break
+                logger.error(f"Failed to convert {ip_str}")
+                sleep(5)
+        else:
+            ip = None
         return str(ip)
 
     def check_partial_service(self, cm_mac: str) -> bool:
