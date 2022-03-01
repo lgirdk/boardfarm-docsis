@@ -114,11 +114,6 @@ class CBR8CMTS(CmtsTemplate):
         :param cm_mac: mac address of the CM
         :type cm_mac: string
         """
-        if "c3000" in self.get_cmts_type():
-            logger.error(
-                "clear offline feature is not supported on cbr8 product name c3000"
-            )
-            return
         self.sendline(f"clear cable modem {cm_mac} offline")
         self.expect(self.prompt)
 

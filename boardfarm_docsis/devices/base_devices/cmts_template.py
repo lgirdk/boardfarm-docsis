@@ -182,13 +182,6 @@ class CmtsTemplate(PexpectHelper, metaclass=__MetaSignatureChecker):
         """
 
     @abstractmethod
-    def get_cmts_type(self) -> str:
-        """This function is to get the product type on cmts
-        :return: Returns the cmts module type.
-        :rtype: string
-        """
-
-    @abstractmethod
     def get_ertr_ipv4(self, mac: str, offset: int = 2) -> Optional[str]:
         """Get erouter ipv4 from CMTS
         :param mac: mac address of the cable modem

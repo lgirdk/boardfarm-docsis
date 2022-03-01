@@ -188,7 +188,7 @@ class CasaCMTS(CmtsTemplate):
         :type cm_mac: string
         """
         cm_mac = self.get_cm_mac_cmts_format(cm_mac)
-        if "c3000" in self.get_cmts_type():
+        if "c3000" in self._get_cmts_type():
             logger.error(
                 "clear offline feature is not supported on casa product name c3000"
             )
@@ -1087,7 +1087,7 @@ class CasaCMTS(CmtsTemplate):
         self.expect(self.prompt)
         return output
 
-    def get_cmts_type(self) -> str:
+    def _get_cmts_type(self) -> str:
         """This function is to get the product type on cmts.
         :return: Returns the cmts module type.
         :rtype: string

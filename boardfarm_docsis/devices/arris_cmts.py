@@ -515,7 +515,7 @@ class ArrisCMTS(CmtsTemplate):
         :param ip_pvmode: provisioning mode can ipv4, ipv6 or 'dual-stack', defaults to 'dual-stack'
         :type ip_pvmode: string
         """
-        if "dual-stack" in ip_pvmode.lower() and "c4" in self.get_cmts_type():
+        if "dual-stack" in ip_pvmode.lower() and "c4" in self._get_cmts_type():
             logger.error(
                 "dual-stack ip provisioning modem is not supported on Chassis Type : C4 please choose apm"
             )
@@ -1084,13 +1084,6 @@ class ArrisCMTS(CmtsTemplate):
         output = result if self.match is not None else "None"
         self.expect(self.prompt)
         return output.strip().lower()
-
-    def get_cmts_type(self) -> str:
-        """This function is to get the product type on cmts
-        :return: Returns the cmts module type.
-        :rtype: string
-        """
-        return self._get_cmts_type()
 
     def get_qos_parameter(self, cm_mac: str) -> Dict[str, List[dict]]:
         """To get the qos related parameters of CM
