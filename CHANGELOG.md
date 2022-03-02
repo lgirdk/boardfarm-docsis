@@ -1,3 +1,19 @@
+## 2022.09.0 (2022-03-02)
+
+### Fix
+
+- remove get_cmts_type() from CMTS public API
+- retry getting the cable modem ip
+
+### BREAKING CHANGE
+
+- BOARDFARM-1714
+
+### Feat
+
+- **acs.py**: add factory_reset usecase
+- **cmts-device-classes**: add tcpdump support to cmts device classes
+
 ## 2022.07.0 (2022-02-16)
 
 ### Feat
