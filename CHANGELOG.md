@@ -1,3 +1,10 @@
+## 2022.11.0 (2022-03-16)
+
+### Feat
+
+- **use_cases:software_update.py**: implement software update usecases
+- add usecase to modify boot file
+
 ## 2022.09.0 (2022-03-02)
 
 ### Fix
