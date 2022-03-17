@@ -63,12 +63,7 @@ def _verify_cm_config_downloaded(boot_logs: str) -> bool:
     :rtype: bool
     """
     board = get_device_by_name("board")
-    return all(
-        [
-            message in boot_logs
-            for message in board.provisioning_messages["verify_cm_cfg_file_download"]
-        ]
-    )
+    return board.sw.provisioning_messages["verify_cm_cfg_file_download"] in boot_logs
 
 
 def _verify_emta_config_downloaded(boot_logs: str) -> bool:
@@ -80,7 +75,7 @@ def _verify_emta_config_downloaded(boot_logs: str) -> bool:
     :rtype: bool
     """
     board = get_device_by_name("board")
-    return board.provisioning_messages["verify_emta_cfg_file_download"] in boot_logs
+    return board.sw.provisioning_messages["verify_emta_cfg_file_download"] in boot_logs
 
 
 def _verify_emta_config_applied(boot_logs: str) -> bool:
@@ -92,7 +87,7 @@ def _verify_emta_config_applied(boot_logs: str) -> bool:
     :rtype: bool
     """
     board = get_device_by_name("board")
-    return board.provisioning_messages["verify_emta_config_apply"] in boot_logs
+    return board.sw.provisioning_messages["verify_emta_config_apply"] in boot_logs
 
 
 def _verify_emta_provisioning(boot_logs: str) -> bool:
@@ -104,7 +99,7 @@ def _verify_emta_provisioning(boot_logs: str) -> bool:
     :rtype: bool
     """
     board = get_device_by_name("board")
-    return board.provisioning_messages["verify_emta_provisioning"] in boot_logs
+    return board.sw.provisioning_messages["verify_emta_provisioning"] in boot_logs
 
 
 def verify_boot_stages_and_provisioning(timeout: int) -> bool:
