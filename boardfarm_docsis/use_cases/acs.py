@@ -26,7 +26,7 @@ def is_dut_online_on_acs() -> bool:
     """
     board = get_device_by_name("board")
     try:
-        acs_status = retry(board.tr069_connected, 3, [False])
+        acs_status = retry(board.sw.tr069_connected, 3, [False])
     except PexpectErrorTimeout:
         acs_status = False
         msg = "\n\n Pexpect timeout, While checking DUT online status on ACS"
