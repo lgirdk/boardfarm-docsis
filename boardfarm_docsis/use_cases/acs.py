@@ -85,6 +85,44 @@ def SPV(params: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     return acs_server.SPV(params)
 
 
+def SPA(
+    param: Union[List[Dict[str, str]], Dict[str, str]],
+    notification_change: bool,
+    access_change: bool,
+    access_list: list,
+) -> None:
+    """Perform TR069 RPC call SetParameterValues.
+    Example usage : SPA([{'Device.WiFi.SSID.1.SSID':'1'}], True, False, [])
+
+    :param param: parameter as key of dictionary and notification as its value
+    :type param: List of Dictionary or Dictionary
+    :param notification_change: If true, the value of Notification replaces the current notification setting for this Parameter or group of Parameters. If false, no change is made to the notification setting
+    :type notification_change: bool
+    :param access_change: If true, the value of AccessList replaces the current access list for this Parameter or group of Parameters. If false, no change is made to the access list
+    :type access_change: bool
+    :param access_list: Array of zero or more entities for which write access to the specified Parameter(s) is granted
+    :type access_list: list
+    :raises TR069FaultCode: incase SPA operation fails
+    :raises HTTPError: in case of HTTP error code is recieved in response
+    """
+    acs = get_device_by_name("acs_server")
+    acs.SPA(param, access_change, access_list, notification_change)
+
+
+def GPA(param: str) -> List[Dict[str, Any]]:
+    """Perform TR069 RPC call GetParameterAttributes.
+
+    :param param: name of the parameter
+    :type param: str
+    :raises TR069FaultCode: incase GPA operation fails
+    :raises HTTPError: in case of HTTP error code is recieved in response
+    :return: list of dictionary with keys Name, AccessList, Notification indicating the attributes of the parameter
+    :rtype: List[Dict[str, Any]]
+    """
+    acs = get_device_by_name("acs_server")
+    return acs.GPA(param)
+
+
 def add_object(object_name: str) -> AddObjectResponse:
     """Perform TR069 RPC call AddObject
     Usage:
