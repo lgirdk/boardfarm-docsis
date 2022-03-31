@@ -142,6 +142,9 @@ class DummyDev:
     def get_software(self, *args, **kwargs):
         pass
 
+    def flash(self, *args, **kwargs):
+        pass
+
 
 class device_manager(UserList):
     def __init__(self):
@@ -222,9 +225,9 @@ def test_boot_board(mocker):
     mocker.patch.object(env_helper, "get_software", return_value=True, autospec=True)
     config = Dummy()
     config.provisioner = "something"
-    mocker.patch(
-        "boardfarm.lib.booting.boot_image", side_effect=Exception("Flash Failed")
-    )
+
+    mocker.patch.object(devices.board, "flash", side_effect=Exception("Flash Failed"))
+
     with pytest.raises(BootFail) as e:
         boardfarm_docsis.lib.booting.boot_board(config, env_helper, devices)
     assert e.typename == "BootFail"
