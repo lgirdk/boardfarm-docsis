@@ -1,3 +1,16 @@
+## 2022.13.0 (2022-03-31)
+
+### Feat
+
+- **use_cases/acs.py**: implement usecases for GPA and SPA
+- **cmts.py,-ripv2.py**: add new usecases for ripv2
+- **booting.py,-env_helper.py**: add support to configure invalid dhcp gateway ip
+
+### Fix
+
+- **acs.py**: update method call to sw object
+- **provision_helper.py**: access provisioning messages via sw board object
+
 ## 2022.11.0 (2022-03-16)
 
 ### Feat
