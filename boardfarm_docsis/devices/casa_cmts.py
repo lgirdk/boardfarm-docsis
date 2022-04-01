@@ -1029,7 +1029,7 @@ class CasaCMTS(CmtsTemplate):
         ertr_mac.dialect = netaddr.mac_cisco
         output = self.before.replace("\r", "").replace("\n", "")
         ertr_ipv6 = re.search(
-            fr"({AllValidIpv6AddressesRegex}) .* ({ertr_mac})", output
+            rf"({AllValidIpv6AddressesRegex}) .* ({ertr_mac})", output
         )
         if ertr_ipv6:
             ipv6 = ertr_ipv6.group(1)
@@ -1057,9 +1057,9 @@ class CasaCMTS(CmtsTemplate):
         self.expect(self.prompt)
         assert "downstream 1 interface qam" in self.before
         major, minor, sub = self.before.strip().split(" ")[-1].split("/")
-        self.sendline(fr"show interface qam {major}/{minor} | inc channel\s{sub}\sfreq")
+        self.sendline(rf"show interface qam {major}/{minor} | inc channel\s{sub}\sfreq")
         self.expect_exact(
-            fr"show interface qam {major}/{minor} | inc channel\s{sub}\sfreq"
+            rf"show interface qam {major}/{minor} | inc channel\s{sub}\sfreq"
         )
         self.expect(self.prompt)
         assert f"channel {sub} frequency" in self.before

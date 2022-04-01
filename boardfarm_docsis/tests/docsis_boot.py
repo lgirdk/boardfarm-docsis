@@ -19,7 +19,6 @@ if "pytest" in sys.modules:
         country = "NL"  # default
         voice = False
 
-
 else:
 
     class DocsisBootStub(rootfs_boot.RootFSBootTest):
