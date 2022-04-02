@@ -521,7 +521,9 @@ class DocsisEnvHelper(EnvHelper):
         :return: mv1/mv2/mv2+ etc. or unknown if not found in mapping
         """
         board_model = self.get_board_model()
-        return {"F3896LG": "mv2+", "CH7465LG": "mv1"}.get(board_model, "unknown")
+        return {"F3896LG": "mv2+", "CH7465LG": "mv1"}.get(
+            board_model, super().get_board_hardware_type()
+        )
 
     def get_dhcpv4_options(self) -> Dict[Optional[str], Optional[Union[str, int]]]:
         """Return Dict of dhcpv4 options from environment definition
