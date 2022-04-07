@@ -4,8 +4,17 @@ Created in order to keep booting.py implementation as clean as possible
 """
 import logging
 import time
+from random import choice
+from typing import Union
 
+from boardfarm.devices.debian_lan import DebianLAN
+from boardfarm.devices.debian_wifi import DebianWifi
 from boardfarm.exceptions import CodeError
+from boardfarm.lib.common import ip_pool_to_list
+from boardfarm_lgi_shared.lib.ofw.networking import (
+    get_cpe_ipv4_pool,
+    get_defualt_gw_and_netmask,
+)
 from termcolor import colored
 
 logger = logging.getLogger("bft")
@@ -118,3 +127,16 @@ def register_fxs_details(fxs_devices, board):
             fxs.gw = mta_ip
         except CodeError as e:
             raise CodeError(f"FXS registration failure.\nReason:{e}")
+
+
+def set_static_ip_and_default_gw(client: Union[DebianLAN, DebianWifi]) -> None:
+    """set static ip and defauly gw based primary lan/wlan interface
+
+    :param cliet: lan/wlan client for which we need to set static ip
+    :type cliet: Union[DebianLAN, DebianWifi]
+    """
+    ip_pool = get_cpe_ipv4_pool()
+    ip_address = choice(ip_pool_to_list(*ip_pool))
+    default_gw, netmask = get_defualt_gw_and_netmask()
+    client.set_static_ip(client.iface_dut, ip_address, netmask)
+    client.set_default_gw(default_gw, client.iface_dut)

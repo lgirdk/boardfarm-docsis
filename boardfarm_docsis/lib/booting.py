@@ -21,6 +21,7 @@ from boardfarm_docsis.lib.booting_utils import (
     activate_mitm,
     check_and_connect_to_wifi,
     register_fxs_details,
+    set_static_ip_and_default_gw,
 )
 from boardfarm_docsis.lib.dns_helper import dns_acs_config
 from boardfarm_docsis.use_cases.provision_helper import provision_board
@@ -225,7 +226,7 @@ def post_boot_lan_clients(config, env_helper, devices):
                 else:
                     v.configure_dhclient(([option, False],))
     if devices.board.routing and config.setup_device_networking:
-        for x in devices.board.dev.lan_clients:
+        for idx, x in enumerate(devices.board.dev.lan_clients):
             if isinstance(x, DebianLAN):  # should this use devices.lan_clients?
                 logger.info(f"Starting LAN client on {x.name}")
                 for n in range(3):
@@ -245,6 +246,15 @@ def post_boot_lan_clients(config, env_helper, devices):
                         elif env_helper.is_dhcpv4_enabled_on_lan():
                             x.start_ipv4_lan_client(wan_gw=devices.wan.gw)
                         x.configure_proxy_pkgs()
+                        if env_helper.get_prov_mode() in [
+                            "ipv4",
+                            "dual",
+                        ] and env_helper.is_set_static_ipv4(idx):
+                            # set static ip address
+                            set_static_ip_and_default_gw(
+                                client=x,
+                            )
+
                         break
                     except Exception as e:
                         logger.warning(e)

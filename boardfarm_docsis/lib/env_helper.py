@@ -1,7 +1,7 @@
 import logging
 import re
 from collections import ChainMap
-from typing import Dict, Optional, Union
+from typing import Dict, List, Optional, Union
 
 from boardfarm.exceptions import BftEnvExcKeyError, BftEnvMismatch, BftSysExit
 from boardfarm.lib.env_helper import EnvHelper
@@ -573,6 +573,16 @@ class DocsisEnvHelper(EnvHelper):
 
         return dict(ChainMap(*dhcp_options))
 
+    def get_lan_client_options(self) -> List[Dict]:
+        """get lan client options
+
+        :return: client options for all lan client
+        :rtype: dict
+        """
+        return (
+            self.env.get("environment_def", {}).get("board", {}).get("lan_clients", {})
+        )
+
     def is_dhcpv4_enabled_on_lan(self) -> bool:
         """Return dhcpv4 status based on env_req
 
@@ -591,3 +601,14 @@ class DocsisEnvHelper(EnvHelper):
         :rtype: bool
         """
         return self.get_dhcpv4_options().get("route_gateway") != "invalid"
+
+    def is_set_static_ipv4(self, idx) -> bool:
+        """check if static ipv4 assignment is enabled
+
+        :return: return True if dhcpv4 option static_ipv4 is true else False
+        :rtype: bool
+        """
+        try:
+            return self.get_lan_client_options()[idx].get("static_ipv4")
+        except (IndexError, KeyError, AttributeError):
+            return False
