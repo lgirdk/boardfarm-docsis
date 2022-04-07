@@ -546,8 +546,7 @@ class DocsisEnvHelper(EnvHelper):
         :return: False if dhcpv4 is disabled else True
         :rtype: boolean
         """
-
-        boot_file = self.env["environment_def"]["board"]["boot_file"].lower()
+        boot_file = self.env["environment_def"]["board"].get("boot_file", "").lower()
         enable_dhcpv4 = "Device.DHCPv4.Server.Enable|boolean|true"
         enable_rip = "Device.Routing.RIP.Enable|boolean|true"
         return enable_rip.lower() not in boot_file or enable_dhcpv4.lower() in boot_file

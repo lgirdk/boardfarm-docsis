@@ -3,19 +3,13 @@
 import json
 import logging
 
-from boardfarm.exceptions import BftSysExit, SkipTest
+from boardfarm.exceptions import ContingencyCheckError
 from boardfarm.lib.DeviceManager import device_type
 from boardfarm.lib.hooks import contingency_impl, hookimpl
 from boardfarm.plugins import BFPluginManager
-from nested_lookup import nested_lookup
 from termcolor import colored
 
-from boardfarm_docsis.lib.docsis import (
-    check_board,
-    check_cm_firmware_version,
-    check_interface,
-    check_provisioning,
-)
+from boardfarm_docsis.lib.docsis import check_board, check_interface, check_provisioning
 from boardfarm_docsis.lib.voice import check_peer_registration
 
 logger = logging.getLogger("tests_logger")
@@ -43,6 +37,10 @@ class ContingencyCheck:
         :type env_req: dict
         """
 
+        if "CMTS" not in env_helper.env["environment_def"]:
+            logger.info("Not Executing contingency service checks under BF Docsis")
+            return []
+
         logger.info("Executing all contingency service checks under BF Docsis")
 
         pm = BFPluginManager("contingency")
@@ -53,11 +51,6 @@ class ContingencyCheck:
 
         if "voice" in env_req.get("environment_def", {}):
             plugins_to_register.append(all_impls["boardfarm_docsis.Voice"])
-
-        plugins_to_register.append(all_impls["boardfarm_docsis.CheckInterface"])
-
-        if nested_lookup("cwmp_version", env_req.get("environment_def", {})):
-            plugins_to_register.append(all_impls["boardfarm_docsis.Cwmp"])
 
         for i in reversed(plugins_to_register):
             pm.register(i)
@@ -80,7 +73,7 @@ class DefaultChecks:
         """Implement Default Contingency Hook."""
 
         logger.info(
-            "Executing Default service checks[check_board,check_provisioning,check_cm_firmware_version] for BF Docsis"
+            "Executing Default service checks[check_board,check_provisioning] for BF Docsis"
         )
 
         if not dev_mgr.board.is_erouter_honouring_config():
@@ -91,20 +84,18 @@ class DefaultChecks:
             )
             logger.critical(msg)
             logger.critical("Possible hint: a previous test did not cleanup?")
-            raise BftSysExit(msg)
+            raise ContingencyCheckError(msg)
 
         cm_mac = dev_mgr.board.config["cm_mac"]
         voice = "voice" in env_req.get("environment_def", {})
         board = dev_mgr.by_type(device_type.DUT)
-        wan = dev_mgr.by_type(device_type.wan)
         cmts = dev_mgr.by_type(device_type.cmts)
 
         check_board(board, cmts, cm_mac)
         check_provisioning(dev_mgr.board, mta=voice)
-        check_cm_firmware_version(board, wan, env_helper)
 
         logger.info(
-            "Default service checks[check_board,check_provisioning,check_cm_firmware_version] for BF Docsis executed"
+            "Default service checks[check_board,check_provisioning] for BF Docsis executed"
         )
 
 
@@ -179,21 +170,3 @@ class Voice:
         check_peer_registration(board, num_list, sipserver)
 
         logger.info("Voice service checks for BF Docsis executed")
-
-
-class Cwmp:
-
-    impl_type = "feature"
-
-    @contingency_impl
-    def service_check(self, env_req, dev_mgr, env_helper):
-        """Contingency check for CWMP version"""
-
-        logger.info("Executing CWMP service check for BF Docsis")
-
-        board = dev_mgr.by_type(device_type.DUT)
-        env_cwmp_v = nested_lookup("cwmp_version", env_req["environment_def"])
-        if env_cwmp_v[0] != board.cwmp_version():
-            raise SkipTest("Skipping Test: CWMP version mismatch")
-
-        logger.info("CWMP service check executed for BF Docsis")
