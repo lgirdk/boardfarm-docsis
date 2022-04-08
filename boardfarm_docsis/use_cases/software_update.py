@@ -153,9 +153,7 @@ def generate_bootfile_with_docsis_mibs(
                 if mib.type == "HexString"
                 else mib.value
             )
-            value = (
-                f'"{mib.value}"' if mib.type in ("String", "HexString") else mib.value
-            )
+            value = f'"{mib.value}"' if mib.type == "String" else mib.value
             mibs_string = f"{mibs_string}\n\tSnmpMibObject {mib.mib_name}.{mib.index} {mib.type} {value};"
             cfg = re.sub(f".*{mib.mib_name}.*\n", "", cfg)
 
