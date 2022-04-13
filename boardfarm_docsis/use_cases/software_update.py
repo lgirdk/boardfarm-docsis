@@ -56,6 +56,26 @@ def get_update_filename() -> str:
     return os.path.basename(helper.board.env_helper.get_update_image())
 
 
+def get_alternative_image_version() -> str:
+    """Gets the alternative image version name from env for software update
+
+    :return: returns the image version name for software update uniquely defined for an image
+    :rtype: str
+    """
+    helper = _SnmpSwUpdate()
+    return helper.board.env_helper.get_alternative_image_version()
+
+
+def get_alternative_filename() -> str:
+    """Gets the alternative image filename of the software to be updated
+
+    :return: returns the name of the file for software update along with file extension
+    :rtype: str
+    """
+    helper = _SnmpSwUpdate()
+    return os.path.basename(helper.board.env_helper.get_alternative_image())
+
+
 def get_server_address() -> str:
     """Returns the ipaddress of the server
 
