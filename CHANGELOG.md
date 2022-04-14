@@ -1,3 +1,20 @@
+## 2022.15.0 (2022-04-14)
+
+### Fix
+
+- remove yamlfmt/yamllint from pre-commit
+- **use_cases:software_update.py**: fix use case generate_bootfile_with_docsis_mibs
+- **pre-commit**: update pre-commit hooks to latest versions and autofix issues
+- boot_board unittest fix
+
+### Feat
+
+- update api to resolve board type
+
+### BREAKING CHANGE
+
+- Depends-on: I6c67cd2828257eec3c1818c9eae3366021d7c660
+
 ## 2022.13.0 (2022-03-31)
 
 ### Feat
