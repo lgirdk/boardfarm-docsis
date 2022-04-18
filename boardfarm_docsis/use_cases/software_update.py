@@ -17,11 +17,7 @@ class _SnmpSwUpdate:
         self.wan = get_device_by_name("wan")
         self.board = get_device_by_name("board")
         self.cmts = get_device_by_name("cmts")
-        self.board_ip = (
-            self.cmts.get_cmipv6(self.board.cm_mac)
-            if self.board.env_helper.get_prov_mode() in ["dslite", "ipv6"]
-            else self.cmts.get_cmip(self.board.cm_mac)
-        )
+        self.board_ip = self.cmts.get_cmip(self.board.cm_mac)
         self.snmp = SNMPv2(self.wan, self.board_ip)
         self.vendor_prefix = self.board.sw.mib.vendor_prefix
         self.proto_dict: Dict[str, Dict[str, str]] = {
