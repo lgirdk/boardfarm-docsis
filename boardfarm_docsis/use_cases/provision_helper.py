@@ -4,8 +4,6 @@ from typing import Optional
 from boardfarm.exceptions import CodeError
 from boardfarm.lib.DeviceManager import device_manager, get_device_by_name
 
-from boardfarm_docsis.use_cases.online_usecases import wait_for_board_boot_start
-
 
 def provision_board():
     dev = device_manager()
@@ -35,7 +33,7 @@ def provision_board_boot_file(
         dev.board.hw.cm_cfg.init_copy(dev.board.hw.cm_cfg)
     provision_board()
     dev.board.reset()
-    wait_for_board_boot_start()
+    dev.board.wait_for_boot()
 
 
 def _push_to_tftp_server(cfg, server):
