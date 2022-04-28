@@ -1,3 +1,19 @@
+## 2022.17.0 (2022-04-28)
+
+### Refactor
+
+- **boardfarm_docsis:use_cases**: move usecases out of boardfarm-docsis
+
+### Feat
+
+- **booting.py,booting_utils.py,env_helper.py**: add support to set static ip for lan/wlan clients
+- **lib/env_helper.py,-use_cases/software_update.py**: add methods to get alternative software properties from env
+- **lib:hooks:contingency_checks.py**: Contingency Check Functionality Segregation
+
+### Fix
+
+- **software_update.py**: modify the singleton snmp class to pick the ipv4 CM IP always
+
 ## 2022.15.0 (2022-04-14)
 
 ### Fix
