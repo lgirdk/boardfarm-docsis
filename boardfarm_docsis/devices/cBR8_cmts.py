@@ -237,6 +237,17 @@ class CBR8CMTS(CmtsTemplate):
         else:
             return None
 
+    def ip_route(self) -> str:
+        """Perfrom show ip route command and return output
+
+
+        :return: ip routes available on cmts
+        :rtype: str
+        """
+        self.sendline("show ip route")
+        self.expect(self.prompt)
+        return self.before
+
     def DUT_chnl_lock(self, cm_mac: str) -> List[int]:
         """Return amount of upstream / downstream channels that modem is bonded to
         :param cm_mac: cable modem mac address
