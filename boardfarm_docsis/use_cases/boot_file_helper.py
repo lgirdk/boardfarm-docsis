@@ -53,6 +53,7 @@ def switch_erotuer_mode(mode: str) -> str:
         raise ValueError(f"Requested initialization mode: {mode} not in {modes}")
 
     bootfile = get_device_by_name("board").env_helper.get_board_boot_file()
+    vendor_id = get_vendor_id_from_cm_config()
 
     if mode in {"disabled", "ipv4", "ipv6", "dual"}:
         # simply swap the value in the bootfile
@@ -60,7 +61,17 @@ def switch_erotuer_mode(mode: str) -> str:
         _to = f"InitializationMode {modes[mode]};"
     elif mode == "none":
         # remove the InitialisationMode
-        _from = "VendorSpecific.*\n.*{.*\n.*VendorIdentifier 0x02a613;.*\n.*eRouter.*\n.*{.*\n.*InitializationMode((\\s|\t){1,})\\d.*;.*\n.*}*\n.*}"
+        _from = f"VendorSpecific.*\n.*{{.*\n.*VendorIdentifier 0x{vendor_id};.*\n.*eRouter.*\n.*{{.*\n.*InitializationMode((\\s|\t){1,})\\d.*;.*\n.*}}*\n.*}}"
         _to = "/* Removed */"
 
     return re.sub(_from, _to, bootfile)
+
+
+def get_vendor_id_from_cm_config() -> str:
+    """Fetches the vendor identifier hexadecimal value from cm bootfile
+
+    :return: hexa decimal value of vendor identifier
+    :rtype: str
+    """
+    bootfile = get_device_by_name("board").env_helper.get_board_boot_file()
+    return re.search("VendorIdentifier 0x([A-Za-z0-9]*);", bootfile)[1]
