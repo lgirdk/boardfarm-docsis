@@ -93,13 +93,14 @@ def parse_rip_trace(
         else:
             frame_time = None
 
-        output.append(
-            RIPv2PacketData(
-                source=IPv4Address(src),
-                destination=IPv4Address(dst),
-                ip_address=[IPv4Address(ip) for ip in advertised_ips.split(",")],
-                subnet=[ip_interface(mask) for mask in netmask.split(",")],
-                frame_time=frame_time,
+        if advertised_ips:
+            output.append(
+                RIPv2PacketData(
+                    source=IPv4Address(src),
+                    destination=IPv4Address(dst),
+                    ip_address=[IPv4Address(ip) for ip in advertised_ips.split(",")],
+                    subnet=[ip_interface(mask) for mask in netmask.split(",")],
+                    frame_time=frame_time,
+                )
             )
-        )
     return output
