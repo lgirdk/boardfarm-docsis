@@ -485,6 +485,7 @@ class MiniCMTS(CmtsTemplate):
         """
         return self._get_cmts_ip_bundle(cm_mac=cm_mac, gw_ip=gw_ip)
 
+    @CmtsTemplate.connect_and_run
     def _get_cmts_ip_bundle(
         self, cm_mac: Optional[str] = None, gw_ip: Optional[str] = None
     ) -> str:
