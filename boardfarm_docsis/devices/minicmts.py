@@ -1,10 +1,11 @@
 """Boardfarm DOCSIS MiniCMTS device module."""
 
+import ipaddress
 import logging
 import re
 from argparse import Namespace
 from io import StringIO
-from typing import Dict
+from typing import Dict, Optional
 
 import pandas as pd
 from boardfarm import hookimpl
@@ -173,3 +174,26 @@ class MiniCMTS(LinuxDevice, CMTS):
         if ip_address is None:
             raise DeviceNotFound(f"Unable to find {mac_address} cable modem on CMTS.")
         return ip_address.strip().replace("*", "")
+
+    def get_cmts_ip_bundle(self, gw_ip: Optional[str] = None) -> str:
+        """Get CMTS bundle IP.
+
+        Validate if Gateway IP is configured in CMTS and both are in same network.
+        The first host address within the network will be assumed to be gateway
+        for Mini CMTS
+
+        :param gw_ip: gateway ip address. defaults to None
+        :raises ValueError: Failed to get the CMTS bundle IP
+        :return: gateway ip if address configured on minicmts else return all ip bundles
+        """
+        output = self._console.execute_command(
+            'show running-config | include "ip address"'
+        )
+        if gw_ip is None:
+            return output
+        for line in output.splitlines():
+            addr, mask = line.split()[2:-1]
+            cmts_ip = ipaddress.ip_interface(addr + "/" + mask)
+            if gw_ip == str(next(cmts_ip.network.hosts())):
+                return gw_ip
+        raise ValueError("Failed to get the CMTS bundle IP")

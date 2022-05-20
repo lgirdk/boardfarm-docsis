@@ -25,3 +25,12 @@ class CableModem(ABC):
     def lan_private_gateway(self) -> str:
         """Lan private gateway IP (modem mode)."""
         raise NotImplementedError
+
+    @abstractmethod
+    def get_provision_mode(self) -> str:
+        """Get cable modem provision mode from boot file.
+
+        :returns: cable modem provision mode
+        :raises EnvConfigError: when failed to find provision mode
+        """
+        raise NotImplementedError

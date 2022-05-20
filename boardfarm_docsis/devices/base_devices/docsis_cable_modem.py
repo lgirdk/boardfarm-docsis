@@ -99,23 +99,18 @@ class DocsisCableModem(BoardfarmDevice, CableModem):
         )
         cm_config_path.unlink()
 
-    def get_cm_config_network_mode(self) -> str:
-        """Get cable modem network mode from boot file.
+    def get_provision_mode(self) -> str:
+        """Get cable modem provision mode from boot file.
 
-        :returns: cable modem network mode
-        :raises EnvConfigError: when failed to find network mode from boot file
+        :returns: cable modem provision mode
+        :raises EnvConfigError: when failed to find provision mode
         """
-        network_mode = None
         boot_file = self._config.get("boot_file")
-        modes = ["disabled", "ipv4", "ipv6", "dual-stack"]
-        for index, mode in enumerate(modes):
+        modes = ["disabled", "ipv4", "ipv6", "dual"]
+        for index, provision_mode in enumerate(modes):
             if f"InitializationMode {index}" in boot_file:
-                network_mode = mode
-        if network_mode is None:
-            raise EnvConfigError(
-                "Unable to find cable modem network mode from bootfile"
-            )
-        return network_mode
+                return provision_mode
+        raise EnvConfigError("Unable to find cable modem provision mode")
 
     def _get_cable_modem_image_uri(self) -> str:
         """Get cable modem image URI.

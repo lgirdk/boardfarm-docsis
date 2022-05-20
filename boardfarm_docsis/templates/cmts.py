@@ -1,6 +1,7 @@
 """Boardfarm DOCSIS CMTS device template."""
 
 from abc import ABC, abstractmethod
+from typing import Optional
 
 
 class CMTS(ABC):
@@ -38,5 +39,19 @@ class CMTS(ABC):
 
         :param mac_address: cable modem MAC address
         :returns: IP address of the cable modem on CMTS
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_cmts_ip_bundle(self, gw_ip: Optional[str] = None) -> str:
+        """Get CMTS bundle IP.
+
+        Validate if Gateway IP is configured in CMTS and both are in same network.
+        The first host address within the network will be assumed to be gateway
+        for Mini CMTS
+
+        :param gw_ip: gateway ip address. defaults to None
+        :raises ValueError: Failed to get the CMTS bundle IP
+        :return: gateway ip if address configured on minicmts else return all ip bundles
         """
         raise NotImplementedError
