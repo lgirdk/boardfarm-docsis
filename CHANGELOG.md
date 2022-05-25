@@ -1,3 +1,14 @@
+## 2022.21.0 (2022-05-25)
+
+### Fix
+
+- **ripv2.py**: add fix for empty values
+- **cBR8_cmts**: add ip route method
+
+### Feat
+
+- **use_cases:boot_file_helper.py**: add a usecase to fetch vendor identifier from bootfile
+
 ## 2022.19.0 (2022-05-11)
 
 ### Refactor
