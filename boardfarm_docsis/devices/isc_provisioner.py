@@ -278,7 +278,7 @@ class ISCProvisioner(LinuxDevice, Provisioner):
     def _get_common_keywords_to_replace(self) -> Dict:
         timezone_offset = self._get_timezone_offset()
         common_keywords = {
-            "###IFACE###": self._eth_interface,
+            "###IFACE###": self.eth_interface,
             "###BOARD_NAME###": self._cmdline_args.board_name,
             "###TIMEZONE###": timezone_offset,
             "###MTA_DHCP_SERVER1###": self._prov_ipv4_address,
