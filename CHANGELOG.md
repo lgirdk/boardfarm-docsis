@@ -1,3 +1,9 @@
+## 2022.23.0 (2022-06-08)
+
+### Fix
+
+- **devices:topvision_cmts.py**: fix _get_cmts_ip_bundle to use connect_and_run
+
 ## 2022.21.0 (2022-05-25)
 
 ### Fix
