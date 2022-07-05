@@ -12,6 +12,7 @@ from boardfarm.exceptions import (
     DeviceDoesNotExistError,
     NoTFTPServer,
 )
+from boardfarm.lib.booting_utils import check_and_connect_to_wifi
 from boardfarm.library import check_devices
 from packaging.version import Version
 from termcolor import colored
@@ -19,7 +20,6 @@ from termcolor import colored
 from boardfarm_docsis.devices.base_devices.board import DocsisCPE
 from boardfarm_docsis.lib.booting_utils import (
     activate_mitm,
-    check_and_connect_to_wifi,
     register_fxs_details,
     set_static_ip_and_default_gw,
 )
