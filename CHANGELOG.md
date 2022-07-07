@@ -1,3 +1,13 @@
+## 2022.27.0 (2022-07-07)
+
+### Fix
+
+- related to wifi board fail at post boot
+
+### BREAKING CHANGE
+
+- Related to BOARDFARM-2075
+
 ## 2022.25.0 (2022-06-20)
 
 ### Feat
