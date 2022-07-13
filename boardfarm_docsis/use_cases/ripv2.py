@@ -73,7 +73,7 @@ def parse_rip_trace(
             f"No trace found in pcap file {fname} with filters: {filter_str}"
         )
 
-    frame_time = None
+    ftime = None
     for packet in rip_packets.splitlines():
         packet_fields = packet.split("\t")
         try:
@@ -85,13 +85,10 @@ def parse_rip_trace(
             ) = packet_fields[:4]
 
             if frame_time:
-                frame_time = datetime.fromtimestamp(float(packet_fields[:-1]))
+                ftime = datetime.fromtimestamp(float(packet_fields[-1]))
 
         except (IndexError, ValueError):
             raise CodeError(f"No RIPv2 trace found in pcap file {fname}")
-
-        else:
-            frame_time = None
 
         if advertised_ips:
             output.append(
@@ -100,7 +97,7 @@ def parse_rip_trace(
                     destination=IPv4Address(dst),
                     ip_address=[IPv4Address(ip) for ip in advertised_ips.split(",")],
                     subnet=[ip_interface(mask) for mask in netmask.split(",")],
-                    frame_time=frame_time,
+                    frame_time=ftime,
                 )
             )
     return output
