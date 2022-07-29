@@ -23,33 +23,21 @@
     requires-python = ">=3.6"
 
     dependencies = [
+        "boardfarm",
         "packaging",
         "tabulate",
-        "boardfarm"
     ]
 
     [project.optional-dependencies]
         dev = [
-            "black",
-            "flake8",
-            "flake8-bugbear==22.1.11",
-            "flake8-docstrings",
-            "flake8-rst",
-            "flake8-rst-docstrings",
-            "mypy",
-            "pre-commit",
-            "pylint==2.14.1",
-            "types-requests",
+            "boardfarm[dev]",
             "types-tabulate",
         ]
-        doc = ["sphinx"]
+        doc = [
+            "boardfarm[doc]",
+        ]
         test = [
-            "pytest",
-            "pytest-cov",
-            "pytest-html",
-            "pytest-mock",
-            "pytest-randomly",
-            "pytest-xdist",
+            "boardfarm[test]",
         ]
 
     [project.urls]
