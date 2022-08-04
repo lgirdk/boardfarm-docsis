@@ -124,6 +124,8 @@ def pre_boot_env(config, env_helper, devices):
                 attrs=["bold"],
             )
         )
+    if hasattr(devices.board, "pre_boot_env"):
+        devices.board.pre_boot_env(env_helper)
 
 
 pre_boot_actions = {
