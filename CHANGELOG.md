@@ -1,3 +1,5 @@
+## 2022.31.0 (2022-08-03)
+
 ## 2022.29.0 (2022-07-20)
 
 ### Fix
@@ -6,13 +8,13 @@
 
 ## 2022.27.0 (2022-07-07)
 
-### Fix
-
-- related to wifi board fail at post boot
-
 ### BREAKING CHANGE
 
 - Related to BOARDFARM-2075
+
+### Fix
+
+- related to wifi board fail at post boot
 
 ## 2022.25.0 (2022-06-20)
 
@@ -28,14 +30,14 @@
 
 ## 2022.21.0 (2022-05-25)
 
+### Feat
+
+- **use_cases:boot_file_helper.py**: add a usecase to fetch vendor identifier from bootfile
+
 ### Fix
 
 - **ripv2.py**: add fix for empty values
 - **cBR8_cmts**: add ip route method
-
-### Feat
-
-- **use_cases:boot_file_helper.py**: add a usecase to fetch vendor identifier from bootfile
 
 ## 2022.19.0 (2022-05-11)
 
@@ -44,10 +46,6 @@
 - **boardfarm_docsis:lib:env_helper.py**: segregate docsis and non-docsis env_helper
 
 ## 2022.17.0 (2022-04-28)
-
-### Refactor
-
-- **boardfarm_docsis:use_cases**: move usecases out of boardfarm-docsis
 
 ### Feat
 
@@ -59,7 +57,19 @@
 
 - **software_update.py**: modify the singleton snmp class to pick the ipv4 CM IP always
 
+### Refactor
+
+- **boardfarm_docsis:use_cases**: move usecases out of boardfarm-docsis
+
 ## 2022.15.0 (2022-04-14)
+
+### BREAKING CHANGE
+
+- Depends-on: I6c67cd2828257eec3c1818c9eae3366021d7c660
+
+### Feat
+
+- update api to resolve board type
 
 ### Fix
 
@@ -67,14 +77,6 @@
 - **use_cases:software_update.py**: fix use case generate_bootfile_with_docsis_mibs
 - **pre-commit**: update pre-commit hooks to latest versions and autofix issues
 - boot_board unittest fix
-
-### Feat
-
-- update api to resolve board type
-
-### BREAKING CHANGE
-
-- Depends-on: I6c67cd2828257eec3c1818c9eae3366021d7c660
 
 ## 2022.13.0 (2022-03-31)
 
@@ -98,11 +100,6 @@
 
 ## 2022.09.0 (2022-03-02)
 
-### Fix
-
-- remove get_cmts_type() from CMTS public API
-- retry getting the cable modem ip
-
 ### BREAKING CHANGE
 
 - BOARDFARM-1714
@@ -111,6 +108,11 @@
 
 - **acs.py**: add factory_reset usecase
 - **cmts-device-classes**: add tcpdump support to cmts device classes
+
+### Fix
+
+- remove get_cmts_type() from CMTS public API
+- retry getting the cable modem ip
 
 ## 2022.07.0 (2022-02-16)
 
@@ -136,15 +138,15 @@
 
 ## 2022.03.0 (2022-01-20)
 
-### Feat
-
-- **acs.py**: add usecases add_object and del_object
-- use env_helper.get_image instead of _get_image
-
 ### BREAKING CHANGE
 
 - This is related to the changes added to allowd legacy CBN to boot from
 a OFw build.
+
+### Feat
+
+- **acs.py**: add usecases add_object and del_object
+- use env_helper.get_image instead of _get_image
 
 ### Fix
 
@@ -152,14 +154,14 @@ a OFw build.
 
 ## 2022.01.0 (2022-01-05)
 
+### BREAKING CHANGE
+
+- Needs boardfarm_docsis commit for docsis devices
+
 ### Feat
 
 - overrides env_helper.get_image
 - add manufacturer and hardware_version properties to board object
-
-### BREAKING CHANGE
-
-- Needs boardfarm_docsis commit for docsis devices
 
 ### Fix
 
@@ -185,15 +187,22 @@ a OFw build.
 - **erouter.py**: Add board use cases to verify erouter status
 - **acs.py**: Create use case for ACS connectivity check
 
-### Refactor
-
-- Inherit DocsisCPESw from BoardSwtemplate
-
 ### Fix
 
 - **use_cases:online_usecases.py**: add post_boot_env in use cases to set the default password after boot
 
+### Refactor
+
+- Inherit DocsisCPESw from BoardSwtemplate
+
 ## 2021.47.0 (2021-11-24)
+
+### Feat
+
+- **board,mta_template**: allow FXO template derivate for docsis
+- http default proto for snmp SW download
+- **online_usecases**: add check board online after reset usecase
+- **devices/base_devices/board.py**: adds pre_flash_factory_reset
 
 ### Fix
 
@@ -207,13 +216,6 @@ a OFw build.
 - **devices/docsis.py**: uses mgmt to fetch the build
 - fix pylint errors
 - Replace parser delimiter regex with native flag
-
-### Feat
-
-- **board,mta_template**: allow FXO template derivate for docsis
-- http default proto for snmp SW download
-- **online_usecases**: add check board online after reset usecase
-- **devices/base_devices/board.py**: adds pre_flash_factory_reset
 
 ### Refactor
 
