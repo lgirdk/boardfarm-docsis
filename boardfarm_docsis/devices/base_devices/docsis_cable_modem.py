@@ -13,6 +13,7 @@ from boardfarm.exceptions import (
 )
 from boardfarm.lib.device_manager import DeviceManager
 from boardfarm.lib.mibs_compiler import MibsCompiler
+from boardfarm.lib.utils import get_nth_mac_address
 from boardfarm.templates.wan import WAN
 
 from boardfarm_docsis.lib.docsis_encoder import DocsisConfigEncoder
@@ -31,6 +32,11 @@ class DocsisCableModem(BoardfarmDevice, CableModem):
         :returns: cable modem mac address
         """
         return self._config.get("cm_mac")
+
+    @property
+    def tr69_cpe_id(self) -> str:
+        """TR-69 CPE Identifier."""
+        return get_nth_mac_address(self.mac_address, 2).upper().replace(":", "")
 
     @hookimpl
     def validate_device_requirements(self, device_manager: DeviceManager) -> None:

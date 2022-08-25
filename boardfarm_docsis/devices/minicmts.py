@@ -90,12 +90,9 @@ class MiniCMTS(LinuxDevice, CMTS):
             index_col="MAC_ADDRESS",
             dtype=None,
         )
-        column_data = None
-        if mac_address in csv.index:
-            column_data = csv.loc[  # pylint: disable=no-member # known issue
-                mac_address
-            ][column_name]
-        return column_data
+        return (
+            csv.loc[mac_address][column_name] if mac_address in csv.index else None
+        )  # pylint: disable=no-member # known issue
 
     def _get_cable_modem_status(self, mac_address: str) -> str:
         """Get given cable modem status on cmts.
@@ -140,12 +137,11 @@ class MiniCMTS(LinuxDevice, CMTS):
             _LOGGER.info("Cable modem is initializing: %s", status)
         elif "online" not in status:
             _LOGGER.info("Cable modem in unknown state: %s", status)
-        # now it must be in some sort of online state
-        elif ignore_bpi is False and not re.search(r"online\(p(t|k)", status):
+        elif not ignore_bpi and not re.search(r"online\(p(t|k)", status):
             _LOGGER.info("Cable modem in BPI is disabled: %s", status)
-        elif ignore_partial is False and re.search(r"p-online", status):
+        elif not ignore_partial and re.search(r"p-online", status):
             _LOGGER.info("Cable modem in partial service: %s", status)
-        elif ignore_cpe is False and re.search(r"online\(d", status):
+        elif not ignore_cpe and re.search(r"online\(d", status):
             _LOGGER.info("Cable modem is prohibited from forwarding data: %s", status)
         else:
             _LOGGER.info("Cable modem is online: %s", status)

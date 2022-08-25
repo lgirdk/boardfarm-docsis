@@ -8,22 +8,10 @@ from abc import ABC, abstractmethod
 class CableModem(ABC):
     """Boardfarm DOCSIS cable modem device template."""
 
-    @property
     @abstractmethod
-    def gui_password(self) -> str:
-        """Password to GUI."""
-        raise NotImplementedError
-
     @property
-    @abstractmethod
-    def lan_gateway(self) -> str:
-        """Lan gateway IP."""
-        raise NotImplementedError
-
-    @property
-    @abstractmethod
-    def lan_private_gateway(self) -> str:
-        """Lan private gateway IP (modem mode)."""
+    def tr69_cpe_id(self) -> str:
+        """TR-69 CPE Identifier."""
         raise NotImplementedError
 
     @abstractmethod
