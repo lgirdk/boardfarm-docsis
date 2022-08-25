@@ -2,13 +2,13 @@
 
 from dataclasses import dataclass
 from datetime import datetime
-from ipaddress import IPv4Address, ip_interface
+from ipaddress import IPv4Address, IPv4Interface, IPv6Interface, ip_interface
 from typing import List, Optional, Union
 
 from boardfarm.exceptions import CodeError
 from boardfarm.use_cases.descriptors import LanClients, WanClients
 
-from boardfarm_docsis.devices.topvision_cmts import MiniCMTS
+from boardfarm_docsis.devices.base_devices.cmts_template import CmtsTemplate
 
 
 @dataclass
@@ -18,12 +18,12 @@ class RIPv2PacketData:
     source: IPv4Address
     destination: IPv4Address
     ip_address: List[IPv4Address]
-    subnet: List[ip_interface]
+    subnet: List[Union[IPv4Interface, IPv6Interface]]
     frame_time: Optional[datetime] = None
 
 
 def parse_rip_trace(
-    dev: Union[LanClients, WanClients, MiniCMTS],
+    dev: Union[LanClients, WanClients, CmtsTemplate],
     fname: str,
     frame_time: bool,
     rm_pcap: bool,
@@ -34,15 +34,15 @@ def parse_rip_trace(
     protocols.RIP is a simple vector routing protocol.
     This usecase parses rip protocol packets.
 
-    Usage:
-    .. highlight:: python
-    ..code-block:: python
+    .. code-block:: python
 
-    cmts_packet_cap = read_rip_trace(
+        # example usage
+        cmts_packet_cap = read_rip_trace(
             device= LanClient,
             fname="some_capture.pcap",
             frame_time=False,
-            rm_pcap=False)
+            rm_pcap=False
+        )
 
     :param dev: device where captures were taken, LanClient, WanClient, WifiLan, MiniCmts
     :type dev: Devices
@@ -52,7 +52,21 @@ def parse_rip_trace(
     :type fname: boolean
     :param rm_pcap: if True remove the pcap file after reading else keeps the file.
     :type fname: boolean
-    :return: list of rip packets as [(frame, src ip, dst ip, rip contact, rip msg:media_attribute:connection:info, time)]
+    :return: list of rip packets as
+
+        .. code-block:: python
+
+            [
+                (
+                    frame,
+                    src ip,
+                    dst ip,
+                    rip contact,
+                    rip msg:media_attribute:connection:info,
+                    time
+                )
+            ]
+
     :rtype: List[RIPv2PacketData]
     """
 
