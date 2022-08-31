@@ -3,11 +3,11 @@
 from argparse import ArgumentParser
 from typing import Dict, Type
 
-from boardfarm import hookimpl
-from boardfarm.devices.base_devices import BoardfarmDevice
+from boardfarm3 import hookimpl
+from boardfarm3.devices.base_devices import BoardfarmDevice
 
-from boardfarm_docsis.devices.isc_provisioner import ISCProvisioner
-from boardfarm_docsis.devices.minicmts import MiniCMTS
+from boardfarm3_docsis.devices.isc_provisioner import ISCProvisioner
+from boardfarm3_docsis.devices.minicmts import MiniCMTS
 
 
 @hookimpl

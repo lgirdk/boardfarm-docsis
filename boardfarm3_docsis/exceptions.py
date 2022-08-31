@@ -1,6 +1,6 @@
 """Boardfarm DOCSIS exceptions."""
 
-from boardfarm.exceptions import BoardfarmException
+from boardfarm3.exceptions import BoardfarmException
 
 
 class ConfigEncodingError(BoardfarmException):

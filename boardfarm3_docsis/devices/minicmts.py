@@ -8,11 +8,11 @@ from io import StringIO
 from typing import Dict, Optional
 
 import pandas as pd
-from boardfarm import hookimpl
-from boardfarm.devices.base_devices import LinuxDevice
-from boardfarm.exceptions import ConfigurationFailure, DeviceNotFound
+from boardfarm3 import hookimpl
+from boardfarm3.devices.base_devices import LinuxDevice
+from boardfarm3.exceptions import ConfigurationFailure, DeviceNotFound
 
-from boardfarm_docsis.templates.cmts import CMTS
+from boardfarm3_docsis.templates.cmts import CMTS
 
 _LOGGER = logging.getLogger(__name__)
 

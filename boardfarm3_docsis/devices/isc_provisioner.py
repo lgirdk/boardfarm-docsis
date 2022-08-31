@@ -7,12 +7,12 @@ from argparse import Namespace
 from typing import Dict
 
 import pexpect
-from boardfarm import hookimpl
-from boardfarm.devices.base_devices import LinuxDevice
-from boardfarm.exceptions import ConfigurationFailure, FileLockTimeout
-from boardfarm.lib.utils import get_nth_mac_address
+from boardfarm3 import hookimpl
+from boardfarm3.devices.base_devices import LinuxDevice
+from boardfarm3.exceptions import ConfigurationFailure, FileLockTimeout
+from boardfarm3.lib.utils import get_nth_mac_address
 
-from boardfarm_docsis.templates.provisioner import Provisioner
+from boardfarm3_docsis.templates.provisioner import Provisioner
 
 _LOGGER = logging.getLogger(__name__)
 

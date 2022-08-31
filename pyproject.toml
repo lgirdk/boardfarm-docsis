@@ -18,14 +18,14 @@
         "Topic :: Software Development :: Testing :: Acceptance",
     ]
     dynamic = ['version', 'description']
-    name = "boardfarm_docsis"
+    name = "boardfarm3_docsis"
     readme = "README.md"
     requires-python = ">=3.6"
 
     dependencies = [
-        "boardfarm",
+        "boardfarm3",
         "pandas",
-        "pexpect"
+        "pexpect",
     ]
 
     [project.optional-dependencies]
@@ -73,7 +73,7 @@
     tag_format = "$version"
     version = "2022.03.0"
     version_files = [
-        "boardfarm_docsis/__init__.py:version",
+        "boardfarm3_docsis/__init__.py:version",
         "pyproject.toml:version",
         "pyproject.toml:current",
     ]
@@ -82,14 +82,14 @@
     profile = "black"
 
 [tool.mypy]
-    pretty = true
-    no_strict_optional = true
+    disallow_untyped_defs  = true
     ignore_missing_imports = true
-    warn_redundant_casts = true
-    warn_unused_ignores = true
-    warn_unreachable = true
-    disallow_untyped_defs = true
-    show_error_codes = true
+    no_strict_optional     = true
+    pretty                 = true
+    show_error_codes       = true
+    warn_redundant_casts   = true
+    warn_unreachable       = true
+    warn_unused_ignores    = true
 
 [tool.tbump]
     [tool.tbump.version]
@@ -114,7 +114,7 @@
     # section containing the path of the file, relative to the
     # pyproject.toml location.
     [[tool.tbump.file]]
-        src = "boardfarm_docsis/__init__.py"
+        src = "boardfarm3_docsis/__init__.py"
 
     [[tool.tbump.file]]
         src = "pyproject.toml"

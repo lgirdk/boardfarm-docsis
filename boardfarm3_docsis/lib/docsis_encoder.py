@@ -6,9 +6,9 @@ from pathlib import Path
 from typing import List
 
 import pexpect
-from boardfarm.lib.connections.local_cmd import LocalCmd
+from boardfarm3.lib.connections.local_cmd import LocalCmd
 
-from boardfarm_docsis.exceptions import ConfigEncodingError
+from boardfarm3_docsis.exceptions import ConfigEncodingError
 
 _LOGGER = logging.getLogger(__name__)
 
