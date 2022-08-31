@@ -1,3 +1,22 @@
+## 2022.35.0 (2022-08-31)
+
+### Feat
+
+- **use_cases/cmts**: allow CMTS to be passed as parameter for is_route_present_on_cmts()
+- **booting.py**: add securing sam url check
+
+### Fix
+
+- **unittests/boardfarm/devices/__init__.py**: fn expects positional arguments
+- **unittests/boardfarm/orchestration.py**: remove file with error
+
+### Refactor
+
+- **use_cases/ripv2**: address docstring and type hinting issues
+- **use_cases/cmts**: Fix type hinting
+
+## 2022.33.0 (2022-08-17)
+
 ## 2022.31.0 (2022-08-03)
 
 ## 2022.29.0 (2022-07-20)
