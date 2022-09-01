@@ -81,7 +81,7 @@ class MiniCMTS(LinuxDevice, CMTS):
         ]
         csv = pd.read_csv(
             StringIO(output),
-            skiprows=3,
+            skiprows=2,
             skipfooter=1,
             names=columns,
             header=None,
