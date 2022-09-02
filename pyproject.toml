@@ -52,7 +52,7 @@
         Source = "https://github.com/lgirdk/boardfarm-docsis"
 
     [project.entry-points."boardfarm"]
-        docsis = "boardfarm_docsis.plugins.docsis"
+        docsis = "boardfarm3_docsis.plugins.docsis"
 
 
 [tool.commitizen]
