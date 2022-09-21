@@ -14,6 +14,7 @@ from termcolor import colored
 from boardfarm_docsis.lib.docsis import base_cfg
 from boardfarm_docsis.lib.docsis import cm_cfg as cm_cfg_cls
 from boardfarm_docsis.lib.docsis import mta_cfg as mta_cfg_cls
+from boardfarm_docsis.use_cases.cmts_interactions import is_bpi_privacy_disabled
 
 logger = logging.getLogger("bft")
 
@@ -337,7 +338,9 @@ class DocsisInterface:
 
         self.dev.cmts.clear_cm_reset(self.cm_mac)
         for _ in range(20):
-            if self.dev.cmts.is_cm_online(ignore_partial=True):
+            if self.dev.cmts.is_cm_online(
+                ignore_bpi=is_bpi_privacy_disabled(), ignore_partial=True
+            ):
                 break
             time.sleep(20)
 

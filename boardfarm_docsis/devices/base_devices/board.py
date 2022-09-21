@@ -20,6 +20,7 @@ from termcolor import colored
 from boardfarm_docsis.devices.base_devices.mta_template import MTATemplate
 from boardfarm_docsis.devices.docsis import DocsisInterface
 from boardfarm_docsis.lib.env_helper import DocsisEnvHelper
+from boardfarm_docsis.use_cases.cmts_interactions import is_bpi_privacy_disabled
 
 logger = logging.getLogger("bft")
 
@@ -46,7 +47,10 @@ class DocsisCPEHw(DocsisInterface):
         """Flash with image."""
         try:
             self.dev.board.dev.cmts.clear_cm_reset(self.dev.board.hw.mac["cm"])
-            self.dev.board.dev.cmts.wait_for_cm_online(ignore_partial=True)
+            # FIXME: BOARDFARM-2422
+            self.dev.board.dev.cmts.wait_for_cm_online(
+                ignore_bpi=is_bpi_privacy_disabled(), ignore_partial=True
+            )
             self.dev.board.hw.flash_meta(img, self.dev.wan, self.dev.lan)
             return True
         except Exception as e:

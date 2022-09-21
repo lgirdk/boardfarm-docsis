@@ -30,6 +30,7 @@ from boardfarm_docsis.exceptions import (
     IpAddrMismatch,
     MTACfgEncodeFailed,
 )
+from boardfarm_docsis.use_cases.cmts_interactions import is_bpi_privacy_disabled
 
 from .cfg_helper import CfgGenerator
 
@@ -502,7 +503,8 @@ class mta_cfg(base_cfg):
 def check_board(board, cmts, cm_mac):
     assert board.is_online(), "CM show not OPERATIONAL on console"
     assert (
-        cmts.is_cm_online(ignore_partial=True) is True
+        cmts.is_cm_online(ignore_bpi=is_bpi_privacy_disabled(), ignore_partial=True)
+        is True
     ), "CM is not online"  # check cm online on CMTS
     """
     Removing this assert for the time being.

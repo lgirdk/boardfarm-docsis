@@ -24,6 +24,7 @@ from boardfarm_docsis.lib.booting_utils import (
     set_static_ip_and_default_gw,
 )
 from boardfarm_docsis.lib.dns_helper import dns_acs_config
+from boardfarm_docsis.use_cases.cmts_interactions import is_bpi_privacy_disabled
 from boardfarm_docsis.use_cases.provision_helper import provision_board
 
 logger = logging.getLogger("bft")
@@ -158,7 +159,12 @@ boot_actions = {"board_boot": boot_board}
 
 def _wait_for_cm_online(config, env_helper, devices):
     for _ in range(180):
-        if devices.cmts.is_cm_online(ignore_partial=True) is False:
+        if (
+            devices.cmts.is_cm_online(
+                ignore_bpi=is_bpi_privacy_disabled(), ignore_partial=True
+            )
+            is False
+        ):
             # show the arm prompt as it is a log in itself
             devices.board.touch()
             time.sleep(15)

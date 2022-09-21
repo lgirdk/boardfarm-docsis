@@ -26,6 +26,7 @@ from tabulate import tabulate
 from termcolor import colored
 
 from boardfarm_docsis.devices.base_devices.cmts_template import CmtsTemplate
+from boardfarm_docsis.use_cases.cmts_interactions import is_bpi_privacy_disabled
 
 logger = logging.getLogger("bft")
 
@@ -368,13 +369,13 @@ class MiniCMTS(CmtsTemplate):
             logger.debug(f"Cable modem in unkown state: {status} ")
             return False
         # now it must be in some sort of online state
-        if ignore_bpi is False and not re.search(r"online\(p(t|k)", status):
+        if not ignore_bpi and not re.search(r"online\(p(t|k)", status):
             logger.debug(f"Cable modem in BPI is disabled: {status}")
             return False
-        if ignore_partial is False and re.search(r"p-online", status):
+        if not ignore_partial and re.search(r"p-online", status):
             logger.debug(f"Cable modem in partial service: {status}")
             return False
-        if ignore_cpe is False and re.search(r"online\(d", status):
+        if not ignore_cpe and re.search(r"online\(d", status):
             logger.debug(f"Cable modem is prohibited from forwarding data: {status}")
             return False
         logger.debug(f"Cable modem is online: {status}")
@@ -433,7 +434,10 @@ class MiniCMTS(CmtsTemplate):
         :return: ip address of cable modem or "None"
         :rtype: string
         """
-        if not self.is_cm_online(ignore_partial=True):
+        # FIXME: BOARDFARM-2422
+        if not self.is_cm_online(
+            ignore_bpi=is_bpi_privacy_disabled(), ignore_partial=True
+        ):
             logger.debug(f"Modem {cm_mac} is not online. Can not get ip.")
             return "None"
         additional_args = "ipv6" if ipv6 else ""
