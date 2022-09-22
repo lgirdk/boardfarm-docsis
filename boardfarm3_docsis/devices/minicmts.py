@@ -193,3 +193,11 @@ class MiniCMTS(LinuxDevice, CMTS):
             if gw_ip == str(next(cmts_ip.network.hosts())):
                 return gw_ip
         raise ValueError("Failed to get the CMTS bundle IP")
+
+    def get_ip_routes(self) -> str:
+        """Get IP routes from the quagga router.
+
+        :return: ip routes collected from quagga router
+        :rtype: str
+        """
+        raise NotImplementedError

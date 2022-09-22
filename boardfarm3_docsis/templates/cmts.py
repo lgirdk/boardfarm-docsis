@@ -55,3 +55,12 @@ class CMTS(ABC):
         :return: gateway ip if address configured on minicmts else return all ip bundles
         """
         raise NotImplementedError
+
+    @abstractmethod
+    def get_ip_routes(self) -> str:
+        """Get IP routes from the quagga router.
+
+        :return: ip routes collected from quagga router
+        :rtype: str
+        """
+        raise NotImplementedError

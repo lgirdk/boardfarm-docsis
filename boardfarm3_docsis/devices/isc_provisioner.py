@@ -306,10 +306,8 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         time_server_ipv4 = self._config.get("time_server", self._prov_ipv4_address)
         sip_fqdn = self._config.get(
             "sip_fqdn",
-            (
-                "09:53:49:50:43:45:4e:54:45:52:09:42:"
-                "4f:41:52:44:46:41:52:4d:03:43:4F:4D:00"
-            ),
+            "09:53:49:50:43:45:4e:54:45:52:09:42:"
+            "4f:41:52:44:46:41:52:4d:03:43:4F:4D:00",
         )
         keywords_to_replace = {
             "###LOG_SERVER###": syslog_server,
