@@ -3,7 +3,6 @@
 import logging
 import tempfile
 from pathlib import Path
-from typing import List
 
 import pexpect
 from boardfarm3.lib.connections.local_cmd import LocalCmd
@@ -22,7 +21,7 @@ class DocsisConfigEncoder:
         """Initialize docsis config encoder."""
         self._encoder_cmd = "docsis"
 
-    def encode_cm_config(self, cm_config: str, mibs_path: List[str]) -> Path:
+    def encode_cm_config(self, cm_config: str, mibs_path: list[str]) -> Path:
         """Encode cable modem config text file(boot file).
 
         :param cm_config: cable modem config text file

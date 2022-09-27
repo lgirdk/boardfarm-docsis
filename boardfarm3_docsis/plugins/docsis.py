@@ -1,7 +1,6 @@
 """Boardfarm plugin for DOCSIS devices."""
 
 from argparse import ArgumentParser
-from typing import Dict, Type
 
 from boardfarm3 import hookimpl
 from boardfarm3.devices.base_devices import BoardfarmDevice
@@ -24,7 +23,7 @@ def boardfarm_add_cmdline_args(argparser: ArgumentParser) -> None:
 
 
 @hookimpl
-def boardfarm_add_devices() -> Dict[str, Type[BoardfarmDevice]]:
+def boardfarm_add_devices() -> dict[str, type[BoardfarmDevice]]:
     """Add devices to known devices for deployment.
 
     :returns: devices dictionary

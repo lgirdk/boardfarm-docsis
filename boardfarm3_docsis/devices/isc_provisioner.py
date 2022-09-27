@@ -4,7 +4,6 @@ import ipaddress
 import logging
 import re
 from argparse import Namespace
-from typing import Dict
 
 import pexpect
 from boardfarm3 import hookimpl
@@ -217,7 +216,7 @@ class ISCProvisioner(LinuxDevice, Provisioner):
 
     _ipv6_prefix = 64
 
-    def __init__(self, config: Dict, cmdline_args: Namespace) -> None:
+    def __init__(self, config: dict, cmdline_args: Namespace) -> None:
         """Initialize ISC DHCP Provisioner.
 
         :param config: device configuration
@@ -270,12 +269,12 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         return offset
 
     @staticmethod
-    def _replace_keywords_from_string(string: str, keywords: Dict) -> str:
+    def _replace_keywords_from_string(string: str, keywords: dict) -> str:
         for keyword, value in keywords.items():
             string = string.replace(keyword, str(value))
         return string
 
-    def _get_common_keywords_to_replace(self) -> Dict:
+    def _get_common_keywords_to_replace(self) -> dict:
         timezone_offset = self._get_timezone_offset()
         common_keywords = {
             "###IFACE###": self.eth_interface,

@@ -5,7 +5,7 @@ import logging
 import re
 from argparse import Namespace
 from io import StringIO
-from typing import Dict, Optional
+from typing import Optional
 
 import pandas as pd
 from boardfarm3 import hookimpl
@@ -20,7 +20,7 @@ _LOGGER = logging.getLogger(__name__)
 class MiniCMTS(LinuxDevice, CMTS):
     """Boardfarm DOCSIS MiniCMTS device."""
 
-    def __init__(self, config: Dict, cmdline_args: Namespace) -> None:
+    def __init__(self, config: dict, cmdline_args: Namespace) -> None:
         """Initialize boardfarm DOCSIS MiniCMTS.
 
         :param config: device configuration
