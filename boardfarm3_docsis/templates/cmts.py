@@ -64,3 +64,14 @@ class CMTS(ABC):
         :rtype: str
         """
         raise NotImplementedError
+
+    @abstractmethod
+    def clear_cm_reset(self, mac_address: str) -> None:
+        """Reset the CM from cmts.
+
+        Usually performed with a cli -clear cable modem <cm_mac> reset command
+
+        :param mac_address: mac address of the CM
+        :type mac_address: str
+        """
+        raise NotImplementedError

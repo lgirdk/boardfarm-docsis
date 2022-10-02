@@ -62,8 +62,11 @@ class MiniCMTS(LinuxDevice, CMTS):
         """Get given cable modem information on CMTS.
 
         :param mac_address: cable modem mac address
+        :type mac_address: str
         :param column_name: cable modem data column name
+        :type column_name: str
         :returns: cable modem column data, None if not available
+        :rtype: str
         """
         mac_address = self._convert_mac_address(mac_address)
         output = self._console.execute_command("show cable modem")
@@ -200,4 +203,15 @@ class MiniCMTS(LinuxDevice, CMTS):
         :return: ip routes collected from quagga router
         :rtype: str
         """
-        raise NotImplementedError
+        return "None"
+
+    def clear_cm_reset(self, mac_address: str) -> None:
+        """Reset the CM from cmts.
+
+        Uses cli command:
+            clear cable modem <mac_address> reset
+
+        :param mac_address: mac address of the CM
+        :type mac_address: str
+        """
+        self._console.execute_command(f"clear cable modem {mac_address} reset")
