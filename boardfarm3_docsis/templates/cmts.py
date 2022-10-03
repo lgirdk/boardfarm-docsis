@@ -75,3 +75,25 @@ class CMTS(ABC):
         :type mac_address: str
         """
         raise NotImplementedError
+
+    @abstractmethod
+    def get_ertr_ipv4(self, mac_address: str) -> Optional[str]:
+        """Get erouter ipv4 from CMTS.
+
+        :param mac_address: mac address of the cable modem
+        :type mac_address: str
+        :return: returns ipv4 address of erouter else None
+        :rtype: string, None
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_ertr_ipv6(self, mac_address: str) -> Optional[str]:
+        """Get erouter ipv6 from CMTS.
+
+        :param mac_address: mac address of the cable modem
+        :type mac_address: str
+        :return: returns ipv6 address of erouter else None
+        :rtype: string, None
+        """
+        raise NotImplementedError
