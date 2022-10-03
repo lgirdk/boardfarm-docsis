@@ -447,14 +447,26 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         self._console.execute_command(f"mv {master_config_path} {dhcp_config_path}")
 
     def provision_cable_modem(
-        self, cm_mac: str, cm_bootfile: str, tftp_ipv4_addr: str, tftp_ipv6_addr: str
+        self,
+        cm_mac: str,
+        cm_bootfile: str,
+        mta_bootfile: str,  # TODO: add MTA config
+        tftp_ipv4_addr: str,
+        tftp_ipv6_addr: str,
     ) -> None:
         """Provision cable modem with given mac address.
 
         :param cm_mac: cable modem mac address
+        :type cm_mac: str
         :param cm_bootfile: cable modem boot file path
-        :param tftp_ipv4_addr: tftp server IPv4 address
-        :param tftp_ipv6_addr: tftp server IPv6 address
+        :type cm_bootfile: str
+        :param mta_bootfile: mta boot file path
+        :type mta_bootfile: str
+        :param tftp_ipv4_addr: tftp server ipv4 address
+        :type tftp_ipv4_addr: str
+        :param tftp_ipv6_addr: tftp server ipv6 address
+        :type tftp_ipv6_addr: str
+        :param tftp_ipv6_addr: tftp server ipv6 address
         """
         lock_file = "/etc/init.d/isc-dhcp-server.lock"
         try:
