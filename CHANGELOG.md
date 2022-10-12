@@ -1,7 +1,8 @@
-## 2022.39.0 (2022-09-28)
+## 2022.41.0 (2022-10-12)
 
 ### Fix
 
+- **topvision**: update BPI checks
 - **lib/env_helper.py**: update dhcp enable param
 
 ## 2022.35.0 (2022-08-31)
