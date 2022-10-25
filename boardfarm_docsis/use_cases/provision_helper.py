@@ -20,6 +20,31 @@ def provision_board_boot_file(
     cm_boot_file: Optional[str] = None,
     mta_boot_file: Optional[str] = None,
 ):
+    """Provision the board with config file
+
+    :param cm_boot_file: cable modem config, defaults to None
+    :type cm_boot_file: string, optional
+    :param mta_boot_file: MTA config, defaults to None
+    :type mta_boot_file: string, optional
+    """
+    dev = device_manager()
+    configure_boot_file()
+    provision_board()
+    dev.board.reset()
+    dev.board.wait_for_boot()
+
+
+def configure_boot_file(
+    cm_boot_file: Optional[str] = None,
+    mta_boot_file: Optional[str] = None,
+):
+    """Configure the boot file
+
+    :param cm_boot_file: cable modem config, defaults to None
+    :type cm_boot_file: string, optional
+    :param mta_boot_file: MTA config, defaults to None
+    :type mta_boot_file: string, optional
+    """
     dev = device_manager()
     if not cm_boot_file and dev.board.env_helper.has_board_boot_file():
         cm_boot_file = dev.board.env_helper.get_board_boot_file()
@@ -31,9 +56,6 @@ def provision_board_boot_file(
     else:
         dev.board.hw.cm_cfg.load_from_string(cm_str_txt=cm_boot_file)
         dev.board.hw.cm_cfg.init_copy(dev.board.hw.cm_cfg)
-    provision_board()
-    dev.board.reset()
-    dev.board.wait_for_boot()
 
 
 def _push_to_tftp_server(cfg, server):
