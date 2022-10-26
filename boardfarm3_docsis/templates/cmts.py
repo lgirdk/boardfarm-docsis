@@ -83,7 +83,7 @@ class CMTS(ABC):
         :param mac_address: mac address of the cable modem
         :type mac_address: str
         :return: returns ipv4 address of erouter else None
-        :rtype: string, None
+        :rtype: Optional[str]
         """
         raise NotImplementedError
 
@@ -94,6 +94,6 @@ class CMTS(ABC):
         :param mac_address: mac address of the cable modem
         :type mac_address: str
         :return: returns ipv6 address of erouter else None
-        :rtype: string, None
+        :rtype: Optional[str]
         """
         raise NotImplementedError

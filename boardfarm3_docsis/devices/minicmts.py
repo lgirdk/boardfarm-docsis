@@ -12,6 +12,7 @@ import pandas as pd
 from boardfarm3 import hookimpl
 from boardfarm3.devices.base_devices import LinuxDevice
 from boardfarm3.exceptions import ConfigurationFailure, DeviceNotFound
+from boardfarm3.lib.utils import get_nth_mac_address
 
 from boardfarm3_docsis.templates.cmts import CMTS
 
@@ -98,12 +99,13 @@ class MiniCMTS(LinuxDevice, CMTS):
             csv.loc[mac_address][column_name] if mac_address in csv.index else None
         )  # pylint: disable=no-member # known issue
 
-    def _get_cable_modem_cpe_table_data(self, mac: str) -> pd.DataFrame:
-        """Return scm cpe dataframe.
+    def _get_cable_modem_cpe_table_data(self, cpe_mac: str) -> pd.DataFrame:
+        """Return cable modem cpe table data of cpe with given mac.
 
-        :param mac: mac address of the CM
-        :type mac: str
-        :return: dataframe
+        :param cpe_mac: mac address of the cpe
+        :type cpe_mac: str
+        :return: cable modem cpe table data of cpe
+        :rtype: pd.DataFrame
         """
         columns = [
             "CPE_MAC",
@@ -115,8 +117,9 @@ class MiniCMTS(LinuxDevice, CMTS):
             "LEASE_TIME",
             "LEARNED",
         ]
-        output = self._console.execute_command(f"show cable modem {mac} cpe")
-        csv = pd.read_csv(
+        cpe_mac = self._convert_mac_address(cpe_mac)
+        output = self._console.execute_command(f"show cable modem {cpe_mac} cpe")
+        return pd.read_csv(
             StringIO(output),
             skiprows=1,
             skipfooter=6,
@@ -127,7 +130,6 @@ class MiniCMTS(LinuxDevice, CMTS):
             index_col="CPE_MAC",
             dtype=None,
         )
-        return csv
 
     def _get_cable_modem_status(self, mac_address: str) -> str:
         """Get given cable modem status on cmts.
@@ -144,8 +146,7 @@ class MiniCMTS(LinuxDevice, CMTS):
         :param mac_address: mac address
         :returns: mac address in cmts format
         """
-        mac_address = mac_address.replace(":", "").lower()
-        return ".".join(re.findall("[0-9a-z]{4}", mac_address))
+        return str(netaddr.EUI(mac_address, dialect=netaddr.mac_cisco))
 
     def is_cable_modem_online(
         self,
@@ -224,7 +225,7 @@ class MiniCMTS(LinuxDevice, CMTS):
             return output
         for line in output.splitlines():
             addr, mask = line.split()[2:-1]
-            cmts_ip = ip_interface(addr + "/" + mask)
+            cmts_ip = ip_interface(f"{addr}/{mask}")
             if gw_ip == str(next(cmts_ip.network.hosts())):
                 return gw_ip
         raise ValueError("Failed to get the CMTS bundle IP")
@@ -237,6 +238,7 @@ class MiniCMTS(LinuxDevice, CMTS):
         """
         return "None"
 
+    # TODO: replace this method with reset_cable_modem_status
     def clear_cm_reset(self, mac_address: str) -> None:
         """Reset the CM from cmts.
 
@@ -246,18 +248,16 @@ class MiniCMTS(LinuxDevice, CMTS):
         :param mac_address: mac address of the CM
         :type mac_address: str
         """
-        self._console.execute_command(f"clear cable modem {mac_address} reset")
+        self.reset_cable_modem_status(mac_address)
 
-    def _get_cpe_ip(
-        self, mac_address: netaddr.EUI, offset: int, ipv6: bool
+    def _get_cpe_erouter_ip_address(
+        self, mac_address: str, is_ipv6: bool
     ) -> Optional[str]:
         cpe_table = self._get_cable_modem_cpe_table_data(mac_address)
-        ip_type = IPv6Address if ipv6 else IPv4Address
-        ertr_mac = netaddr.EUI(int(mac_address) + offset)
-        ertr_mac.dialect = netaddr.mac_cisco
-
+        ip_type = IPv6Address if is_ipv6 else IPv4Address
+        erouter_mac = self._convert_mac_address(get_nth_mac_address(mac_address, 2))
         for cpe_mac, cpe_details in cpe_table.iterrows():
-            if cpe_mac != ertr_mac:
+            if cpe_mac != erouter_mac:
                 continue
             try:
                 return str(ip_type(cpe_details["CPE_IP_ADDRESS"]))
@@ -270,25 +270,17 @@ class MiniCMTS(LinuxDevice, CMTS):
 
         :param mac_address: mac address of the cable modem
         :type mac_address: str
-        :return: returns ipv4 address of erouter else None
-        :rtype: string, None
+        :return: ipv4 address of erouter else None
+        :rtype: Optional[str]
         """
-        return self._get_cpe_ip(
-            mac_address=netaddr.EUI(mac_address, dialect=netaddr.mac_cisco),
-            offset=2,
-            ipv6=False,
-        )
+        return self._get_cpe_erouter_ip_address(mac_address, is_ipv6=False)
 
     def get_ertr_ipv6(self, mac_address: str) -> Optional[str]:
         """Get erouter ipv6 from CMTS.
 
         :param mac_address: mac address of the cable modem
         :type mac_address: str
-        :return: returns ipv6 address of erouter else None
-        :rtype: string, None
+        :return: ipv6 address of erouter else None
+        :rtype: Optional[str]
         """
-        return self._get_cpe_ip(
-            mac_address=netaddr.EUI(mac_address, dialect=netaddr.mac_cisco),
-            offset=2,
-            ipv6=True,
-        )
+        return self._get_cpe_erouter_ip_address(mac_address, is_ipv6=True)
