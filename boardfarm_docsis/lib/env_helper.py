@@ -229,14 +229,24 @@ class DocsisEnvHelper(EnvHelper):
             return False
 
     def is_dhcpv4_enabled_on_lan(self) -> bool:
-        """Return dhcpv4 status based on env_req
+        """Return status based on rip/dhcpv4 bootfile config and tr-069 provisioning.
 
         :return: False if dhcpv4 is disabled else True
         :rtype: boolean
         """
-        boot_file = self.env["environment_def"]["board"].get("boot_file", "").lower()
+        enabled_via_spv = True
+        prov = nested_lookup("provisioning", self.env["environment_def"])
+        spv_config = prov[0].get("SPV", []) if prov else []
+        for config in spv_config:
+            enable_flag = config.get("Device.DHCPv4.Server.Enable", None)
+            if enable_flag in [0, False, "0", "false", "False"]:
+                enabled_via_spv = False
+                break
         enable_dhcpv4 = r"Device\.DHCPv4\.Server\.(\d+)\.Enable\|boolean\|true"
+        boot_file = self.env["environment_def"]["board"].get("boot_file", "").lower()
         enable_rip = "Device.Routing.RIP.Enable|boolean|true"
-        return enable_rip.lower() not in boot_file or bool(
-            re.search(enable_dhcpv4, boot_file)
-        )
+
+        return (
+            enable_rip.lower() not in boot_file
+            or bool(re.search(enable_dhcpv4, boot_file))
+        ) and enabled_via_spv
