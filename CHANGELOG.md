@@ -1,9 +1,14 @@
-## 2022.41.0 (2022-10-12)
+## 2022.43.0 (2022-10-28)
 
 ### Fix
 
+- **lib/env_helper.py**: correct the string
 - **topvision**: update BPI checks
 - **lib/env_helper.py**: update dhcp enable param
+
+### Refactor
+
+- **use_cases/provision_helper.py**: add configure bootfile
 
 ## 2022.35.0 (2022-08-31)
 
