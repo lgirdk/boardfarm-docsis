@@ -82,7 +82,7 @@ class CMTS(ABC):
 
         :param mac_address: mac address of the cable modem
         :type mac_address: str
-        :return: returns ipv4 address of erouter else None
+        :return: ipv4 address of erouter else None
         :rtype: Optional[str]
         """
         raise NotImplementedError
@@ -93,7 +93,18 @@ class CMTS(ABC):
 
         :param mac_address: mac address of the cable modem
         :type mac_address: str
-        :return: returns ipv6 address of erouter else None
+        :return: ipv6 address of erouter else None
+        :rtype: Optional[str]
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_mta_ipv4(self, mac_address: str) -> Optional[str]:
+        """Get the MTA IP from CMTS.
+
+        :param mac_address: mac address of the cable modem
+        :type mac_address: str
+        :return: ipv4 address of mta else None
         :rtype: Optional[str]
         """
         raise NotImplementedError

@@ -250,14 +250,14 @@ class MiniCMTS(LinuxDevice, CMTS):
         """
         self.reset_cable_modem_status(mac_address)
 
-    def _get_cpe_erouter_ip_address(
-        self, mac_address: str, is_ipv6: bool
+    def _get_cpe_ip_address(
+        self, mac_address: str, offset: int, is_ipv6: bool
     ) -> Optional[str]:
         cpe_table = self._get_cable_modem_cpe_table_data(mac_address)
         ip_type = IPv6Address if is_ipv6 else IPv4Address
-        erouter_mac = self._convert_mac_address(get_nth_mac_address(mac_address, 2))
+        mac = self._convert_mac_address(get_nth_mac_address(mac_address, offset))
         for cpe_mac, cpe_details in cpe_table.iterrows():
-            if cpe_mac != erouter_mac:
+            if cpe_mac != mac:
                 continue
             try:
                 return str(ip_type(cpe_details["CPE_IP_ADDRESS"]))
@@ -273,7 +273,7 @@ class MiniCMTS(LinuxDevice, CMTS):
         :return: ipv4 address of erouter else None
         :rtype: Optional[str]
         """
-        return self._get_cpe_erouter_ip_address(mac_address, is_ipv6=False)
+        return self._get_cpe_ip_address(mac_address, offset=2, is_ipv6=False)
 
     def get_ertr_ipv6(self, mac_address: str) -> Optional[str]:
         """Get erouter ipv6 from CMTS.
@@ -283,4 +283,15 @@ class MiniCMTS(LinuxDevice, CMTS):
         :return: ipv6 address of erouter else None
         :rtype: Optional[str]
         """
-        return self._get_cpe_erouter_ip_address(mac_address, is_ipv6=True)
+        return self._get_cpe_ip_address(mac_address, offset=2, is_ipv6=True)
+
+    def get_mta_ipv4(self, mac_address: str) -> Optional[str]:
+        """Get the MTA ipv4 from CMTS.
+
+        :param mac_address: mac address of the cable modem
+        :type mac_address: str
+        :return: ipv4 address of mta else None
+        :rtype: Optional[str]
+        """
+        # Note: currently MTA on PacketCable 1.0 only supports IPv4
+        return self._get_cpe_ip_address(mac_address, offset=1, is_ipv6=False)
