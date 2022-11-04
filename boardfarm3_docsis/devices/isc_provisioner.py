@@ -210,6 +210,25 @@ host erouter-###BOARD_NAME### {
    fixed-address6 ###FIXED_ADDRESS_IPV6###;
 }"""
 
+_DHCPV4_MTA_CONFIG = """host mta-###BOARD_NAME### {
+   hardware ethernet ###MTA_MAC_ADDRESS###;
+   default-lease-time ###DEFAULT_LEASE_TIME###;
+   min-lease-time ###MIN_LEASE_TIME###;
+   max-lease-time ###MAX_LEASE_TIME###;
+   filename "###MTA_BOOTFILE_PATH###";
+   option bootfile-name "###MTA_BOOTFILE_PATH###";
+   option dhcp-parameter-request-list 3, 6, 7, 12, 15, 43, 122;
+   option domain-name "sipcenter.boardfarm.com";
+   option domain-name-servers ###DOMAIN_NAME_SERVER_IP###;
+   option docsis-mta.provision-server ###MTA_SIP_FQDN###;
+   option docsis-mta.kerberos-realm 05:42:41:53:49:43:01:31:00;
+   option routers ###MTA_GATEWAY###;
+   option log-servers ###LOG_SERVER###;
+   option host-name "###BOARD_NAME###";
+   next-server ###TFTP_SERVER_IP###;
+}
+"""
+
 
 class ISCProvisioner(LinuxDevice, Provisioner):
     """ISC DHCP cable modem provisioner."""
@@ -239,6 +258,13 @@ class ISCProvisioner(LinuxDevice, Provisioner):
                 56 - erouter_ipv6_net_interface._prefixlen  # type: ignore
             )
         )
+        self._default_lease_time = 604800
+        self._sip_fqdn = self._config.get(
+            "sip_fqdn",
+            "09:53:49:50:43:45:4e:54:45:52:09:42:"
+            "4f:41:52:44:46:41:52:4d:03:43:4F:4D:00",
+        )
+        self._mta_gateway_ipv4 = self._config.get("mta_gateway", "192.168.201.1")
 
     @hookimpl
     def boardfarm_server_boot(self) -> None:
@@ -253,7 +279,11 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         self._disconnect()
 
     def _get_timezone_offset(self) -> int:
-        """Get time zone offset."""
+        """Get time zone offset.
+
+        :return: the offset
+        :rtype: int
+        """
         offset = 0
         timezone = self._config.get("timezone", "UTC")
         if timezone.startswith("GMT") or timezone.startswith("UTC"):
@@ -293,7 +323,6 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         mta_network_ipv4 = ipaddress.IPv4Network(
             self._config.get("mta_network", "192.168.201.0/24")
         )
-        mta_gateway_ipv4 = self._config.get("mta_gateway", "192.168.201.1")
         open_network_ipv4 = ipaddress.IPv4Network(
             self._config.get("open_network", "192.168.202.0/24")
         )
@@ -303,15 +332,10 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         )
         syslog_server = self._config.get("syslog_server", self._prov_ipv4_address)
         time_server_ipv4 = self._config.get("time_server", self._prov_ipv4_address)
-        sip_fqdn = self._config.get(
-            "sip_fqdn",
-            "09:53:49:50:43:45:4e:54:45:52:09:42:"
-            "4f:41:52:44:46:41:52:4d:03:43:4F:4D:00",
-        )
         keywords_to_replace = {
             "###LOG_SERVER###": syslog_server,
             "###TIME_SERVER###": time_server_ipv4,
-            "###MTA_SIP_FQDN###": sip_fqdn,
+            "###MTA_SIP_FQDN###": self._sip_fqdn,
             "###PROV_IPV4###": prov_network_ipv4[0],
             "###PROV_NETMASK###": prov_network_ipv4.netmask,
             "###CM_IPV4###": cm_network_ipv4[0],
@@ -324,7 +348,7 @@ class ISCProvisioner(LinuxDevice, Provisioner):
             "###MTA_NETMASK###": mta_network_ipv4.netmask,
             "###MTA_START_RANGE###": mta_network_ipv4[5],
             "###MTA_END_RANGE###": mta_network_ipv4[120],
-            "###MTA_GATEWAY###": mta_gateway_ipv4,
+            "###MTA_GATEWAY###": self._mta_gateway_ipv4,
             "###MTA_BROADCAST###": mta_network_ipv4[-1],
             "###OPEN_IP###": open_network_ipv4[0],
             "###OPEN_NETMASK###": open_network_ipv4.netmask,
@@ -400,7 +424,6 @@ class ISCProvisioner(LinuxDevice, Provisioner):
     def _get_dhcp_cable_modem_config(
         self, cm_mac: str, bootfile_path: str, tftp_server: str, is_dhcpv6: bool
     ) -> str:
-        default_lease_time = 604800
         erouter_fixed_ipv6_start = ipaddress.IPv6Interface(
             self._config.get("erouter_fixed_ip_start")
         )
@@ -413,8 +436,8 @@ class ISCProvisioner(LinuxDevice, Provisioner):
             "###CM_BOOTFILE_PATH###": bootfile_path,
             "###TFTP_SERVER_IP###": tftp_server,
             "###EROUTER_MAC_ADDRESS###": erouter_mac,
-            "###DEFAULT_LEASE_TIME###": default_lease_time,
-            "###MAX_LEASE_TIME###": default_lease_time,
+            "###DEFAULT_LEASE_TIME###": self._default_lease_time,
+            "###MAX_LEASE_TIME###": self._default_lease_time,
             "###FIXED_PREFIX_IPV6###": self._erouter_ipv6_network_list[station_no],
             "###FIXED_ADDRESS_IPV6###": erouter_fixed_ipv6_start.ip + station_no,
         }
@@ -424,9 +447,43 @@ class ISCProvisioner(LinuxDevice, Provisioner):
             keywords_to_replace,
         )
 
+    def _get_dhcp_mta_config(
+        self,
+        cm_mac: str,
+        mta_bootfile_path: str,
+        tftp_server: str,
+    ) -> str:
+        min_lease_time = 302400
+        mta_mac = get_nth_mac_address(cm_mac, 1)
+        keywords_to_replace = {
+            "###PROV_IPV4###": self._prov_ipv4_address,
+            "###MTA_MAC_ADDRESS###": mta_mac,
+            "###MTA_BOOTFILE_PATH###": mta_bootfile_path,
+            "###MTA_GATEWAY###": self._mta_gateway_ipv4,
+            "###MTA_SIP_FQDN###": f"00 {self._sip_fqdn}",
+            "###TFTP_SERVER_IP###": tftp_server,
+            "###DOMAIN_NAME_SERVER_IP###": tftp_server,
+            "###DEFAULT_LEASE_TIME###": self._default_lease_time,
+            "###MIN_LEASE_TIME###": min_lease_time,
+            "###MAX_LEASE_TIME###": self._default_lease_time,
+            "###LOG_SERVER###": self._prov_ipv4_address,
+        }
+        keywords_to_replace.update(self._get_common_keywords_to_replace())
+
+        return self._replace_keywords_from_string(
+            _DHCPV4_MTA_CONFIG,
+            keywords_to_replace,
+        )
+
     def _update_dhcp_config(
-        self, cm_mac: str, tftp_server: str, cm_bootfile: str, is_dhcpv6: bool
+        self,
+        cm_mac: str,
+        tftp_server: str,
+        cm_bootfile: str,
+        mta_bootfile: str,
+        is_dhcpv6: bool,
     ) -> None:
+        dhcp_mta_config = ""
         if not is_dhcpv6:
             dhcp_config_path = "/etc/dhcp/dhcpd.conf"
             master_config = self._get_dhcpv4_master_config()
@@ -440,6 +497,13 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         dhcp_cm_config = self._get_dhcp_cable_modem_config(
             cm_mac, cm_bootfile, tftp_server, is_dhcpv6
         )
+        if mta_bootfile:
+            dhcp_mta_config = self._get_dhcp_mta_config(
+                cm_mac,
+                mta_bootfile,
+                tftp_server,
+            )
+            dhcp_cm_config = f"{dhcp_mta_config}{dhcp_cm_config}"
         self._create_dhcp_config_file(dhcp_cm_config, cm_config_path)
         self._console.execute_command(
             f"cat {dhcp_config_path}.* >> {master_config_path}"
@@ -450,7 +514,7 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         self,
         cm_mac: str,
         cm_bootfile: str,
-        mta_bootfile: str,  # TODO: add MTA config
+        mta_bootfile: str,
         tftp_ipv4_addr: str,
         tftp_ipv6_addr: str,
     ) -> None:
@@ -471,8 +535,11 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         lock_file = "/etc/init.d/isc-dhcp-server.lock"
         try:
             self._acquire_device_file_lock(lock_file)
-            self._update_dhcp_config(cm_mac, tftp_ipv4_addr, cm_bootfile, False)
-            self._update_dhcp_config(cm_mac, tftp_ipv6_addr, cm_bootfile, True)
+            self._update_dhcp_config(
+                cm_mac, tftp_ipv4_addr, cm_bootfile, mta_bootfile, False
+            )
+            # Note: MTA over IPv6 not yet supported!
+            self._update_dhcp_config(cm_mac, tftp_ipv6_addr, cm_bootfile, "", True)
             self._restart_dhcp_service()
         finally:
             self._release_device_file_lock(lock_file)
@@ -531,8 +598,13 @@ class ISCProvisioner(LinuxDevice, Provisioner):
     def _create_dhcp_config_file(self, config: str, config_path: str) -> None:
         """Create DHCP config on the server.
 
+        Internal hepler function that can create or append some contnent to
+        a file.
+
         :param config: config file content
-        :param destination_path: config file path
+        :type config: str
+        :param config_path: config file path
+        :type config_path: str
         """
         self._console.sendline(f"cat > {config_path} << EOF\n{config}\nEOF")
         self._console.expect(self._shell_prompt)
