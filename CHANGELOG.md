@@ -1,7 +1,8 @@
-## 2022.43.0 (2022-10-28)
+## 2022.45.0 (2022-11-09)
 
 ### Fix
 
+- **lib:env_helper.py**: add lan dhcpv4 check for tr-069 spv provisioning
 - **lib/env_helper.py**: correct the string
 - **topvision**: update BPI checks
 - **lib/env_helper.py**: update dhcp enable param
