@@ -98,9 +98,10 @@ def pre_boot_env(config, env_helper, devices):
         dev_list = [
             devices.sipcenter,
             devices.softphone,
-        ] + getattr(devices, "FXS", [devices.lan, devices.lan2])
+        ]
         if env_helper.get_external_voip():
             dev_list.append(devices.softphone2)
+        dev_list.append(getattr(devices, "FXS", [devices.lan, devices.lan2]))
         boardfarm.lib.voice.voice_configure(
             dev_list,
             devices.sipcenter,
