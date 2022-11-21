@@ -28,7 +28,7 @@ def provision_board_boot_file(
     :type mta_boot_file: string, optional
     """
     dev = device_manager()
-    configure_boot_file()
+    configure_boot_file(cm_boot_file, mta_boot_file)
     provision_board()
     dev.board.reset()
     dev.board.wait_for_boot()
