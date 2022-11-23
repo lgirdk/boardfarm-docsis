@@ -1,7 +1,11 @@
-## 2022.45.0 (2022-11-09)
+## 2022.47.0 (2022-11-23)
 
 ### Fix
 
+- **use_cases/provision_helper.py**: add missing args
+- change gitlab to github
+- **booting.py**: alter voice device list for configuration
+- **lib:env_helper.py**: update based on the correction in json schema
 - **lib:env_helper.py**: add lan dhcpv4 check for tr-069 spv provisioning
 - **lib/env_helper.py**: correct the string
 - **topvision**: update BPI checks
