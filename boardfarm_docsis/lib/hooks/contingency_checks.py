@@ -158,8 +158,8 @@ class Voice:
 
         sipserver = dev_mgr.by_type(device_type.sipcenter)
         board = dev_mgr.by_type(device_type.DUT)
-        lan_devices = [dev_mgr.lan, dev_mgr.lan2]
-        num_list = [lan.own_number for lan in lan_devices]
+        fxs_devices = [dev_mgr.fxs1, dev_mgr.fxs2]
+        num_list = [fxs.own_number for fxs in fxs_devices]
 
         assert board.mta_prov_check(), "MTA is not provisioned!"
         assert (
