@@ -8,7 +8,11 @@ from argparse import Namespace
 import pexpect
 from boardfarm3 import hookimpl
 from boardfarm3.devices.base_devices import LinuxDevice
-from boardfarm3.exceptions import ConfigurationFailure, FileLockTimeout
+from boardfarm3.exceptions import (
+    ConfigurationFailure,
+    ContingencyCheckError,
+    FileLockTimeout,
+)
 from boardfarm3.lib.utils import get_nth_mac_address
 
 from boardfarm3_docsis.templates.provisioner import Provisioner
@@ -277,6 +281,17 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         """Boardfarm hook implementation to shutdown ISC provisioner."""
         _LOGGER.info("Shutdown %s(%s) device", self.device_name, self.device_type)
         self._disconnect()
+
+    @hookimpl
+    def contingency_check(self) -> None:
+        """Make sure the ISCProvisioner is working fine before use."""
+        if self._cmdline_args.skip_contingency_checks:
+            return
+        _LOGGER.info("Contingency check %s(%s)", self.device_name, self.device_type)
+        if "FOO" not in self._console.execute_command("echo FOO"):
+            raise ContingencyCheckError(
+                "ISCProvisioner device console in not responding"
+            )
 
     def _get_timezone_offset(self) -> int:
         """Get time zone offset.
