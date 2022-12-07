@@ -1,7 +1,9 @@
-## 2022.47.0 (2022-11-23)
+## 2022.49.0 (2022-12-07)
 
 ### Fix
 
+- **hooks:contingency_checks.py**: update voice cc checks for fxs instead of lan
+- **lib/dns_helper.py**: fix dns_acs_config
 - **use_cases/provision_helper.py**: add missing args
 - change gitlab to github
 - **booting.py**: alter voice device list for configuration
