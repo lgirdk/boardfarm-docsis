@@ -1,21 +1,46 @@
 ## 2022.49.0 (2022-12-07)
 
+**hooks:contingency_checks.py**: update voice cc checks for fxs instead of lan
+**lib/dns_helper.py**: fix dns_acs_config
+
+## 2022.47.0 (2022-11-23)
+
 ### Fix
 
-- **hooks:contingency_checks.py**: update voice cc checks for fxs instead of lan
-- **lib/dns_helper.py**: fix dns_acs_config
 - **use_cases/provision_helper.py**: add missing args
 - change gitlab to github
 - **booting.py**: alter voice device list for configuration
 - **lib:env_helper.py**: update based on the correction in json schema
+
+## 2022.45.0 (2022-11-09)
+
+### Fix
+
 - **lib:env_helper.py**: add lan dhcpv4 check for tr-069 spv provisioning
+
+## 2022.43.0 (2022-10-28)
+
+### Fix
+
 - **lib/env_helper.py**: correct the string
-- **topvision**: update BPI checks
-- **lib/env_helper.py**: update dhcp enable param
 
 ### Refactor
 
 - **use_cases/provision_helper.py**: add configure bootfile
+
+## 2022.41.0 (2022-10-12)
+
+### Fix
+
+- **topvision**: update BPI checks
+
+## 2022.39.0 (2022-09-28)
+
+### Fix
+
+- **lib/env_helper.py**: update dhcp enable param
+
+## 2022.37.0 (2022-09-21)
 
 ## 2022.35.0 (2022-08-31)
 
