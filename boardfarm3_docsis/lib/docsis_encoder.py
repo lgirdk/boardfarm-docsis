@@ -57,7 +57,9 @@ class DocsisConfigEncoder:
                 f"{self._cfg_dict[prefix]['key_file']} {cfg_file_path}"
             )
             _LOGGER.debug("Encoding modem config: %s", command)
-            session = LocalCmd("docsis-encoder", command, [])
+            session = LocalCmd(
+                "docsis-encoder", command, save_console_logs=False, args=[]
+            )
             session.expect(pexpect.EOF)
             if session.wait() != 0:
                 raise ConfigEncodingError(
