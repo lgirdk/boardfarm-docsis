@@ -105,14 +105,7 @@ def cleanup_voice_prompt(self, devices):
                 dev.sendcontrol("c")
                 dev.expect(dev.prompt, timeout=5)
             elif idx == 1:
-                if dev in [self.dev.lan, self.dev.lan2]:
-                    dev.sendline("serial_line.close()")
-                    dev.pyexpect(">>>")
-                    dev.sendline("exit()")
-                    dev._phone_started = False
-                else:
-                    dev.sendline("q")
-                dev.expect(dev.prompt, timeout=5)
+                dev.phone_kill()
             else:
                 result.append(True)
                 break
