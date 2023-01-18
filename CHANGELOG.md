@@ -1,3 +1,10 @@
+## 2023.03.0 (2023-01-18)
+
+### Fix
+
+- flake8 ignore  B028, B017
+- **boardfarm_docsis/lib/voice.py**: change lan obj to fxs
+
 ## 2022.51.0 (2022-12-21)
 
 ## 2022.49.0 (2022-12-07)
