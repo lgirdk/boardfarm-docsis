@@ -1,3 +1,9 @@
+## 2023.05.0 (2023-02-03)
+
+### Refactor
+
+- **pre-commit-config.yaml**: update isort version
+
 ## 2023.03.0 (2023-01-18)
 
 ### Fix
