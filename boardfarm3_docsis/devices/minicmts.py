@@ -295,3 +295,43 @@ class MiniCMTS(LinuxDevice, CMTS):
         """
         # Note: currently MTA on PacketCable 1.0 only supports IPv4
         return self._get_cpe_ip_address(mac_address, offset=1, is_ipv6=False)
+
+    def _get_cm_docsis_provisioned_version(self, mac_address: str) -> float:
+        """Get the docsis version of cable modem.
+
+        :param mac_address: mac address of the cable modem
+        :type mac_address: str
+        :return: Docsis version of the cm
+        :rtype: float
+        :raises ValueError: Failed to get the docsis version
+        """
+        mac_address = self._convert_mac_address(mac_address)
+        output = self._console.execute_command(
+            f"show cable modem {mac_address} docsis version"
+        )
+        result = re.search(r"DOCSISv(\d\.\d)", output)
+        version = float(result.group(1))
+        if not result:
+            raise ValueError("Failed to get the Docsis Version")
+        return version
+
+    def _get_cm_channel_bonding_detail(self, mac_address: str) -> dict[str, list[str]]:
+        """Get the list of primary channel.
+
+        :param mac_address: mac address of the cable modem
+        :type mac_address: str
+        :return: upstream and downstream channel list
+        :rtype: dict[str, list[str]]
+        :raises ValueError: Failed to get Upstream & Downstream channel values
+        """
+        mac_address = self._convert_mac_address(mac_address)
+        output = self._console.execute_command(
+            f"show cable modem {mac_address} primary-channel"
+        )
+        regex = r"\d\([\d\,]+\)"
+        result = re.findall(regex, output)
+        if len(result) != 2:
+            raise ValueError(f"Failed to get Upstream & Downstream values:\n {result}")
+        return dict(
+            zip("US", "DS"), [re.findall(r"\d+", i) for i in result]
+        )  # type: ignore

@@ -108,3 +108,25 @@ class CMTS(ABC):
         :rtype: Optional[str]
         """
         raise NotImplementedError
+
+    @abstractmethod
+    def _get_cm_channel_bonding_detail(self, mac_address: str) -> dict[str, list[str]]:
+        """Get channel bonding details of CM.
+
+        :param mac_address: mac address of the cm
+        :type mac_address: str
+        :return: upstream and downstream channel list
+        :rtype: dict[str, list[str]]
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def _get_cm_docsis_provisioned_version(self, mac_address: str) -> float:
+        """Get the docsis version of CM.
+
+        :param mac_address: mac address of the cm
+        :type mac_address: str
+        :return: Docsis version of the cm
+        :rtype: float
+        """
+        raise NotImplementedError
