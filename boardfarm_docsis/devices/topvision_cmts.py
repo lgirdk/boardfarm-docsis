@@ -788,6 +788,43 @@ class MiniCMTS(CmtsTemplate):
         """
         return self._mini_cmts_router.ip_route()
 
+    def _get_cm_docsis_provisioned_version(self, mac_address: str) -> float:
+        """Get docsis version of CM.
+
+        :param mac_address: mac address of the cm
+        :type mac_address: str
+        :return: Docsis version of the cm
+        :rtype: float
+        :raises CodeError: Failed to get docsis version
+        """
+        mac_address = self.get_cm_mac_cmts_format(mac_address)
+        self.sendline(f"show cable modem {mac_address} doscis version")
+        self.expect(self.prompt)
+        out = self.before
+        result = re.search(r"DOCSISv(\d\.\d)", out)
+        version = float(result.group(1))
+        if not version:
+            raise CodeError("Failed to get Docsis version")
+        return version
+
+    def _get_cm_channel_bonding_detail(self, mac_address: str) -> dict[str, list[str]]:
+        """Get the list of primary channel.
+
+        :param mac_address: mac address of the cm
+        :type mac_address: str
+        :return: upstream and downstream channel list
+        :rtype: dict[str, list[str]]
+        :raises CodeError: Failed to get the channel values
+        """
+        mac_address = self.get_cm_mac_cmts_format(mac_address)
+        self.sendline(f"show cable modem {mac_address} primary-channel")
+        self.expect(self.prompt)
+        out = self.before
+        result = re.findall(r"\d\([\d\,]+\)", out)
+        if len(result) != 2:
+            raise CodeError(f"Failed to get Upstream & Downstream values:\n {result}")
+        return dict(zip(["US", "DS"], [re.findall(r"\d+", i) for i in result]))
+
 
 def print_dataframe(dataframe: pd.DataFrame, column_number=15):
     """Util method to pretty print dataframes to log. Has nothing to do with CMTS itself.

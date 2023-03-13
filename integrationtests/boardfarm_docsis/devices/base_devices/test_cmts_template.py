@@ -162,4 +162,12 @@ def test_can_instantiate_derived_cmts_with_correct_structure():
         def ip_route(self) -> str:
             pass
 
+        def _get_cm_channel_bonding_detail(
+            self, mac_address: str
+        ) -> dict[str, list[str]]:
+            pass
+
+        def _get_cm_docsis_provisioned_version(self, mac_address: str) -> float:
+            pass
+
     cmts = MyCmts()  # noqa: F841

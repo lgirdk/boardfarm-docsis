@@ -1326,6 +1326,28 @@ class CasaCMTS(CmtsTemplate):
         self.expect(self.prompt)
         return self.before
 
+    def _get_cm_docsis_provisioned_version(self, mac_address: str) -> float:
+        """Get docsis version of CM.
+
+        :param mac_address: mac address of the cm
+        :type mac_address: str
+        :return: Docsis version of the cm
+        :rtype: float
+        :raises CodeError: Failed to get docsis version
+        """
+        raise NotImplementedError
+
+    def _get_cm_channel_bonding_detail(self, mac_address: str) -> dict[str, list[str]]:
+        """Get the list of primary channel.
+
+        :param mac_address: mac address of the cm
+        :type mac_address: str
+        :return: upstream and downstream channel list
+        :rtype: dict[str, list[str]]
+        :raises CodeError: Failed to get the channel values
+        """
+        raise NotImplementedError
+
 
 # Small test to verify basic CasaCMTS connectivity.
 # Will be run once someone runs this file directly, e.g. python3 casa_cmts.py
