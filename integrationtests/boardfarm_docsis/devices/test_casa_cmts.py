@@ -24,6 +24,8 @@ out_str_no_ip = """show cable modem 342c.c454.2ed2
     342c.c454.2ed2                 0/2.0/0    3/0/0    offline     0    0.0   0      0    no
     online cm 0 ; offline cm 1 ; ranging cm 0
 """
+
+
 # this could be moved elsewhere as it tests the base class... but for
 # the moment....
 @pytest.mark.parametrize(

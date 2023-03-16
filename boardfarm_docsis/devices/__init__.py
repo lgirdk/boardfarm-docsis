@@ -34,7 +34,6 @@ def probe_devices():
         for thing_name in dir(module):
             thing = getattr(module, thing_name)
             if inspect.isclass(thing):
-
                 if hasattr(thing, "model"):
                     # thing.__module__ prints the module name where it is defined
                     # this name needs to match the current module we're scanning.

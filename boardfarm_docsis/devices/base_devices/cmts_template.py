@@ -1,6 +1,6 @@
+import abc
 import re
 import time
-from abc import abstractmethod
 from datetime import datetime
 from typing import Dict, List, Optional
 
@@ -12,11 +12,13 @@ from boardfarm.lib.signature_checker import __MetaSignatureChecker
 from netaddr import EUI, mac_cisco
 
 
-class CmtsTemplate(PexpectHelper, metaclass=__MetaSignatureChecker):
+class CmtsTemplate(
+    PexpectHelper, metaclass=__MetaSignatureChecker
+):  # pylint:disable=invalid-metaclass
     """CMTS template class.
     Contains basic list of APIs to be able to connect to CMTS
     and to check if DUT is online.
-    All methods, marked with @abstractmethod annotation have to be implemented in derived
+    All methods, marked with @abc.abstractmethod annotation have to be implemented in derived
     class with the same signatures as in template.
     """
 
@@ -24,7 +26,7 @@ class CmtsTemplate(PexpectHelper, metaclass=__MetaSignatureChecker):
     log_calls = ""
 
     @property
-    @abstractmethod
+    @abc.abstractmethod
     def model(self):
         """This attribute is used by boardfarm to select the class to be used
         to create the object that allows the test fixutes to access the CMTS.
@@ -33,7 +35,7 @@ class CmtsTemplate(PexpectHelper, metaclass=__MetaSignatureChecker):
         """
 
     @property
-    @abstractmethod
+    @abc.abstractmethod
     def prompt(self):
         """This attribute is used by boardfarm to understand how does device's prompt look like.
         E.g. for CASA3200 CMTS this class atribute may be:
@@ -46,7 +48,7 @@ class CmtsTemplate(PexpectHelper, metaclass=__MetaSignatureChecker):
         May containg regexs.
         """
 
-    @abstractmethod
+    @abc.abstractmethod
     def __init__(self, *args, **kwargs) -> None:
         """Initialize CMTS parameters.
         Config data dictionary will be unpacked and passed to init as kwargs.
@@ -70,7 +72,7 @@ class CmtsTemplate(PexpectHelper, metaclass=__MetaSignatureChecker):
             occurs via the pexpect module."""
             self.connection = conn_dec.connection(self.conn_type, device=self, **kwargs)
 
-    @abstractmethod
+    @abc.abstractmethod
     def connect(self) -> None:
         """Connect to CMTS & initialize prompt.
         Here you can run initial commands in order to land on specific prompt
@@ -79,51 +81,51 @@ class CmtsTemplate(PexpectHelper, metaclass=__MetaSignatureChecker):
         # Use this at the beginning to initialize connection pipe
         self.connection.connect()
 
-    @abstractmethod
+    @abc.abstractmethod
     def check_online(self, cm_mac: str) -> bool:
         """Return true if cm_mac modem is online.
         Criteria of 'online' should be defined for concrete CMTS"""
 
-    @abstractmethod
+    @abc.abstractmethod
     def logout(self) -> None:
         """Logout of the CMTS"""
 
-    @abstractmethod
+    @abc.abstractmethod
     def DUT_chnl_lock(self, cm_mac: str) -> List[int]:
         """Return amount of upstream / downstream channels that modem is bonded to
         :param cm_mac: cable modem mac address
         :return: [upstream_channels_count, downstream_channels_count]
         """
 
-    @abstractmethod
+    @abc.abstractmethod
     def clear_offline(self, cm_mac: str) -> None:
         """Clear the CM entry from cmts which is offline -clear cable modem <cm_mac> delete
         :param cm_mac: mac address of the CM
         :type cm_mac: str
         """
 
-    @abstractmethod
+    @abc.abstractmethod
     def clear_cm_reset(self, cm_mac: str) -> None:
         """Reset the CM from cmts using cli -clear cable modem <cm_mac> reset
         :param cm_mac: mac address of the CM
         :type cm_mac: str
         """
 
-    @abstractmethod
+    @abc.abstractmethod
     def get_cmip(self, cm_mac: str) -> Optional[str]:
         """API to get modem IPv4 address
         :param cm_mac: cable modem mac address
         :return: CM ip in case CM is online, None otherwise
         """
 
-    @abstractmethod
+    @abc.abstractmethod
     def get_cmipv6(self, cm_mac: str) -> Optional[str]:
         """PI to get modem IPv6 address
         :param cm_mac: cable modem mac address
         :return: CM ip in case CM is online, None otherwise
         """
 
-    @abstractmethod
+    @abc.abstractmethod
     def check_partial_service(self, cm_mac: str) -> bool:
         """Check the CM status from CMTS
         Function checks the show cable modem and returns True if p-online
@@ -133,7 +135,7 @@ class CmtsTemplate(PexpectHelper, metaclass=__MetaSignatureChecker):
         :rtype: bool
         """
 
-    @abstractmethod
+    @abc.abstractmethod
     def get_cmts_ip_bundle(
         self, cm_mac: Optional[str] = None, gw_ip: Optional[str] = None
     ) -> str:
@@ -148,7 +150,7 @@ class CmtsTemplate(PexpectHelper, metaclass=__MetaSignatureChecker):
         :rtype: str
         """
 
-    @abstractmethod
+    @abc.abstractmethod
     def get_qos_parameter(self, cm_mac: str) -> Dict[str, List[dict]]:
         """To get the qos related parameters of CM
         Example output format : {'DS':  [{'Sfid': '1' ..},
@@ -170,7 +172,7 @@ class CmtsTemplate(PexpectHelper, metaclass=__MetaSignatureChecker):
         :rtype: dictionary
         """
 
-    @abstractmethod
+    @abc.abstractmethod
     def get_mtaip(self, cm_mac: str, mta_mac: str = None) -> Optional[str]:
         """Get the MTA IP from CMTS
         :param cm_mac: mac address of the CM
@@ -181,7 +183,7 @@ class CmtsTemplate(PexpectHelper, metaclass=__MetaSignatureChecker):
         :rtype: string
         """
 
-    @abstractmethod
+    @abc.abstractmethod
     def get_ertr_ipv4(self, mac: str, offset: int = 2) -> Optional[str]:
         """Get erouter ipv4 from CMTS
         :param mac: mac address of the cable modem
@@ -192,7 +194,7 @@ class CmtsTemplate(PexpectHelper, metaclass=__MetaSignatureChecker):
         :rtype: string, None
         """
 
-    @abstractmethod
+    @abc.abstractmethod
     def get_ertr_ipv6(self, mac: str, offset: int = 2) -> Optional[str]:
         """Get erouter ipv4 from CMTS
         :param mac: mac address of the cable modem
@@ -202,7 +204,7 @@ class CmtsTemplate(PexpectHelper, metaclass=__MetaSignatureChecker):
         :rtype: string, None
         """
 
-    @abstractmethod
+    @abc.abstractmethod
     def is_cm_bridged(self, mac: str, offset: int = 2) -> bool:
         """Check if the modem is in bridge mode
         :param mac: Mac address of the modem,
@@ -390,6 +392,6 @@ class CmtsTemplate(PexpectHelper, metaclass=__MetaSignatureChecker):
         """
         raise NotImplementedError("CMTS does not support tshark command")
 
-    @abstractmethod
+    @abc.abstractmethod
     def ip_route(self) -> str:
         """Execute ip router command and parse the output."""

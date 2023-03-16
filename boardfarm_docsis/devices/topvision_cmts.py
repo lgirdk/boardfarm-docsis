@@ -5,13 +5,13 @@
 #
 # This file is distributed under the Clear BSD license.
 # The full text can be found in LICENSE in the root directory.
+import io
 import ipaddress
 import logging
 import re
 import sys
 from collections import defaultdict
 from datetime import datetime
-from io import StringIO
 from time import sleep
 from typing import Dict, List, Optional
 
@@ -79,7 +79,6 @@ class MiniCMTS(CmtsTemplate):
 
     @property
     def _mini_cmts_router(self) -> Optional[QuaggaRouter]:
-
         """To access mini cmts router object in order to perfrom operations
 
         mini cmts router access is composed in cmts class as protected and
@@ -242,7 +241,7 @@ class MiniCMTS(CmtsTemplate):
         """
         output = self.check_output(cmd)
         return pd.read_csv(
-            StringIO(output),
+            io.StringIO(output),
             skiprows=skiprows,
             skipfooter=skipfooter,
             names=columns,
@@ -541,7 +540,6 @@ class MiniCMTS(CmtsTemplate):
         return result
 
     def get_mtaip(self, cm_mac: str, mta_mac: str = None) -> Optional[str]:
-
         """Get the MTA IP from CMTS
         :param cm_mac: mac address of the CM
         :type cm_mac: string

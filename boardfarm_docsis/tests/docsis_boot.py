@@ -175,7 +175,6 @@ class DocsisBootBridge(DocsisBootStub):
 
 
 class DocsisBootDisabled(DocsisBootStub):
-
     env_req = {"environment_def": {"board": {"eRouter_Provisioning_mode": "disabled"}}}
     cfg = "disabled"
 
