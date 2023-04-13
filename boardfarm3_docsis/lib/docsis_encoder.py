@@ -29,7 +29,7 @@ class DocsisConfigEncoder:
             },
             "mta": {
                 "encoded_ext": ".bin",
-                "option": "-p",
+                "option": "-eu -p",
                 "key_file": "",  # To be considered: parameterise
             },
         }
