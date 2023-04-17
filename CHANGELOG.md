@@ -1,3 +1,9 @@
+## 2023.16.0 (2023-04-17)
+
+### Feat
+
+- **base_devices/cmts_template.py,-devices/topvision_cmts.py**: add abstract method and implementation for docsis version in v2
+
 ## 2023.13.0 (2023-03-30)
 
 ### Fix
