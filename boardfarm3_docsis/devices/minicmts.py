@@ -10,8 +10,10 @@ from typing import Optional
 import netaddr
 import pandas as pd
 from boardfarm3 import hookimpl
-from boardfarm3.devices.base_devices import LinuxDevice
+from boardfarm3.devices.base_devices.boardfarm_device import BoardfarmDevice
 from boardfarm3.exceptions import ConfigurationFailure, DeviceNotFound
+from boardfarm3.lib.boardfarm_pexpect import BoardfarmPexpect
+from boardfarm3.lib.connection_factory import connection_factory
 from boardfarm3.lib.utils import get_nth_mac_address
 
 from boardfarm3_docsis.templates.cmts import CMTS
@@ -19,7 +21,7 @@ from boardfarm3_docsis.templates.cmts import CMTS
 _LOGGER = logging.getLogger(__name__)
 
 
-class MiniCMTS(LinuxDevice, CMTS):
+class MiniCMTS(BoardfarmDevice, CMTS):
     """Boardfarm DOCSIS MiniCMTS device."""
 
     def __init__(self, config: dict, cmdline_args: Namespace) -> None:
@@ -29,13 +31,8 @@ class MiniCMTS(LinuxDevice, CMTS):
         :param cmdline_args: command line arguments
         """
         super().__init__(config, cmdline_args)
+        self._console: BoardfarmPexpect = None
         self._shell_prompt = ["Topvision(.*)>", "Topvision(.*)#"]
-
-    def _connect(self) -> None:
-        """Establish connection to the device via SSH."""
-        if self._console is None:
-            super()._connect()
-            self._additional_shell_setup()
 
     def _additional_shell_setup(self) -> None:
         """Additional shell initialization steps."""
@@ -52,13 +49,26 @@ class MiniCMTS(LinuxDevice, CMTS):
     def boardfarm_server_boot(self) -> None:
         """Boot MiniCMTS device."""
         _LOGGER.info("Booting %s(%s) device", self.device_name, self.device_type)
-        self._connect()
+        if self._console is None:
+            self._console = connection_factory(
+                self._config.get("connection_type"),
+                f"{self.device_name}.console",
+                username=self._config.get("username", "admin"),
+                password=self._config.get("password", "admin"),
+                ip_addr=self._config.get("ipaddr"),
+                port=self._config.get("port", "22"),
+                shell_prompt=self._shell_prompt,
+                save_console_logs=self._cmdline_args.save_console_logs,
+            )
+            self._additional_shell_setup()
 
     @hookimpl
     def boardfarm_shutdown_device(self) -> None:
         """Close all the connection to MiniCMTS."""
         _LOGGER.info("Shutdown %s(%s) device", self.device_name, self.device_type)
-        self._disconnect()
+        if self._console is not None:
+            self._console.close()
+            self._console = None
 
     def _get_cable_modem_table_data(self, mac_address: str, column_name: str) -> str:
         """Get given cable modem information on CMTS.
