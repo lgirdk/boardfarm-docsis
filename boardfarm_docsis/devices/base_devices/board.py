@@ -167,11 +167,6 @@ class DocsisCPEHw(DocsisInterface):
                 strategy = d.get("flash_strategy")
                 img = _check_override(strategy, d.get("image_uri"))
 
-            if stage[1]:
-                assert (
-                    strategy != "meta_build"
-                ), "meta_build strategy needs to run alone!!!"
-
             pbfr = d.get("pre_flash_factory_reset", False)
             if pbfr:
                 stage[2]["pre_flash_factory_reset"] = pbfr
