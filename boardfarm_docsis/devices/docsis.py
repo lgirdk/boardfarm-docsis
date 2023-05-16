@@ -1,4 +1,6 @@
 import logging
+import random
+import string
 import time
 
 import pexpect
@@ -350,7 +352,7 @@ class DocsisInterface:
         protocol = self.swdl_info[self.default_swdl_protocol]["proto"]
         destination = self.swdl_info[self.default_swdl_protocol]["dest"]
         server_ip = wan.get_interface_ipaddr(wan.iface_dut)
-        filename = image.split("/")[-1]
+        filename = "".join(random.choice(string.ascii_lowercase) for _ in range(10))
         if self.default_swdl_protocol == "http":
             wan.check_output("service lighttpd restart")
             out = wan.check_output("service lighttpd status")
