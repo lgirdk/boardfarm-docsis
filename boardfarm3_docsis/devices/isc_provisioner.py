@@ -248,19 +248,19 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         super().__init__(config, cmdline_args)
         self._prov_ipv4_address = self._config.get("prov_ip", "192.168.3.1")
         prov_ipv6_interface = ipaddress.IPv6Interface(
-            self._config.get("prov_ipv6", f"2001:dead:beef:1::1/{self._ipv6_prefix}")
+            self._config.get("prov_ipv6", f"2001:dead:beef:1::1/{self._ipv6_prefix}"),
         )
         self._prov_ipv6_address = prov_ipv6_interface.ip
         self._prov_ipv6_network = prov_ipv6_interface.network
         # we're storing a list of all /56 subnets possible from erouter_net_interface.
         # As per docsis, /56 must be the default pd length
         erouter_ipv6_net_interface = ipaddress.IPv6Interface(
-            self._config.get("erouter_net", "2001:dead:beef:e000::/51")
+            self._config.get("erouter_net", "2001:dead:beef:e000::/51"),
         )
         self._erouter_ipv6_network_list = list(
             erouter_ipv6_net_interface.network.subnets(
-                56 - erouter_ipv6_net_interface._prefixlen  # type: ignore
-            )
+                56 - erouter_ipv6_net_interface._prefixlen,  # type: ignore[attr-defined]  # noqa: E501, SLF001 # pylint: disable=line-too-long
+            ),
         )
         self._default_lease_time = 604800
         self._sip_fqdn = self._config.get(
@@ -289,8 +289,9 @@ class ISCProvisioner(LinuxDevice, Provisioner):
             return
         _LOGGER.info("Contingency check %s(%s)", self.device_name, self.device_type)
         if "FOO" not in self._console.execute_command("echo FOO"):
+            err_msg = "ISCProvisioner device console in not responding"
             raise ContingencyCheckError(
-                "ISCProvisioner device console in not responding"
+                err_msg,
             )
 
     def _get_timezone_offset(self) -> int:
@@ -301,7 +302,7 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         """
         offset = 0
         timezone = self._config.get("timezone", "UTC")
-        if timezone.startswith("GMT") or timezone.startswith("UTC"):
+        if timezone.startswith(("GMT", "UTC")):
             match = re.search(r"[\W\D\S]?\d{1,2}", timezone)
             if match and match.group(0).isdigit():
                 offset = int(match.group(0))
@@ -321,29 +322,28 @@ class ISCProvisioner(LinuxDevice, Provisioner):
 
     def _get_common_keywords_to_replace(self) -> dict:
         timezone_offset = self._get_timezone_offset()
-        common_keywords = {
+        return {
             "###IFACE###": self.eth_interface,
             "###BOARD_NAME###": self._cmdline_args.board_name,
             "###TIMEZONE###": timezone_offset,
             "###MTA_DHCP_SERVER1###": self._prov_ipv4_address,
             "###MTA_DHCP_SERVER2###": self._prov_ipv4_address,
         }
-        return common_keywords
 
     def _get_dhcpv4_master_config(self) -> str:
         cm_network_ipv4 = ipaddress.IPv4Network(
-            self._config.get("cm_network", "192.168.200.0/24")
+            self._config.get("cm_network", "192.168.200.0/24"),
         )
         cm_gateway_ipv4 = self._config.get("cm_gateway", "192.168.200.1")
         mta_network_ipv4 = ipaddress.IPv4Network(
-            self._config.get("mta_network", "192.168.201.0/24")
+            self._config.get("mta_network", "192.168.201.0/24"),
         )
         open_network_ipv4 = ipaddress.IPv4Network(
-            self._config.get("open_network", "192.168.202.0/24")
+            self._config.get("open_network", "192.168.202.0/24"),
         )
         open_gateway_ipv4 = self._config.get("open_gateway", "192.168.202.1")
         prov_network_ipv4 = ipaddress.IPv4Network(
-            self._config.get("prov_network", "192.168.3.0/24")
+            self._config.get("prov_network", "192.168.3.0/24"),
         )
         syslog_server = self._config.get("syslog_server", self._prov_ipv4_address)
         time_server_ipv4 = self._config.get("time_server", self._prov_ipv4_address)
@@ -375,31 +375,36 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         }
         keywords_to_replace.update(self._get_common_keywords_to_replace())
         return self._replace_keywords_from_string(
-            _DHCPV4_MASTER_CONFIG, keywords_to_replace
+            _DHCPV4_MASTER_CONFIG,
+            keywords_to_replace,
         )
 
     def _get_dhcpv6_master_config(self) -> str:
         cm_network_ipv6 = ipaddress.IPv6Interface(
             self._config.get(
-                "cm_gateway_v6", f"2001:dead:beef:4::cafe/{self._ipv6_prefix}"
-            )
+                "cm_gateway_v6",
+                f"2001:dead:beef:4::cafe/{self._ipv6_prefix}",
+            ),
         ).network
         cm_network_ipv6_start = self._config.get(
-            "cm_network_v6_start", "2001:dead:beef:4::10"
+            "cm_network_v6_start",
+            "2001:dead:beef:4::10",
         )
         cm_network_ipv6_end = self._config.get(
-            "cm_network_v6_end", "2001:dead:beef:4::100"
+            "cm_network_v6_end",
+            "2001:dead:beef:4::100",
         )
         open_network_ipv6 = ipaddress.IPv6Interface(
             self._config.get(
-                "open_gateway_v6", f"2001:dead:beef:6::cafe/{self._ipv6_prefix}"
-            )
+                "open_gateway_v6",
+                f"2001:dead:beef:6::cafe/{self._ipv6_prefix}",
+            ),
         ).network
         open_network_ipv6_start = ipaddress.IPv6Address(
-            self._config.get("open_network_v6_start", "2001:dead:beef:6::10")
+            self._config.get("open_network_v6_start", "2001:dead:beef:6::10"),
         )
         open_network_ipv6_end = ipaddress.IPv6Address(
-            self._config.get("open_network_v6_end", "2001:dead:beef:6::100")
+            self._config.get("open_network_v6_end", "2001:dead:beef:6::100"),
         )
         time_server_ipv6 = self._config.get("time_server6", self._prov_ipv6_address)
         keywords_to_replace = {
@@ -423,9 +428,9 @@ class ISCProvisioner(LinuxDevice, Provisioner):
                 -1
             ].network_address,
             # pylint: disable=protected-access
-            "###EROUTER_PREFIX###": self._erouter_ipv6_network_list[
+            "###EROUTER_PREFIX###": self._erouter_ipv6_network_list[  # noqa: SLF001
                 -1
-            ]._prefixlen,  # type: ignore
+            ]._prefixlen,  # type: ignore[attr-defined]
         }
         keywords_to_replace.update(self._get_common_keywords_to_replace())
         dhcp_ipv6_master_config = _DHCPV6_MASTER_CONFIG
@@ -433,14 +438,19 @@ class ISCProvisioner(LinuxDevice, Provisioner):
             dhcp_ipv6_master_config += "  }\n  subnet6 ###OPEN_NETWORK_V6### {\n"
         dhcp_ipv6_master_config += _DHCPV6_MASTER_OPEN_NW_CONFIG
         return self._replace_keywords_from_string(
-            dhcp_ipv6_master_config, keywords_to_replace
+            dhcp_ipv6_master_config,
+            keywords_to_replace,
         )
 
     def _get_dhcp_cable_modem_config(
-        self, cm_mac: str, bootfile_path: str, tftp_server: str, is_dhcpv6: bool
+        self,
+        cm_mac: str,
+        bootfile_path: str,
+        tftp_server: str,
+        is_dhcpv6: bool,
     ) -> str:
         erouter_fixed_ipv6_start = ipaddress.IPv6Interface(
-            self._config.get("erouter_fixed_ip_start")
+            self._config.get("erouter_fixed_ip_start"),
         )
         erouter_mac = get_nth_mac_address(cm_mac, 2)
         station_no = int(self._cmdline_args.board_name.split("-")[-1])
@@ -490,7 +500,7 @@ class ISCProvisioner(LinuxDevice, Provisioner):
             keywords_to_replace,
         )
 
-    def _update_dhcp_config(
+    def _update_dhcp_config(  # noqa: PLR0913
         self,
         cm_mac: str,
         tftp_server: str,
@@ -510,7 +520,10 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         master_config_path = f"{dhcp_config_path}-{board_name}.master"
         self._create_dhcp_config_file(master_config, master_config_path)
         dhcp_cm_config = self._get_dhcp_cable_modem_config(
-            cm_mac, cm_bootfile, tftp_server, is_dhcpv6
+            cm_mac,
+            cm_bootfile,
+            tftp_server,
+            is_dhcpv6,
         )
         if mta_bootfile:
             dhcp_mta_config = self._get_dhcp_mta_config(
@@ -521,11 +534,11 @@ class ISCProvisioner(LinuxDevice, Provisioner):
             dhcp_cm_config = f"{dhcp_mta_config}{dhcp_cm_config}"
         self._create_dhcp_config_file(dhcp_cm_config, cm_config_path)
         self._console.execute_command(
-            f"cat {dhcp_config_path}.* >> {master_config_path}"
+            f"cat {dhcp_config_path}.* >> {master_config_path}",
         )
         self._console.execute_command(f"mv {master_config_path} {dhcp_config_path}")
 
-    def provision_cable_modem(
+    def provision_cable_modem(  # noqa: PLR0913
         self,
         cm_mac: str,
         cm_bootfile: str,
@@ -551,7 +564,11 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         try:
             self._acquire_device_file_lock(lock_file)
             self._update_dhcp_config(
-                cm_mac, tftp_ipv4_addr, cm_bootfile, mta_bootfile, False
+                cm_mac,
+                tftp_ipv4_addr,
+                cm_bootfile,
+                mta_bootfile,
+                False,
             )
             # Note: MTA over IPv6 not yet supported!
             self._update_dhcp_config(cm_mac, tftp_ipv6_addr, cm_bootfile, "", True)
@@ -569,7 +586,8 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         command = f"[ $({num_processes}) == 0 ] && echo {success_message}"
         output = self._console.execute_command(command)
         if success_message not in output:
-            raise ConfigurationFailure("Failed to stop DHCP service.")
+            err_msg = "Failed to stop DHCP service."
+            raise ConfigurationFailure(err_msg)
         self._console.execute_command("rm -f /run/dhcpd*.pid")
         self._console.execute_command(f"{dhcp_service_path} start")
         success_message = "DHCP Restarted successfully."
@@ -580,10 +598,14 @@ class ISCProvisioner(LinuxDevice, Provisioner):
             self._console.execute_command("tail /var/log/syslog -n 100")
             self._console.execute_command("cat /etc/dhcp/dhcpd.conf")
             self._console.execute_command("cat /etc/dhcp/dhcpd6.conf")
-            raise ConfigurationFailure("Failed to apply DHCP config.")
+            err_msg = "Failed to apply DHCP config."
+            raise ConfigurationFailure(err_msg)
 
     def _acquire_device_file_lock(
-        self, lock_file_path: str, timeout: int = 200, file_handle: int = 9
+        self,
+        lock_file_path: str,
+        timeout: int = 200,
+        file_handle: int = 9,
     ) -> None:
         """Acquire file lock on the device.
 
@@ -595,12 +617,16 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         self._console.execute_command(f"exec {file_handle}>{lock_file_path}")
         self._console.sendline(f"flock -x {file_handle}")
         if not self._console.expect(
-            [pexpect.TIMEOUT] + self._shell_prompt, timeout=timeout
+            [pexpect.TIMEOUT, *self._shell_prompt],
+            timeout=timeout,
         ):
-            raise FileLockTimeout(f"Failed to acquire lock on file {lock_file_path}")
+            err_msg = f"Failed to acquire lock on file {lock_file_path}"
+            raise FileLockTimeout(err_msg)
 
     def _release_device_file_lock(
-        self, lock_file_path: str, file_handle: int = 9
+        self,
+        lock_file_path: str,
+        file_handle: int = 9,
     ) -> None:
         """Release file lock on the device.
 

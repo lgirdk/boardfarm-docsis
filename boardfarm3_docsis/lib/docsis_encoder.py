@@ -49,7 +49,7 @@ class DocsisConfigEncoder:
                 named_temp_file.name.replace(
                     ".txt",
                     self._cfg_dict[prefix]["encoded_ext"],
-                )
+                ),
             )
             command = (
                 f"{self._encoder_cmd} -M {mibs_argument} "
@@ -58,13 +58,14 @@ class DocsisConfigEncoder:
             )
             _LOGGER.debug("Encoding modem config: %s", command)
             session = LocalCmd(
-                "docsis-encoder", command, save_console_logs=False, args=[]
+                "docsis-encoder",
+                command,
+                save_console_logs=False,
+                args=[],
             )
             session.expect(pexpect.EOF)
             if session.wait() != 0:
-                raise ConfigEncodingError(
-                    f"Failed to encode modem config {named_temp_file.name}"
-                )
+                raise ConfigEncodingError(named_temp_file.name)
         return cfg_file_path
 
     def encode_cm_config(self, cm_config: str, mibs_path: list[str]) -> Path:

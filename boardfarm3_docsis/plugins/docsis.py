@@ -18,7 +18,9 @@ def boardfarm_add_cmdline_args(argparser: ArgumentParser) -> None:
     """
     docsis_group = argparser.add_argument_group("docsis")
     docsis_group.add_argument(
-        "--ldap-credentials", default=None, help="LDAP credential <username;password>"
+        "--ldap-credentials",
+        default=None,
+        help="LDAP credential <username;password>",
     )
 
 

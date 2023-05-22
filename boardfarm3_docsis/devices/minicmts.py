@@ -5,18 +5,20 @@ import re
 from argparse import Namespace
 from io import StringIO
 from ipaddress import IPv4Address, IPv6Address, ip_interface
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 import netaddr
 import pandas as pd
 from boardfarm3 import hookimpl
 from boardfarm3.devices.base_devices.boardfarm_device import BoardfarmDevice
 from boardfarm3.exceptions import ConfigurationFailure, DeviceNotFound
-from boardfarm3.lib.boardfarm_pexpect import BoardfarmPexpect
 from boardfarm3.lib.connection_factory import connection_factory
 from boardfarm3.lib.utils import get_nth_mac_address
 
 from boardfarm3_docsis.templates.cmts import CMTS
+
+if TYPE_CHECKING:
+    from boardfarm3.lib.boardfarm_pexpect import BoardfarmPexpect
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -203,7 +205,8 @@ class MiniCMTS(BoardfarmDevice, CMTS):
         self._console.execute_command(f"clear cable modem {mac_address} reset")
         status = self._get_cable_modem_status(mac_address)
         if status != "offline":
-            raise ConfigurationFailure("Cable modem is not offline after reset")
+            err_msg = "Cable modem is not offline after reset"
+            raise ConfigurationFailure(err_msg)
 
     def get_cable_modem_ip_address(self, mac_address: str) -> str:
         """Get cable modem IP address on CMTS.
@@ -214,7 +217,8 @@ class MiniCMTS(BoardfarmDevice, CMTS):
         """
         ip_address = self._get_cable_modem_table_data(mac_address, "IP_ADDRESS")
         if ip_address is None:
-            raise DeviceNotFound(f"Unable to find {mac_address} cable modem on CMTS.")
+            err_msg = f"Unable to find {mac_address} cable modem on CMTS."
+            raise DeviceNotFound(err_msg)
         return ip_address.strip().replace("*", "")
 
     def get_cmts_ip_bundle(self, gw_ip: Optional[str] = None) -> str:
@@ -229,7 +233,7 @@ class MiniCMTS(BoardfarmDevice, CMTS):
         :return: gateway ip if address configured on minicmts else return all ip bundles
         """
         output = self._console.execute_command(
-            'show running-config | include "ip address"'
+            'show running-config | include "ip address"',
         )
         if gw_ip is None:
             return output
@@ -238,7 +242,8 @@ class MiniCMTS(BoardfarmDevice, CMTS):
             cmts_ip = ip_interface(f"{addr}/{mask}")
             if gw_ip == str(next(cmts_ip.network.hosts())):
                 return gw_ip
-        raise ValueError("Failed to get the CMTS bundle IP")
+        err_msg = "Failed to get the CMTS bundle IP"
+        raise ValueError(err_msg)
 
     def get_ip_routes(self) -> str:
         """Get IP routes from the quagga router.
@@ -261,7 +266,10 @@ class MiniCMTS(BoardfarmDevice, CMTS):
         self.reset_cable_modem_status(mac_address)
 
     def _get_cpe_ip_address(
-        self, mac_address: str, offset: int, is_ipv6: bool
+        self,
+        mac_address: str,
+        offset: int,
+        is_ipv6: bool,
     ) -> Optional[str]:
         cpe_table = self._get_cable_modem_cpe_table_data(mac_address)
         ip_type = IPv6Address if is_ipv6 else IPv4Address
@@ -317,12 +325,13 @@ class MiniCMTS(BoardfarmDevice, CMTS):
         """
         mac_address = self._convert_mac_address(mac_address)
         output = self._console.execute_command(
-            f"show cable modem {mac_address} docsis version"
+            f"show cable modem {mac_address} docsis version",
         )
         result = re.search(r"DOCSISv(\d\.\d)", output)
         version = float(result.group(1))
         if not result:
-            raise ValueError("Failed to get the Docsis Version")
+            err_msg = "Failed to get the Docsis Version"
+            raise ValueError(err_msg)
         return version
 
     def _get_cm_channel_bonding_detail(self, mac_address: str) -> dict[str, list[str]]:
@@ -336,12 +345,15 @@ class MiniCMTS(BoardfarmDevice, CMTS):
         """
         mac_address = self._convert_mac_address(mac_address)
         output = self._console.execute_command(
-            f"show cable modem {mac_address} primary-channel"
+            f"show cable modem {mac_address} primary-channel",
         )
         regex = r"\d\([\d\,]+\)"
         result = re.findall(regex, output)
-        if len(result) != 2:
-            raise ValueError(f"Failed to get Upstream & Downstream values:\n {result}")
+        # TODO: no idea why 2 below, clarify
+        if len(result) != 2:  # noqa: PLR2004
+            err_msg = f"Failed to get Upstream & Downstream values:\n {result}"
+            raise ValueError(err_msg)
         return dict(
-            zip("US", "DS"), [re.findall(r"\d+", i) for i in result]
-        )  # type: ignore
+            zip("US", "DS"),
+            [re.findall(r"\d+", i) for i in result],
+        )  # type: ignore[call-overload]

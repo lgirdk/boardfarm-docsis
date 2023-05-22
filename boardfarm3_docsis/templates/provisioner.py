@@ -9,7 +9,7 @@ class Provisioner(ABC):
     """Boardfarm DOCSIS provisioner device template."""
 
     @abstractmethod
-    def provision_cable_modem(
+    def provision_cable_modem(  # noqa: PLR0913
         self,
         cm_mac: str,
         cm_bootfile: str,
