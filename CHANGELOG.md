@@ -1,3 +1,13 @@
+## 2023.21.0 (2023-05-24)
+
+### Fix
+
+- **docsis**: randomize image name for snmp flash
+
+### Refactor
+
+- related to mv1cs booting dev firmware
+
 ## 2023.17.0 (2023-04-26)
 
 ## 2023.16.0 (2023-04-17)
