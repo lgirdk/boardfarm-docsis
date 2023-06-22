@@ -1,10 +1,11 @@
 """Contains the SW update usecases."""
 import re
+from typing import Optional
 
 from boardfarm.lib.DeviceManager import get_device_by_name
 
 
-def add_tlvs(multiline_tlv: str) -> str:
+def add_tlvs(multiline_tlv: str, boot_file: Optional[str]) -> str:
     """Add  tlvs to the boot file in the env_hepler.
 
     Adds/appends tlvs (as multiline string) at the end
@@ -24,7 +25,10 @@ def add_tlvs(multiline_tlv: str) -> str:
     :return: a copy of the env_helper bootfile with the tlvs added
     :rtype: str
     """
-    bootfile: str = get_device_by_name("board").env_helper.get_board_boot_file()
+    if boot_file:
+        bootfile = boot_file
+    else:
+        bootfile: str = get_device_by_name("board").env_helper.get_board_boot_file()
 
     idx = bootfile.find("/* CmMic")
     if idx < 0:
