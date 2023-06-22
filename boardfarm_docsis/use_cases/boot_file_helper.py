@@ -36,7 +36,7 @@ def add_tlvs(multiline_tlv: str) -> str:
     )
 
 
-def switch_erotuer_mode(mode: str) -> str:
+def switch_erouter_mode(mode: str) -> str:
     """Switch the bootfile erouter config in the env_helper to given mode.
 
     :param mode: one of "none", "disabled", "ipv4", "ipv6", "dual"
@@ -54,7 +54,21 @@ def switch_erotuer_mode(mode: str) -> str:
 
     bootfile = get_device_by_name("board").env_helper.get_board_boot_file()
     vendor_id = get_vendor_id_from_cm_config()
-
+    if "InitializationMode 1" in bootfile and mode == "dual":
+        # modify the InitializationMode and add the LLCfilters
+        _from = "InitializationMode((\\s|\t){1,})\\d.*;"
+        _to = f"InitializationMode {modes[mode]};"
+        bootfile = re.sub(_from, _to, bootfile)
+        pattern = r"SnmpMibObject\sdocsDevFilterLLCStatus+\.2\s\w+\s\d;\s.*"
+        _new_llc_index = (
+            "SnmpMibObject docsDevFilterLLCIfIndex.3 Integer 0 ; /* all interfaces */"
+            "SnmpMibObject docsDevFilterLLCProtocolType.3 Integer 1; /* ethertype */"
+            "SnmpMibObject docsDevFilterLLCProtocol.3 Integer 34525 ; /* ipv6 */"
+            "SnmpMibObject docsDevFilterLLCStatus.3 Integer 4; /* createAndGo */"
+        )
+        _from_llc = re.findall(pattern, bootfile)
+        _to_llc = str(_from_llc) + _new_llc_index
+        return re.sub(_from_llc, _to_llc, bootfile)
     if mode in {"disabled", "ipv4", "ipv6", "dual"}:
         # simply swap the value in the bootfile
         _from = "InitializationMode((\\s|\t){1,})\\d.*;"
