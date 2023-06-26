@@ -5,20 +5,18 @@ import re
 from argparse import Namespace
 from io import StringIO
 from ipaddress import IPv4Address, IPv6Address, ip_interface
-from typing import TYPE_CHECKING, Optional
+from typing import Optional
 
 import netaddr
 import pandas as pd
 from boardfarm3 import hookimpl
 from boardfarm3.devices.base_devices.boardfarm_device import BoardfarmDevice
 from boardfarm3.exceptions import ConfigurationFailure, DeviceNotFound
+from boardfarm3.lib.boardfarm_pexpect import BoardfarmPexpect
 from boardfarm3.lib.connection_factory import connection_factory
 from boardfarm3.lib.utils import get_nth_mac_address
 
 from boardfarm3_docsis.templates.cmts import CMTS
-
-if TYPE_CHECKING:
-    from boardfarm3.lib.boardfarm_pexpect import BoardfarmPexpect
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -357,3 +355,11 @@ class MiniCMTS(BoardfarmDevice, CMTS):
             zip("US", "DS"),
             [re.findall(r"\d+", i) for i in result],
         )  # type: ignore[call-overload]
+
+    def get_interactive_consoles(self) -> dict[str, BoardfarmPexpect]:
+        """Get the interactive console from the CMTS.
+
+        :return: The interactive console of the CMTS
+        :rtype: dict[str, BoardfarmPexpect]
+        """
+        return {"console": self._console}
