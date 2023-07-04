@@ -71,8 +71,8 @@ def switch_erouter_mode(mode: str) -> str:
             "SnmpMibObject docsDevFilterLLCStatus.3 Integer 4; /* createAndGo */"
         )
         _from_llc = re.findall(pattern, bootfile)
-        _to_llc = str(_from_llc) + _new_llc_index
-        return re.sub(_from_llc, _to_llc, bootfile)
+        _to_llc = str(_from_llc[0]) + _new_llc_index
+        return re.sub(re.escape(_from_llc[0]), _to_llc, bootfile)
     if mode in {"disabled", "ipv4", "ipv6", "dual"}:
         # simply swap the value in the bootfile
         _from = "InitializationMode((\\s|\t){1,})\\d.*;"
