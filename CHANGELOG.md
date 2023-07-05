@@ -1,3 +1,10 @@
+## 2023.27.0 (2023-07-05)
+
+### Refactor
+
+- **use_cases/boot_file_helper.py**: refactor the method add_tlvs to accpet config file as param
+- **use_cases/boot_file_helper.py**: refactor the Use Case switch_erotuer_mode to add LLCfilters
+
 ## 2023.25.0 (2023-06-23)
 
 ## 2023.23.0 (2023-06-07)
