@@ -1,3 +1,10 @@
+## 2023.29.0 (2023-07-20)
+
+### Refactor
+
+- **use_cases/boot_file_helper.py**: refcator the Use Case switch_erouter_mode to add LLC filters
+- **use_cases/boot_file_helper.py**: refactor the Use Case switch_erotuer_mode as the same available in v3
+
 ## 2023.27.0 (2023-07-05)
 
 ### Refactor
