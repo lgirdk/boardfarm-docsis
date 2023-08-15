@@ -45,22 +45,34 @@ class MiniCMTS(BoardfarmDevice, CMTS):
         self._console.execute_command("exec-timeout 60")
         self._console.execute_command("end")
 
+    def _connect_to_console(self) -> None:
+        self._console = connection_factory(
+            self._config.get("connection_type"),
+            f"{self.device_name}.console",
+            username=self._config.get("username", "admin"),
+            password=self._config.get("password", "admin"),
+            ip_addr=self._config.get("ipaddr"),
+            port=self._config.get("port", "22"),
+            shell_prompt=self._shell_prompt,
+            save_console_logs=self._cmdline_args.save_console_logs,
+        )
+        self._additional_shell_setup()
+
     @hookimpl
     def boardfarm_server_boot(self) -> None:
         """Boot MiniCMTS device."""
         _LOGGER.info("Booting %s(%s) device", self.device_name, self.device_type)
-        if self._console is None:
-            self._console = connection_factory(
-                self._config.get("connection_type"),
-                f"{self.device_name}.console",
-                username=self._config.get("username", "admin"),
-                password=self._config.get("password", "admin"),
-                ip_addr=self._config.get("ipaddr"),
-                port=self._config.get("port", "22"),
-                shell_prompt=self._shell_prompt,
-                save_console_logs=self._cmdline_args.save_console_logs,
-            )
-            self._additional_shell_setup()
+        self._connect_to_console()
+
+    @hookimpl
+    def boardfarm_skip_boot(self) -> None:
+        """Boot MiniCMTS device."""
+        _LOGGER.info(
+            "Initializing %s(%s) device with skip-boot option",
+            self.device_name,
+            self.device_type,
+        )
+        self._connect_to_console()
 
     @hookimpl
     def boardfarm_shutdown_device(self) -> None:

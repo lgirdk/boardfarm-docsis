@@ -277,6 +277,16 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         self._connect()
 
     @hookimpl
+    def boardfarm_skip_boot(self) -> None:
+        """Boardfarm hook implementation to skip boot ISC provisioner."""
+        _LOGGER.info(
+            "Initializing %s(%s) device with skip-boot option",
+            self.device_name,
+            self.device_type,
+        )
+        self._connect()
+
+    @hookimpl
     def boardfarm_shutdown_device(self) -> None:
         """Boardfarm hook implementation to shutdown ISC provisioner."""
         _LOGGER.info("Shutdown %s(%s) device", self.device_name, self.device_type)
