@@ -344,29 +344,26 @@ class MiniCMTS(BoardfarmDevice, CMTS):
             raise ValueError(err_msg)
         return version
 
-    def _get_cm_channel_bonding_detail(self, mac_address: str) -> dict[str, list[str]]:
-        """Get the list of primary channel.
+    def _get_cm_channel_bonding_detail(self, mac_address: str) -> dict[str, str]:
+        """Get the primary channel values.
 
         :param mac_address: mac address of the cable modem
         :type mac_address: str
-        :return: upstream and downstream channel list
-        :rtype: dict[str, list[str]]
+        :return: upstream and downstream channel values
+        :rtype: dict[str, str]
         :raises ValueError: Failed to get Upstream & Downstream channel values
         """
         mac_address = self._convert_mac_address(mac_address)
-        output = self._console.execute_command(
-            f"show cable modem {mac_address} primary-channel",
-        )
-        regex = r"\d\([\d\,]+\)"
-        result = re.findall(regex, output)
+        if result := re.search(
+            r"(\d+\([\d\,]+\))\s+(\d+\([\d\,]+\))",
+            self._console.execute_command(
+                f"show cable modem {mac_address} primary-channel",
+            ),
+        ):
+            return dict(zip(["US", "DS"], (result.group(1), result.group(2))))
         # TODO: no idea why 2 below, clarify
-        if len(result) != 2:  # noqa: PLR2004
-            err_msg = f"Failed to get Upstream & Downstream values:\n {result}"
-            raise ValueError(err_msg)
-        return dict(
-            zip("US", "DS"),
-            [re.findall(r"\d+", i) for i in result],
-        )  # type: ignore[call-overload]
+        err_msg = f"Failed to get Upstream & Downstream values:\n {result}"
+        raise ValueError(err_msg)
 
     def get_interactive_consoles(self) -> dict[str, BoardfarmPexpect]:
         """Get the interactive console from the CMTS.
@@ -375,3 +372,16 @@ class MiniCMTS(BoardfarmDevice, CMTS):
         :rtype: dict[str, BoardfarmPexpect]
         """
         return {"console": self._console}
+
+    def get_downstream_channel_value(self, mac: str) -> str:
+        """Get the downstream channel value.
+
+        :param mac: mac address of the cable modem
+        :type mac: str
+        :return: downstream channel value
+        :rtype: str
+        """
+        return re.search(
+            r"'DS': \'((\d{1,2}))\(",
+            str(self._get_cm_channel_bonding_detail(mac)),
+        ).group(1)
