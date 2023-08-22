@@ -807,23 +807,35 @@ class MiniCMTS(CmtsTemplate):
             raise CodeError("Failed to get Docsis version")
         return version
 
-    def _get_cm_channel_bonding_detail(self, mac_address: str) -> dict[str, list[str]]:
-        """Get the list of primary channel.
+    def _get_cm_channel_bonding_detail(self, mac_address: str) -> dict[str, str]:
+        """Get the primary channel values.
 
         :param mac_address: mac address of the cm
         :type mac_address: str
-        :return: upstream and downstream channel list
-        :rtype: dict[str, list[str]]
+        :return: upstream and downstream channel values
+        :rtype: dict[str, str]
         :raises CodeError: Failed to get the channel values
         """
         mac_address = self.get_cm_mac_cmts_format(mac_address)
-        self.sendline(f"show cable modem {mac_address} primary-channel")
-        self.expect(self.prompt)
-        out = self.before
-        result = re.findall(r"\d\([\d\,]+\)", out)
-        if len(result) != 2:
-            raise CodeError(f"Failed to get Upstream & Downstream values:\n {result}")
-        return dict(zip(["US", "DS"], [re.findall(r"\d+", i) for i in result]))
+        output = self.check_output(f"show cable modem {mac_address} primary-channel")
+        if result := re.search(r"(\d+\([\d\,]+\))\s+(\d+\([\d\,]+\))", output):
+            return dict(zip(["US", "DS"], (result[1], result[2])))
+        err_msg = f"Failed to get Upstream & Downstream values:\n {result}"
+        raise CodeError(err_msg)
+
+    @CmtsTemplate.connect_and_run
+    def get_downstream_channel_value(self, mac: str) -> str:
+        """Get the downstream channel value.
+
+        :param mac: mac address of the cable modem
+        :type mac: str
+        :return: downstream channel value
+        :rtype: str
+        """
+        return re.search(
+            r"'DS': \'((\d{1,2}))\(",
+            str(self._get_cm_channel_bonding_detail(mac)),
+        )[1]
 
 
 def print_dataframe(dataframe: pd.DataFrame, column_number=15):
