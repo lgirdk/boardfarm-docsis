@@ -1,3 +1,9 @@
+## 2023.36.0 (2023-09-04)
+
+### Refactor
+
+- **base_devices/cmts_template.py**: remove the abstract methods from the template
+
 ## 2023.33.0 (2023-08-18)
 
 ## 2023.29.0 (2023-07-20)
