@@ -1,3 +1,10 @@
+## 2023.37.0 (2023-09-13)
+
+### Feat
+
+- **devices/arris_cmts.py**: retrieve the downstream channel value
+- **devices/topvision_cmts.py**: retrieve downstream channel value
+
 ## 2023.36.0 (2023-09-04)
 
 ### Refactor
