@@ -837,6 +837,20 @@ class MiniCMTS(CmtsTemplate):
             str(self._get_cm_channel_bonding_detail(mac)),
         )[1]
 
+    @CmtsTemplate.connect_and_run
+    def get_upstream_channel_value(self, mac: str) -> str:
+        """Get the upstream channel value.
+
+        :param mac: mac address of the cable modem
+        :type mac: str
+        :return: upstream channel value
+        :rtype: str
+        """
+        return re.search(
+            r"'US': \'((\d{1,2}))\(",
+            str(self._get_cm_channel_bonding_detail(mac)),
+        )[1]
+
 
 def print_dataframe(dataframe: pd.DataFrame, column_number=15):
     """Util method to pretty print dataframes to log. Has nothing to do with CMTS itself.
