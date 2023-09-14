@@ -384,4 +384,17 @@ class MiniCMTS(BoardfarmDevice, CMTS):
         return re.search(
             r"'DS': \'((\d{1,2}))\(",
             str(self._get_cm_channel_bonding_detail(mac)),
-        ).group(1)
+        )[1]
+
+    def get_upstream_channel_value(self, mac: str) -> str:
+        """Get the upstream channel value.
+
+        :param mac: mac address of the cable modem
+        :type mac: str
+        :return: upstream channel value
+        :rtype: str
+        """
+        return re.search(
+            r"'US': \'((\d{1,2}))\(",
+            str(self._get_cm_channel_bonding_detail(mac)),
+        )[1]
