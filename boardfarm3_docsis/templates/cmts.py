@@ -119,3 +119,14 @@ class CMTS(ABC):
         :rtype: str
         """
         raise NotImplementedError
+
+    @abstractmethod
+    def get_upstream_channel_value(self, mac: str) -> str:
+        """Get the upstream channel value.
+
+        :param mac: mac address of the cable modem
+        :type mac: str
+        :return: upstream channel value
+        :rtype: str
+        """
+        raise NotImplementedError
