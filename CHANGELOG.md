@@ -1,3 +1,9 @@
+## 2023.39.0 (2023-09-29)
+
+### Feat
+
+- **devices/arris_cmts.py,-devices/topvision_cmts.py**: add method to get active upstream channel value
+
 ## 2023.37.0 (2023-09-13)
 
 ### Feat
