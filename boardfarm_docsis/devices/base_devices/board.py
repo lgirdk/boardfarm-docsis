@@ -51,7 +51,15 @@ class DocsisCPEHw(DocsisInterface):
             self.dev.board.dev.cmts.wait_for_cm_online(
                 ignore_bpi=is_bpi_privacy_disabled(), ignore_partial=True
             )
-            self.dev.board.hw.flash_meta(img, self.dev.wan, self.dev.lan)
+            shell_enabled = self.dev.board.env_helper.get_software().get(
+                "shell_enabled", True
+            )
+            self.dev.board.hw.flash_meta(
+                META=img,
+                wan=self.dev.wan,
+                lan=self.dev.lan,
+                nosh_image=not shell_enabled,
+            )
             return True
         except Exception as e:
             traceback.print_exc()
