@@ -70,6 +70,31 @@ def switch_erouter_mode(mode: str) -> str:
         _from_llc = re.findall(pattern, bootfile)
         _to_llc = str(_from_llc[0]) + _new_llc_index
         bootfile = re.sub(re.escape(_from_llc[0]), _to_llc, bootfile)
+    if mode in {"ipv4", "ipv6", "dual"}:
+        tr69_param = (
+            f"/* TR69 Management Server */\n\tVendorSpecific\n\t{{\n\t\t"
+            f"VendorIdentifier 0x{vendor_id};\n\t\teRouter\n\t\t{{\n\t\t\t"
+            f"TR69ManagementServer\n\t\t\t{{\n\t\t\t\tEnableCWMP 1;\n\t\t\t\t"
+            f'URL "http://acs_server.boardfarm.com:9675";\n\t\t\t\tACSOverride 1;'
+            f"\n\t\t\t}}\n\t\t}}\n\t}}\n\n\t/* MFG CVC Data */"
+        )
+        pattern = r".*MFG CVC Data.*"
+        bootfile = re.sub(pattern, tr69_param, bootfile)
+    if mode == "ipv6":
+        ipv6_params_to_add = (
+            f"VendorSpecific\n\t{{\n\t\tVendorIdentifier "
+            f"0x{vendor_id};\n\t\teRouter\n\t\t{{\n\t\t\tGenericTLV TlvCode 12 "
+            f'TlvString "Device.DSLite.Enable|boolean|true";'
+            f"\n\t\t\tGenericTLV TlvCode 12 TlvString "
+            f'"Device.DSLite.InterfaceSetting.1.Enable|boolean|true";\n\t\t\t'
+            f"GenericTLV TlvCode 12 TlvString "
+            f'"Device.DSLite.InterfaceSetting.1.X_LGI-COM_MssClampingEnable|boolean|true";'
+            f"\n\t\t\tGenericTLV TlvCode 12 TlvString "
+            f'"Device.DSLite.InterfaceSetting.1.X_LGI-COM_Tcpmss|unsigned|1420";'
+            f"\n\t\t}}\n\t}}\n\n\t/* MFG CVC Data */"
+        )
+        pattern = r".*MFG CVC Data.*"
+        bootfile = re.sub(pattern, ipv6_params_to_add, bootfile)
     if mode in {"disabled", "ipv4", "ipv6", "dual"}:
         # simply swap the value in the bootfile
         _from = "InitializationMode((\\s|\t){1,})\\d.*;"
