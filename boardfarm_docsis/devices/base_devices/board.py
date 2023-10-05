@@ -55,7 +55,7 @@ class DocsisCPEHw(DocsisInterface):
                 "shell_enabled", True
             )
             self.dev.board.hw.flash_meta(
-                META=img,
+                img,
                 wan=self.dev.wan,
                 lan=self.dev.lan,
                 nosh_image=not shell_enabled,
