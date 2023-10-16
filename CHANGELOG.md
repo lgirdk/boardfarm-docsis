@@ -1,3 +1,22 @@
+## 2023.42.0 (2023-10-16)
+
+### BREAKING CHANGE
+
+- BOARDFARM-3531
+- BOARDFARM-3531
+
+### Feat
+
+- flash image with no shell
+
+### Fix
+
+- **use_cases/boot_file_helper.py**: add dslite and tr69 params to bootfile
+
+### Refactor
+
+- update flash_meta signature
+
 ## 2023.39.0 (2023-09-29)
 
 ### Feat
