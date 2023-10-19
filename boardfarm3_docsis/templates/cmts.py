@@ -130,3 +130,14 @@ class CMTS(ABC):
         :rtype: str
         """
         raise NotImplementedError
+
+    @abstractmethod
+    def get_cm_channel_values(self, mac: str) -> dict[str, str]:
+        """Get the cm channel values.
+
+        :param mac: mac address of the cable modem
+        :type mac: str
+        :return: cm channel values
+        :rtype: dict[str, str]
+        """
+        raise NotImplementedError
