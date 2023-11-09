@@ -3,6 +3,7 @@ from typing import Optional
 
 from boardfarm.exceptions import CodeError
 from boardfarm.lib.DeviceManager import device_manager, get_device_by_name
+from boardfarm_lgi_shared.use_cases.online_usecases import is_board_online_after_reset
 
 
 def provision_board():
@@ -83,6 +84,11 @@ def _verify_cm_config_downloaded(boot_logs: str) -> bool:
     :rtype: bool
     """
     board = get_device_by_name("board")
+    if (
+        hasattr(board.sw, "verify_cm_cfg_file_read_log")
+        and is_board_online_after_reset()
+    ):
+        return board.sw.verify_cm_cfg_file_read_log()
     return board.sw.provisioning_messages["verify_cm_cfg_file_download"] in boot_logs
 
 
