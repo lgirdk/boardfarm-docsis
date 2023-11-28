@@ -306,7 +306,11 @@ def post_boot_env(config, env_helper, devices):
     eMTA_iface_status = env_helper.get_emta_interface_status()
     if eMTA_iface_status:
         devices.board.set_eMTA_interface(devices.board.mta_iface, eMTA_iface_status)
-    if env_helper.voice_enabled() and eMTA_iface_status != "down":
+    if (
+        env_helper.voice_enabled()
+        and eMTA_iface_status != "down"
+        and env_helper.get_software().get("shell_enabled", True)
+    ):
         devices.board.wait_for_mta_provisioning()
         register_fxs_details(getattr(devices, "FXS", []), devices.board)
 
