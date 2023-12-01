@@ -92,39 +92,103 @@ class MiniCMTS(CmtsTemplate):
 
     def connect(self) -> None:
         """This method is used to connect to cmts.
+
         Login to the cmts based on the connection type available
         :raises Exception: Unable to get prompt on Topvision device
         """
+        if not self.conn_cmd:
+            self._connect(
+                command="ssh",
+                args=[
+                    f"{self.username}@{self.ipaddr}",
+                    "-p",
+                    str(self.port),
+                    "-o",
+                    "StrictHostKeyChecking=no",
+                    "-o",
+                    "UserKnownHostsFile=/dev/null",
+                    "-o",
+                    "ServerAliveInterval=60",
+                    "-o",
+                    "ServerAliveCountMax=5",
+                ],
+                expect_patterns=[
+                    "yes/no",
+                    "assword:",
+                    "Last login",
+                    self.username + ".*'s password:",
+                ]
+                + self.prompt,
+            )
+        else:
+            self._connect(
+                command="telnet",
+                args=[f"{self.ipaddr}", str(self.port)],
+                expect_patterns=[f"ser2net port telnet,{self.port}"] + self.prompt,
+            )
+
+    def _common_setup(self, i: int) -> None:
+        try:
+            self.logfile_read = sys.stdout
+            if i == 0:
+                self.sendline("yes")
+                i = self.expect(["Last login", "assword:"])
+            if i in [1, 3]:
+                self.sendline(self.password)
+                self.expect(self.prompt[0])
+                self.sendline("enable")
+                self.expect(self.prompt[1])
+                self.additional_setup()
+            return
+        except pexpect.exceptions.TIMEOUT:
+            logger.error(
+                "Unable to get prompt on Topvision mini CMTS device due to timeout."
+            )
+            self.close()
+            self.pid = None
+        except pexpect.EOF as e:
+            logger.error(
+                "Something went wrong during CMTS initialisation. See exception below:"
+            )
+            logger.error(repr(e))
+            self.close()
+            self.pid = None
+        try:
+            self.logfile_read = sys.stdout
+            if i == 0:
+                self.sendline("yes")
+                i = self.expect(["Last login", "assword:"])
+            if i in [1, 3]:
+                self.sendline(self.password)
+                self.expect(self.prompt[0])
+                self.sendline("enable")
+                self.expect(self.prompt[1])
+                self.additional_setup()
+            return
+        except pexpect.exceptions.TIMEOUT:
+            logger.error(
+                "Unable to get prompt on Topvision mini CMTS device due to timeout."
+            )
+            self.close()
+            self.pid = None
+        except pexpect.EOF as e:
+            logger.error(
+                "Something went wrong during CMTS initialisation. See exception below:"
+            )
+            logger.error(repr(e))
+            self.close()
+            self.pid = None
+
+    def _connect(self, command: str, args: list, expect_patterns: list) -> None:
         for run in range(5):
             try:
                 bft_pexpect_helper.spawn.__init__(
                     self,
-                    command="ssh",
-                    args=[
-                        f"{self.username}@{self.ipaddr}",
-                        "-p",
-                        str(self.port),
-                        "-o",
-                        "StrictHostKeyChecking=no",
-                        "-o",
-                        "UserKnownHostsFile=/dev/null",
-                        "-o",
-                        "ServerAliveInterval=60",
-                        "-o",
-                        "ServerAliveCountMax=5",
-                    ],
+                    command=command,
+                    args=args,
                 )
                 try:
-                    i = self.expect(
-                        [
-                            "yes/no",
-                            "assword:",
-                            "Last login",
-                            self.username + ".*'s password:",
-                        ]
-                        + self.prompt,
-                        timeout=30,
-                    )
+                    i = self.expect(expect_patterns, timeout=30)
                 except PexpectErrorTimeout as err:
                     logger.error(err)
                     raise
@@ -145,32 +209,8 @@ class MiniCMTS(CmtsTemplate):
                 self.pid = None
                 sleep(5)  # take a moment before retrying
                 continue
-            try:
-                self.logfile_read = sys.stdout
-                if i == 0:
-                    self.sendline("yes")
-                    i = self.expect(["Last login", "assword:"])
-                if i in [1, 3]:
-                    self.sendline(self.password)
-                    self.expect(self.prompt[0])
-                    self.sendline("enable")
-                    self.expect(self.prompt[1])
-                    self.additional_setup()
-                return
-            except pexpect.exceptions.TIMEOUT:
-                logger.error(
-                    "Unable to get prompt on Topvision mini CMTS device due to timeout."
-                )
-                self.close()
-                self.pid = None
-            except pexpect.EOF as e:
-                logger.error(
-                    "Something went wrong during CMTS initialisation. See exception below:"
-                )
-                logger.error(repr(e))
-                self.close()
-                self.pid = None
-
+            self._common_setup(i)
+            return
         raise ConnectionRefused(f"Unable to connect to {self.name}.")
 
     def check_online(self, cm_mac: str) -> bool:
