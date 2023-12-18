@@ -36,6 +36,7 @@ class MiniCMTS(BoardfarmDevice, CMTS):
 
     def _additional_shell_setup(self) -> None:
         """Additional shell initialization steps."""
+        self._console.login_to_server(password=self._config.get("password", "admin"))
         self._console.execute_command("enable")
         # Change terminal length to inf in order to avoid pagination
         self._console.execute_command("terminal length 0")
@@ -56,8 +57,34 @@ class MiniCMTS(BoardfarmDevice, CMTS):
             shell_prompt=self._shell_prompt,
             save_console_logs=self._cmdline_args.save_console_logs,
         )
-        self._console.login_to_server(self._config.get("password", "admin"))
         self._additional_shell_setup()
+
+    async def _additional_shell_setup_async(self) -> None:
+        """Additional shell initialization steps."""
+        await self._console.login_to_server_async(
+            password=self._config.get("password", "admin"),
+        )
+        await self._console.execute_command_async("enable")
+        # Change terminal length to inf in order to avoid pagination
+        await self._console.execute_command_async("terminal length 0")
+        # Increase connection timeout until better solution
+        await self._console.execute_command_async("config terminal")
+        await self._console.execute_command_async("line vty")
+        await self._console.execute_command_async("exec-timeout 60")
+        await self._console.execute_command_async("end")
+
+    async def _connect_to_console_async(self) -> None:
+        self._console = connection_factory(
+            self._config.get("connection_type"),
+            f"{self.device_name}.console",
+            username=self._config.get("username", "admin"),
+            password=self._config.get("password", "admin"),
+            ip_addr=self._config.get("ipaddr"),
+            port=self._config.get("port", "22"),
+            shell_prompt=self._shell_prompt,
+            save_console_logs=self._cmdline_args.save_console_logs,
+        )
+        await self._additional_shell_setup_async()
 
     @hookimpl
     def boardfarm_server_boot(self) -> None:
@@ -74,6 +101,16 @@ class MiniCMTS(BoardfarmDevice, CMTS):
             self.device_type,
         )
         self._connect_to_console()
+
+    @hookimpl
+    async def boardfarm_skip_boot_async(self) -> None:
+        """Boot MiniCMTS device using the asyncio libs."""
+        _LOGGER.info(
+            "Initializing %s(%s) device with skip-boot option",
+            self.device_name,
+            self.device_type,
+        )
+        await self._connect_to_console_async()
 
     @hookimpl
     def boardfarm_shutdown_device(self) -> None:
