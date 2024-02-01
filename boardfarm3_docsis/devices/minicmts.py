@@ -56,6 +56,7 @@ class MiniCMTS(BoardfarmDevice, CMTS):
             shell_prompt=self._shell_prompt,
             save_console_logs=self._cmdline_args.save_console_logs,
         )
+        self._console.login_to_server(self._config.get("password", "admin"))
         self._additional_shell_setup()
 
     @hookimpl
