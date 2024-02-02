@@ -33,7 +33,7 @@ class "MTA" {
   match if substring (option vendor-class-identifier, 0, 4) = "pktc";
 }
 class "HOST" {
-  match if ((substring(option vendor-class-identifier,0,6) != "docsis") and (substring(option vendor-class-identifier,0,4) != "pktc"));
+  match if ((substring(option vendor-class-identifier,0,6) != "docsis") and (substring(option vendor-class-identifier,0,4) != "pktc"));  # noqa: E501
 }
 
 option space docsis-mta;
@@ -103,7 +103,7 @@ shared-network boardfarm {
     range ###OPEN_START_RANGE### ###OPEN_END_RANGE###;
     allow members of "HOST";
   }
-}"""  # noqa: E501
+}"""
 
 _DHCPV6_MASTER_CONFIG = """log-facility local1;
 preferred-lifetime 7200;
@@ -115,7 +115,7 @@ allow leasequery;
 prefix-length-mode prefer;
 
 option dhcp6.info-refresh-time 21600;
-option dhcp6.ia_pd code 25 = { integer 32, integer 32, integer 32, integer 16, integer 16, integer 32, integer 32, integer 8, ip6-address};
+option dhcp6.ia_pd code 25 = { integer 32, integer 32, integer 32, integer 16, integer 16, integer 32, integer 32, integer 8, ip6-address};  # noqa: E501
 option dhcp6.gateway code 32003 = ip6-address;
 option space docsis code width 2 length width 2;
 option docsis.device-type code 2 = text;
@@ -126,7 +126,7 @@ option docsis.device-id code 36 = string;
 option docsis.time-servers code 37 = array of ip6-address;
 option docsis.time-offset code 38 = signed integer 32;
 option docsis.cm-mac-address code 1026 = string;
-option docsis.PKTCBL-CCCV4 code 2170 = { integer 16, integer 16, ip-address, integer 16, integer 16, ip-address };
+option docsis.PKTCBL-CCCV4 code 2170 = { integer 16, integer 16, ip-address, integer 16, integer 16, ip-address };  # noqa: E501
 option docsis.acsserver code 40 = { integer 8, string };
 option vsio.docsis code 4491 = encapsulate docsis;
 
@@ -162,7 +162,7 @@ shared-network boardfarm {
       option docsis.PKTCBL-CCCV4 1 4 ###MTA_DHCP_SERVER1### 2 4 ###MTA_DHCP_SERVER2###;
       option docsis.time-offset ###TIMEZONE###;
     }
-"""  # noqa: E501
+"""
 
 _DHCPV6_MASTER_OPEN_NW_CONFIG = """    pool6 {
       range6 ###OPEN_NETWORK_V6_START### ###OPEN_NETWORK_V6_END###;
@@ -257,9 +257,10 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         erouter_ipv6_net_interface = ipaddress.IPv6Interface(
             self._config.get("erouter_net", "2001:dead:beef:e000::/51"),
         )
+        _prefix_len = erouter_ipv6_net_interface.network.prefixlen
         self._erouter_ipv6_network_list = list(
             erouter_ipv6_net_interface.network.subnets(
-                56 - erouter_ipv6_net_interface._prefixlen,  # type: ignore[attr-defined]  # noqa: E501, SLF001 # pylint: disable=line-too-long
+                56 - _prefix_len,
             ),
         )
         self._default_lease_time = 604800

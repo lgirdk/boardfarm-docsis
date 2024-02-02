@@ -135,6 +135,8 @@
         "PT003",  # allow scope=function to be explicitly passed to fixtures
         "SIM114", # simplify if-elif by AND/OR combinations
         "TD",     # would conflict with TODO highligther
+        "E501",   # long line ignore
+        "FIX002"  # we need to keep TODOs in the code
     ]
     select = ["ALL"]
 

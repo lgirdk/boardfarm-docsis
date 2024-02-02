@@ -1,7 +1,8 @@
 """Boardfarm DOCSIS CMTS device template."""
 
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
-from typing import Optional
 
 
 class CMTS(ABC):
@@ -43,7 +44,7 @@ class CMTS(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_cmts_ip_bundle(self, gw_ip: Optional[str] = None) -> str:
+    def get_cmts_ip_bundle(self, gw_ip: str | None = None) -> str:
         """Get CMTS bundle IP.
 
         Validate if Gateway IP is configured in CMTS and both are in same network.
@@ -77,7 +78,7 @@ class CMTS(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_ertr_ipv4(self, mac_address: str) -> Optional[str]:
+    def get_ertr_ipv4(self, mac_address: str) -> str | None:
         """Get erouter ipv4 from CMTS.
 
         :param mac_address: mac address of the cable modem
@@ -88,7 +89,7 @@ class CMTS(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_ertr_ipv6(self, mac_address: str) -> Optional[str]:
+    def get_ertr_ipv6(self, mac_address: str) -> str | None:
         """Get erouter ipv6 from CMTS.
 
         :param mac_address: mac address of the cable modem
@@ -99,7 +100,7 @@ class CMTS(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_mta_ipv4(self, mac_address: str) -> Optional[str]:
+    def get_mta_ipv4(self, mac_address: str) -> str | None:
         """Get the MTA IP from CMTS.
 
         :param mac_address: mac address of the cable modem
