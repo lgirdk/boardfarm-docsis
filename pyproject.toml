@@ -31,7 +31,6 @@
     [project.optional-dependencies]
         dev = [
             "black",
-            "commitizen>=2.20.0",
             "darglint",
             "flake8",
             "flake8-bugbear",
