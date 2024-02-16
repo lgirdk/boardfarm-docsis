@@ -238,11 +238,11 @@ class MiniCMTS(BoardfarmDevice, CMTS):
             _LOGGER.info("Cable modem is initializing: %s", status)
         elif "online" not in status:
             _LOGGER.info("Cable modem in unknown state: %s", status)
-        elif not ignore_bpi and re.search(r"online\(p(t|k)", status) is not None:
+        elif not ignore_bpi and re.search(r"online\(p(t|k)", status) is None:
             _LOGGER.info("Cable modem in BPI is disabled: %s", status)
-        elif not ignore_partial and re.search(r"p-online", status):
+        elif not ignore_partial and re.search(r"p-online", status) is not None:
             _LOGGER.info("Cable modem in partial service: %s", status)
-        elif not ignore_cpe and re.search(r"online\(d", status):
+        elif not ignore_cpe and re.search(r"online\(d", status) is not None:
             _LOGGER.info("Cable modem is prohibited from forwarding data: %s", status)
         else:
             _LOGGER.info("Cable modem is online: %s", status)
