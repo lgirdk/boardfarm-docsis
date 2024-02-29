@@ -13,6 +13,7 @@ from boardfarm3.exceptions import (
     ContingencyCheckError,
     FileLockTimeout,
 )
+from boardfarm3.lib.boardfarm_pexpect import BoardfarmPexpect
 from boardfarm3.lib.utils import get_nth_mac_address
 
 from boardfarm3_docsis.templates.provisioner import Provisioner
@@ -315,6 +316,15 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         if "FOO" not in self._console.execute_command("echo FOO"):
             err_msg = "ISCProvisioner device console in not responding"
             raise ContingencyCheckError(err_msg)
+
+    @property
+    def console(self) -> BoardfarmPexpect:
+        """Returns Provisioner console.
+
+        :return: console
+        :rtype: BoardfarmPexpect
+        """
+        return self._console
 
     def _get_timezone_offset(self) -> int:
         """Get time zone offset.

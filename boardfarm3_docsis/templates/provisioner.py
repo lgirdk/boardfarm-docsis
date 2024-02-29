@@ -2,11 +2,23 @@
 
 from abc import ABC, abstractmethod
 
+from boardfarm3.lib.boardfarm_pexpect import BoardfarmPexpect
+
 # pylint: disable=too-few-public-methods
 
 
 class Provisioner(ABC):
     """Boardfarm DOCSIS provisioner device template."""
+
+    @property
+    @abstractmethod
+    def console(self) -> BoardfarmPexpect:
+        """Returns Provisioner console.
+
+        :return: console
+        :rtype: BoardfarmPexpect
+        """
+        raise NotImplementedError
 
     @abstractmethod
     def provision_cable_modem(  # noqa: PLR0913
