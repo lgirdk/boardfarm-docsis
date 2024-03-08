@@ -43,6 +43,7 @@
             "nox",
             "pre-commit",
             "pylint",
+            "ruff",
         ]
         doc = ["sphinx"]
         test = [
@@ -177,9 +178,6 @@
     # Same as Black.
     line-length = 88
 
-    # Allow unused variables when underscore-prefixed.
-    dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
-
     target-version = "py39"
 
     unfixable = [
@@ -191,6 +189,9 @@
             "S101",   # we do use assert in unit test written for pytest
         ]
 
+    [tool.ruff.format]
+        # Enable reformatting of code snippets in docstrings.
+        docstring-code-format = true
 
     [tool.ruff.mccabe]
         # Unlike Flake8, default to a complexity level of 10.
