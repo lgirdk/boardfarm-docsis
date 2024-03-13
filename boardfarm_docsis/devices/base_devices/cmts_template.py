@@ -348,6 +348,14 @@ class CmtsTemplate(
         """
         raise NotImplementedError("CMTS does not support tcpdump command")
 
+    def remove_file_from_router(self, filename: str):
+        """Delete a file from the router given the file name
+
+        :param filename: name of file to remove
+        :type filename: str
+        """
+        raise NotImplementedError("CMTS remove file from router is not implemented")
+
     def tcpdump_read_pcap(
         self,
         fname: str,
