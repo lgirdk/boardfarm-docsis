@@ -160,9 +160,7 @@ class MiniCMTS(BoardfarmDevice, CMTS):
             index_col="MAC_ADDRESS",
             dtype=None,
         )
-        return (
-            csv.loc[mac_address][column_name] if mac_address in csv.index else None
-        )  # pylint: disable=no-member # known issue
+        return csv.loc[mac_address][column_name] if mac_address in csv.index else None  # pylint: disable=no-member # known issue
 
     def _get_cable_modem_cpe_table_data(self, cpe_mac: str) -> pd.DataFrame:
         """Return cable modem cpe table data of cpe with given mac.

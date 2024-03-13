@@ -16,8 +16,8 @@ def lint(session: nox.Session) -> None:
     # if we install . with --pre then not just the pre-releases of boardfarm packages
     # are picked up
     session.install("--upgrade", ".[dev]")
-    session.run("black", ".", "--check")
-    session.run("isort", ".", "--check-only")
+    session.run("ruff", "format", "--check", ".")
+    session.run("ruff", "check", ".")
     session.run("flake8", ".")
     session.run("mypy", "boardfarm3_docsis")
 

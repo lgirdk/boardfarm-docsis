@@ -449,9 +449,7 @@ class ISCProvisioner(LinuxDevice, Provisioner):
                 -1
             ].network_address,
             # pylint: disable=protected-access
-            "###EROUTER_PREFIX###": self._erouter_ipv6_network_list[  # noqa: SLF001
-                -1
-            ]._prefixlen,  # type: ignore[attr-defined]
+            "###EROUTER_PREFIX###": self._erouter_ipv6_network_list[-1]._prefixlen,  # type: ignore[attr-defined]  # noqa: SLF001  # pylint: disable=[line-too-long]
         }
         keywords_to_replace.update(self._get_common_keywords_to_replace())
         dhcp_ipv6_master_config = _DHCPV6_MASTER_CONFIG
