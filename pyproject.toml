@@ -30,7 +30,7 @@
 
     [project.optional-dependencies]
         dev = [
-            "black",
+            "black==24.2.0",
             "darglint",
             "flake8",
             "flake8-bugbear",
@@ -43,7 +43,7 @@
             "nox",
             "pre-commit",
             "pylint",
-            "ruff",
+            "ruff==v0.2.2",
         ]
         doc = ["sphinx"]
         test = [
