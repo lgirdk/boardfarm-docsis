@@ -714,6 +714,15 @@ class MiniCMTS(CmtsTemplate):
             additional_args=additional_args,
         )
 
+    def remove_file_from_router(self, filename: str):
+        """Delete a file from the router given the file name
+
+        :param filename: name of file to remove
+        :type filename: str
+        """
+        self.__router.sendline(f"rm {filename}")
+        self.__router.expect_prompt()
+
     def tcpdump_read_pcap(
         self,
         fname: str,
