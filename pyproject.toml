@@ -140,14 +140,7 @@
     select = ["ALL"]
 
     # Allow autofix for all enabled rules (when `--fix`) is provided.
-    fixable = [
-        "COM",
-        "PIE",
-        "PT",
-        "RUF",
-        "SIM",
-        "UP",
-    ]
+    fixable = ["ALL"]
 
     # Exclude a variety of commonly ignored directories.
     exclude = [
