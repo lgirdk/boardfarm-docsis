@@ -4,6 +4,7 @@ import ipaddress
 import logging
 import re
 from argparse import Namespace
+from pathlib import Path
 
 import pexpect
 from boardfarm3 import hookimpl
@@ -596,8 +597,8 @@ class ISCProvisioner(LinuxDevice, Provisioner):
             self._update_dhcp_config(
                 cm_mac,
                 tftp_ipv4_addr,
-                cm_bootfile,
-                mta_bootfile,
+                Path(cm_bootfile).name,
+                Path(mta_bootfile).name,
                 False,
             )
             # Note: MTA over IPv6 not yet supported!
