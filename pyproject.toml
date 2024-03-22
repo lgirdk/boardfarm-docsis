@@ -42,7 +42,7 @@
             "nox",
             "pre-commit",
             "pylint",
-            "ruff==v0.2.2",
+            "ruff==v0.3.3",
         ]
         doc = ["sphinx"]
         test = [
