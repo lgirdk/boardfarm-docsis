@@ -98,6 +98,11 @@ repos:
             name: ruff-isort
           - id: ruff-format
           - id: ruff
+    - repo: https://github.com/akaihola/darglint2
+      rev: v1.8.2
+      hooks:
+          - id: darglint2
+            args: [-x, boardfarm3_docsis]
     - repo: local
       hooks:
           - id: nox
