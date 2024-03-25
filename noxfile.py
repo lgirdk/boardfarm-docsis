@@ -11,7 +11,10 @@ nox.options.error_on_external_run = True
 
 @nox.session(python=_PYTHON_VERSIONS)
 def lint(session: nox.Session) -> None:
-    """Lint boardfarm-docsis."""
+    """Lint boardfarm-docsis.
+
+    # noqa: DAR101: - session
+    """
     session.install("--upgrade", "--pre", "boardfarm3")
     # if we install . with --pre then not just the pre-releases of boardfarm packages
     # are picked up
@@ -24,7 +27,10 @@ def lint(session: nox.Session) -> None:
 
 @nox.session(python=_PYTHON_VERSIONS)
 def pylint(session: nox.Session) -> None:
-    """Lint boardfarm-docsis using pylint without dev dependencies."""
+    """Lint boardfarm-docsis using pylint without dev dependencies.
+
+    # noqa: DAR101: - session
+    """
     session.install("--upgrade", "--pre", "boardfarm3")
     session.install("--upgrade", ".", "pylint")
     session.run("pylint", "boardfarm3_docsis")

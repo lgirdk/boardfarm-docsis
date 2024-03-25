@@ -102,7 +102,7 @@ repos:
       rev: v1.8.2
       hooks:
           - id: darglint2
-            args: [-x, boardfarm3_docsis]
+            args: [boardfarm3_docsis]
     - repo: local
       hooks:
           - id: nox
