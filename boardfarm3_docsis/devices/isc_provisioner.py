@@ -305,15 +305,16 @@ class ISCProvisioner(LinuxDevice, Provisioner):
 
     @hookimpl
     def contingency_check(self) -> None:
-        """Make sure the ISCProvisioner is working fine before use."""
+        """Make sure the ISCProvisioner is working fine before use.
+
+        :raises ContingencyCheckError: when device is not responding
+        """
         if self._cmdline_args.skip_contingency_checks:
             return
         _LOGGER.info("Contingency check %s(%s)", self.device_name, self.device_type)
         if "FOO" not in self._console.execute_command("echo FOO"):
             err_msg = "ISCProvisioner device console in not responding"
-            raise ContingencyCheckError(
-                err_msg,
-            )
+            raise ContingencyCheckError(err_msg)
 
     def _get_timezone_offset(self) -> int:
         """Get time zone offset.
