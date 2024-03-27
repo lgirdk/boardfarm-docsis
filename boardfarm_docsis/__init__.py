@@ -1,5 +1,5 @@
 """An add-on to boardfarm that contains DOCSIS specific libraries"""
-__version__ = "2024.11.0"
+__version__ = "2024.13.0"
 
 from . import devices  # noqa: F401
 
