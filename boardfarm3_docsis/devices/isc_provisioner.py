@@ -602,7 +602,9 @@ class ISCProvisioner(LinuxDevice, Provisioner):
                 False,
             )
             # Note: MTA over IPv6 not yet supported!
-            self._update_dhcp_config(cm_mac, tftp_ipv6_addr, cm_bootfile, "", True)
+            self._update_dhcp_config(
+                cm_mac, tftp_ipv6_addr, Path(cm_bootfile).name, "", True
+            )
             self._restart_dhcp_service()
         finally:
             self._release_device_file_lock(lock_file)
