@@ -378,6 +378,7 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         prov_network_ipv4 = ipaddress.IPv4Network(
             self._config.get("prov_network", "192.168.3.0/24"),
         )
+        pool_size = self._config.get("pool_size", 120)
         syslog_server = self._config.get("syslog_server", self._prov_ipv4_address)
         time_server_ipv4 = self._config.get("time_server", self._prov_ipv4_address)
         keywords_to_replace = {
@@ -389,19 +390,19 @@ class ISCProvisioner(LinuxDevice, Provisioner):
             "###CM_IPV4###": cm_network_ipv4[0],
             "###CM_NETMASK###": cm_network_ipv4.netmask,
             "###CM_START_RANGE###": cm_network_ipv4[5],
-            "###CM_END_RANGE###": cm_network_ipv4[120],
+            "###CM_END_RANGE###": cm_network_ipv4[5 + pool_size],
             "###CM_GATEWAY###": cm_gateway_ipv4,
             "###CM_BROADCAST###": cm_network_ipv4[-1],
             "###MTA_IP###": mta_network_ipv4[0],
             "###MTA_NETMASK###": mta_network_ipv4.netmask,
             "###MTA_START_RANGE###": mta_network_ipv4[5],
-            "###MTA_END_RANGE###": mta_network_ipv4[120],
+            "###MTA_END_RANGE###": mta_network_ipv4[5 + pool_size],
             "###MTA_GATEWAY###": self._mta_gateway_ipv4,
             "###MTA_BROADCAST###": mta_network_ipv4[-1],
             "###OPEN_IP###": open_network_ipv4[0],
             "###OPEN_NETMASK###": open_network_ipv4.netmask,
             "###OPEN_START_RANGE###": open_network_ipv4[5],
-            "###OPEN_END_RANGE###": open_network_ipv4[120],
+            "###OPEN_END_RANGE###": open_network_ipv4[5 + pool_size],
             "###OPEN_GATEWAY###": open_gateway_ipv4,
             "###OPEN_BROADCAST###": open_network_ipv4[-1],
             "###WAN_IP###": self._prov_ipv4_address,
