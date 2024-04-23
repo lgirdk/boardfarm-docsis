@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from functools import cached_property
 
 from boardfarm3.lib.boardfarm_pexpect import BoardfarmPexpect
+from boardfarm3.lib.networking import IptablesFirewall
 
 # pylint: disable=too-few-public-methods
 
@@ -62,5 +63,15 @@ class Provisioner(ABC):
         :type tftp_ipv4_addr: str
         :param tftp_ipv6_addr: tftp server ipv6 address
         :type tftp_ipv6_addr: str
+        """
+        raise NotImplementedError
+
+    @property
+    @abstractmethod
+    def firewall(self) -> IptablesFirewall:
+        """Returns Firewall utility instance.
+
+        :return: firewall component instance with console object
+        :rtype: IptablesFirewall
         """
         raise NotImplementedError

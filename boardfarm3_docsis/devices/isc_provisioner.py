@@ -15,6 +15,7 @@ from boardfarm3.exceptions import (
     FileLockTimeout,
 )
 from boardfarm3.lib.boardfarm_pexpect import BoardfarmPexpect
+from boardfarm3.lib.networking import IptablesFirewall
 from boardfarm3.lib.utils import get_nth_mac_address
 
 from boardfarm3_docsis.templates.provisioner import Provisioner
@@ -236,6 +237,7 @@ _DHCPV4_MTA_CONFIG = """host mta-###BOARD_NAME### {
 """
 
 
+# pylint: disable-next=too-many-instance-attributes
 class ISCProvisioner(LinuxDevice, Provisioner):
     """ISC DHCP cable modem provisioner."""
 
@@ -272,12 +274,14 @@ class ISCProvisioner(LinuxDevice, Provisioner):
             "4f:41:52:44:46:41:52:4d:03:43:4F:4D:00",
         )
         self._mta_gateway_ipv4 = self._config.get("mta_gateway", "192.168.201.1")
+        self._firewall: IptablesFirewall = None
 
     @hookimpl
     def boardfarm_server_boot(self) -> None:
         """Boardfarm hook implementation to boot ISC provisioner."""
         _LOGGER.info("Booting %s(%s) device", self.device_name, self.device_type)
         self._connect()
+        self._firewall = IptablesFirewall(self._console)
 
     @hookimpl
     def boardfarm_skip_boot(self) -> None:
@@ -288,6 +292,7 @@ class ISCProvisioner(LinuxDevice, Provisioner):
             self.device_type,
         )
         self._connect()
+        self._firewall = IptablesFirewall(self._console)
 
     @hookimpl
     async def boardfarm_skip_boot_async(self) -> None:
@@ -298,6 +303,7 @@ class ISCProvisioner(LinuxDevice, Provisioner):
             self.device_type,
         )
         await self._connect_async()
+        self._firewall = IptablesFirewall(self._console)
 
     @hookimpl
     def boardfarm_shutdown_device(self) -> None:
@@ -683,3 +689,12 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         """
         self._console.sendline(f"cat > {config_path} << EOF\n{config}\nEOF")
         self._console.expect(self._shell_prompt)
+
+    @property
+    def firewall(self) -> IptablesFirewall:
+        """Firewall component instance.
+
+        :return: firewall utility instance with console object
+        :rtype: IptablesFirewall
+        """
+        return self._firewall
