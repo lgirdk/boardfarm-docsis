@@ -137,7 +137,9 @@ class MiniCMTS(CmtsTemplate):
                 self.sendline(self.password)
                 self.expect(self.prompt[0])
                 self.sendline("enable")
-                self.expect(self.prompt[1])
+                if self.expect([self.prompt[1], "assword:"]) == 1:
+                    self.sendline(self.password)
+                    self.expect(self.prompt[1])
                 self.additional_setup()
             return
         except pexpect.exceptions.TIMEOUT:
