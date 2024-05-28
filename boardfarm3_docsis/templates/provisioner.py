@@ -75,3 +75,9 @@ class Provisioner(ABC):
         :rtype: IptablesFirewall
         """
         raise NotImplementedError
+
+    @property
+    @abstractmethod
+    def iface_dut(self) -> str:
+        """Name of the interface that is connected to DUT."""
+        raise NotImplementedError

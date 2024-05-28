@@ -333,6 +333,15 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         """
         return self._console
 
+    @property
+    def iface_dut(self) -> str:
+        """Name of the interface that is connected to DUT.
+
+        :return: name of the dut interface
+        :rtype: str
+        """
+        return self.eth_interface
+
     def _get_timezone_offset(self) -> int:
         """Get time zone offset.
 
