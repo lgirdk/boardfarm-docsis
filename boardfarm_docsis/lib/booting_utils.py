@@ -47,7 +47,7 @@ def register_fxs_details(fxs_devices, board):
         print(colored("MTA is not provisioned properly!!", color="red", attrs=["bold"]))
     for fxs in fxs_devices:
         try:
-            fxs.own_number, fxs.tcid = board.get_fxs_details(fxs.fxs_port)
+            _, fxs.tcid = board.get_fxs_details(fxs.fxs_port)
             fxs.gw = mta_ip
         except CodeError as e:
             raise CodeError(f"FXS registration failure.\nReason:{e}")
