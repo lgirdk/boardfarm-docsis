@@ -707,3 +707,10 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         :rtype: IptablesFirewall
         """
         return self._firewall
+
+
+if __name__ == "__main__":
+    # stubbed instantation of the device
+    # this would throw a linting issue in case the device does not follow the template
+
+    ISCProvisioner(config={}, cmdline_args=Namespace())

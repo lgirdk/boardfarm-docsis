@@ -449,3 +449,11 @@ class MiniCMTS(BoardfarmDevice, CMTS):
         :rtype: dict[str, str]
         """
         return self._get_cm_channel_bonding_detail(mac)
+
+
+if __name__ == "__main__":
+    # stubbed instantation of the device
+    # this would throw a linting issue in case the device does not follow the template
+    from argparse import Namespace
+
+    MiniCMTS(config={}, cmdline_args=Namespace())
