@@ -1,26 +1,15 @@
 """Boardfarm DOCSIS provisioner device template."""
 
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from functools import cached_property
 
-from boardfarm3.lib.boardfarm_pexpect import BoardfarmPexpect
-from boardfarm3.lib.networking import IptablesFirewall
+from boardfarm3.templates.provisioner import Provisioner as BaseProvisioner
 
 # pylint: disable=too-few-public-methods
 
 
-class Provisioner(ABC):
+class Provisioner(BaseProvisioner):
     """Boardfarm DOCSIS provisioner device template."""
-
-    @property
-    @abstractmethod
-    def console(self) -> BoardfarmPexpect:
-        """Returns Provisioner console.
-
-        :return: console
-        :rtype: BoardfarmPexpect
-        """
-        raise NotImplementedError
 
     @cached_property
     @abstractmethod
@@ -64,20 +53,4 @@ class Provisioner(ABC):
         :param tftp_ipv6_addr: tftp server ipv6 address
         :type tftp_ipv6_addr: str
         """
-        raise NotImplementedError
-
-    @property
-    @abstractmethod
-    def firewall(self) -> IptablesFirewall:
-        """Returns Firewall utility instance.
-
-        :return: firewall component instance with console object
-        :rtype: IptablesFirewall
-        """
-        raise NotImplementedError
-
-    @property
-    @abstractmethod
-    def iface_dut(self) -> str:
-        """Name of the interface that is connected to DUT."""
         raise NotImplementedError

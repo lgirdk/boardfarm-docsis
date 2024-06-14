@@ -15,6 +15,11 @@ from boardfarm3.exceptions import (
     FileLockTimeout,
 )
 from boardfarm3.lib.boardfarm_pexpect import BoardfarmPexpect
+from boardfarm3.lib.custom_typing.dhcp import (
+    DHCPServicePools,
+    DHCPv4Options,
+    DHCPv6Options,
+)
 from boardfarm3.lib.networking import IptablesFirewall
 from boardfarm3.lib.utils import get_nth_mac_address
 
@@ -624,6 +629,54 @@ class ISCProvisioner(LinuxDevice, Provisioner):
             self._restart_dhcp_service()
         finally:
             self._release_device_file_lock(lock_file)
+
+    def provision_cpe(
+        self,
+        cpe_mac: str,
+        dhcpv4_options: dict[DHCPServicePools, DHCPv4Options],
+        dhcpv6_options: dict[DHCPServicePools, DHCPv6Options],
+    ) -> None:
+        """Provision the CPE.
+
+        Adds a DHCP Host reservation in the provisioner.
+
+        The host reservation can further be configured to also provide
+        custom DHCP option data, depending on the option requested as part
+        of the ```dhcpv4_option``` and ```dhcpv6_options``` arguments.
+
+        .. code-block:: python
+
+            mac = "AA:BB:CC:DD:EE:AA"
+            provisioner = device_manager.get_device_by_type(Provisioner)
+
+            # Provision a CPE MAC with default DHCP options
+            provisioner.provision_cpe(
+                cpe_mac=mac,
+                dhcpv4_options={},
+                dhcpv6_options={},
+            )
+
+            # Provision a CPE MAC with custom DHCP options
+            # Note: This is a partial configuration.
+            # If only partial details are provided, device class
+            # will fill the remaining option data with defaults
+            dhcpv4_options = {
+                "data": {"dns-server": "x.x.x.x"},
+                "voice": {"ntp-server": "y.y.y.y"},
+            }
+            provisioner.provision_cpe(
+                cpe_mac=mac, dhcpv4_options=dhcpv4_options, dhcpv6_options={}
+            )
+
+        :param cpe_mac: CPE mac address
+        :type cpe_mac: str
+        :param dhcpv4_options: DHCPv4 Options with ACS, NTP, DNS details
+        :type dhcpv4_options: dict[DHCPServicePools, DHCPv4Options]
+        :param dhcpv6_options: DHCPv6 Options with ACS, NTP, DNS details
+        :type dhcpv6_options: dict[DHCPServicePools, DHCPv6Options]
+        :raises NotImplementedError: Not Implemented for docsis provisioner
+        """
+        raise NotImplementedError
 
     def _restart_dhcp_service(self) -> None:
         dhcp_service_path = "/etc/init.d/isc-dhcp-server"
