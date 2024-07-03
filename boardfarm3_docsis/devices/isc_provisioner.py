@@ -14,6 +14,7 @@ from boardfarm3.exceptions import (
     ContingencyCheckError,
     FileLockTimeout,
 )
+from boardfarm3.lib.boardfarm_config import BoardfarmConfig
 from boardfarm3.lib.boardfarm_pexpect import BoardfarmPexpect
 from boardfarm3.lib.custom_typing.dhcp import (
     DHCPServicePools,
@@ -280,33 +281,49 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         )
         self._mta_gateway_ipv4 = self._config.get("mta_gateway", "192.168.201.1")
         self._firewall: IptablesFirewall = None
+        self.station_no = -1
 
     @hookimpl
-    def boardfarm_server_boot(self) -> None:
-        """Boardfarm hook implementation to boot ISC provisioner."""
+    def boardfarm_server_boot(self, config: BoardfarmConfig) -> None:
+        """Boardfarm hook implementation to boot ISC provisioner.
+
+        :param config: inventory and environment config object
+        :type config: BoardfarmConfig
+        """
         _LOGGER.info("Booting %s(%s) device", self.device_name, self.device_type)
+        self.station_no = config.get_board_station_number()
         self._connect()
         self._firewall = IptablesFirewall(self._console)
 
     @hookimpl
-    def boardfarm_skip_boot(self) -> None:
-        """Boardfarm hook implementation to skip boot ISC provisioner."""
+    def boardfarm_skip_boot(self, config: BoardfarmConfig) -> None:
+        """Boardfarm hook implementation to skip boot ISC provisioner.
+
+        :param config: inventory and environment config object
+        :type config: BoardfarmConfig
+        """
         _LOGGER.info(
             "Initializing %s(%s) device with skip-boot option",
             self.device_name,
             self.device_type,
         )
+        self.station_no = config.get_board_station_number()
         self._connect()
         self._firewall = IptablesFirewall(self._console)
 
     @hookimpl
-    async def boardfarm_skip_boot_async(self) -> None:
-        """Boardfarm hook async implementation to skip boot ISC provisioner."""
+    async def boardfarm_skip_boot_async(self, config: BoardfarmConfig) -> None:
+        """Boardfarm hook async implementation to skip boot ISC provisioner.
+
+        :param config: inventory and environment config object
+        :type config: BoardfarmConfig
+        """
         _LOGGER.info(
             "Initializing %s(%s) device with skip-boot option",
             self.device_name,
             self.device_type,
         )
+        self.station_no = config.get_board_station_number()
         await self._connect_async()
         self._firewall = IptablesFirewall(self._console)
 
@@ -505,7 +522,6 @@ class ISCProvisioner(LinuxDevice, Provisioner):
             self._config.get("erouter_fixed_ip_start"),
         )
         erouter_mac = get_nth_mac_address(cm_mac, 2)
-        station_no = int(self._cmdline_args.board_name.split("-")[-1])
         keywords_to_replace = {
             "###PROV_IPV4###": self._prov_ipv4_address,
             "###PROV_IPV6###": self._prov_ipv6_address,
@@ -515,8 +531,8 @@ class ISCProvisioner(LinuxDevice, Provisioner):
             "###EROUTER_MAC_ADDRESS###": erouter_mac,
             "###DEFAULT_LEASE_TIME###": self._default_lease_time,
             "###MAX_LEASE_TIME###": self._default_lease_time,
-            "###FIXED_PREFIX_IPV6###": self._erouter_ipv6_network_list[station_no],
-            "###FIXED_ADDRESS_IPV6###": erouter_fixed_ipv6_start.ip + station_no,
+            "###FIXED_PREFIX_IPV6###": self._erouter_ipv6_network_list[self.station_no],
+            "###FIXED_ADDRESS_IPV6###": erouter_fixed_ipv6_start.ip + self.station_no,
         }
         keywords_to_replace.update(self._get_common_keywords_to_replace())
         return self._replace_keywords_from_string(
