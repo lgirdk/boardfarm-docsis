@@ -1,3 +1,9 @@
+## 2024.29.0 (2024-07-18)
+
+### Fix
+
+- **lib/booting_utils.py**: correct register fxs details util
+
 ## 2024.27.0 (2024-07-03)
 
 ## 2024.25.0 (2024-06-20)
