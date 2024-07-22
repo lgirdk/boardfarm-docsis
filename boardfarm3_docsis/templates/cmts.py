@@ -3,6 +3,10 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from boardfarm3.lib.boardfarm_pexpect import BoardfarmPexpect
 
 
 class CMTS(ABC):
@@ -140,5 +144,15 @@ class CMTS(ABC):
         :type mac: str
         :return: cm channel values
         :rtype: dict[str, str]
+        """
+        raise NotImplementedError
+
+    @property
+    @abstractmethod
+    def console(self) -> BoardfarmPexpect:
+        """Returns CMTS console.
+
+        :return: console
+        :rtype: BoardfarmPexpect
         """
         raise NotImplementedError

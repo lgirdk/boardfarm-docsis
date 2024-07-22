@@ -14,6 +14,7 @@ from boardfarm3 import hookimpl
 from boardfarm3.devices.base_devices.boardfarm_device import BoardfarmDevice
 from boardfarm3.exceptions import ConfigurationFailure, DeviceNotFound
 from boardfarm3.lib.connection_factory import connection_factory
+from boardfarm3.lib.shell_prompt import DEFAULT_BASH_SHELL_PROMPT_PATTERN
 from boardfarm3.lib.utils import get_nth_mac_address
 
 from boardfarm3_docsis.templates.cmts import CMTS
@@ -37,7 +38,9 @@ class MiniCMTS(BoardfarmDevice, CMTS):
         """
         super().__init__(config, cmdline_args)
         self._console: BoardfarmPexpect = None
+        self._rtr_console: BoardfarmPexpect = None
         self._shell_prompt = ["Topvision(.*)>", "Topvision(.*)#"]
+        self._router_shell_prompt = [DEFAULT_BASH_SHELL_PROMPT_PATTERN]
 
     def _additional_shell_setup(self) -> None:
         """Additional shell initialization steps."""
@@ -63,6 +66,19 @@ class MiniCMTS(BoardfarmDevice, CMTS):
             save_console_logs=self._cmdline_args.save_console_logs,
         )
         self._additional_shell_setup()
+
+    def _connect_to_rtr_console(self) -> None:
+        """Create FRR router connection."""
+        self._rtr_console = connection_factory(
+            connection_type=self._config.get("connection_type"),
+            connection_name="FRR_router",
+            username=self._config.get("router_username", "root"),
+            password=self._config.get("router_password", "bigfoot1"),
+            ip_addr=self._config.get("router_ipaddr", ""),
+            port=self._config.get("router_port", ""),
+            shell_prompt=self._router_shell_prompt,
+        )
+        self._rtr_console.login_to_server()
 
     async def _additional_shell_setup_async(self) -> None:
         """Additional shell initialization steps."""
@@ -91,11 +107,25 @@ class MiniCMTS(BoardfarmDevice, CMTS):
         )
         await self._additional_shell_setup_async()
 
+    async def _connect_to_rtr_console_async(self) -> None:
+        """Create FRR router connection."""
+        self._rtr_console = connection_factory(
+            connection_type=self._config.get("connection_type"),
+            connection_name="FRR_router",
+            username=self._config.get("router_username", "root"),
+            password=self._config.get("router_password", "bigfoot1"),
+            ip_addr=self._config.get("router_ipaddr", ""),
+            port=self._config.get("router_port", ""),
+            shell_prompt=self._router_shell_prompt,
+        )
+        await self._rtr_console.login_to_server()
+
     @hookimpl
     def boardfarm_server_boot(self) -> None:
         """Boot MiniCMTS device."""
         _LOGGER.info("Booting %s(%s) device", self.device_name, self.device_type)
         self._connect_to_console()
+        self._connect_to_rtr_console()
 
     @hookimpl
     def boardfarm_skip_boot(self) -> None:
@@ -106,6 +136,7 @@ class MiniCMTS(BoardfarmDevice, CMTS):
             self.device_type,
         )
         self._connect_to_console()
+        self._connect_to_rtr_console()
 
     @hookimpl
     async def boardfarm_skip_boot_async(self) -> None:
@@ -116,16 +147,22 @@ class MiniCMTS(BoardfarmDevice, CMTS):
             self.device_type,
         )
         await self._connect_to_console_async()
+        await self._connect_to_rtr_console_async()
 
     @hookimpl
     def boardfarm_shutdown_device(self) -> None:
         """Close all the connection to MiniCMTS."""
         _LOGGER.info("Shutdown %s(%s) device", self.device_name, self.device_type)
+        if self._rtr_console is not None:
+            self._rtr_console.close()
+            self._rtr_console = None
         if self._console is not None:
             self._console.close()
             self._console = None
 
-    def _get_cable_modem_table_data(self, mac_address: str, column_name: str) -> str:
+    def _get_cable_modem_table_data(
+        self, mac_address: str, column_name: str
+    ) -> str | None:
         """Get given cable modem information on CMTS.
 
         :param mac_address: cable modem mac address
@@ -160,7 +197,9 @@ class MiniCMTS(BoardfarmDevice, CMTS):
             index_col="MAC_ADDRESS",
             dtype=None,
         )
-        return csv.loc[mac_address][column_name] if mac_address in csv.index else None  # pylint: disable=no-member # known issue
+        return (
+            str(csv.loc[mac_address][column_name]) if mac_address in csv.index else None
+        )  # pylint: disable=no-member # known issue
 
     def _get_cable_modem_cpe_table_data(self, cpe_mac: str) -> pd.DataFrame:
         """Return cable modem cpe table data of cpe with given mac.
@@ -449,6 +488,18 @@ class MiniCMTS(BoardfarmDevice, CMTS):
         :rtype: dict[str, str]
         """
         return self._get_cm_channel_bonding_detail(mac)
+
+    @property
+    def console(self) -> BoardfarmPexpect:
+        """Returns FRR router console.
+
+        Since CMTS does not support tcpdump, mini cmts router is required for tcpdump,
+         this console is used in use cases for operations such as tcpdump capture.
+
+        :return: console
+        :rtype: BoardfarmPexpect
+        """
+        return self._rtr_console
 
 
 if __name__ == "__main__":
