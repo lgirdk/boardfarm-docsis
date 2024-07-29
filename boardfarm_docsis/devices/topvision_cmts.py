@@ -128,58 +128,19 @@ class MiniCMTS(CmtsTemplate):
             )
 
     def _common_setup(self, i: int) -> None:
-        try:
-            self.logfile_read = sys.stdout
-            if i == 0:
-                self.sendline("yes")
-                i = self.expect(["Last login", "assword:"])
-            if i in [1, 3]:
+        self.logfile_read = sys.stdout
+        if i == 0:
+            self.sendline("yes")
+            i = self.expect(["Last login", "assword:"])
+        if i in [1, 3]:
+            self.sendline(self.password)
+            self.expect(self.prompt[0])
+            self.sendline("enable")
+            if self.expect([self.prompt[1], "assword:"]) == 1:
                 self.sendline(self.password)
-                self.expect(self.prompt[0])
-                self.sendline("enable")
-                if self.expect([self.prompt[1], "assword:"]) == 1:
-                    self.sendline(self.password)
-                    self.expect(self.prompt[1])
-                self.additional_setup()
-            return
-        except pexpect.exceptions.TIMEOUT:
-            logger.error(
-                "Unable to get prompt on Topvision mini CMTS device due to timeout."
-            )
-            self.close()
-            self.pid = None
-        except pexpect.EOF as e:
-            logger.error(
-                "Something went wrong during CMTS initialisation. See exception below:"
-            )
-            logger.error(repr(e))
-            self.close()
-            self.pid = None
-        try:
-            self.logfile_read = sys.stdout
-            if i == 0:
-                self.sendline("yes")
-                i = self.expect(["Last login", "assword:"])
-            if i in [1, 3]:
-                self.sendline(self.password)
-                self.expect(self.prompt[0])
-                self.sendline("enable")
                 self.expect(self.prompt[1])
-                self.additional_setup()
-            return
-        except pexpect.exceptions.TIMEOUT:
-            logger.error(
-                "Unable to get prompt on Topvision mini CMTS device due to timeout."
-            )
-            self.close()
-            self.pid = None
-        except pexpect.EOF as e:
-            logger.error(
-                "Something went wrong during CMTS initialisation. See exception below:"
-            )
-            logger.error(repr(e))
-            self.close()
-            self.pid = None
+            self.additional_setup()
+        return
 
     def _connect(self, command: str, args: list, expect_patterns: list) -> None:
         for run in range(5):
@@ -189,30 +150,31 @@ class MiniCMTS(CmtsTemplate):
                     command=command,
                     args=args,
                 )
-                try:
-                    i = self.expect(expect_patterns, timeout=30)
-                except PexpectErrorTimeout as err:
-                    logger.error(err)
-                    raise
-                except pexpect.EOF:
-                    if hasattr(self, "before"):
-                        logger.debug(self.before)
-                        raise
-            except (PexpectErrorTimeout, pexpect.EOF) as e:
-                logger.error(e)
+                i = self.expect(expect_patterns, timeout=30)
+                self._common_setup(i)
+                return
+            except PexpectErrorTimeout:
                 logger.error(
-                    colored(
-                        f"Failed to connect to CMTS. Attempt {run+1}",
-                        color="red",
-                        attrs=["bold"],
-                    )
+                    "Unable to get prompt on Topvision mini CMTS device due to timeout."
                 )
-                self.close()
-                self.pid = None
-                sleep(5)  # take a moment before retrying
-                continue
-            self._common_setup(i)
-            return
+            except pexpect.EOF as e:
+                logger.error(
+                    "Something went wrong during CMTS initialisation. See exception below:"
+                )
+                logger.error(repr(e))
+                if hasattr(self, "before"):
+                    logger.debug(self.before)
+
+            logger.error(
+                colored(
+                    f"Failed to connect to CMTS. Attempt {run+1}",
+                    color="red",
+                    attrs=["bold"],
+                )
+            )
+            self.close()
+            self.pid = None
+            sleep(30)  # take a moment before retrying
         raise ConnectionRefused(f"Unable to connect to {self.name}.")
 
     def check_online(self, cm_mac: str) -> bool:
