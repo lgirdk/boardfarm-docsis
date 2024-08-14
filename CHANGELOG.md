@@ -1,3 +1,9 @@
+## 2024.33.0 (2024-08-14)
+
+### Fix
+
+- **devices/topvision_cmts.py**: add fallback  when cmts is stuck in enable
+
 ## 2024.31.0 (2024-08-01)
 
 ## 2024.29.0 (2024-07-18)
