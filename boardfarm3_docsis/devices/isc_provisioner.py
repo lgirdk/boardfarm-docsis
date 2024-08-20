@@ -16,6 +16,7 @@ from boardfarm3.exceptions import (
 )
 from boardfarm3.lib.boardfarm_config import BoardfarmConfig
 from boardfarm3.lib.boardfarm_pexpect import BoardfarmPexpect
+from boardfarm3.lib.connection_factory import connection_factory
 from boardfarm3.lib.custom_typing.dhcp import (
     DHCPServicePools,
     DHCPv4Options,
@@ -534,6 +535,31 @@ class ISCProvisioner(LinuxDevice, Provisioner):
             "###FIXED_PREFIX_IPV6###": self._erouter_ipv6_network_list[self.station_no],
             "###FIXED_ADDRESS_IPV6###": erouter_fixed_ipv6_start.ip + self.station_no,
         }
+
+        if self._config["dhcp_snooping"]:
+            snoop_ip, snoop_port = self._config["dhcp_snooping_target"].split(";")
+            snooper = connection_factory(
+                self._config.get("connection_type"),
+                "snooper.console",
+                username=self._config.get("router_username", "root"),
+                password=self._config.get("router_password", "bigfoot1"),
+                ip_addr=snoop_ip,
+                port=snoop_port,
+                shell_prompt=self._shell_prompt,
+                save_console_logs=self._cmdline_args.save_console_logs,
+            )
+            snooper.login_to_server()
+            snooper.execute_command("echo 'snooper connected!!'")
+            # Add DHCPv6 route which ideally DHCP snooping would introduce
+            snooper.execute_command(
+                f"ip -6 route del {keywords_to_replace['###FIXED_PREFIX_IPV6###']}"
+            )
+            snooper.execute_command(
+                f"ip -6 route add {keywords_to_replace['###FIXED_PREFIX_IPV6###']}"
+                f" via {keywords_to_replace['###FIXED_ADDRESS_IPV6###']}"
+            )
+            snooper.close()
+
         keywords_to_replace.update(self._get_common_keywords_to_replace())
         return self._replace_keywords_from_string(
             _DHCPV6_CABLE_MODEM_CONFIG if is_dhcpv6 else _DHCPV4_CABLE_MODEM_CONFIG,
