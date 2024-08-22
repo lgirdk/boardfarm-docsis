@@ -118,7 +118,7 @@ class MiniCMTS(BoardfarmDevice, CMTS):
             port=self._config.get("router_port", ""),
             shell_prompt=self._router_shell_prompt,
         )
-        await self._rtr_console.login_to_server()
+        await self._rtr_console.login_to_server_async()
 
     @hookimpl
     def boardfarm_server_boot(self) -> None:
