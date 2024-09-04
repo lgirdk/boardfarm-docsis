@@ -10,10 +10,18 @@ from typing import TYPE_CHECKING
 
 import netaddr
 import pandas as pd
+import pexpect
 from boardfarm3 import hookimpl
 from boardfarm3.devices.base_devices.boardfarm_device import BoardfarmDevice
-from boardfarm3.exceptions import ConfigurationFailure, DeviceNotFound
+from boardfarm3.exceptions import (
+    BoardfarmException,
+    ConfigurationFailure,
+    DeviceNotFound,
+    SCPConnectionError,
+)
 from boardfarm3.lib.connection_factory import connection_factory
+from boardfarm3.lib.connections.local_cmd import LocalCmd
+from boardfarm3.lib.networking import scp
 from boardfarm3.lib.shell_prompt import DEFAULT_BASH_SHELL_PROMPT_PATTERN
 from boardfarm3.lib.utils import get_nth_mac_address
 
@@ -23,10 +31,12 @@ if TYPE_CHECKING:
     from argparse import Namespace
 
     from boardfarm3.lib.boardfarm_pexpect import BoardfarmPexpect
+    from boardfarm3.templates.wan import WAN
 
 _LOGGER = logging.getLogger(__name__)
 
 
+# pylint: disable=duplicate-code,too-many-public-methods
 class MiniCMTS(BoardfarmDevice, CMTS):
     """Boardfarm DOCSIS MiniCMTS device."""
 
@@ -500,6 +510,160 @@ class MiniCMTS(BoardfarmDevice, CMTS):
         :rtype: BoardfarmPexpect
         """
         return self._rtr_console
+
+    def scp_device_file_to_local(self, local_path: str, source_path: str) -> None:
+        """Copy a local file from a server using SCP.
+
+        :param local_path: local file path
+        :param source_path: source path
+        """
+        source_path = (
+            f"{self._config.get('router_username', 'root')}@"
+            f"{self._config.get('router_ipaddr')}:{source_path}"
+        )
+        self._scp_local_files(source=source_path, destination=local_path)
+
+    def _scp_local_files(self, source: str, destination: str) -> None:
+        """Perform file copy on local console using SCP.
+
+        :param source: source file path
+        :param destination: destination file path
+        :raises SCPConnectionError: when SCP command return non-zero exit code
+        """
+        args = [
+            f"-P {self._config.get('router_port')}",
+            "-o StrictHostKeyChecking=no",
+            "-o UserKnownHostsFile=/dev/null",
+            "-o ServerAliveInterval=60",
+            "-o ServerAliveCountMax=5",
+            source,
+            destination,
+        ]
+        session = LocalCmd(
+            f"{self.device_name}.scp",
+            "scp",
+            save_console_logs=False,
+            args=args,
+            # TODO: why do we need to pass shell prompt?
+            shell_prompt=self._router_shell_prompt,
+        )
+        session.setwinsize(24, 80)
+        match_index = session.expect(
+            [" password:", "\\d+%", pexpect.TIMEOUT, pexpect.EOF],
+            timeout=20,
+        )
+        if match_index in (2, 3):
+            msg = f"Failed to perform SCP from {source} to {destination}"
+            raise SCPConnectionError(
+                msg,
+            )
+        if match_index == 0:
+            session.sendline(self._config.get("router_password"))
+        session.expect(pexpect.EOF, timeout=90)
+        if session.wait() != 0:
+            msg = f"Failed to SCP file from {source} to {destination}"
+            raise SCPConnectionError(
+                msg,
+            )
+
+    def tshark_read_pcap(
+        self,
+        fname: str,
+        additional_args: str | None = None,
+        timeout: int = 30,
+        rm_pcap: bool = False,
+    ) -> str:
+        """Read packet captures from an existing file.
+
+        :param fname: name of the file in which captures are saved
+        :param additional_args: additional arguments for tshark command
+        :param timeout: timeout for tshark command to be executed, defaults to 30
+        :param rm_pcap: If True remove the packet capture file after reading it
+        :return: return tshark read command console output
+        :raises  FileNotFoundError: when file is not found
+        :raises BoardfarmException: when invalid filters are added
+        """
+        output = self._run_command_with_args(
+            "tshark -r",
+            fname,
+            additional_args,
+            timeout,
+        )
+
+        if f'The file "{fname}" doesn\'t exist' in output:
+            msg = f"pcap file not found {fname} on device {self.device_name}"
+            raise FileNotFoundError(
+                msg,
+            )
+        if "was unexpected in this context" in output:
+            msg = (
+                "Invalid filters for tshark read, review "
+                f"additional_args={additional_args}"
+            )
+            raise BoardfarmException(
+                msg,
+            )
+        if rm_pcap:
+            self.console.sudo_sendline(f"rm {fname}")
+            self.console.expect(self._router_shell_prompt)
+        return output
+
+    def _run_command_with_args(
+        self,
+        command: str,
+        fname: str,
+        additional_args: str | None,
+        timeout: int,
+    ) -> str:
+        """Run command with given arguments and return the output.
+
+        :param command: command to run
+        :param fname: name of the file in which captures are saved
+        :param additional_args:  additional arguments to run command
+        :param timeout: timout for the command
+        :return: return read command console output
+        """
+        read_command = f"{command} {fname} "
+        if additional_args:
+            read_command += additional_args
+        self.console.sudo_sendline(read_command)
+        self.console.expect(self._router_shell_prompt, timeout=timeout)
+        return self.console.before
+
+    def delete_file(self, filename: str) -> None:
+        """Delete the file from the device.
+
+        :param filename: name of the file with absolute path
+        :type filename: str
+        """
+        self.console.execute_command(f"rm {filename}")
+
+    def copy_file_to_wan(
+        self,
+        host: WAN,
+        src_path: str,
+        dest_path: str,
+    ) -> None:
+        """Copy file from FRR router to WAN container.
+
+        :param host: the remote host instance
+        :type host: WAN
+        :param src_path: source file path
+        :type src_path: str
+        :param dest_path: destination path
+        :type dest_path: str
+        """
+        scp(
+            self.console,
+            # TODO: private members should not be used, BOARDFARM-5040
+            host._config.get("ipaddr"),  # type: ignore[attr-defined] # noqa: SLF001 pylint: disable=W0212
+            host._config.get("port"),  # type: ignore[attr-defined] # noqa: SLF001 pylint: disable=W0212
+            host._username,  # type: ignore[attr-defined] # noqa: SLF001 pylint: disable=W0212
+            host._password,  # type: ignore[attr-defined] # noqa: SLF001 pylint: disable=W0212
+            src_path,
+            dest_path,
+            "upload",
+        )
 
 
 if __name__ == "__main__":

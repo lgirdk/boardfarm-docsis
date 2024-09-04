@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from boardfarm3.lib.boardfarm_pexpect import BoardfarmPexpect
+    from boardfarm3.templates.wan import WAN
 
 
 class CMTS(ABC):
@@ -154,5 +155,59 @@ class CMTS(ABC):
 
         :return: console
         :rtype: BoardfarmPexpect
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def scp_device_file_to_local(self, local_path: str, source_path: str) -> None:
+        """Copy a local file from a server using SCP.
+
+        :param local_path: local file path
+        :param source_path: source path
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def tshark_read_pcap(
+        self,
+        fname: str,
+        additional_args: str | None = None,
+        timeout: int = 30,
+        rm_pcap: bool = False,
+    ) -> str:
+        """Read packet captures from an existing file.
+
+        :param fname: name of the file in which captures are saved
+        :param additional_args: additional arguments for tshark command
+        :param timeout: time out for tshark command to be executed, defaults to 30
+        :param rm_pcap: If True remove the packet capture file after reading it
+        :return: return tshark read command console output
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def delete_file(self, filename: str) -> None:
+        """Delete the file from the device.
+
+        :param filename: name of the file with absolute path
+        :type filename: str
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def copy_file_to_wan(
+        self,
+        host: WAN,
+        src_path: str,
+        dest_path: str,
+    ) -> None:
+        """Copy file from FRR router to WAN container.
+
+        :param host: the remote host instance
+        :type host: WAN
+        :param src_path: source file path
+        :type src_path: str
+        :param dest_path: destination path
+        :type dest_path: str
         """
         raise NotImplementedError
