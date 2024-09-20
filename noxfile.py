@@ -32,7 +32,7 @@ def pylint(session: nox.Session) -> None:
     # noqa: DAR101: - session
     """
     session.install("--upgrade", "--pre", "boardfarm3")
-    session.install("--upgrade", ".", "pylint")
+    session.install("--upgrade", ".", "pylint==3.2.6")
     session.run("pylint", "boardfarm3_docsis")
 
 
