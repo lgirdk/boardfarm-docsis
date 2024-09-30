@@ -235,7 +235,7 @@ class CmtsTemplate(
         ignore_partial=False,
         ignore_cpe=False,
         time_to_sleep=10,
-        iterations=50,
+        iterations=60,
     ):
         """Waits for a CM to come online in an iterate-check-sleep loop. A CM
         is online when the its status is OPERATIONAL.
@@ -248,7 +248,10 @@ class CmtsTemplate(
         :type ignore_partial: bool
         :param ignore_cpe: (optional) considers tje CM online even when LAN<->WAN forwarding is disabled
         :type ignore_cpe: bool
-        :param :
+        :param time_to_sleep: (optional) the total time interval to wait
+        :type time_to_sleep: int
+        :param iterations: (optional) number of time to perform the check
+        :type iterations: int
         :raises Execption: boardfarm.exception.CodeError on online failure
         """
         for _ in range(iterations):
