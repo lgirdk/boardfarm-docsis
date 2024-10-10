@@ -1,3 +1,9 @@
+## 2024.41.0 (2024-10-10)
+
+### Fix
+
+- **base_devices/cmts_template.py**: increase cm online check time
+
 ## 2024.39.0 (2024-09-26)
 
 ## 2024.37.0 (2024-09-12)
