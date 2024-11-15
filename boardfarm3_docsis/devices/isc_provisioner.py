@@ -630,7 +630,7 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         self._console.execute_command(
             f"cat {dhcp_config_path}.* >> {master_config_path}",
         )
-        self._console.execute_command(f"mv {master_config_path} {dhcp_config_path}")
+        self._console.execute_command(f"cat {master_config_path} > {dhcp_config_path}")
 
     def provision_cable_modem(  # noqa: PLR0913
         self,
