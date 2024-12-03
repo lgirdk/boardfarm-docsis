@@ -23,7 +23,7 @@
     requires-python = ">=3.9"
 
     dependencies = [
-        "boardfarm3~=2024.11.1a1",
+        "boardfarm3~=2024.12.1a1",
         "pandas",
         "pexpect",
     ]
