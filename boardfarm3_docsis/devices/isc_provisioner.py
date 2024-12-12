@@ -265,13 +265,14 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         self._prov_ipv6_network = prov_ipv6_interface.network
         # we're storing a list of all /56 subnets possible from erouter_net_interface.
         # As per docsis, /56 must be the default pd length
+        # Changing the PD to /60 from /56 to update ITC V6 IP scope
         erouter_ipv6_net_interface = ipaddress.IPv6Interface(
             self._config.get("erouter_net", "2001:dead:beef:e000::/51"),
         )
         _prefix_len = erouter_ipv6_net_interface.network.prefixlen
         self._erouter_ipv6_network_list = list(
             erouter_ipv6_net_interface.network.subnets(
-                56 - _prefix_len,
+                60 - _prefix_len,
             ),
         )
         self._default_lease_time = 604800
