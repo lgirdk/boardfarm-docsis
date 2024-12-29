@@ -20,6 +20,7 @@ from boardfarm3.exceptions import (
     SCPConnectionError,
 )
 from boardfarm3.lib.connection_factory import connection_factory
+from boardfarm3.lib.connections.connect_and_run import connect_and_run
 from boardfarm3.lib.connections.local_cmd import LocalCmd
 from boardfarm3.lib.networking import scp
 from boardfarm3.lib.shell_prompt import DEFAULT_BASH_SHELL_PROMPT_PATTERN
@@ -90,33 +91,6 @@ class MiniCMTS(BoardfarmDevice, CMTS):
         )
         self._rtr_console.login_to_server()
 
-    async def _additional_shell_setup_async(self) -> None:
-        """Additional shell initialization steps."""
-        await self._console.login_to_server_async(
-            password=self._config.get("password", "admin"),
-        )
-        await self._console.execute_command_async("enable")
-        # Change terminal length to inf in order to avoid pagination
-        await self._console.execute_command_async("terminal length 0")
-        # Increase connection timeout until better solution
-        await self._console.execute_command_async("config terminal")
-        await self._console.execute_command_async("line vty")
-        await self._console.execute_command_async("exec-timeout 60")
-        await self._console.execute_command_async("end")
-
-    async def _connect_to_console_async(self) -> None:
-        self._console = connection_factory(
-            self._config.get("connection_type"),
-            f"{self.device_name}.console",
-            username=self._config.get("username", "admin"),
-            password=self._config.get("password", "admin"),
-            ip_addr=self._config.get("ipaddr"),
-            port=self._config.get("port", "22"),
-            shell_prompt=self._shell_prompt,
-            save_console_logs=self._cmdline_args.save_console_logs,
-        )
-        await self._additional_shell_setup_async()
-
     async def _connect_to_rtr_console_async(self) -> None:
         """Create FRR router connection."""
         self._rtr_console = connection_factory(
@@ -134,7 +108,6 @@ class MiniCMTS(BoardfarmDevice, CMTS):
     def boardfarm_server_boot(self) -> None:
         """Boot MiniCMTS device."""
         _LOGGER.info("Booting %s(%s) device", self.device_name, self.device_type)
-        self._connect_to_console()
         self._connect_to_rtr_console()
 
     @hookimpl
@@ -145,7 +118,6 @@ class MiniCMTS(BoardfarmDevice, CMTS):
             self.device_name,
             self.device_type,
         )
-        self._connect_to_console()
         self._connect_to_rtr_console()
 
     @hookimpl
@@ -156,7 +128,6 @@ class MiniCMTS(BoardfarmDevice, CMTS):
             self.device_name,
             self.device_type,
         )
-        await self._connect_to_console_async()
         await self._connect_to_rtr_console_async()
 
     @hookimpl
@@ -170,6 +141,7 @@ class MiniCMTS(BoardfarmDevice, CMTS):
             self._console.close()
             self._console = None
 
+    @connect_and_run
     def _get_cable_modem_table_data(
         self, mac_address: str, column_name: str
     ) -> str | None:
@@ -211,6 +183,7 @@ class MiniCMTS(BoardfarmDevice, CMTS):
             str(csv.loc[mac_address][column_name]) if mac_address in csv.index else None
         )  # pylint: disable=no-member # known issue
 
+    @connect_and_run
     def _get_cable_modem_cpe_table_data(self, cpe_mac: str) -> pd.DataFrame:
         """Return cable modem cpe table data of cpe with given mac.
 
@@ -296,6 +269,7 @@ class MiniCMTS(BoardfarmDevice, CMTS):
             is_modem_online = True
         return is_modem_online
 
+    @connect_and_run
     def reset_cable_modem_status(self, mac_address: str) -> None:
         """Reset given cable modem status on cmts.
 
@@ -321,6 +295,7 @@ class MiniCMTS(BoardfarmDevice, CMTS):
             raise DeviceNotFound(err_msg)
         return ip_address.strip().replace("*", "")
 
+    @connect_and_run
     def get_cmts_ip_bundle(self, gw_ip: str | None = None) -> str:
         """Get CMTS bundle IP.
 
@@ -414,6 +389,7 @@ class MiniCMTS(BoardfarmDevice, CMTS):
         # Note: currently MTA on PacketCable 1.0 only supports IPv4
         return self._get_cpe_ip_address(mac_address, offset=1, is_ipv6=False)
 
+    @connect_and_run
     def _get_cm_docsis_provisioned_version(self, mac_address: str) -> float:
         """Get the docsis version of cable modem.
 
@@ -433,6 +409,7 @@ class MiniCMTS(BoardfarmDevice, CMTS):
             raise ValueError(err_msg)
         return float(result.group(1))
 
+    @connect_and_run
     def _get_cm_channel_bonding_detail(self, mac_address: str) -> dict[str, str]:
         """Get the primary channel values.
 
@@ -461,6 +438,9 @@ class MiniCMTS(BoardfarmDevice, CMTS):
         :return: The interactive console of the CMTS
         :rtype: dict[str, BoardfarmPexpect]
         """
+        if self.is_console_connected():
+            self.disconnect_console()
+        self.connect_console()
         return {"console": self._console}
 
     def get_downstream_channel_value(self, mac: str) -> str:
@@ -498,6 +478,25 @@ class MiniCMTS(BoardfarmDevice, CMTS):
         :rtype: dict[str, str]
         """
         return self._get_cm_channel_bonding_detail(mac)
+
+    def connect_console(self) -> None:
+        """Connect to the console."""
+        self._connect_to_console()
+
+    def is_console_connected(self) -> bool:
+        """Get status of the connection.
+
+        :return: True or False
+        :rtype: bool
+        """
+        if self._console and not self._console.closed:
+            return True
+        return False
+
+    def disconnect_console(self) -> None:
+        """Disconnect from the console."""
+        if not self._console.closed:
+            self._console.close()
 
     @property
     def console(self) -> BoardfarmPexpect:
