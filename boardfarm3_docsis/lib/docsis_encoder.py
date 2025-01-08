@@ -60,7 +60,7 @@ class DocsisConfigEncoder:
             session = LocalCmd(
                 "docsis-encoder",
                 command,
-                save_console_logs=False,
+                save_console_logs="",
                 args=[],
             )
             session.expect(pexpect.EOF)
