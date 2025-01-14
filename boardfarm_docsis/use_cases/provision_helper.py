@@ -11,7 +11,8 @@ def provision_board():
     if hasattr(dev.board, "hw") and hasattr(dev.board, "sw"):
         cm_cfg, mta_cfg = dev.board.hw.reprovision(dev.provisioner)
         for cfg in [cm_cfg, mta_cfg]:
-            _push_to_tftp_server(cfg, dev.wan)
+            if cfg:
+                _push_to_tftp_server(cfg, dev.wan)
         dev.provisioner.provision_board(dev.board.config)
     else:
         dev.board.reprovision(dev.provisioner)

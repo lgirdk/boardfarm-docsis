@@ -430,7 +430,6 @@ class mta_cfg(base_cfg):
         """
         Creates a default basic mta  cfg file for modification
         """
-
         if mta_file_str:
             self.load_from_string(mta_str_txt=mta_file_str)
         elif type(start) is str:
@@ -454,6 +453,9 @@ class mta_cfg(base_cfg):
             self.encoded_fname = self.original_fname.replace(
                 ".txt", self.encoded_suffix
             )
+        elif not mta_file_str:
+            logger.info("Empty MTA config file.")
+            return
         else:
             raise Exception(f"Wrong type {type(start)} received")
         super().init_copy(file_or_obj=self, mibs_paths=mibs_path)
@@ -463,7 +465,8 @@ class mta_cfg(base_cfg):
         cfg_path = os.path.join(self.dir_path, cfg_name)
         if os.path.isfile(cfg_path):
             os.remove(cfg_path)
-        return self.encode_mta(self.mibs_path_arg, self.file_path, cfg_path)
+        if self.mta_cfg.txt:
+            return self.encode_mta(self.mibs_path_arg, self.file_path, cfg_path)
 
     def load_from_string(self, mta_str_txt: str, name_prefix: str = "") -> None:
         """Load CM cfg from text string (e.g. the file is stored in a multiline

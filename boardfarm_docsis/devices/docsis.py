@@ -276,19 +276,6 @@ class DocsisInterface:
             provisioner = self.dev.provisioner
 
             config["extra_provisioning"] = {
-                "mta": {
-                    "hardware ethernet": config["mta_mac"],
-                    "filename": '"' + self.mta_cfg.encoded_fname + '"',
-                    "options": {
-                        "bootfile-name": '"' + self.mta_cfg.encoded_fname + '"',
-                        "dhcp-parameter-request-list": "3, 6, 7, 12, 15, 43, 122",
-                        "domain-name": '"sipcenter.com"',
-                        "domain-name-servers": wan.gw,
-                        "routers": provisioner.mta_gateway,
-                        "log-servers": provisioner.prov_ip,
-                        "host-name": '"' + config.get_station() + '"',
-                    },
-                },
                 "cm": {
                     "hardware ethernet": config["cm_mac"],
                     "filename": '"' + self.cm_cfg.encoded_fname + '"',
@@ -304,6 +291,22 @@ class DocsisInterface:
                     },
                 },
             }
+            if self.mta_cfg.txt:
+                config["extra_provisioning"] = {
+                    "mta": {
+                        "hardware ethernet": config["mta_mac"],
+                        "filename": '"' + self.mta_cfg.encoded_fname + '"',
+                        "options": {
+                            "bootfile-name": '"' + self.mta_cfg.encoded_fname + '"',
+                            "dhcp-parameter-request-list": "3, 6, 7, 12, 15, 43, 122",
+                            "domain-name": '"sipcenter.com"',
+                            "domain-name-servers": wan.gw,
+                            "routers": provisioner.mta_gateway,
+                            "log-servers": provisioner.prov_ip,
+                            "host-name": '"' + config.get_station() + '"',
+                        },
+                    },
+                }
             # No ipv6 for this device, so let's zero out the config so it comes up ipv4 properly
             if "extra_provisioning_v6" not in config:
                 config["extra_provisioning_v6"] = {}
