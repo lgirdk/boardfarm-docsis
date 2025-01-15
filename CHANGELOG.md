@@ -1,3 +1,9 @@
+## 2025.03.0 (2025-01-15)
+
+### Fix
+
+- **devices/docsis,lib/docsis**: support sku with no voice support
+
 ## 2025.01.0 (2025-01-02)
 
 ## 2024.51.0 (2024-12-18)
