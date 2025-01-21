@@ -662,7 +662,7 @@ class ISCProvisioner(LinuxDevice, Provisioner):
                 cm_mac,
                 tftp_ipv4_addr,
                 Path(cm_bootfile).name,
-                Path(mta_bootfile).name,
+                Path(mta_bootfile).name if mta_bootfile else "",
                 False,
             )
             # Note: MTA over IPv6 not yet supported!
