@@ -284,6 +284,7 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         self._mta_gateway_ipv4 = self._config.get("mta_gateway", "192.168.201.1")
         self._firewall: IptablesFirewall = None
         self.station_no = -1
+        self.resource_name = ""
 
     @hookimpl
     def boardfarm_server_boot(self, config: BoardfarmConfig) -> None:
@@ -294,6 +295,7 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         """
         _LOGGER.info("Booting %s(%s) device", self.device_name, self.device_type)
         self.station_no = config.get_board_station_number()
+        self.resource_name = config.resource_name
         self._connect()
         self._firewall = IptablesFirewall(self._console)
 
@@ -396,7 +398,7 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         timezone_offset = self._get_timezone_offset()
         return {
             "###IFACE###": self.eth_interface,
-            "###BOARD_NAME###": self._cmdline_args.board_name,
+            "###BOARD_NAME###": self.resource_name,
             "###TIMEZONE###": timezone_offset,
             "###MTA_DHCP_SERVER1###": self._prov_ipv4_address,
             "###MTA_DHCP_SERVER2###": self._prov_ipv4_address,
@@ -613,7 +615,7 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         else:
             dhcp_config_path = "/etc/dhcp/dhcpd6.conf"
             master_config = self._get_dhcpv6_master_config()
-        board_name = self._cmdline_args.board_name
+        board_name = self.resource_name
         cm_config_path = f"{dhcp_config_path}.{board_name}"
         master_config_path = f"{dhcp_config_path}-{board_name}.master"
         self._create_dhcp_config_file(master_config, master_config_path)
