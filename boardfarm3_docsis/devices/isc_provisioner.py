@@ -533,8 +533,11 @@ class ISCProvisioner(LinuxDevice, Provisioner):
             "###EROUTER_MAC_ADDRESS###": erouter_mac,
             "###DEFAULT_LEASE_TIME###": self._default_lease_time,
             "###MAX_LEASE_TIME###": self._default_lease_time,
-            "###FIXED_PREFIX_IPV6###": self._erouter_ipv6_network_list[self.station_no],
-            "###FIXED_ADDRESS_IPV6###": erouter_fixed_ipv6_start.ip + self.station_no,
+            "###FIXED_PREFIX_IPV6###": self._erouter_ipv6_network_list[
+                self.station_no - 1
+            ],
+            "###FIXED_ADDRESS_IPV6###": erouter_fixed_ipv6_start.ip
+            + (self.station_no - 1),
         }
 
         if self._config["dhcp_snooping"]:
