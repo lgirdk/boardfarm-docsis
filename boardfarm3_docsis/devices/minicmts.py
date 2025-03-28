@@ -326,9 +326,7 @@ class MiniCMTS(BoardfarmDevice, CMTS):
         :return: ip routes collected from quagga router
         :rtype: str
         """
-        self.console.sudo_sendline("ip route")
-        self.console.expect(self._router_shell_prompt, timeout=10)
-        return self.console.before
+        return "None"
 
     # TODO: replace this method with reset_cable_modem_status
     def clear_cm_reset(self, mac_address: str) -> None:
