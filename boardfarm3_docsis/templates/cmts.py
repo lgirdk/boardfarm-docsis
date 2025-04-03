@@ -63,11 +63,11 @@ class CMTS(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_ip_routes(self) -> str:
+    def get_ip_routes(self) -> list[str]:
         """Get IP routes from the quagga router.
 
         :return: ip routes collected from quagga router
-        :rtype: str
+        :rtype: list[str]
         """
         raise NotImplementedError
 

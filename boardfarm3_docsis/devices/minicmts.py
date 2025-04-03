@@ -321,13 +321,16 @@ class MiniCMTS(BoardfarmDevice, CMTS):
         err_msg = "Failed to get the CMTS bundle IP"
         raise ValueError(err_msg)
 
-    def get_ip_routes(self) -> str:
+    def get_ip_routes(self) -> list[str]:
         """Get IP routes from the quagga router.
 
         :return: ip routes collected from quagga router
-        :rtype: str
+        :rtype: list[str]
         """
-        return "None"
+        self._rtr_console.sudo_sendline("ip route")
+        self._rtr_console.expect(self._router_shell_prompt, timeout=10)
+        output = self._rtr_console.before.splitlines()
+        return output[1:]
 
     # TODO: replace this method with reset_cable_modem_status
     def clear_cm_reset(self, mac_address: str) -> None:
