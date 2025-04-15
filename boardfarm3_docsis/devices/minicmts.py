@@ -25,6 +25,7 @@ from boardfarm3.lib.connections.local_cmd import LocalCmd
 from boardfarm3.lib.networking import scp
 from boardfarm3.lib.shell_prompt import DEFAULT_BASH_SHELL_PROMPT_PATTERN
 from boardfarm3.lib.utils import get_nth_mac_address
+from pexpect.exceptions import ExceptionPexpect
 
 from boardfarm3_docsis.templates.cmts import CMTS
 
@@ -493,8 +494,17 @@ class MiniCMTS(BoardfarmDevice, CMTS):
 
     def disconnect_console(self) -> None:
         """Disconnect from the console."""
-        if not self._console.closed:
+        if self._console.closed:
+            return
+        try:
             self._console.close()
+        except ExceptionPexpect:
+            # TODO: at times the network lab seems glitchy, just
+            # consider the connection as closed.
+            _LOGGER.exception(
+                "Received anexception on closing cmts console!! Leaking the connection",
+            )
+            self._console.closed = True
 
     @property
     def console(self) -> BoardfarmPexpect:
