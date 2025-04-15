@@ -489,9 +489,7 @@ class MiniCMTS(BoardfarmDevice, CMTS):
         :return: True or False
         :rtype: bool
         """
-        if self._console and not self._console.closed:
-            return True
-        return False
+        return self._console and not self._console.closed
 
     def disconnect_console(self) -> None:
         """Disconnect from the console."""

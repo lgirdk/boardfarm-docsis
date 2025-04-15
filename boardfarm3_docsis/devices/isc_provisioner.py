@@ -600,7 +600,7 @@ class ISCProvisioner(LinuxDevice, Provisioner):
             keywords_to_replace,
         )
 
-    def _update_dhcp_config(  # noqa: PLR0913
+    def _update_dhcp_config(
         self,
         cm_mac: str,
         tftp_server: str,
@@ -638,7 +638,7 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         )
         self._console.execute_command(f"cat {master_config_path} > {dhcp_config_path}")
 
-    def provision_cable_modem(  # noqa: PLR0913
+    def provision_cable_modem(
         self,
         cm_mac: str,
         cm_bootfile: str,
