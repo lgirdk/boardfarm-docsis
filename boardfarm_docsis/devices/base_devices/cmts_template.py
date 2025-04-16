@@ -235,7 +235,7 @@ class CmtsTemplate(
         ignore_partial=False,
         ignore_cpe=False,
         time_to_sleep=10,
-        iterations=60,
+        iterations=80,
     ):
         """Waits for a CM to come online in an iterate-check-sleep loop. A CM
         is online when the its status is OPERATIONAL.
