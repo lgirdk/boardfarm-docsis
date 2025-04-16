@@ -312,6 +312,7 @@ class ISCProvisioner(LinuxDevice, Provisioner):
             self.device_type,
         )
         self.station_no = config.get_board_station_number()
+        self.resource_name = config.resource_name
         self._connect()
         self._firewall = IptablesFirewall(self._console)
 
@@ -328,6 +329,7 @@ class ISCProvisioner(LinuxDevice, Provisioner):
             self.device_type,
         )
         self.station_no = config.get_board_station_number()
+        self.resource_name = config.resource_name
         await self._connect_async()
         self._firewall = IptablesFirewall(self._console)
 
