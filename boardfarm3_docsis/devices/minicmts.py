@@ -6,6 +6,7 @@ import logging
 import re
 from io import StringIO
 from ipaddress import IPv4Address, IPv6Address, ip_interface
+from time import sleep
 from typing import TYPE_CHECKING
 
 import netaddr
@@ -16,6 +17,7 @@ from boardfarm3.devices.base_devices.boardfarm_device import BoardfarmDevice
 from boardfarm3.exceptions import (
     BoardfarmException,
     ConfigurationFailure,
+    DeviceConnectionError,
     DeviceNotFound,
     SCPConnectionError,
 )
@@ -441,10 +443,22 @@ class MiniCMTS(BoardfarmDevice, CMTS):
 
         :return: The interactive console of the CMTS
         :rtype: dict[str, BoardfarmPexpect]
+        :raises conn_exception: In case interact session fails
         """
-        if self.is_console_connected():
-            self.disconnect_console()
-        self.connect_console()
+        conn_exception: DeviceConnectionError = None
+        for _ in range(3):
+            try:
+                if self.is_console_connected():
+                    self.disconnect_console()
+                self.connect_console()
+                break
+            except DeviceConnectionError as exc:
+                conn_exception = exc
+                self._console = None
+                sleep(15)
+        else:
+            raise conn_exception
+
         return {"console": self._console}
 
     def get_downstream_channel_value(self, mac: str) -> str:
