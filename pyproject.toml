@@ -26,6 +26,7 @@
         "boardfarm3~=2024.12.1a1",
         "pandas",
         "pexpect",
+        "termcolor",
     ]
 
     [project.optional-dependencies]
