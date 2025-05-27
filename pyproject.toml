@@ -51,6 +51,7 @@
             "pytest-mock",
             "pytest-randomly",
         ]
+        demo-test = ["pytest-boardfarm3"]
 
     [project.urls]
         Source = "https://github.com/lgirdk/boardfarm-docsis"

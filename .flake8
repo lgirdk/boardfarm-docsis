@@ -20,7 +20,7 @@ exclude =
     venv
 max-complexity = 10
 max-line-length = 88
-extend-ignore = DAR, E501, F811
+extend-ignore = DAR, E501, F811, E203, A003
 # F811 leads to false positives
 
 rst-roles =
