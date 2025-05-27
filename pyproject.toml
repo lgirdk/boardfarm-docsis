@@ -166,6 +166,7 @@
         "TD",     # would conflict with TODO highligther
         "E501",   # long line ignore
         "FIX002", # we need to keep TODOs in the code
+        "S101",    # use of assert (flake8-bandit)
         "COM812", # The following rule may cause conflicts when used with the formatter
         "ISC001", # The following rule may cause conflicts when used with the formatter
     ]
