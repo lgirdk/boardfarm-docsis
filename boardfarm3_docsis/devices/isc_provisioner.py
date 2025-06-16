@@ -636,7 +636,7 @@ class ISCProvisioner(LinuxDevice, Provisioner):
             dhcp_cm_config = f"{dhcp_mta_config}{dhcp_cm_config}"
         self._create_dhcp_config_file(dhcp_cm_config, cm_config_path)
         self._console.execute_command(
-            f"cat {dhcp_config_path}.* >> {master_config_path}",
+            f"cat {cm_config_path} >> {master_config_path}",
         )
         self._console.execute_command(f"cat {master_config_path} > {dhcp_config_path}")
 
