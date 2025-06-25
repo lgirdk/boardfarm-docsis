@@ -1,0 +1,8 @@
+TR069 Use Cases
+****************
+
+from boardfarm3_docsis
+======================
+
+.. automodule:: boardfarm3_docsis.use_cases.tr069
+   :members:
