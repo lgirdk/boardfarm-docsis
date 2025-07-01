@@ -25,6 +25,8 @@ from boardfarm3.lib.connection_factory import connection_factory
 from boardfarm3.lib.connections.connect_and_run import connect_and_run
 from boardfarm3.lib.connections.local_cmd import LocalCmd
 from boardfarm3.lib.networking import scp
+from boardfarm3.lib.networking import start_tcpdump as start_dump
+from boardfarm3.lib.networking import stop_tcpdump as stop_dump
 from boardfarm3.lib.shell_prompt import DEFAULT_BASH_SHELL_PROMPT_PATTERN
 from boardfarm3.lib.utils import get_nth_mac_address
 from pexpect.exceptions import ExceptionPexpect
@@ -688,6 +690,46 @@ class MiniCMTS(BoardfarmDevice, CMTS):
             dest_path,
             "upload",
         )
+
+    def start_tcpdump(
+        self,
+        interface: str,
+        port: str | None,
+        output_file: str = "pkt_capture.pcap",
+        filters: dict | None = None,
+        additional_filters: str | None = "",
+    ) -> str:
+        """Start tcpdump capture on given interface.
+
+        :param interface: inteface name where packets to be captured
+        :type interface: str
+        :param port: port number, can be a range of ports(eg: 443 or 433-443)
+        :type port: str
+        :param output_file: pcap file name, Defaults: pkt_capture.pcap
+        :type output_file: str
+        :param filters: filters as key value pair(eg: {"-v": "", "-c": "4"})
+        :type filters: Optional[Dict]
+        :param additional_filters: additional filters
+        :type additional_filters: Optional[str]
+        :return: console ouput and tcpdump process id
+        :rtype: str
+        """
+        return start_dump(
+            console=self._rtr_console,
+            interface=interface,
+            output_file=output_file,
+            filters=filters,
+            port=port,
+            additional_filters=additional_filters,
+        )
+
+    def stop_tcpdump(self, process_id: str) -> None:
+        """Stop tcpdump capture.
+
+        :param process_id: tcpdump process id
+        :type process_id: str
+        """
+        stop_dump(self._rtr_console, process_id=process_id)
 
 
 if __name__ == "__main__":
