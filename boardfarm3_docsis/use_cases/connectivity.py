@@ -292,5 +292,5 @@ def enable_tunnel_iface(
         )
     erouter_ips = get_erouter_addresses(board=board, retry_count=1)
     if erouter_ips.ipv6 and not erouter_ips.ipv4:
-        aftr.configure_aftr(board=board, wan=wan)
+        aftr.configure_aftr(wan=wan)
         aftr.restart_aftr_process(wan=wan)
