@@ -77,7 +77,7 @@
         ["disabled", "fg:#858585 italic"],
     ]
     tag_format = "$version"
-    version = "2025.7.10a3"
+    version = "2025.7.10a4"
     version_files = [
         "boardfarm3_docsis/__init__.py:version",
         "pyproject.toml:version",
@@ -96,7 +96,7 @@
 
 [tool.tbump]
     [tool.tbump.version]
-        current = "2025.7.10a3"
+        current = "2025.7.10a4"
 
         # Example of a semver regexp.
         # Make sure this matches current_version before
