@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from boardfarm3.templates.line_termination import LTS
 
@@ -228,5 +228,31 @@ class CMTS(LTS):
 
         :param process_id: tcpdump process id
         :type process_id: str
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def ping(
+        self,
+        ping_ip: str,
+        ping_count: int = 4,
+        timeout: int = 50,
+        json_output: bool = False,
+    ) -> bool | dict[str, Any]:
+        """Ping remote host.
+
+        Return True if ping has 0% loss
+        or parsed output in JSON if json_output=True flag is provided.
+
+        :param ping_ip: ping IP
+        :type ping_ip: str
+        :param ping_count: number of ping, defaults to 4
+        :type ping_count: int
+        :param timeout: timeout, defaults to 50
+        :type timeout: int
+        :param json_output: return ping output in dictionary format, defaults to False
+        :type json_output: bool
+        :return: ping output
+        :rtype: bool | dict[str, Any]
         """
         raise NotImplementedError
