@@ -7,8 +7,9 @@ import re
 from io import StringIO
 from ipaddress import IPv4Address, IPv6Address, ip_interface
 from time import sleep
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
+import jc.parsers.ping
 import netaddr
 import pandas as pd
 import pexpect
@@ -730,6 +731,46 @@ class MiniCMTS(BoardfarmDevice, CMTS):
         :type process_id: str
         """
         stop_dump(self._rtr_console, process_id=process_id)
+
+    def ping(
+        self,
+        ping_ip: str,
+        ping_count: int = 4,
+        timeout: int = 50,
+        json_output: bool = False,
+    ) -> bool | dict[str, Any]:
+        """Ping remote host.
+
+        :param ping_ip: ping ip
+        :type ping_ip: str
+        :param ping_count: number of ping, defaults to 4
+        :type ping_count: int
+        :param timeout: timeout value, defaults to 50
+        :type timeout: int
+        :param json_output: return ping output in dictionary format, defaults to False
+        :type json_output: bool
+        :return: ping output as bool or dict
+        :rtype: bool | dict[str, Any]
+        """
+        cmd = f"ping -c {ping_count} {ping_ip}"
+
+        self.console.execute_command(cmd, timeout)
+
+        if json_output:
+            # Remove trailing stray characters observed in certain device consoles
+            clean_console_output: str = self.console.before.replace(
+                f"pipe {ping_count}\r\n",
+                "",
+            )
+            return jc.parsers.ping.parse(clean_console_output)
+        ping_output = re.search(
+            (
+                f"{ping_count} packets transmitted, {ping_count} "
+                "[packets ]*received, 0% packet loss"
+            ),
+            self.console.before,
+        )
+        return bool(ping_output)
 
 
 if __name__ == "__main__":
