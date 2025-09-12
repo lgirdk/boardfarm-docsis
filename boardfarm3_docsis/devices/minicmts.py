@@ -320,7 +320,7 @@ class MiniCMTS(BoardfarmDevice, CMTS):
         for line in output.splitlines():
             addr, mask = line.split()[2:-1]
             cmts_ip = ip_interface(f"{addr}/{mask}")
-            if gw_ip == str(next(cmts_ip.network.hosts())):
+            if gw_ip == str(next(cmts_ip.network.hosts())):  # type: ignore[arg-type]
                 return gw_ip
         err_msg = "Failed to get the CMTS bundle IP"
         raise ValueError(err_msg)
