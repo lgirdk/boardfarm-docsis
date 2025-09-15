@@ -40,8 +40,7 @@ from the ```boardfarm-docsis``` plugin.
 **_NOTE:_**  In order to run these test you will have to install pytest-boardfarm.
 
 ```bash
-pip install git+https://github.com/lgirdk/pytest-boardfarm.git@boardfarm3
-pip install git+https://github.com/lgirdk/boardfarm-docsis.git@boardfarm3
+pip install boardfarm3[docsis,pytest]
 ```
 
 Sample run command:
