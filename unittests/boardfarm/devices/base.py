@@ -1,2 +1,0 @@
-class BaseDevice:
-    pass
