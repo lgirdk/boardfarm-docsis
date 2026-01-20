@@ -1,3 +1,3 @@
 """An add-on to boardfarm that contains DOCSIS specific libraries."""
 
-__version__ = "2026.1.21a0"
+__version__ = "2026.1.21a1"
