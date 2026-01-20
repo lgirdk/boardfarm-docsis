@@ -3,7 +3,7 @@
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
     - repo: https://github.com/commitizen-tools/commitizen
-      rev: v4.11.6
+      rev: v4.11.1
       hooks:
           - id: commitizen
             stages: [commit-msg]
@@ -44,7 +44,7 @@ repos:
             files: \.py$
             stages: [pre-commit]
     - repo: https://github.com/Lucas-C/pre-commit-hooks
-      rev: v1.5.6
+      rev: v1.5.5
       hooks:
           - id: remove-crlf
             stages: [pre-commit]
@@ -84,14 +84,14 @@ repos:
           - id: yamlfmt
             stages: [pre-commit]
     - repo: https://github.com/adrienverge/yamllint.git
-      rev: v1.38.0
+      rev: v1.37.1
       hooks:
           - id: yamllint
             args: [--format, parsable, --strict]
             stages: [pre-commit]
     - repo: https://github.com/astral-sh/ruff-pre-commit
       # Ruff version.
-      rev: v0.14.13
+      rev: v0.14.11
       hooks:
           - id: ruff
             # https://docs.astral.sh/ruff/formatter/#sorting-imports
