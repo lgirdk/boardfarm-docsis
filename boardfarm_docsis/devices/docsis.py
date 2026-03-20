@@ -371,9 +371,19 @@ class DocsisInterface:
                 protocol = self.swdl_info["tftp"]["proto"]
                 destination = self.swdl_info["tftp"]["dest"]
         # Copying the file to tftpserver
-        wan.sendline(f"wget -nc {image} -O {destination}/{filename}")
-        wan.expect(["saved"] + ["already there; not retrieving"])
-        wan.expect_prompt()
+        for _ in range(5):
+            try:
+                wan.sendline(f"wget -nc {image} -O {destination}/{filename}")
+                wan.expect(["saved"] + ["already there; not retrieving"])
+                wan.expect_prompt()
+                break
+            except PexpectErrorTimeout:
+                wan.sendcontrol("c")
+                wan.expect(pexpect.TIMEOUT, timeout=1)
+                wan.sendline(f"rm {destination}/{filename} || :")
+                wan.expect_prompt()
+        else:
+            raise PexpectErrorTimeout("Failed to wget firmware from webserver")
 
         self.flash_with_snmp_docsis_comands(wan, cm_ip, server_ip, filename, protocol)
 
