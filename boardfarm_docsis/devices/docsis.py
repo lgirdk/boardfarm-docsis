@@ -5,7 +5,7 @@ import time
 
 import pexpect
 from boardfarm.devices import openwrt_router
-from boardfarm.exceptions import CodeError
+from boardfarm.exceptions import CodeError, PexpectErrorTimeout
 from boardfarm.lib import SnmpHelper
 from boardfarm.lib.DeviceManager import device_type
 from boardfarm.lib.network_helper import valid_ipv4, valid_ipv6
@@ -377,7 +377,7 @@ class DocsisInterface:
                 wan.expect(["saved"] + ["already there; not retrieving"])
                 wan.expect_prompt()
                 break
-            except PexpectErrorTimeout:
+            except pexpect.exceptions.TIMEOUT:
                 wan.sendcontrol("c")
                 wan.expect(pexpect.TIMEOUT, timeout=1)
                 wan.sendline(f"rm {destination}/{filename} || :")
