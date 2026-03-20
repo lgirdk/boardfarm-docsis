@@ -196,7 +196,7 @@ class DocsisInterface:
     def factory_reset(self):
         return self.reset_defaults_via_console()
 
-    def is_erouter_honouring_config(self, method="snmp"):
+    def is_erouter_honouring_config(self, method="dmcli"):
         """Checks if the ErouterInitModeControl is set to honour what is stated
         in the boot file. This check can be performed via snmp or dmcli.
 
