@@ -197,7 +197,7 @@ class CMTS(LTS):
         raise NotImplementedError
 
     @abstractmethod
-    def start_tcpdump(
+    def start_tcpdump(  # pylint: disable=R0917
         self,
         interface: str,
         port: str | None,
@@ -228,6 +228,32 @@ class CMTS(LTS):
 
         :param process_id: tcpdump process id
         :type process_id: str
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def read_tcpdump(  # pylint: disable=R0917
+        self,
+        capture_file: str,
+        protocol: str = "",
+        opts: str = "",
+        timeout: int = 30,
+        rm_pcap: bool = True,
+    ) -> str:
+        """Read the given tcpdump and delete the file afterwards.
+
+        :param capture_file: pcap file path
+        :type capture_file: str
+        :param protocol: protocol to the filter
+        :type protocol: str
+        :param opts: command line options for reading pcap
+        :type opts: str
+        :param timeout: timeout in seconds for reading pcap
+        :type timeout: int
+        :param rm_pcap: remove pcap file afterwards
+        :type rm_pcap: bool
+        :return: tcpdump output
+        :rtype: str
         """
         raise NotImplementedError
 

@@ -32,7 +32,7 @@ class Provisioner(BaseProvisioner):
         raise NotImplementedError
 
     @abstractmethod
-    def provision_cable_modem(
+    def provision_cable_modem(  # pylint: disable=R0917
         self,
         cm_mac: str,
         cm_bootfile: str,

@@ -602,7 +602,7 @@ class ISCProvisioner(LinuxDevice, Provisioner):
             keywords_to_replace,
         )
 
-    def _update_dhcp_config(
+    def _update_dhcp_config(  # pylint: disable=R0917
         self,
         cm_mac: str,
         tftp_server: str,
@@ -640,7 +640,7 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         )
         self._console.execute_command(f"cat {master_config_path} > {dhcp_config_path}")
 
-    def provision_cable_modem(
+    def provision_cable_modem(  # pylint: disable=R0917
         self,
         cm_mac: str,
         cm_bootfile: str,
@@ -685,6 +685,7 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         cpe_mac: str,
         dhcpv4_options: dict[DHCPServicePools, DHCPv4Options],
         dhcpv6_options: dict[DHCPServicePools, DHCPv6Options],
+        **kwargs: dict,
     ) -> None:
         """Provision the CPE.
 
@@ -724,6 +725,8 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         :type dhcpv4_options: dict[DHCPServicePools, DHCPv4Options]
         :param dhcpv6_options: DHCPv6 Options with ACS, NTP, DNS details
         :type dhcpv6_options: dict[DHCPServicePools, DHCPv6Options]
+        :param kwargs: extra args to be used if any
+        :type kwargs: dict
         :raises NotImplementedError: Not Implemented for docsis provisioner
         """
         raise NotImplementedError
