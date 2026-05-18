@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from boardfarm3.templates.wan import WAN
 
 
+# pylint: disable=too-many-public-methods
 class CMTS(LTS):
     """Boardfarm DOCSIS CMTS device template."""
 
@@ -280,5 +281,16 @@ class CMTS(LTS):
         :type json_output: bool
         :return: ping output
         :rtype: bool | dict[str, Any]
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_qos_parameter(self, mac_address: str) -> dict[str, list[dict[str, Any]]]:
+        """Get the QoS service flow parameters of the cable modem from CMTS.
+
+        :param mac_address: mac address of the cable modem
+        :type mac_address: str
+        :return: QoS service flow parameters keyed by direction
+        :rtype: dict[str, list[dict[str, Any]]]
         """
         raise NotImplementedError

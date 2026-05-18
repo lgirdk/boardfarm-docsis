@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import re
+from collections import defaultdict
 from io import StringIO
 from ipaddress import IPv4Address, IPv6Address, ip_interface
 from time import sleep
@@ -804,6 +805,50 @@ class MiniCMTS(BoardfarmDevice, CMTS):
             self.console.before,
         )
         return bool(ping_output)
+
+    @connect_and_run
+    def get_qos_parameter(self, mac_address: str) -> dict[str, list[dict[str, Any]]]:
+        """Get the QoS service flow parameters of the cable modem from CMTS.
+
+        :param mac_address: mac address of the cable modem
+        :type mac_address: str
+        :return: QoS service flow parameters keyed by direction
+        :rtype: dict[str, list[dict[str, Any]]]
+        """
+        mac_address = self._convert_mac_address(mac_address)
+        columns = [
+            "Sfid",
+            "SF_REF",
+            "Direction",
+            "Current State",
+            "Sid",
+            "Scheduling Type",
+            "Traffic Priority",
+            "Maximum Sustained rate",
+            "Maximum Burst",
+            "Minimum Reserved rate",
+            "Peak rate",
+            "FLAGS",
+        ]
+        output = self._console.execute_command(
+            f"show cable modem {mac_address} qos",
+        )
+        qos_response = pd.read_csv(
+            StringIO(output),
+            skiprows=3,
+            skipfooter=0,
+            names=columns,
+            header=None,
+            sep=r"\s+",
+            engine="python",
+            index_col=["Sfid", "Direction"],
+            dtype={"Sid": "object"},
+        )
+        result: defaultdict[str, list[dict[str, Any]]] = defaultdict(list)
+        for key, data in qos_response.to_dict("index").items():
+            data["Sfid"] = str(key[0])
+            result[key[1]].append(data)
+        return dict(result)
 
 
 if __name__ == "__main__":
