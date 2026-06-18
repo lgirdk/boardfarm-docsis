@@ -20,7 +20,7 @@
     dynamic = ['version', 'description']
     name = "boardfarm3_docsis"
     readme = "README.md"
-    requires-python = ">=3.9"
+    requires-python = ">=3.11"
 
     dependencies = [
         "boardfarm3>=1.0.0",
