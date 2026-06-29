@@ -7,6 +7,7 @@ _PYTHON_VERSIONS = ["3.11"]
 # Fail nox session when run a program which
 # is not installed in its virtualenv
 nox.options.error_on_external_run = True
+nox.options.default_venv_backend = "uv"
 
 
 @nox.session(python=_PYTHON_VERSIONS)
