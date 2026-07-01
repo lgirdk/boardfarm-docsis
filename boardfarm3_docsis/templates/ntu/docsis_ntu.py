@@ -50,3 +50,14 @@ class DocsisNTU(NTU):
         :rtype: bool
         """
         raise NotImplementedError
+
+    @abstractmethod
+    def get_interface_macaddr(self, interface: str) -> str:
+        """Return the mac address of the interface.
+
+        :param interface: name of the interface
+        :type interface: str
+        :return: mac address
+        :rtype: str
+        """
+        raise NotImplementedError
