@@ -61,3 +61,12 @@ class DocsisNTU(NTU):
         :rtype: str
         """
         raise NotImplementedError
+
+    @abstractmethod
+    def get_seconds_uptime(self) -> float:
+        """Return uptime in seconds.
+
+        :return: uptime in seconds
+        :rtype: float
+        """
+        raise NotImplementedError
