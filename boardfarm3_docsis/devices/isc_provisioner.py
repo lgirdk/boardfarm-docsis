@@ -1,10 +1,13 @@
 """ISC DHCP cable modem provisioner module."""
 
+from __future__ import annotations
+
 import ipaddress
 import logging
 import re
 from argparse import Namespace
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pexpect
 from boardfarm3 import hookimpl
@@ -14,18 +17,22 @@ from boardfarm3.exceptions import (
     ContingencyCheckError,
     FileLockTimeout,
 )
-from boardfarm3.lib.boardfarm_config import BoardfarmConfig
-from boardfarm3.lib.boardfarm_pexpect import BoardfarmPexpect
 from boardfarm3.lib.connection_factory import connection_factory
-from boardfarm3.lib.custom_typing.dhcp import (
-    DHCPServicePools,
-    DHCPv4Options,
-    DHCPv6Options,
-)
 from boardfarm3.lib.networking import IptablesFirewall
 from boardfarm3.lib.utils import get_nth_mac_address
 
 from boardfarm3_docsis.templates.provisioner import Provisioner
+
+if TYPE_CHECKING:
+    from datetime import datetime
+
+    from boardfarm3.lib.boardfarm_config import BoardfarmConfig
+    from boardfarm3.lib.boardfarm_pexpect import BoardfarmPexpect
+    from boardfarm3.lib.custom_typing.dhcp import (
+        DHCPServicePools,
+        DHCPv4Options,
+        DHCPv6Options,
+    )
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -810,6 +817,21 @@ class ISCProvisioner(LinuxDevice, Provisioner):
         :rtype: IptablesFirewall
         """
         return self._firewall
+
+    def get_cnr_log_url(
+        self,
+        start_date: datetime | None = None,
+        end_date: datetime | None = None,
+    ) -> list[str] | None:
+        """Return download URLs for CNR DHCP log files from NFS.
+
+        :param start_date: UTC start of the log window
+        :type start_date: datetime | None
+        :param end_date: UTC end of the log window
+        :type end_date: datetime | None
+        :raises NotImplementedError: CNR log URLs are not supported by ISCProvisioner
+        """
+        raise NotImplementedError
 
 
 if __name__ == "__main__":
