@@ -60,6 +60,9 @@
     [project.entry-points."boardfarm"]
         docsis = "boardfarm3_docsis.plugins.docsis"
 
+    [project.entry-points."boardfarm_api"]
+        docsis_api = "boardfarm3_docsis.api.plugin"
+
 
 [tool.commitizen]
     bump_message = "Bump version to $new_version"
