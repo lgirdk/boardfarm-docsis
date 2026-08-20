@@ -11,7 +11,8 @@ from ipaddress import ip_address as ip_address_factory
 from typing import TYPE_CHECKING, TypeAlias
 
 from boardfarm3.exceptions import UseCaseFailure
-from boardfarm3.lib.dataclass.packets import ICMPPacketData, IPAddresses
+from boardfarm3.lib.dataclass.interface import IPAddresses
+from boardfarm3.lib.dataclass.packets import ICMPPacketData
 from boardfarm3.lib.networking import (
     IptablesFirewall,
     start_tcpdump,
